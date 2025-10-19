@@ -53,19 +53,18 @@ export function ItemCard({ item }: ItemCardProps) {
   const rating = toNumber(item.rating)
 
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-border bg-secondary/10 p-4 transition-all hover:border-border/60 hover:bg-secondary/20">
-      {/* Top stats */}
-      <div className="mb-3 flex items-center justify-between gap-2">
-        <div className="rounded-full bg-muted/60 px-3 py-1 text-xs font-medium text-muted-foreground">
+    <div className="group relative overflow-hidden rounded-2xl border border-border bg-secondary/10 p-3 md:p-4 transition-all hover:border-border/60 hover:bg-secondary/20">
+      <div className="mb-2 md:mb-3 flex items-center justify-between gap-2">
+        <div className="rounded-full bg-muted/60 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-muted-foreground">
           RAP: {formatValue(item.rap_value)}
         </div>
-        <div className="rounded-full bg-muted/60 px-3 py-1 text-xs font-medium text-muted-foreground">
+        <div className="rounded-full bg-muted/60 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-muted-foreground">
           EXIST: {existCount.toLocaleString()}
         </div>
       </div>
 
       {/* Item image */}
-      <div className="relative mx-auto aspect-square w-full max-w-[240px] overflow-hidden rounded-xl border border-border bg-card/60 shadow-lg">
+      <div className="relative mx-auto aspect-square w-full max-w-[200px] md:max-w-[240px] overflow-hidden rounded-xl border border-border bg-card/60 shadow-lg">
         <Image
           src={item.image_url || "/placeholder.svg"}
           alt={item.name}
@@ -75,31 +74,31 @@ export function ItemCard({ item }: ItemCardProps) {
         />
       </div>
 
-      {/* Item name */}
-      <h3 className="mt-3 text-center text-sm font-semibold line-clamp-2">{item.name}</h3>
+      <h3 className="mt-2 md:mt-3 text-center text-xs md:text-sm font-semibold line-clamp-2">{item.name}</h3>
 
-      {/* Last updated */}
-      <p className="mt-1 text-center text-xs text-muted-foreground">Last Updated: {getTimeAgo(item.last_updated_at)}</p>
+      <p className="mt-1 text-center text-[10px] md:text-xs text-muted-foreground">
+        Last Updated: {getTimeAgo(item.last_updated_at)}
+      </p>
 
       {/* Change percent */}
-      <div className="mt-4 flex items-center justify-center gap-1">
+      <div className="mt-3 md:mt-4 flex items-center justify-center gap-1">
         {isPositive ? (
-          <ChevronUp className="h-4 w-4 text-green-500" />
+          <ChevronUp className="h-3 w-3 md:h-4 md:w-4 text-green-500" />
         ) : (
-          <ChevronDown className="h-4 w-4 text-red-500" />
+          <ChevronDown className="h-3 w-3 md:h-4 md:w-4 text-red-500" />
         )}
-        <span className={`text-sm font-semibold ${isPositive ? "text-green-500" : "text-red-500"}`}>
+        <span className={`text-xs md:text-sm font-semibold ${isPositive ? "text-green-500" : "text-red-500"}`}>
           {Math.abs(changePercent).toFixed(1)}%
         </span>
       </div>
 
       {/* Rating */}
-      <div className="mt-2 text-center text-lg font-bold text-yellow-500">{rating.toFixed(1)}/10</div>
+      <div className="mt-2 text-center text-base md:text-lg font-bold text-yellow-500">{rating.toFixed(1)}/10</div>
 
       {/* Add to inventory button */}
       <Button
         variant="secondary"
-        className="mt-4 w-full rounded-lg bg-muted/60 text-xs font-medium uppercase tracking-wide text-muted-foreground hover:bg-muted/80"
+        className="mt-3 md:mt-4 w-full rounded-lg bg-muted/60 text-[10px] md:text-xs font-medium uppercase tracking-wide text-muted-foreground hover:bg-muted/80"
       >
         Add to Inventory
       </Button>

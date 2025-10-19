@@ -55,15 +55,14 @@ export function ValuesContent() {
   const filteredItems = items.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
 
   return (
-    <div className="space-y-6">
-      {/* Game tabs */}
-      <div className="flex flex-wrap gap-2">
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
         {GAMES.map((game) => (
           <Button
             key={game}
             onClick={() => setSelectedGame(game)}
             variant={selectedGame === game ? "default" : "secondary"}
-            className="rounded-full"
+            className="rounded-full whitespace-nowrap flex-shrink-0"
             size="sm"
           >
             {game}
@@ -83,23 +82,22 @@ export function ValuesContent() {
         />
       </div>
 
-      {/* Items grid */}
       {loading ? (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {[...Array(8)].map((_, i) => (
-            <div key={i} className="h-[420px] animate-pulse rounded-2xl bg-secondary/20" />
+            <div key={i} className="h-[380px] md:h-[420px] animate-pulse rounded-2xl bg-secondary/20" />
           ))}
         </div>
       ) : filteredItems.length === 0 ? (
-        <div className="rounded-2xl border border-border bg-secondary/10 p-12 text-center">
-          <p className="text-sm text-muted-foreground">
+        <div className="rounded-2xl border border-border bg-secondary/10 p-8 md:p-12 text-center">
+          <p className="text-xs md:text-sm text-muted-foreground">
             {searchQuery
               ? "No items found matching your search."
               : `No ${selectedGame} items available yet. Add items using the Discord bot!`}
           </p>
         </div>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredItems.map((item) => (
             <ItemCard key={item.id} item={item} />
           ))}

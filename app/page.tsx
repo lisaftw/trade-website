@@ -43,13 +43,13 @@ function ReferenceHero() {
         </p>
 
         {/* Center hero CTAs on all breakpoints */}
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-5 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3">
           <Button
             asChild
-            className="group h-11 rounded-[14px] border border-white/15 bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.02))] px-5 text-[13px] font-medium text-background shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_10px_30px_rgba(0,0,0,0.35)] backdrop-saturate-150 transition-all duration-200 hover:scale-[1.03] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_14px_40px_rgba(0,0,0,0.45)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04))]"
+            className="group h-11 w-full sm:w-auto rounded-[14px] border border-white/15 bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.02))] px-5 text-[13px] font-medium text-background shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_10px_30px_rgba(0,0,0,0.35)] backdrop-saturate-150 transition-all duration-200 hover:scale-[1.03] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_14px_40px_rgba(0,0,0,0.45)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04))]"
           >
             <a href="/trading" aria-label="Start Trading">
-              <span className="flex items-center gap-2">
+              <span className="flex items-center justify-center gap-2">
                 <span>Start Trading</span>
                 <ArrowRight
                   className="size-4 translate-x-0 transition-transform duration-200 group-hover:translate-x-0.5"
@@ -62,10 +62,10 @@ function ReferenceHero() {
           <Button
             asChild
             variant="ghost"
-            className="h-11 rounded-[14px] border border-white/20 bg-background/60 px-5 text-[13px] font-medium text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] backdrop-blur transition-all duration-200 hover:scale-[1.03] hover:bg-background/75 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]"
+            className="h-11 w-full sm:w-auto rounded-[14px] border border-white/20 bg-background/60 px-5 text-[13px] font-medium text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] backdrop-blur transition-all duration-200 hover:scale-[1.03] hover:bg-background/75 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]"
           >
             <a href="/calculator" aria-label="Open trading calculator">
-              <span className="flex items-center gap-2">
+              <span className="flex items-center justify-center gap-2">
                 <CalcIcon className="size-4 opacity-90" aria-hidden />
                 <span>Calculator</span>
               </span>
@@ -108,7 +108,7 @@ function DiscordCTA() {
           <p className="mt-1 text-xs text-muted-foreground">Daily updates • Values • Giveaways</p>
           <Button
             asChild
-            className="mt-3 h-8 rounded-md bg-brand px-4 text-[12px] text-brand-foreground hover:bg-brand/90 hover:scale-105 hover:shadow-lg transition-all duration-200"
+            className="mt-3 h-8 w-full sm:w-auto rounded-md bg-brand px-4 text-[12px] text-brand-foreground hover:bg-brand/90 hover:scale-105 hover:shadow-lg transition-all duration-200"
             aria-label="Join Discord on discord.gg/values"
           >
             <a href="https://discord.gg/values" target="_blank" rel="noopener noreferrer">
