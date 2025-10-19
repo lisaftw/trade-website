@@ -1,11 +1,11 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { X } from "lucide-react"
+import { X, Search } from "lucide-react"
 
 // Mutations data with multipliers
 const MUTATIONS = [
@@ -65,14 +65,46 @@ const TRAITS = [
   { id: "yinyang", name: "YinYang", multiplier: 7.0, color: "bg-gradient-to-r from-gray-800 to-gray-600" },
 ]
 
+interface Item {
+  id: string
+  name: string
+  game: string
+  rapValue: number
+  imageUrl?: string
+}
+
 export function SABCalculator() {
-  const [baseValue, setBaseValue] = useState<string>("")
+  const [pets, setPets] = useState<Item[]>([])
+  const [loading, setLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedPet, setSelectedPet] = useState<Item | null>(null)
   const [selectedMutation, setSelectedMutation] = useState<string | null>(null)
   const [selectedTraits, setSelectedTraits] = useState<string[]>([])
 
-  // Calculate final value
+  useEffect(() => {
+    const fetchPets = async () => {
+      try {
+        console.log("[v0] Fetching SAB pets from database")
+        const response = await fetch("/api/items?game=SAB")
+        const data = await response.json()
+        console.log("[v0] Received SAB pets:", data.items?.length || 0)
+        setPets(data.items || [])
+      } catch (error) {
+        console.error("[v0] Error fetching SAB pets:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchPets()
+  }, [])
+
+  const filteredPets = useMemo(() => {
+    if (!searchQuery) return pets
+    return pets.filter((pet) => pet.name.toLowerCase().includes(searchQuery.toLowerCase()))
+  }, [pets, searchQuery])
+
   const calculatedValue = useMemo(() => {
-    const base = Number.parseFloat(baseValue) || 0
+    const base = selectedPet?.rapValue || 0
     if (base === 0) return 0
 
     const mutationMultiplier = selectedMutation ? MUTATIONS.find((m) => m.id === selectedMutation)?.multiplier || 1 : 1
@@ -83,7 +115,7 @@ export function SABCalculator() {
     }, 1)
 
     return base * mutationMultiplier * traitsMultiplier
-  }, [baseValue, selectedMutation, selectedTraits])
+  }, [selectedPet, selectedMutation, selectedTraits])
 
   const toggleTrait = (traitId: string) => {
     setSelectedTraits((prev) => (prev.includes(traitId) ? prev.filter((id) => id !== traitId) : [...prev, traitId]))
@@ -108,30 +140,87 @@ export function SABCalculator() {
         </p>
       </div>
 
-      {/* Base Value Input */}
       <Card className="p-4 md:p-6">
         <div className="space-y-4">
           <div>
-            <Label htmlFor="base-value" className="text-base font-semibold">
-              Base RAP Value
+            <Label htmlFor="pet-search" className="text-base font-semibold">
+              Select SAB Pet
             </Label>
-            <Input
-              id="base-value"
-              type="number"
-              placeholder="Enter base value (e.g., 10000)"
-              value={baseValue}
-              onChange={(e) => setBaseValue(e.target.value)}
-              className="mt-2 h-12 text-lg"
-            />
+            <div className="relative mt-2">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                id="pet-search"
+                type="text"
+                placeholder="Search for a pet..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-12 pl-10 text-lg"
+              />
+            </div>
           </div>
 
+          {/* Selected Pet Display */}
+          {selectedPet && (
+            <div className="rounded-lg border-2 border-brand/50 bg-brand/10 p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  {selectedPet.imageUrl && (
+                    <img
+                      src={selectedPet.imageUrl || "/placeholder.svg"}
+                      alt={selectedPet.name}
+                      className="h-12 w-12 rounded object-cover"
+                    />
+                  )}
+                  <div>
+                    <p className="font-semibold">{selectedPet.name}</p>
+                    <p className="text-sm text-muted-foreground">Base RAP: {formatNumber(selectedPet.rapValue)}</p>
+                  </div>
+                </div>
+                <Button variant="ghost" size="sm" onClick={() => setSelectedPet(null)}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Pet List */}
+          {!selectedPet && (
+            <div className="max-h-64 overflow-y-auto space-y-2 rounded-lg border p-2">
+              {loading ? (
+                <p className="text-center text-sm text-muted-foreground py-8">Loading pets...</p>
+              ) : filteredPets.length === 0 ? (
+                <p className="text-center text-sm text-muted-foreground py-8">No pets found</p>
+              ) : (
+                filteredPets.map((pet) => (
+                  <button
+                    key={pet.id}
+                    onClick={() => setSelectedPet(pet)}
+                    className="w-full flex items-center gap-3 rounded-lg p-3 hover:bg-accent transition-colors text-left"
+                  >
+                    {pet.imageUrl && (
+                      <img
+                        src={pet.imageUrl || "/placeholder.svg"}
+                        alt={pet.name}
+                        className="h-10 w-10 rounded object-cover"
+                      />
+                    )}
+                    <div className="flex-1">
+                      <p className="font-medium">{pet.name}</p>
+                      <p className="text-sm text-muted-foreground">RAP: {formatNumber(pet.rapValue)}</p>
+                    </div>
+                  </button>
+                ))
+              )}
+            </div>
+          )}
+
           {/* Result Display */}
-          {baseValue && Number.parseFloat(baseValue) > 0 && (
+          {selectedPet && (
             <div className="rounded-lg border-2 border-brand/50 bg-brand/10 p-4 text-center">
               <p className="text-sm text-muted-foreground">Calculated Value</p>
               <p className="mt-1 text-3xl md:text-4xl font-bold text-brand">{formatNumber(calculatedValue)}</p>
               <p className="mt-1 text-xs text-muted-foreground">
-                Base: {formatNumber(Number.parseFloat(baseValue))} × Mutation:{" "}
+                Base: {formatNumber(selectedPet.rapValue)} × Mutation:{" "}
                 {selectedMutation ? MUTATIONS.find((m) => m.id === selectedMutation)?.multiplier : 1}x × Traits:{" "}
                 {selectedTraits.length > 0
                   ? selectedTraits
@@ -202,13 +291,14 @@ export function SABCalculator() {
       </Card>
 
       {/* Reset Button */}
-      {(baseValue || selectedMutation || selectedTraits.length > 0) && (
+      {(selectedPet || selectedMutation || selectedTraits.length > 0) && (
         <div className="flex justify-center">
           <Button
             onClick={() => {
-              setBaseValue("")
+              setSelectedPet(null)
               setSelectedMutation(null)
               setSelectedTraits([])
+              setSearchQuery("")
             }}
             variant="outline"
             className="h-12 px-8"
