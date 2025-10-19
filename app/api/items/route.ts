@@ -38,13 +38,15 @@ export async function GET(request: NextRequest) {
       id: item._id.toString(),
       game: item.game,
       name: item.name,
-      image_url: item.image || item.imageUrl || "/placeholder.svg?height=200&width=200",
-      rap_value: item.rapValue || item.rap || item.value || 0,
-      exist_count: item.existCount || item.exist || 0,
-      rating: Number.parseFloat(item.rating?.toString().split("/")[0] || "0"),
-      change_percent: item.changePercent || item.change || 0,
-      last_updated_at: item.lastUpdated || item.updatedAt || new Date().toISOString(),
+      image_url: item.image_url || item.image || item.imageUrl || "/placeholder.svg?height=200&width=200",
+      rap_value: item.rap_value || item.rapValue || item.rap || item.value || 0,
+      exist_count: item.exist_count || item.existCount || item.exist || 0,
+      rating: item.rating || 0,
+      change_percent: item.change_percent || item.changePercent || item.change || 0,
+      last_updated_at: item.updatedAt || item.lastUpdated || item.createdAt || new Date().toISOString(),
     }))
+
+    console.log("[v0] Transformed items sample:", transformedItems[0])
 
     return NextResponse.json({ items: transformedItems })
   } catch (error) {
