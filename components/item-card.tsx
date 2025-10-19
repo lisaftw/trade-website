@@ -17,12 +17,19 @@ interface ItemCardProps {
   }
 }
 
+function toNumber(value: any): number {
+  if (value === null || value === undefined) return 0
+  const num = Number(value)
+  return isNaN(num) ? 0 : num
+}
+
 function formatValue(value: number | null | undefined): string {
-  if (!value || value === 0) return "0"
-  if (value >= 1_000_000_000) return `${(value / 1_000_000_000).toFixed(2)}B`
-  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(2)}M`
-  if (value >= 1_000) return `${(value / 1_000).toFixed(2)}K`
-  return value.toString()
+  const numValue = toNumber(value)
+  if (numValue === 0) return "0"
+  if (numValue >= 1_000_000_000) return `${(numValue / 1_000_000_000).toFixed(2)}B`
+  if (numValue >= 1_000_000) return `${(numValue / 1_000_000).toFixed(2)}M`
+  if (numValue >= 1_000) return `${(numValue / 1_000).toFixed(2)}K`
+  return numValue.toString()
 }
 
 function getTimeAgo(timestamp: string): string {
@@ -40,8 +47,10 @@ function getTimeAgo(timestamp: string): string {
 }
 
 export function ItemCard({ item }: ItemCardProps) {
-  const changePercent = item.change_percent ?? 0
+  const changePercent = toNumber(item.change_percent)
   const isPositive = changePercent >= 0
+  const existCount = toNumber(item.exist_count)
+  const rating = toNumber(item.rating)
 
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-border bg-secondary/10 p-4 transition-all hover:border-border/60 hover:bg-secondary/20">
@@ -51,7 +60,7 @@ export function ItemCard({ item }: ItemCardProps) {
           RAP: {formatValue(item.rap_value)}
         </div>
         <div className="rounded-full bg-muted/60 px-3 py-1 text-xs font-medium text-muted-foreground">
-          EXIST: {(item.exist_count ?? 0).toLocaleString()}
+          EXIST: {existCount.toLocaleString()}
         </div>
       </div>
 
@@ -85,7 +94,7 @@ export function ItemCard({ item }: ItemCardProps) {
       </div>
 
       {/* Rating */}
-      <div className="mt-2 text-center text-lg font-bold text-yellow-500">{(item.rating ?? 0).toFixed(1)}/10</div>
+      <div className="mt-2 text-center text-lg font-bold text-yellow-500">{rating.toFixed(1)}/10</div>
 
       {/* Add to inventory button */}
       <Button
