@@ -54,7 +54,7 @@ const TRAITS = [
   { id: "ufo", name: "UFO", multiplier: 3.0, color: "bg-gradient-to-r from-purple-600 to-purple-800" },
   { id: "matteo-hat", name: "Matteo Hat", multiplier: 3.5, color: "bg-gradient-to-r from-amber-700 to-amber-900" },
   { id: "crab-rave", name: "Crab Rave", multiplier: 5.0, color: "bg-gradient-to-r from-orange-500 to-red-500" },
-  { id: "sombero", name: "Sombrero", multiplier: 5.0, color: "bg-gradient-to-r from-gray-300 to-gray-400" },
+  { id: "sombrero", name: "Sombrero", multiplier: 5.0, color: "bg-gradient-to-r from-gray-300 to-gray-400" },
   { id: "tung-tung", name: "Tung Tung Attack", multiplier: 5.0, color: "bg-gradient-to-r from-pink-500 to-purple-500" },
   { id: "brazil", name: "Brazil", multiplier: 6.0, color: "bg-gradient-to-r from-green-500 to-yellow-400" },
   { id: "dragon", name: "Dragon", multiplier: 6.0, color: "bg-gradient-to-r from-blue-600 to-blue-800" },
@@ -137,11 +137,11 @@ export function SABCalculator() {
   const formatNumber = (num: number) => {
     const safeNum = toNumber(num)
     if (safeNum >= 1000000) {
-      return `${(safeNum / 1000000).toFixed(2)}M`
+      return `${(safeNum / 1000000).toFixed(2)}m/1s`
     } else if (safeNum >= 1000) {
-      return `${(safeNum / 1000).toFixed(2)}K`
+      return `${(safeNum / 1000).toFixed(2)}k/1s`
     }
-    return safeNum.toFixed(2)
+    return `${safeNum.toFixed(2)}/1s`
   }
 
   return (
