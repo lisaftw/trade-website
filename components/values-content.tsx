@@ -31,10 +31,14 @@ export function ValuesContent() {
     async function fetchItems() {
       setLoading(true)
       try {
+        console.log("[v0] Fetching items for game:", selectedGame)
         const res = await fetch(`/api/items?game=${encodeURIComponent(selectedGame)}`)
         if (res.ok) {
           const data = await res.json()
+          console.log("[v0] Received items:", data.items?.length || 0)
           setItems(data.items || [])
+        } else {
+          console.error("[v0] Failed to fetch items:", res.status, res.statusText)
         }
       } catch (error) {
         console.error("[v0] Failed to fetch items:", error)
@@ -43,6 +47,9 @@ export function ValuesContent() {
       }
     }
     fetchItems()
+
+    const interval = setInterval(fetchItems, 30000)
+    return () => clearInterval(interval)
   }, [selectedGame])
 
   const filteredItems = items.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -86,7 +93,9 @@ export function ValuesContent() {
       ) : filteredItems.length === 0 ? (
         <div className="rounded-2xl border border-border bg-secondary/10 p-12 text-center">
           <p className="text-sm text-muted-foreground">
-            {searchQuery ? "No items found matching your search." : "No items available yet."}
+            {searchQuery
+              ? "No items found matching your search."
+              : `No ${selectedGame} items available yet. Add items using the Discord bot!`}
           </p>
         </div>
       ) : (

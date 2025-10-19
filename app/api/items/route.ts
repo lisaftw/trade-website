@@ -1,43 +1,54 @@
-import { createServerClient } from "@supabase/ssr"
-import { cookies } from "next/headers"
+export const dynamic = "force-dynamic"
+
 import { type NextRequest, NextResponse } from "next/server"
+import clientPromise from "@/lib/mongodb"
 
 export async function GET(request: NextRequest) {
   try {
-    const cookieStore = await cookies()
-    const supabase = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!, {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
-        },
-      },
-    })
+    console.log("[v0] Fetching items from MongoDB...")
 
     const { searchParams } = new URL(request.url)
     const game = searchParams.get("game")
     const q = searchParams.get("q")?.toLowerCase() || ""
 
-    let query = supabase.from("items").select("*")
+    const client = await clientPromise
+    const db = client.db("trading-db")
+    const collection = db.collection("items")
 
+    // Build query filter
+    const filter: any = {}
     if (game) {
-      query = query.eq("game", game)
+      filter.game = game
+    }
+    if (q) {
+      filter.name = { $regex: q, $options: "i" }
     }
 
-    const { data, error } = await query
+    console.log("[v0] MongoDB query filter:", filter)
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
+    // Fetch items from MongoDB
+    const items = await collection.find(filter).sort({ createdAt: -1 }).toArray()
+
+    console.log("[v0] Found items count:", items.length)
+    if (items.length > 0) {
+      console.log("[v0] Sample item:", items[0])
     }
 
-    // Filter by search query if provided
-    const filtered = data?.filter((item: any) => (q ? item.name.toLowerCase().includes(q) : true)) || []
+    const transformedItems = items.map((item: any) => ({
+      id: item._id.toString(),
+      game: item.game,
+      name: item.name,
+      image_url: item.image || item.imageUrl || "/placeholder.svg?height=200&width=200",
+      rap_value: item.rapValue || item.rap || item.value || 0,
+      exist_count: item.existCount || item.exist || 0,
+      rating: Number.parseFloat(item.rating?.toString().split("/")[0] || "0"),
+      change_percent: item.changePercent || item.change || 0,
+      last_updated_at: item.lastUpdated || item.updatedAt || new Date().toISOString(),
+    }))
 
-    return NextResponse.json(filtered)
+    return NextResponse.json({ items: transformedItems })
   } catch (error) {
-    console.error("Error fetching items:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    console.error("[v0] Error fetching items from MongoDB:", error)
+    return NextResponse.json({ error: "Failed to fetch items" }, { status: 500 })
   }
 }

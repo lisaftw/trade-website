@@ -16,7 +16,7 @@ export interface Item {
 export async function getItems(game?: string): Promise<Item[]> {
   try {
     const client = await clientPromise
-    const db = client.db("trade")
+    const db = client.db("trading-db")
     const collection = db.collection<Item>("items")
 
     const query = game ? { game } : {}
@@ -35,7 +35,7 @@ export async function getItems(game?: string): Promise<Item[]> {
 export async function searchItems(query: string, game?: string): Promise<Item[]> {
   try {
     const client = await clientPromise
-    const db = client.db("trade")
+    const db = client.db("trading-db")
     const collection = db.collection<Item>("items")
 
     const searchQuery: any = {
@@ -61,7 +61,7 @@ export async function searchItems(query: string, game?: string): Promise<Item[]>
 export async function createItem(item: Omit<Item, "_id" | "createdAt" | "updatedAt">): Promise<Item | null> {
   try {
     const client = await clientPromise
-    const db = client.db("trade")
+    const db = client.db("trading-db")
     const collection = db.collection<Item>("items")
 
     const newItem = {
@@ -85,7 +85,7 @@ export async function createItem(item: Omit<Item, "_id" | "createdAt" | "updated
 export async function updateItem(id: string, updates: Partial<Item>): Promise<boolean> {
   try {
     const client = await clientPromise
-    const db = client.db("trade")
+    const db = client.db("trading-db")
     const collection = db.collection<Item>("items")
     const { ObjectId } = await import("mongodb")
 
@@ -109,7 +109,7 @@ export async function updateItem(id: string, updates: Partial<Item>): Promise<bo
 export async function deleteItem(id: string): Promise<boolean> {
   try {
     const client = await clientPromise
-    const db = client.db("trade")
+    const db = client.db("trading-db")
     const collection = db.collection<Item>("items")
     const { ObjectId } = await import("mongodb")
 
