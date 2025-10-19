@@ -1,0 +1,27 @@
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
+import { getSession } from "@/lib/auth/session"
+
+export async function GET() {
+  try {
+    const session = await getSession()
+
+    if (!session) {
+      return Response.json({ user: null }, { status: 401 })
+    }
+
+    return Response.json({
+      user: {
+        discordId: session.discordId,
+        username: session.username,
+        globalName: session.globalName,
+        avatarUrl: session.avatarUrl,
+        email: session.email,
+      },
+    })
+  } catch (error) {
+    console.error("[v0] User fetch error:", error)
+    return Response.json({ error: "Failed to fetch user" }, { status: 500 })
+  }
+}

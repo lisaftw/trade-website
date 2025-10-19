@@ -1,0 +1,193 @@
+"use client"
+
+import type React from "react"
+
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Plus } from "lucide-react"
+import { useUser } from "@/lib/hooks/use-user"
+
+const GAMES = ["MM2", "SAB", "GAG", "Adopt Me"] as const
+
+export function AdminContent() {
+  const { user, isLoading } = useUser()
+  const [game, setGame] = useState<string>("MM2")
+  const [name, setName] = useState("")
+  const [imageUrl, setImageUrl] = useState("")
+  const [rapValue, setRapValue] = useState("")
+  const [existCount, setExistCount] = useState("")
+  const [changePercent, setChangePercent] = useState("")
+  const [rating, setRating] = useState("5.0")
+  const [saving, setSaving] = useState(false)
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
+
+  if (isLoading) {
+    return (
+      <div className="rounded-lg border bg-card p-8 text-center">
+        <p className="text-sm text-muted-foreground">Loading...</p>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-8 text-center">
+        <p className="text-sm text-destructive">You must be logged in to access the admin panel.</p>
+      </div>
+    )
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setSaving(true)
+    setMessage(null)
+
+    try {
+      const res = await fetch("/api/items", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          game,
+          name,
+          image_url: imageUrl || `/placeholder.svg?height=200&width=200&query=${encodeURIComponent(name)}`,
+          rap_value: Number.parseFloat(rapValue),
+          exist_count: Number.parseInt(existCount) || 0,
+          change_percent: Number.parseFloat(changePercent) || 0,
+          rating: Number.parseFloat(rating) || 5.0,
+        }),
+      })
+
+      if (!res.ok) {
+        throw new Error("Failed to create item")
+      }
+
+      setMessage({ type: "success", text: "Item created successfully!" })
+      // Reset form
+      setName("")
+      setImageUrl("")
+      setRapValue("")
+      setExistCount("")
+      setChangePercent("")
+      setRating("5.0")
+    } catch (error) {
+      console.error("[v0] Create error:", error)
+      setMessage({ type: "error", text: "Failed to create item. Please try again." })
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="rounded-lg border bg-card p-6 shadow-sm">
+      <h2 className="mb-6 text-xl font-semibold">Add New Item</h2>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label className="mb-2 block text-sm font-medium">Game</label>
+            <select
+              value={game}
+              onChange={(e) => setGame(e.target.value)}
+              className="w-full rounded-md border bg-background p-2 text-sm"
+              required
+            >
+              {GAMES.map((g) => (
+                <option key={g} value={g}>
+                  {g}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium">Item Name</label>
+            <Input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="e.g., Shadow Dragon"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium">RAP Value</label>
+            <Input
+              type="number"
+              step="0.01"
+              value={rapValue}
+              onChange={(e) => setRapValue(e.target.value)}
+              placeholder="e.g., 150000.00"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium">Exist Count</label>
+            <Input
+              type="number"
+              value={existCount}
+              onChange={(e) => setExistCount(e.target.value)}
+              placeholder="e.g., 12"
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium">Change Percent</label>
+            <Input
+              type="number"
+              step="0.01"
+              value={changePercent}
+              onChange={(e) => setChangePercent(e.target.value)}
+              placeholder="e.g., 5.2"
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium">Rating (0-10)</label>
+            <Input
+              type="number"
+              step="0.1"
+              min="0"
+              max="10"
+              value={rating}
+              onChange={(e) => setRating(e.target.value)}
+              placeholder="e.g., 9.5"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="mb-2 block text-sm font-medium">Image URL (optional)</label>
+          <Input
+            type="text"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            placeholder="Leave blank to auto-generate placeholder"
+          />
+          <p className="mt-2 text-xs text-muted-foreground">
+            If left blank, a placeholder will be generated based on the item name.
+          </p>
+        </div>
+
+        {message && (
+          <div
+            className={`rounded-md border p-3 text-sm ${
+              message.type === "success"
+                ? "border-green-500/50 bg-green-500/10 text-green-600 dark:text-green-400"
+                : "border-destructive/50 bg-destructive/10 text-destructive"
+            }`}
+          >
+            {message.text}
+          </div>
+        )}
+
+        <Button type="submit" disabled={saving} className="w-full sm:w-auto">
+          <Plus className="mr-2 h-4 w-4" />
+          {saving ? "Creating..." : "Create Item"}
+        </Button>
+      </form>
+    </div>
+  )
+}

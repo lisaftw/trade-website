@@ -1,0 +1,101 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { ItemCard } from "@/components/item-card"
+import { Search } from "lucide-react"
+
+const GAMES = ["MM2", "SAB", "GAG", "Adopt Me"] as const
+type Game = (typeof GAMES)[number]
+
+interface Item {
+  id: string
+  game: Game
+  name: string
+  image_url: string
+  rap_value: number
+  exist_count: number
+  change_percent: number
+  rating: number
+  last_updated_at: string
+}
+
+export function ValuesContent() {
+  const [selectedGame, setSelectedGame] = useState<Game>("MM2")
+  const [searchQuery, setSearchQuery] = useState("")
+  const [items, setItems] = useState<Item[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchItems() {
+      setLoading(true)
+      try {
+        const res = await fetch(`/api/items?game=${encodeURIComponent(selectedGame)}`)
+        if (res.ok) {
+          const data = await res.json()
+          setItems(data.items || [])
+        }
+      } catch (error) {
+        console.error("[v0] Failed to fetch items:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchItems()
+  }, [selectedGame])
+
+  const filteredItems = items.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
+
+  return (
+    <div className="space-y-6">
+      {/* Game tabs */}
+      <div className="flex flex-wrap gap-2">
+        {GAMES.map((game) => (
+          <Button
+            key={game}
+            onClick={() => setSelectedGame(game)}
+            variant={selectedGame === game ? "default" : "secondary"}
+            className="rounded-full"
+            size="sm"
+          >
+            {game}
+          </Button>
+        ))}
+      </div>
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          type="search"
+          placeholder="Search items..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-9"
+        />
+      </div>
+
+      {/* Items grid */}
+      {loading ? (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className="h-[420px] animate-pulse rounded-2xl bg-secondary/20" />
+          ))}
+        </div>
+      ) : filteredItems.length === 0 ? (
+        <div className="rounded-2xl border border-border bg-secondary/10 p-12 text-center">
+          <p className="text-sm text-muted-foreground">
+            {searchQuery ? "No items found matching your search." : "No items available yet."}
+          </p>
+        </div>
+      ) : (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {filteredItems.map((item) => (
+            <ItemCard key={item.id} item={item} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
