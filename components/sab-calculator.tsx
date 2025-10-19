@@ -54,7 +54,7 @@ const TRAITS = [
   { id: "ufo", name: "UFO", multiplier: 3.0, color: "bg-gradient-to-r from-purple-600 to-purple-800" },
   { id: "matteo-hat", name: "Matteo Hat", multiplier: 3.5, color: "bg-gradient-to-r from-amber-700 to-amber-900" },
   { id: "crab-rave", name: "Crab Rave", multiplier: 5.0, color: "bg-gradient-to-r from-orange-500 to-red-500" },
-  { id: "sombero", name: "Sombero", multiplier: 5.0, color: "bg-gradient-to-r from-gray-300 to-gray-400" },
+  { id: "sombero", name: "Sombrero", multiplier: 5.0, color: "bg-gradient-to-r from-gray-300 to-gray-400" },
   { id: "tung-tung", name: "Tung Tung Attack", multiplier: 5.0, color: "bg-gradient-to-r from-pink-500 to-purple-500" },
   { id: "brazil", name: "Brazil", multiplier: 6.0, color: "bg-gradient-to-r from-green-500 to-yellow-400" },
   { id: "dragon", name: "Dragon", multiplier: 6.0, color: "bg-gradient-to-r from-blue-600 to-blue-800" },
@@ -73,6 +73,12 @@ interface Item {
   imageUrl?: string
 }
 
+const toNumber = (value: any): number => {
+  if (value === null || value === undefined) return 0
+  const num = typeof value === "string" ? Number.parseFloat(value) : Number(value)
+  return isNaN(num) ? 0 : num
+}
+
 export function SABCalculator() {
   const [pets, setPets] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
@@ -88,7 +94,14 @@ export function SABCalculator() {
         const response = await fetch("/api/items?game=SAB")
         const data = await response.json()
         console.log("[v0] Received SAB pets:", data.items?.length || 0)
-        setPets(data.items || [])
+        const mappedPets = (data.items || []).map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          game: item.game,
+          rapValue: toNumber(item.rapValue || item.rap_value),
+          imageUrl: item.imageUrl || item.image_url,
+        }))
+        setPets(mappedPets)
       } catch (error) {
         console.error("[v0] Error fetching SAB pets:", error)
       } finally {
@@ -104,7 +117,7 @@ export function SABCalculator() {
   }, [pets, searchQuery])
 
   const calculatedValue = useMemo(() => {
-    const base = selectedPet?.rapValue || 0
+    const base = toNumber(selectedPet?.rapValue)
     if (base === 0) return 0
 
     const mutationMultiplier = selectedMutation ? MUTATIONS.find((m) => m.id === selectedMutation)?.multiplier || 1 : 1
@@ -122,12 +135,13 @@ export function SABCalculator() {
   }
 
   const formatNumber = (num: number) => {
-    if (num >= 1000000) {
-      return `${(num / 1000000).toFixed(2)}M`
-    } else if (num >= 1000) {
-      return `${(num / 1000).toFixed(2)}K`
+    const safeNum = toNumber(num)
+    if (safeNum >= 1000000) {
+      return `${(safeNum / 1000000).toFixed(2)}M`
+    } else if (safeNum >= 1000) {
+      return `${(safeNum / 1000).toFixed(2)}K`
     }
-    return num.toFixed(2)
+    return safeNum.toFixed(2)
   }
 
   return (
