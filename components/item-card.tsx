@@ -9,15 +9,16 @@ interface ItemCardProps {
     id: string
     name: string
     image_url: string
-    rap_value: number
-    exist_count: number
-    change_percent: number
-    rating: number
+    rap_value: number | null | undefined
+    exist_count: number | null | undefined
+    change_percent: number | null | undefined
+    rating: number | null | undefined
     last_updated_at: string
   }
 }
 
-function formatValue(value: number): string {
+function formatValue(value: number | null | undefined): string {
+  if (!value || value === 0) return "0"
   if (value >= 1_000_000_000) return `${(value / 1_000_000_000).toFixed(2)}B`
   if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(2)}M`
   if (value >= 1_000) return `${(value / 1_000).toFixed(2)}K`
@@ -39,7 +40,8 @@ function getTimeAgo(timestamp: string): string {
 }
 
 export function ItemCard({ item }: ItemCardProps) {
-  const isPositive = item.change_percent >= 0
+  const changePercent = item.change_percent ?? 0
+  const isPositive = changePercent >= 0
 
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-border bg-secondary/10 p-4 transition-all hover:border-border/60 hover:bg-secondary/20">
@@ -49,7 +51,7 @@ export function ItemCard({ item }: ItemCardProps) {
           RAP: {formatValue(item.rap_value)}
         </div>
         <div className="rounded-full bg-muted/60 px-3 py-1 text-xs font-medium text-muted-foreground">
-          EXIST: {item.exist_count.toLocaleString()}
+          EXIST: {(item.exist_count ?? 0).toLocaleString()}
         </div>
       </div>
 
@@ -78,12 +80,12 @@ export function ItemCard({ item }: ItemCardProps) {
           <ChevronDown className="h-4 w-4 text-red-500" />
         )}
         <span className={`text-sm font-semibold ${isPositive ? "text-green-500" : "text-red-500"}`}>
-          {Math.abs(item.change_percent)}%
+          {Math.abs(changePercent).toFixed(1)}%
         </span>
       </div>
 
       {/* Rating */}
-      <div className="mt-2 text-center text-lg font-bold text-yellow-500">{item.rating.toFixed(1)}/10</div>
+      <div className="mt-2 text-center text-lg font-bold text-yellow-500">{(item.rating ?? 0).toFixed(1)}/10</div>
 
       {/* Add to inventory button */}
       <Button
