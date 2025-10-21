@@ -51,14 +51,6 @@ export function SiteHeader() {
           className="h-9 rounded-full border border-border bg-secondary/40 px-5 text-sm text-secondary-foreground hover:bg-secondary/60"
           variant="secondary"
         >
-          <Link href="/sab-calculator">SAB Calc</Link>
-        </Button>
-        <Button
-          asChild
-          size="sm"
-          className="h-9 rounded-full border border-border bg-secondary/40 px-5 text-sm text-secondary-foreground hover:bg-secondary/60"
-          variant="secondary"
-        >
           <Link href="/messages">
             <MessageSquare className="mr-2 h-4 w-4" />
             Messages
@@ -100,14 +92,6 @@ export function SiteHeader() {
               >
                 <Calculator className="h-4 w-4" />
                 Calculator
-              </Link>
-              <Link
-                href="/sab-calculator"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors hover:bg-secondary/60"
-              >
-                <Calculator className="h-4 w-4" />
-                SAB Calculator
               </Link>
               <Link
                 href="/messages"
