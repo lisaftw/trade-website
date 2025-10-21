@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input"
 import { X, Search, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
-import { useDebounce } from "@/lib/hooks/use-debounce"
 
 interface TradeItem {
   id: string
@@ -163,41 +162,57 @@ function TradeGrid({
   onAddItem,
   selectedGame,
 }: TradeGridProps) {
-  const [searchResults, setSearchResults] = useState<TradeItem[]>([])
-  const [isSearching, setIsSearching] = useState(false)
-  const debouncedSearch = useDebounce(searchQuery, 300)
+  const [allItems, setAllItems] = useState<TradeItem[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!isActive || debouncedSearch.length < 2) {
-      setSearchResults([])
+    if (!isActive) {
+      // Reset search when modal closes
+      onSearchChange("")
       return
     }
 
-    const fetchItems = async () => {
-      setIsSearching(true)
+    const fetchAllItems = async () => {
+      setIsLoading(true)
+      setError(null)
+      console.log("[v0] Loading all items for game:", selectedGame)
+
       try {
-        const params = new URLSearchParams({ game: selectedGame, q: debouncedSearch })
+        const params = new URLSearchParams({ game: selectedGame })
         const response = await fetch(`/api/items?${params.toString()}`)
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch items")
+        }
+
         const data = await response.json()
-        setSearchResults(
-          (data.items || []).map((item: any) => ({
-            id: item._id || item.id || item.name,
-            name: item.name,
-            value: item.value ?? item.rap_value ?? 0,
-            game: item.game,
-            imageUrl: item.imageUrl || item.image_url,
-          })),
-        )
-      } catch (error) {
-        console.error("[v0] Failed to fetch items:", error)
-        setSearchResults([])
+        console.log("[v0] Loaded items count:", data.items?.length || 0)
+
+        const transformedItems = (data.items || []).map((item: any) => ({
+          id: item._id || item.id || item.name,
+          name: item.name,
+          value: item.value ?? item.rap_value ?? 0,
+          game: item.game,
+          imageUrl: item.imageUrl || item.image_url,
+        }))
+
+        setAllItems(transformedItems)
+      } catch (err) {
+        console.error("[v0] Failed to fetch items:", err)
+        setError("Failed to load items. Please try again.")
+        setAllItems([])
       } finally {
-        setIsSearching(false)
+        setIsLoading(false)
       }
     }
 
-    fetchItems()
-  }, [debouncedSearch, isActive, selectedGame])
+    fetchAllItems()
+  }, [isActive, selectedGame])
+
+  const displayedItems = searchQuery.trim()
+    ? allItems.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    : allItems
 
   // Create 9 slots for the 3x3 grid
   const slots = Array.from({ length: 9 }, (_, i) => items[i] || null)
@@ -222,7 +237,6 @@ function TradeGrid({
             )}
           >
             {index === 0 && !item ? (
-              // Updated Add Item button styling
               <button
                 onClick={onAddClick}
                 className="flex h-full w-full flex-col items-center justify-center gap-3 text-gray-400 transition-colors hover:text-white"
@@ -231,7 +245,6 @@ function TradeGrid({
                 <span className="text-sm font-semibold tracking-wide">Add Item</span>
               </button>
             ) : item ? (
-              // Slot with item
               <div className="group relative h-full w-full p-2">
                 <Image
                   src={item.imageUrl || "/placeholder.svg"}
@@ -250,7 +263,6 @@ function TradeGrid({
                 </div>
               </div>
             ) : (
-              // Empty slot
               <div className="h-full w-full" />
             )}
           </div>
@@ -289,33 +301,44 @@ function TradeGrid({
             </div>
 
             <div className="max-h-96 space-y-2 overflow-y-auto">
-              {isSearching ? (
-                <div className="py-12 text-center text-gray-400">Searching...</div>
-              ) : searchResults.length === 0 && debouncedSearch.length >= 2 ? (
-                <div className="py-12 text-center text-gray-400">No items found</div>
-              ) : searchResults.length === 0 ? (
-                <div className="py-12 text-center text-gray-400">Type to search items</div>
+              {isLoading ? (
+                <div className="flex flex-col items-center justify-center py-12 text-gray-400">
+                  <div className="mb-3 h-8 w-8 animate-spin rounded-full border-4 border-gray-700 border-t-white" />
+                  <p>Loading {selectedGame} items...</p>
+                </div>
+              ) : error ? (
+                <div className="py-12 text-center text-red-400">{error}</div>
+              ) : displayedItems.length === 0 && searchQuery ? (
+                <div className="py-12 text-center text-gray-400">No items found matching "{searchQuery}"</div>
+              ) : displayedItems.length === 0 ? (
+                <div className="py-12 text-center text-gray-400">No items available for {selectedGame}</div>
               ) : (
-                searchResults.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => onAddItem(item)}
-                    className="flex w-full items-center gap-4 rounded-xl border border-gray-700 bg-gray-800 p-3 text-left transition-all hover:border-gray-600 hover:bg-gray-750"
-                  >
-                    <Image
-                      src={item.imageUrl || "/placeholder.svg"}
-                      alt={item.name}
-                      width={50}
-                      height={50}
-                      className="rounded-lg"
-                    />
-                    <div className="flex-1">
-                      <p className="font-medium text-white">{item.name}</p>
-                      <p className="text-sm text-gray-400">{item.game}</p>
-                    </div>
-                    <p className="text-lg font-bold text-white">${item.value.toLocaleString()}</p>
-                  </button>
-                ))
+                <>
+                  <div className="mb-2 text-center text-sm text-gray-400">
+                    Showing {displayedItems.length} {displayedItems.length === 1 ? "item" : "items"}
+                    {searchQuery && ` matching "${searchQuery}"`}
+                  </div>
+                  {displayedItems.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => onAddItem(item)}
+                      className="flex w-full items-center gap-4 rounded-xl border border-gray-700 bg-gray-800 p-3 text-left transition-all hover:border-gray-600 hover:bg-gray-750"
+                    >
+                      <Image
+                        src={item.imageUrl || "/placeholder.svg"}
+                        alt={item.name}
+                        width={50}
+                        height={50}
+                        className="rounded-lg"
+                      />
+                      <div className="flex-1">
+                        <p className="font-medium text-white">{item.name}</p>
+                        <p className="text-sm text-gray-400">{item.game}</p>
+                      </div>
+                      <p className="text-lg font-bold text-white">${item.value.toLocaleString()}</p>
+                    </button>
+                  ))}
+                </>
               )}
             </div>
           </div>
