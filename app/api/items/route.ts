@@ -33,7 +33,11 @@ export async function GET(request: NextRequest) {
       id: item._id.toString(),
       game: item.game,
       name: item.name,
-      image_url: item.image_url || item.image || item.imageUrl || "/placeholder.svg?height=200&width=200",
+      image_url: (() => {
+        const url = item.image_url || item.image || item.imageUrl || "/placeholder.svg?height=200&width=200"
+        console.log("[v0] Item:", item.name, "Image URL:", url)
+        return url
+      })(),
       rap_value: item.value || item.rap_value || item.rapValue || item.rap || 0,
       exist_count: item.exist_count || item.existCount || item.exist || 0,
       rating: item.rating || 0,

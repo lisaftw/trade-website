@@ -23,9 +23,12 @@ export async function GET() {
     const itemCount = await itemsCollection.countDocuments()
     console.log("[v0] Items count:", itemCount)
 
-    // Get sample items
-    const sampleItems = await itemsCollection.find({}).limit(5).toArray()
+    // Get sample items with full details
+    const sampleItems = await itemsCollection.find({}).limit(10).toArray()
     console.log("[v0] Sample items:", sampleItems)
+
+    const noobiniItem = await itemsCollection.findOne({ name: "Noobini Pizzanini" })
+    console.log("[v0] Noobini Pizzanini item:", noobiniItem)
 
     return NextResponse.json({
       success: true,
@@ -37,8 +40,21 @@ export async function GET() {
         id: item._id.toString(),
         name: item.name,
         game: item.game,
-        fields: Object.keys(item),
+        image_url: item.image_url || item.imageUrl || item.image || "NOT FOUND",
+        allFields: Object.keys(item),
+        rawItem: item,
       })),
+      noobiniItem: noobiniItem
+        ? {
+            id: noobiniItem._id.toString(),
+            name: noobiniItem.name,
+            image_url: noobiniItem.image_url,
+            imageUrl: noobiniItem.imageUrl,
+            image: noobiniItem.image,
+            allFields: Object.keys(noobiniItem),
+            fullData: noobiniItem,
+          }
+        : null,
     })
   } catch (error: any) {
     console.error("[v0] MongoDB debug error:", error)

@@ -3,6 +3,7 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ChevronDown, ChevronUp } from "lucide-react"
+import { useState } from "react"
 
 interface ItemCardProps {
   item: {
@@ -57,6 +58,17 @@ export function ItemCard({ item }: ItemCardProps) {
   const existCount = toNumber(item.exist_count)
   const rating = toNumber(item.rating)
 
+  const [imageError, setImageError] = useState(false)
+  const imageUrl = item.image_url || "/placeholder.svg"
+
+  useState(() => {
+    console.log("[v0] ItemCard rendering:", {
+      name: item.name,
+      image_url: item.image_url,
+      imageUrl: imageUrl,
+    })
+  })
+
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-border bg-secondary/10 p-3 md:p-4 transition-all hover:border-border/60 hover:bg-secondary/20">
       <div className="mb-2 md:mb-3 flex items-center justify-between gap-2">
@@ -78,11 +90,23 @@ export function ItemCard({ item }: ItemCardProps) {
       {/* Item image */}
       <div className="relative mx-auto aspect-square w-full max-w-[200px] md:max-w-[240px] overflow-hidden rounded-xl border border-border bg-card/60 shadow-lg">
         <Image
-          src={item.image_url || "/placeholder.svg"}
+          src={imageError ? "/placeholder.svg?height=200&width=200" : imageUrl}
           alt={item.name}
           fill
           className="object-cover"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          onError={(e) => {
+            console.error("[v0] Image failed to load:", {
+              itemName: item.name,
+              imageUrl: imageUrl,
+              originalUrl: item.image_url,
+              error: e,
+            })
+            setImageError(true)
+          }}
+          onLoad={() => {
+            console.log("[v0] Image loaded successfully:", item.name, imageUrl)
+          }}
         />
       </div>
 
