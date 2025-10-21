@@ -55,34 +55,29 @@ function getTimeAgo(timestamp: string): string {
 export function ItemCard({ item }: ItemCardProps) {
   const changePercent = toNumber(item.change_percent)
   const isPositive = changePercent >= 0
-  const existCount = toNumber(item.exist_count)
-  const rating = toNumber(item.rating)
-
   const [imageError, setImageError] = useState(false)
-  const imageUrl = item.image_url || "/placeholder.svg"
 
-  useState(() => {
-    console.log("[v0] ItemCard rendering:", {
-      name: item.name,
-      image_url: item.image_url,
-      imageUrl: imageUrl,
-    })
-  })
+  const imageUrl = imageError
+    ? "/placeholder.svg?height=200&width=200"
+    : item.image_url || "/placeholder.svg?height=200&width=200"
+
+  const displayRating = item.rarity || item.rating || 0
+  const sectionLabel = item.section ? item.section.toUpperCase() : "VALUE"
 
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-border bg-secondary/10 p-3 md:p-4 transition-all hover:border-border/60 hover:bg-secondary/20">
-      <div className="mb-2 md:mb-3 flex items-center justify-between gap-2">
+      <div className="mb-2 md:mb-3 flex items-center justify-between gap-2 flex-wrap">
         <div className="rounded-full bg-muted/60 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-muted-foreground">
-          {item.section || "VALUE"}: {formatValue(item.rap_value)}
+          {sectionLabel}: {formatValue(item.rap_value)}
         </div>
         {item.rarity && (
           <div className="rounded-full bg-purple-500/20 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-purple-300">
-            {item.rarity}
+            Rarity: {item.rarity}
           </div>
         )}
         {item.pot && (
           <div className="rounded-full bg-blue-500/20 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-blue-300">
-            {item.pot}
+            Pot: {item.pot}
           </div>
         )}
       </div>
@@ -90,22 +85,21 @@ export function ItemCard({ item }: ItemCardProps) {
       {/* Item image */}
       <div className="relative mx-auto aspect-square w-full max-w-[200px] md:max-w-[240px] overflow-hidden rounded-xl border border-border bg-card/60 shadow-lg">
         <Image
-          src={imageError ? "/placeholder.svg?height=200&width=200" : imageUrl}
+          src={imageUrl || "/placeholder.svg"}
           alt={item.name}
           fill
-          className="object-cover"
+          className="object-contain p-2"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           onError={(e) => {
             console.error("[v0] Image failed to load:", {
               itemName: item.name,
-              imageUrl: imageUrl,
-              originalUrl: item.image_url,
+              imageUrl: item.image_url,
               error: e,
             })
             setImageError(true)
           }}
           onLoad={() => {
-            console.log("[v0] Image loaded successfully:", item.name, imageUrl)
+            console.log("[v0] Image loaded successfully:", item.name)
           }}
         />
       </div>
@@ -120,18 +114,24 @@ export function ItemCard({ item }: ItemCardProps) {
         Last Updated: {getTimeAgo(item.last_updated_at)}
       </p>
 
-      <div className="mt-3 md:mt-4 flex items-center justify-center gap-1">
-        {isPositive ? (
-          <ChevronUp className="h-3 w-3 md:h-4 md:w-4 text-green-500" />
-        ) : (
-          <ChevronDown className="h-3 w-3 md:h-4 md:w-4 text-red-500" />
-        )}
-        <span className={`text-xs md:text-sm font-semibold ${isPositive ? "text-green-500" : "text-red-500"}`}>
-          {Math.abs(changePercent).toFixed(1)}%
-        </span>
-      </div>
+      {changePercent !== 0 && (
+        <div className="mt-3 md:mt-4 flex items-center justify-center gap-1">
+          {isPositive ? (
+            <ChevronUp className="h-3 w-3 md:h-4 md:w-4 text-green-500" />
+          ) : (
+            <ChevronDown className="h-3 w-3 md:h-4 md:w-4 text-red-500" />
+          )}
+          <span className={`text-xs md:text-sm font-semibold ${isPositive ? "text-green-500" : "text-red-500"}`}>
+            {Math.abs(changePercent).toFixed(1)}%
+          </span>
+        </div>
+      )}
 
-      <div className="mt-2 text-center text-base md:text-lg font-bold text-yellow-500">{rating.toFixed(1)}/10</div>
+      {displayRating !== 0 && (
+        <div className="mt-2 text-center text-base md:text-lg font-bold text-yellow-500">
+          {typeof displayRating === "string" ? displayRating : `${toNumber(displayRating).toFixed(1)}/10`}
+        </div>
+      )}
 
       <Button
         variant="secondary"

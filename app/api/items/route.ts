@@ -28,27 +28,37 @@ export async function GET(request: NextRequest) {
     const items = await collection.find(filter).sort({ createdAt: -1 }).toArray()
 
     console.log("[v0] Found items count:", items.length)
+    console.log("[v0] Sample item fields:", items[0] ? Object.keys(items[0]) : "No items")
 
-    const transformedItems = items.map((item: any) => ({
-      id: item._id.toString(),
-      game: item.game,
-      name: item.name,
-      image_url: (() => {
-        const url = item.image_url || item.image || item.imageUrl || "/placeholder.svg?height=200&width=200"
-        console.log("[v0] Item:", item.name, "Image URL:", url)
-        return url
-      })(),
-      rap_value: item.value || item.rap_value || item.rapValue || item.rap || 0,
-      exist_count: item.exist_count || item.existCount || item.exist || 0,
-      rating: item.rating || 0,
-      change_percent: item.change_percent || item.changePercent || item.change || 0,
-      last_updated_at: item.updatedAt || item.lastUpdated || item.createdAt || new Date().toISOString(),
-      // Game-specific fields
-      section: item.section,
-      rarity: item.rarity,
-      demand: item.demand,
-      pot: item.pot,
-    }))
+    const transformedItems = items.map((item: any) => {
+      const imageUrl = item.image_url || item.image || item.imageUrl || "/placeholder.svg?height=200&width=200"
+
+      // Determine if this is old schema (has rap_value) or new schema (has value)
+      const isNewSchema = item.value !== undefined || item.section !== undefined
+
+      console.log("[v0] Item:", item.name, "Schema:", isNewSchema ? "NEW" : "OLD", "Image:", imageUrl)
+
+      return {
+        id: item._id.toString(),
+        game: item.game,
+        name: item.name,
+        image_url: imageUrl,
+        // Map value fields (new schema uses 'value', old uses 'rap_value')
+        rap_value: item.value || item.rap_value || item.rapValue || item.rap || 0,
+        // Map section/type fields
+        exist_count: item.exist_count || item.existCount || item.exist || 0,
+        rating: item.section || item.rating || item.rarity || 0,
+        change_percent: item.change_percent || item.changePercent || item.change || 0,
+        last_updated_at: item.updatedAt || item.lastUpdated || item.createdAt || new Date().toISOString(),
+        // Include new schema fields for display
+        section: item.section,
+        rarity: item.rarity,
+        demand: item.demand,
+        pot: item.pot,
+      }
+    })
+
+    console.log("[v0] Transformed items sample:", transformedItems[0])
 
     return NextResponse.json({ items: transformedItems })
   } catch (error) {
