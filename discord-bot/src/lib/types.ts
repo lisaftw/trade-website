@@ -43,6 +43,8 @@ export interface GAGItem extends BaseItem {
 
 export type GameItem = MM2Item | AdoptMeItem | SABItem | GAGItem
 
+export type GameType = "MM2" | "Adopt Me" | "SAB" | "GAG"
+
 export const GAME_CHOICES = [
   { name: "Murder Mystery 2", value: "MM2" },
   { name: "Adopt Me", value: "Adopt Me" },

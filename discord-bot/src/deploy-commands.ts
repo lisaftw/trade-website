@@ -3,10 +3,16 @@ import dotenv from "dotenv"
 import { addItemCommand } from "./commands/additem.js"
 import { editItemCommand } from "./commands/edititem.js"
 import { removeItemCommand } from "./commands/removeitem.js"
+import { bulkAddItemCommand } from "./commands/bulkadditem.js"
 
 dotenv.config()
 
-const commands = [addItemCommand.data.toJSON(), editItemCommand.data.toJSON(), removeItemCommand.data.toJSON()]
+const commands = [
+  addItemCommand.data.toJSON(),
+  editItemCommand.data.toJSON(),
+  removeItemCommand.data.toJSON(),
+  bulkAddItemCommand.data.toJSON(),
+]
 
 const rest = new REST().setToken(process.env.DISCORD_BOT_TOKEN!)
 ;(async () => {

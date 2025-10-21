@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Plus, Search } from "lucide-react"
+import { Plus, Search, MessageSquare } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import TradeCard from "@/components/trade-card"
@@ -12,6 +12,8 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { PageBackground } from "@/components/page-background"
 import { RobloxDecos } from "@/components/roblox-decos"
+import { createClient } from "@/lib/supabase/client"
+import { useRouter } from "next/navigation"
 
 interface Trade {
   id: string
@@ -26,6 +28,8 @@ interface Trade {
 
 export default function TradingPage() {
   const { user } = useUser()
+  const router = useRouter()
+  const supabase = createClient()
   const [trades, setTrades] = useState<Trade[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [filterType, setFilterType] = useState<"all" | "offering" | "requesting">("all")
@@ -53,6 +57,45 @@ export default function TradingPage() {
 
     fetchTrades()
   }, [])
+
+  async function startConversation(traderId: string) {
+    if (!user) {
+      router.push("/login?redirect=/trading")
+      return
+    }
+
+    try {
+      // Check if conversation already exists
+      const { data: existing } = await supabase
+        .from("conversations")
+        .select("id")
+        .or(
+          `and(participant_1_id.eq.${user.discordId},participant_2_id.eq.${traderId}),and(participant_1_id.eq.${traderId},participant_2_id.eq.${user.discordId})`,
+        )
+        .single()
+
+      if (existing) {
+        router.push(`/messages?conversation=${existing.id}`)
+        return
+      }
+
+      // Create new conversation
+      const { data: newConvo, error } = await supabase
+        .from("conversations")
+        .insert({
+          participant_1_id: user.discordId,
+          participant_2_id: traderId,
+        })
+        .select("id")
+        .single()
+
+      if (error) throw error
+
+      router.push(`/messages?conversation=${newConvo.id}`)
+    } catch (error) {
+      console.error("Error starting conversation:", error)
+    }
+  }
 
   const filteredTrades = trades.filter((trade) => {
     const matchesSearch =
@@ -153,9 +196,24 @@ export default function TradingPage() {
                 ) : filteredTrades.length === 0 ? (
                   <div className="text-center text-foreground/60">No trades found. Create one to get started!</div>
                 ) : (
-                  filteredTrades.map((trade) => (
-                    <TradeCard key={trade.id} trade={trade} isOwnTrade={trade.discord_id === user?.discordId} />
-                  ))
+                  filteredTrades.map((trade) => {
+                    const isOwnTrade = trade.discord_id === user?.discordId
+                    return (
+                      <div key={trade.id} className="space-y-2">
+                        <TradeCard trade={trade} isOwnTrade={isOwnTrade} />
+                        {!isOwnTrade && user && (
+                          <Button
+                            onClick={() => startConversation(trade.discord_id)}
+                            variant="outline"
+                            className="w-full gap-2"
+                          >
+                            <MessageSquare className="h-4 w-4" />
+                            Message Trader
+                          </Button>
+                        )}
+                      </div>
+                    )
+                  })
                 )}
               </div>
             </div>

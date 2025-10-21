@@ -7,6 +7,7 @@ dotenv.config()
 import { addItemCommand } from "./commands/additem.js"
 import { editItemCommand } from "./commands/edititem.js"
 import { removeItemCommand } from "./commands/removeitem.js"
+import { bulkAddItemCommand } from "./commands/bulkadditem.js"
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
@@ -16,6 +17,7 @@ const commands = new Collection<string, BotCommand>()
 commands.set(addItemCommand.data.name, addItemCommand)
 commands.set(editItemCommand.data.name, editItemCommand)
 commands.set(removeItemCommand.data.name, removeItemCommand)
+commands.set(bulkAddItemCommand.data.name, bulkAddItemCommand)
 
 client.once(Events.ClientReady, (readyClient) => {
   console.log(`✅ Discord bot ready! Logged in as ${readyClient.user.tag}`)
