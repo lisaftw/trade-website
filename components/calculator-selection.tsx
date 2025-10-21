@@ -33,21 +33,21 @@ export function CalculatorSelection() {
         </Card>
 
         {/* In-game Calculator Card */}
-        <Card className="group relative overflow-hidden border-2 border-gray-700/50 bg-gradient-to-b from-gray-900/40 to-black/60 p-8 transition-all hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/20">
+        <Card className="group relative overflow-hidden border-2 border-gray-700/50 bg-gradient-to-b from-gray-900/40 to-black/60 p-8 transition-all hover:border-gray-500/50 hover:shadow-lg hover:shadow-gray-500/20">
           <div className="relative z-10 flex flex-col items-center text-center">
-            <div className="mb-4 rounded-full bg-purple-500/10 p-4">
-              <Coins className="h-12 w-12 text-purple-500" />
+            <div className="mb-4 rounded-full bg-gray-700/30 p-4">
+              <Coins className="h-12 w-12 text-gray-300" />
             </div>
             <h2 className="mb-3 text-2xl font-bold text-white">In-game Calculator</h2>
             <p className="mb-6 text-sm text-gray-400">
               Calculate the total value of your items within a single game. Perfect for inventory management.
             </p>
-            <Button asChild className="w-full bg-purple-600 hover:bg-purple-700" size="lg">
+            <Button asChild className="w-full bg-gray-700 hover:bg-gray-600" size="lg">
               <Link href="/calculator/ingame">Start In-game Calculator</Link>
             </Button>
           </div>
           {/* Decorative gradient */}
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-gray-500/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
         </Card>
       </div>
     </div>
