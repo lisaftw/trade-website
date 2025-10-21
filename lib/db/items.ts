@@ -6,9 +6,16 @@ export interface Item {
   name: string
   value: number
   game: string
-  imageUrl?: string
+  section: string
+  image_url?: string
+
+  // MM2, SAB, GAG specific fields
   rarity?: string
-  category?: string
+  demand?: string
+
+  // Adopt Me specific fields
+  pot?: string
+
   createdAt?: Date
   updatedAt?: Date
 }

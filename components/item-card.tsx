@@ -8,12 +8,17 @@ interface ItemCardProps {
   item: {
     id: string
     name: string
+    game: string
     image_url: string
     rap_value: number | null | undefined
     exist_count: number | null | undefined
     change_percent: number | null | undefined
     rating: number | null | undefined
     last_updated_at: string
+    section?: string
+    rarity?: string
+    demand?: string
+    pot?: string
   }
 }
 
@@ -56,11 +61,18 @@ export function ItemCard({ item }: ItemCardProps) {
     <div className="group relative overflow-hidden rounded-2xl border border-border bg-secondary/10 p-3 md:p-4 transition-all hover:border-border/60 hover:bg-secondary/20">
       <div className="mb-2 md:mb-3 flex items-center justify-between gap-2">
         <div className="rounded-full bg-muted/60 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-muted-foreground">
-          RAP: {formatValue(item.rap_value)}
+          {item.section || "VALUE"}: {formatValue(item.rap_value)}
         </div>
-        <div className="rounded-full bg-muted/60 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-muted-foreground">
-          EXIST: {existCount.toLocaleString()}
-        </div>
+        {item.rarity && (
+          <div className="rounded-full bg-purple-500/20 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-purple-300">
+            {item.rarity}
+          </div>
+        )}
+        {item.pot && (
+          <div className="rounded-full bg-blue-500/20 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-blue-300">
+            {item.pot}
+          </div>
+        )}
       </div>
 
       {/* Item image */}
@@ -76,11 +88,14 @@ export function ItemCard({ item }: ItemCardProps) {
 
       <h3 className="mt-2 md:mt-3 text-center text-xs md:text-sm font-semibold line-clamp-2">{item.name}</h3>
 
+      {item.demand && (
+        <p className="mt-1 text-center text-[10px] md:text-xs text-muted-foreground">Demand: {item.demand}</p>
+      )}
+
       <p className="mt-1 text-center text-[10px] md:text-xs text-muted-foreground">
         Last Updated: {getTimeAgo(item.last_updated_at)}
       </p>
 
-      {/* Change percent */}
       <div className="mt-3 md:mt-4 flex items-center justify-center gap-1">
         {isPositive ? (
           <ChevronUp className="h-3 w-3 md:h-4 md:w-4 text-green-500" />
@@ -92,10 +107,8 @@ export function ItemCard({ item }: ItemCardProps) {
         </span>
       </div>
 
-      {/* Rating */}
       <div className="mt-2 text-center text-base md:text-lg font-bold text-yellow-500">{rating.toFixed(1)}/10</div>
 
-      {/* Add to inventory button */}
       <Button
         variant="secondary"
         className="mt-3 md:mt-4 w-full rounded-lg bg-muted/60 text-[10px] md:text-xs font-medium uppercase tracking-wide text-muted-foreground hover:bg-muted/80"

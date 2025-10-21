@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "bot": "tsx bot/index.ts",
+    "bot:deploy": "tsx bot/deploy-commands.ts",
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
@@ -49,6 +51,8 @@
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
     "date-fns": "latest",
+    "discord.js": "latest",
+    "dotenv": "latest",
     "embla-carousel-react": "8.5.1",
     "expo": "latest",
     "expo-asset": "latest",
@@ -87,6 +91,7 @@
     "@types/react-dom": "^18",
     "postcss": "^8.5",
     "tailwindcss": "^4.1.9",
+    "tsx": "^4.19.2",
     "tw-animate-css": "1.3.3",
     "typescript": "^5"
   }

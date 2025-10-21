@@ -69,9 +69,8 @@ export function TradeCalculator() {
 
   return (
     <div className="min-h-screen bg-black py-8">
-      <div className="mx-auto max-w-7xl px-4">
-        {/* Header with game selection */}
-        <div className="mb-6 text-center">
+      <div className="mx-auto max-w-6xl px-4">
+        <div className="mb-4 text-center">
           <div className="inline-flex items-center rounded-full border border-gray-700 bg-gray-900/80 px-4 py-2 text-sm text-white">
             <span className="mr-2 inline-block h-2 w-2 rounded-full bg-green-500" />
             Selected game: <span className="ml-1 font-medium">{game}</span>
@@ -90,16 +89,12 @@ export function TradeCalculator() {
           </div>
         </div>
 
-        {/* Main Trade Interface */}
-        <div className="relative rounded-[2rem] border-2 border-gray-700/50 bg-gradient-to-b from-gray-900/40 to-black/60 p-8 backdrop-blur-sm md:p-12">
-          {/* TRADER Logo */}
-          <div className="mb-10 flex items-center justify-center">
-            <Image src="/trader-logo.png" alt="TRADER" width={400} height={120} className="h-auto w-80" priority />
+        <div className="relative rounded-[2rem] border-2 border-gray-700/50 bg-gradient-to-b from-gray-900/40 to-black/60 p-6 backdrop-blur-sm md:p-8">
+          <div className="mb-6 flex items-center justify-center">
+            <Image src="/trader-logo.png" alt="TRADER" width={280} height={84} className="h-auto w-56" priority />
           </div>
 
-          {/* Two Column Layout: You vs Them */}
-          <div className="grid gap-12 lg:grid-cols-2">
-            {/* Your Side */}
+          <div className="grid gap-8 lg:grid-cols-2">
             <TradeGrid
               title="You"
               items={yourItems}
@@ -114,7 +109,6 @@ export function TradeCalculator() {
               selectedGame={game}
             />
 
-            {/* Their Side */}
             <TradeGrid
               title="Them"
               items={theirItems}
@@ -168,7 +162,6 @@ function TradeGrid({
 
   useEffect(() => {
     if (!isActive) {
-      // Reset search when modal closes
       onSearchChange("")
       return
     }
@@ -214,20 +207,17 @@ function TradeGrid({
     ? allItems.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
     : allItems
 
-  // Create 9 slots for the 3x3 grid
   const slots = Array.from({ length: 9 }, (_, i) => items[i] || null)
 
   return (
     <div className="flex flex-col">
-      {/* Title Button */}
-      <div className="mb-6 flex justify-center">
-        <div className="rounded-full border-2 border-gray-600/80 bg-black/90 px-10 py-2.5 shadow-lg">
-          <span className="text-xl font-bold tracking-wide text-white">{title}</span>
+      <div className="mb-4 flex justify-center">
+        <div className="rounded-full border-2 border-gray-600/80 bg-black/90 px-8 py-2 shadow-lg">
+          <span className="text-lg font-bold tracking-wide text-white">{title}</span>
         </div>
       </div>
 
-      {/* 3x3 Grid */}
-      <div className="mb-8 grid grid-cols-3 gap-4">
+      <div className="mb-6 grid grid-cols-3 gap-3">
         {slots.map((item, index) => (
           <div
             key={index}
@@ -239,10 +229,10 @@ function TradeGrid({
             {index === 0 && !item ? (
               <button
                 onClick={onAddClick}
-                className="flex h-full w-full flex-col items-center justify-center gap-3 text-gray-400 transition-colors hover:text-white"
+                className="flex h-full w-full flex-col items-center justify-center gap-2 text-gray-400 transition-colors hover:text-white"
               >
-                <Plus className="h-10 w-10 stroke-[2.5]" />
-                <span className="text-sm font-semibold tracking-wide">Add Item</span>
+                <Plus className="h-8 w-8 stroke-[2.5]" />
+                <span className="text-xs font-semibold tracking-wide">Add Item</span>
               </button>
             ) : item ? (
               <div className="group relative h-full w-full p-2">
@@ -269,13 +259,11 @@ function TradeGrid({
         ))}
       </div>
 
-      {/* VALUE Display */}
       <div className="flex items-center justify-between px-2">
-        <span className="text-2xl font-bold tracking-wide text-white">VALUE</span>
-        <span className="text-2xl font-bold text-white">${total.toLocaleString()}</span>
+        <span className="text-xl font-bold tracking-wide text-white">VALUE</span>
+        <span className="text-xl font-bold text-white">${total.toLocaleString()}</span>
       </div>
 
-      {/* Search Modal */}
       {isActive && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
           <div className="w-full max-w-2xl rounded-2xl border-2 border-gray-700 bg-gray-900 p-6 shadow-2xl">
