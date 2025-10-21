@@ -7,6 +7,7 @@ import { X, Search, Plus, ArrowLeft } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 interface GameItem {
   id: string
@@ -23,8 +24,17 @@ export function IngameCalculator() {
   const [game, setGame] = useState<"MM2" | "SAB" | "GAG" | "Adopt Me" | null>(null)
   const [allItems, setAllItems] = useState<GameItem[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   const totalValue = selectedItems.reduce((sum, item) => sum + item.value, 0)
+
+  const handleGameSelect = (selectedGame: "MM2" | "SAB" | "GAG" | "Adopt Me") => {
+    if (selectedGame === "SAB") {
+      router.push("/sab-calculator")
+    } else {
+      setGame(selectedGame)
+    }
+  }
 
   useEffect(() => {
     if (!game) return
@@ -81,7 +91,7 @@ export function IngameCalculator() {
           {(["MM2", "SAB", "GAG", "Adopt Me"] as const).map((g) => (
             <button
               key={g}
-              onClick={() => setGame(g)}
+              onClick={() => handleGameSelect(g)}
               className="rounded-xl border border-gray-700 bg-gray-800/50 p-6 text-left transition-all hover:border-gray-600 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
               <p className="text-lg font-semibold text-white">{g}</p>
