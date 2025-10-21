@@ -2,10 +2,11 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { PageBackground } from "@/components/page-background"
 import { ScrollParallax } from "@/components/scroll-parallax"
-import { CalculatorSelection } from "@/components/calculator-selection"
+import { IngameCalculator } from "@/components/ingame-calculator"
+import { CalculatorSkin } from "@/components/calculator-skin"
 import { RobloxDecos } from "@/components/roblox-decos"
 
-export default function CalculatorPage() {
+export default function IngameCalculatorPage() {
   return (
     <main className="relative min-h-dvh bg-background">
       <PageBackground />
@@ -15,7 +16,9 @@ export default function CalculatorPage() {
         <div className="relative">
           <RobloxDecos />
           <div className="relative z-[1]">
-            <CalculatorSelection />
+            <CalculatorSkin>
+              <IngameCalculator />
+            </CalculatorSkin>
           </div>
         </div>
         <SiteFooter />
