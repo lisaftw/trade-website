@@ -21,26 +21,8 @@ const MUTATIONS = [
   },
   { id: "bloodrot", name: "Bloodrot", multiplier: 2.0, color: "bg-gradient-to-r from-red-600 to-red-800" },
   { id: "candy", name: "Candy", multiplier: 4.0, color: "bg-gradient-to-r from-pink-400 to-pink-600" },
-  { id: "10b-visits", name: "10B Visits", multiplier: 4.0, color: "bg-gradient-to-r from-cyan-400 to-purple-500" },
-  { id: "bombardiro", name: "Bombardiro", multiplier: 4.0, color: "bg-gradient-to-r from-orange-500 to-orange-700" },
-  { id: "bubblegum", name: "Bubblegum", multiplier: 4.0, color: "bg-gradient-to-r from-pink-300 to-pink-500" },
-  { id: "extinct", name: "Extinct", multiplier: 4.0, color: "bg-gradient-to-r from-gray-400 to-gray-600" },
-  { id: "galactic", name: "Galactic", multiplier: 4.0, color: "bg-gradient-to-r from-purple-600 to-purple-800" },
-  {
-    id: "sammyni",
-    name: "Sammyni Spyderini",
-    multiplier: 4.5,
-    color: "bg-gradient-to-r from-purple-700 to-purple-900",
-  },
-  { id: "concert", name: "Concert", multiplier: 5.0, color: "bg-gradient-to-r from-purple-500 to-pink-500" },
-  {
-    id: "nyan-cats",
-    name: "Nyan Cats",
-    multiplier: 6.0,
-    color: "bg-gradient-to-r from-red-400 via-yellow-400 via-green-400 via-blue-400 to-purple-400",
-  },
-  { id: "paint", name: "Paint", multiplier: 6.0, color: "bg-gradient-to-r from-white to-gray-300" },
-  { id: "strawberry", name: "Strawberry", multiplier: 8.0, color: "bg-gradient-to-r from-pink-400 to-pink-600" },
+  { id: "galaxy", name: "Galaxy", multiplier: 7.0, color: "bg-gradient-to-r from-purple-600 to-purple-800" },
+  { id: "yinyang", name: "YinYang", multiplier: 7.0, color: "bg-gradient-to-r from-gray-300 to-gray-600" },
 ]
 
 // Traits data with multipliers
@@ -53,6 +35,18 @@ const TRAITS = [
   { id: "taco", name: "Taco", multiplier: 3.0, color: "bg-gradient-to-r from-yellow-500 to-green-500" },
   { id: "ufo", name: "UFO", multiplier: 3.0, color: "bg-gradient-to-r from-purple-600 to-purple-800" },
   { id: "matteo-hat", name: "Matteo Hat", multiplier: 3.5, color: "bg-gradient-to-r from-amber-700 to-amber-900" },
+  { id: "10b-visits", name: "10B Visits", multiplier: 4.0, color: "bg-gradient-to-r from-cyan-400 to-purple-500" },
+  { id: "bombardiro", name: "Bombardiro", multiplier: 4.0, color: "bg-gradient-to-r from-orange-500 to-orange-700" },
+  { id: "bubblegum", name: "Bubblegum", multiplier: 4.0, color: "bg-gradient-to-r from-pink-300 to-pink-500" },
+  { id: "extinct", name: "Extinct", multiplier: 4.0, color: "bg-gradient-to-r from-gray-400 to-gray-600" },
+  { id: "galactic", name: "Galactic", multiplier: 4.0, color: "bg-gradient-to-r from-purple-600 to-purple-800" },
+  {
+    id: "sammyni",
+    name: "Sammyni Spyderini",
+    multiplier: 4.5,
+    color: "bg-gradient-to-r from-purple-700 to-purple-900",
+  },
+  { id: "concert", name: "Concert", multiplier: 5.0, color: "bg-gradient-to-r from-purple-500 to-pink-500" },
   { id: "crab-rave", name: "Crab Rave", multiplier: 5.0, color: "bg-gradient-to-r from-orange-500 to-red-500" },
   { id: "sombrero", name: "Sombrero", multiplier: 5.0, color: "bg-gradient-to-r from-gray-300 to-gray-400" },
   { id: "tung-tung", name: "Tung Tung Attack", multiplier: 5.0, color: "bg-gradient-to-r from-pink-500 to-purple-500" },
@@ -61,8 +55,14 @@ const TRAITS = [
   { id: "fire", name: "Fire", multiplier: 6.0, color: "bg-gradient-to-r from-orange-500 to-red-600" },
   { id: "fireworks", name: "Fireworks", multiplier: 6.0, color: "bg-gradient-to-r from-purple-600 to-purple-800" },
   { id: "glitch", name: "Glitch", multiplier: 6.0, color: "bg-gradient-to-r from-cyan-400 to-purple-500" },
-  { id: "galaxy", name: "Galaxy", multiplier: 7.0, color: "bg-gradient-to-r from-purple-600 to-purple-800" },
-  { id: "yinyang", name: "YinYang", multiplier: 7.0, color: "bg-gradient-to-r from-gray-800 to-gray-600" },
+  {
+    id: "nyan-cats",
+    name: "Nyan Cats",
+    multiplier: 6.0,
+    color: "bg-gradient-to-r from-red-400 via-yellow-400 via-green-400 via-blue-400 to-purple-400",
+  },
+  { id: "paint", name: "Paint", multiplier: 6.0, color: "bg-gradient-to-r from-white to-gray-300" },
+  { id: "strawberry", name: "Strawberry", multiplier: 8.0, color: "bg-gradient-to-r from-pink-400 to-pink-600" },
 ]
 
 interface Item {
