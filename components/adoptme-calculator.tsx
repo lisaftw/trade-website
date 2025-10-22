@@ -49,8 +49,8 @@ export function AdoptMeCalculator() {
           name: item.name,
           game: item.game,
           baseValue: toNumber(item.rapValue || item.rap_value || item.value),
-          neonValue: toNumber(item.neonValue || item.neon_value || (item.rapValue || item.rap_value || item.value) * 2),
-          megaValue: toNumber(item.megaValue || item.mega_value || (item.rapValue || item.rap_value || item.value) * 4),
+          neonValue: toNumber(item.neonValue || item.neon_value || 0),
+          megaValue: toNumber(item.megaValue || item.mega_value || 0),
           imageUrl: item.imageUrl || item.image_url,
         }))
         setPets(mappedPets)
@@ -123,12 +123,22 @@ export function AdoptMeCalculator() {
 
     const parts: string[] = []
 
-    // Add variant prefix
-    if (variant === "mega") parts.push("MFR")
-    else if (variant === "neon") parts.push("NFR")
-    else if (isFly && isRide) parts.push("FR")
-    else if (isFly) parts.push("F")
-    else if (isRide) parts.push("R")
+    if (variant === "mega") {
+      if (isFly && isRide) parts.push("MFR")
+      else if (isFly) parts.push("MF")
+      else if (isRide) parts.push("MR")
+      else parts.push("M")
+    } else if (variant === "neon") {
+      if (isFly && isRide) parts.push("NFR")
+      else if (isFly) parts.push("NF")
+      else if (isRide) parts.push("NR")
+      else parts.push("N")
+    } else {
+      // Normal variant
+      if (isFly && isRide) parts.push("FR")
+      else if (isFly) parts.push("F")
+      else if (isRide) parts.push("R")
+    }
 
     parts.push(selectedPet.name)
 
