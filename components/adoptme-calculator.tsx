@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { X, Search } from "lucide-react"
+import { X, Search, Info } from "lucide-react"
 
 interface AdoptMePet {
   id: string
@@ -14,7 +14,11 @@ interface AdoptMePet {
   baseValue: number
   neonValue: number
   megaValue: number
+  flyBonus: number
+  rideBonus: number
   imageUrl?: string
+  section?: string
+  rarity?: string
 }
 
 const toNumber = (value: any): number => {
@@ -39,19 +43,21 @@ export function AdoptMeCalculator() {
   useEffect(() => {
     const fetchPets = async () => {
       try {
-        console.log("[v0] Fetching Adopt Me pets from database")
         const response = await fetch("/api/items?game=Adopt Me")
         const data = await response.json()
-        console.log("[v0] Received Adopt Me pets:", data.items?.length || 0)
 
         const mappedPets = (data.items || []).map((item: any) => ({
           id: item.id,
           name: item.name,
           game: item.game,
-          baseValue: toNumber(item.rapValue || item.rap_value || item.value),
+          baseValue: toNumber(item.rapValue || item.rap_value || item.value || item.baseValue),
           neonValue: toNumber(item.neonValue || item.neon_value || 0),
           megaValue: toNumber(item.megaValue || item.mega_value || 0),
+          flyBonus: toNumber(item.flyBonus || item.fly_bonus || 50),
+          rideBonus: toNumber(item.rideBonus || item.ride_bonus || 50),
           imageUrl: item.imageUrl || item.image_url,
+          section: item.section,
+          rarity: item.rarity,
         }))
         setPets(mappedPets)
       } catch (error) {
@@ -71,7 +77,6 @@ export function AdoptMeCalculator() {
   const calculatedValue = useMemo(() => {
     if (!selectedPet) return 0
 
-    // Get base value based on variant
     let baseValue = 0
     switch (variant) {
       case "normal":
@@ -85,24 +90,34 @@ export function AdoptMeCalculator() {
         break
     }
 
-    // Add potion values (example values, adjust as needed)
+    // Add potion bonuses
     let potionBonus = 0
-    if (isFly) potionBonus += 50
-    if (isRide) potionBonus += 50
+    if (isFly) potionBonus += selectedPet.flyBonus
+    if (isRide) potionBonus += selectedPet.rideBonus
 
     return baseValue + potionBonus
   }, [selectedPet, variant, isFly, isRide])
+
+  const getValueMultiplier = () => {
+    if (!selectedPet || selectedPet.baseValue === 0) return null
+
+    if (variant === "neon" && selectedPet.neonValue > 0) {
+      return (selectedPet.neonValue / selectedPet.baseValue).toFixed(2)
+    }
+    if (variant === "mega" && selectedPet.megaValue > 0) {
+      return (selectedPet.megaValue / selectedPet.baseValue).toFixed(2)
+    }
+    return null
+  }
 
   const getPetDisplayName = () => {
     if (!selectedPet) return ""
 
     const parts: string[] = []
 
-    // Add variant prefix
     if (variant === "neon") parts.push("Neon")
     if (variant === "mega") parts.push("Mega")
 
-    // Add potion prefixes
     if (isFly && isRide) {
       parts.push("Fly Ride")
     } else if (isFly) {
@@ -134,7 +149,6 @@ export function AdoptMeCalculator() {
       else if (isRide) parts.push("NR")
       else parts.push("N")
     } else {
-      // Normal variant
       if (isFly && isRide) parts.push("FR")
       else if (isFly) parts.push("F")
       else if (isRide) parts.push("R")
@@ -240,17 +254,101 @@ export function AdoptMeCalculator() {
             </div>
           )}
 
-          {/* Result Display */}
           {selectedPet && (
-            <div className="rounded-lg border-2 border-brand/50 bg-brand/10 p-3 text-center">
-              <p className="text-xs text-muted-foreground">Calculated Value</p>
-              <p className="mt-0.5 text-2xl md:text-3xl font-bold text-brand">{formatNumber(calculatedValue)}</p>
-              <p className="mt-0.5 text-[10px] text-muted-foreground">
-                {variant === "normal" && "Base Value"}
-                {variant === "neon" && "Neon Value"}
-                {variant === "mega" && "Mega Value"}
-                {(isFly || isRide) && " + Potions"}
-              </p>
+            <div className="space-y-2">
+              <div className="rounded-lg border-2 border-brand/50 bg-brand/10 p-3 text-center">
+                <p className="text-xs text-muted-foreground">Calculated Value</p>
+                <p className="mt-0.5 text-2xl md:text-3xl font-bold text-brand">{formatNumber(calculatedValue)}</p>
+                <p className="mt-0.5 text-[10px] text-muted-foreground">
+                  {variant === "normal" && "Base Value"}
+                  {variant === "neon" && "Neon Value"}
+                  {variant === "mega" && "Mega Value"}
+                  {(isFly || isRide) && " + Potions"}
+                </p>
+              </div>
+
+              <Card className="p-2.5 bg-muted/50">
+                <div className="space-y-1.5 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Base Pet Value:</span>
+                    <span className="font-medium">{formatNumber(selectedPet.baseValue)}</span>
+                  </div>
+                  {variant === "neon" && (
+                    <>
+                      <div className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Neon Value:</span>
+                        <span className="font-medium">{formatNumber(selectedPet.neonValue)}</span>
+                      </div>
+                      {getValueMultiplier() && (
+                        <div className="flex items-center justify-between text-[10px]">
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <Info className="h-3 w-3" />
+                            Neon Multiplier:
+                          </span>
+                          <span className="font-medium">{getValueMultiplier()}×</span>
+                        </div>
+                      )}
+                    </>
+                  )}
+                  {variant === "mega" && (
+                    <>
+                      <div className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Mega Value:</span>
+                        <span className="font-medium">{formatNumber(selectedPet.megaValue)}</span>
+                      </div>
+                      {getValueMultiplier() && (
+                        <div className="flex items-center justify-between text-[10px]">
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <Info className="h-3 w-3" />
+                            Mega Multiplier:
+                          </span>
+                          <span className="font-medium">{getValueMultiplier()}×</span>
+                        </div>
+                      )}
+                    </>
+                  )}
+                  {isFly && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Fly Potion:</span>
+                      <span className="font-medium text-blue-500">+{formatNumber(selectedPet.flyBonus)}</span>
+                    </div>
+                  )}
+                  {isRide && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Ride Potion:</span>
+                      <span className="font-medium text-pink-500">+{formatNumber(selectedPet.rideBonus)}</span>
+                    </div>
+                  )}
+                  <div className="pt-1.5 border-t flex items-center justify-between font-semibold">
+                    <span>Total Value:</span>
+                    <span className="text-brand">{formatNumber(calculatedValue)}</span>
+                  </div>
+                </div>
+              </Card>
+
+              {variant !== "normal" && (
+                <div className="rounded-lg bg-blue-500/10 border border-blue-500/20 p-2.5">
+                  <div className="flex gap-2">
+                    <Info className="h-4 w-4 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <div className="text-xs text-muted-foreground">
+                      <p className="font-medium text-foreground mb-1">
+                        {variant === "neon" ? "Neon" : "Mega"} Value Information
+                      </p>
+                      <p>
+                        {variant === "neon"
+                          ? "Neon pets require 3 identical pets to create. Values are manually set and vary by pet."
+                          : "Mega pets require 3 identical Neon pets to create. Values are manually set and vary by pet."}
+                      </p>
+                      {(variant === "neon" && selectedPet.neonValue === 0) ||
+                      (variant === "mega" && selectedPet.megaValue === 0) ? (
+                        <p className="mt-1 text-yellow-600 dark:text-yellow-500 font-medium">
+                          ⚠️ {variant === "neon" ? "Neon" : "Mega"} value not set for this pet yet.
+                        </p>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
