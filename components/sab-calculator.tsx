@@ -145,53 +145,51 @@ export function SABCalculator() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-3xl md:text-4xl font-bold text-balance">SAB Value Calculator</h1>
-        <p className="mt-2 text-sm md:text-base text-muted-foreground">
-          Calculate pet values with mutations and traits
-        </p>
+        <h1 className="text-2xl md:text-3xl font-bold text-balance">SAB Value Calculator</h1>
+        <p className="mt-1 text-xs md:text-sm text-muted-foreground">Calculate pet values with mutations and traits</p>
       </div>
 
-      <Card className="p-4 md:p-6">
-        <div className="space-y-4">
+      <Card className="p-3 md:p-4">
+        <div className="space-y-3">
           <div>
-            <Label htmlFor="pet-search" className="text-base font-semibold">
+            <Label htmlFor="pet-search" className="text-sm font-semibold">
               Select SAB Pet
             </Label>
-            <div className="relative mt-2">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <div className="relative mt-1.5">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 id="pet-search"
                 type="text"
                 placeholder="Search for a pet..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-12 pl-10 text-lg"
+                className="h-9 pl-9 text-sm"
               />
             </div>
           </div>
 
           {/* Selected Pet Display */}
           {selectedPet && (
-            <div className="rounded-lg border-2 border-brand/50 bg-brand/10 p-4">
+            <div className="rounded-lg border-2 border-brand/50 bg-brand/10 p-3">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   {selectedPet.imageUrl && (
                     <img
                       src={selectedPet.imageUrl || "/placeholder.svg"}
                       alt={selectedPet.name}
-                      className="h-12 w-12 rounded object-cover"
+                      className="h-10 w-10 rounded object-cover"
                     />
                   )}
                   <div>
-                    <p className="font-semibold">{selectedPet.name}</p>
-                    <p className="text-sm text-muted-foreground">Base RAP: {formatNumber(selectedPet.rapValue)}</p>
+                    <p className="text-sm font-semibold">{selectedPet.name}</p>
+                    <p className="text-xs text-muted-foreground">Base RAP: {formatNumber(selectedPet.rapValue)}</p>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm" onClick={() => setSelectedPet(null)}>
-                  <X className="h-4 w-4" />
+                <Button variant="ghost" size="sm" onClick={() => setSelectedPet(null)} className="h-7 w-7 p-0">
+                  <X className="h-3.5 w-3.5" />
                 </Button>
               </div>
             </div>
@@ -199,28 +197,28 @@ export function SABCalculator() {
 
           {/* Pet List */}
           {!selectedPet && (
-            <div className="max-h-64 overflow-y-auto space-y-2 rounded-lg border p-2">
+            <div className="max-h-56 overflow-y-auto space-y-1.5 rounded-lg border p-2">
               {loading ? (
-                <p className="text-center text-sm text-muted-foreground py-8">Loading pets...</p>
+                <p className="text-center text-xs text-muted-foreground py-6">Loading pets...</p>
               ) : filteredPets.length === 0 ? (
-                <p className="text-center text-sm text-muted-foreground py-8">No pets found</p>
+                <p className="text-center text-xs text-muted-foreground py-6">No pets found</p>
               ) : (
                 filteredPets.map((pet) => (
                   <button
                     key={pet.id}
                     onClick={() => setSelectedPet(pet)}
-                    className="w-full flex items-center gap-3 rounded-lg p-3 hover:bg-accent transition-colors text-left"
+                    className="w-full flex items-center gap-2.5 rounded-lg p-2.5 hover:bg-accent transition-colors text-left"
                   >
                     {pet.imageUrl && (
                       <img
                         src={pet.imageUrl || "/placeholder.svg"}
                         alt={pet.name}
-                        className="h-10 w-10 rounded object-cover"
+                        className="h-8 w-8 rounded object-cover"
                       />
                     )}
                     <div className="flex-1">
-                      <p className="font-medium">{pet.name}</p>
-                      <p className="text-sm text-muted-foreground">RAP: {formatNumber(pet.rapValue)}</p>
+                      <p className="text-sm font-medium">{pet.name}</p>
+                      <p className="text-xs text-muted-foreground">RAP: {formatNumber(pet.rapValue)}</p>
                     </div>
                   </button>
                 ))
@@ -230,10 +228,10 @@ export function SABCalculator() {
 
           {/* Result Display */}
           {selectedPet && (
-            <div className="rounded-lg border-2 border-brand/50 bg-brand/10 p-4 text-center">
-              <p className="text-sm text-muted-foreground">Calculated Value</p>
-              <p className="mt-1 text-3xl md:text-4xl font-bold text-brand">{formatNumber(calculatedValue)}</p>
-              <p className="mt-1 text-xs text-muted-foreground">
+            <div className="rounded-lg border-2 border-brand/50 bg-brand/10 p-3 text-center">
+              <p className="text-xs text-muted-foreground">Calculated Value</p>
+              <p className="mt-0.5 text-2xl md:text-3xl font-bold text-brand">{formatNumber(calculatedValue)}</p>
+              <p className="mt-0.5 text-[10px] text-muted-foreground">
                 Base: {formatNumber(selectedPet.rapValue)} × Mutation:{" "}
                 {selectedMutation ? MUTATIONS.find((m) => m.id === selectedMutation)?.multiplier : 1}x × Traits:{" "}
                 {selectedTraits.length > 0
@@ -249,27 +247,27 @@ export function SABCalculator() {
       </Card>
 
       {/* Mutations Section */}
-      <Card className="p-4 md:p-6">
-        <h2 className="text-xl font-semibold mb-4">Mutation (Select One)</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <Card className="p-3 md:p-4">
+        <h2 className="text-base font-semibold mb-2.5">Mutation (Select One)</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
           {MUTATIONS.map((mutation) => (
             <button
               key={mutation.id}
               onClick={() => setSelectedMutation(mutation.id === selectedMutation ? null : mutation.id)}
-              className={`relative flex items-center justify-between rounded-xl p-3 transition-all duration-200 ${
+              className={`relative flex items-center justify-between rounded-lg p-2.5 transition-all duration-200 ${
                 mutation.color
               } ${
                 selectedMutation === mutation.id
-                  ? "ring-4 ring-white/50 scale-105 shadow-lg"
+                  ? "ring-2 ring-white/50 scale-105 shadow-lg"
                   : "opacity-70 hover:opacity-100 hover:scale-102"
               }`}
             >
-              <span className="font-semibold text-white drop-shadow-md">{mutation.name}</span>
-              <div className="flex items-center gap-2">
-                <span className="rounded-full bg-white/90 px-3 py-1 text-sm font-bold text-gray-900">
+              <span className="text-sm font-semibold text-white drop-shadow-md">{mutation.name}</span>
+              <div className="flex items-center gap-1.5">
+                <span className="rounded-full bg-white/90 px-2 py-0.5 text-xs font-bold text-gray-900">
                   {mutation.multiplier}x
                 </span>
-                {selectedMutation === mutation.id && <X className="h-5 w-5 text-white" />}
+                {selectedMutation === mutation.id && <X className="h-4 w-4 text-white" />}
               </div>
             </button>
           ))}
@@ -277,27 +275,27 @@ export function SABCalculator() {
       </Card>
 
       {/* Traits Section */}
-      <Card className="p-4 md:p-6">
-        <h2 className="text-xl font-semibold mb-4">Traits (Select Multiple)</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <Card className="p-3 md:p-4">
+        <h2 className="text-base font-semibold mb-2.5">Traits (Select Multiple)</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
           {TRAITS.map((trait) => (
             <button
               key={trait.id}
               onClick={() => toggleTrait(trait.id)}
-              className={`relative flex items-center justify-between rounded-xl p-3 transition-all duration-200 ${
+              className={`relative flex items-center justify-between rounded-lg p-2.5 transition-all duration-200 ${
                 trait.color
               } ${
                 selectedTraits.includes(trait.id)
-                  ? "ring-4 ring-white/50 scale-105 shadow-lg"
+                  ? "ring-2 ring-white/50 scale-105 shadow-lg"
                   : "opacity-70 hover:opacity-100 hover:scale-102"
               }`}
             >
-              <span className="font-semibold text-white drop-shadow-md">{trait.name}</span>
-              <div className="flex items-center gap-2">
-                <span className="rounded-full bg-white/90 px-3 py-1 text-sm font-bold text-gray-900">
+              <span className="text-sm font-semibold text-white drop-shadow-md">{trait.name}</span>
+              <div className="flex items-center gap-1.5">
+                <span className="rounded-full bg-white/90 px-2 py-0.5 text-xs font-bold text-gray-900">
                   {trait.multiplier}x
                 </span>
-                {selectedTraits.includes(trait.id) && <X className="h-5 w-5 text-white" />}
+                {selectedTraits.includes(trait.id) && <X className="h-4 w-4 text-white" />}
               </div>
             </button>
           ))}
@@ -315,7 +313,7 @@ export function SABCalculator() {
               setSearchQuery("")
             }}
             variant="outline"
-            className="h-12 px-8"
+            className="h-9 px-6 text-sm"
           >
             Reset Calculator
           </Button>
