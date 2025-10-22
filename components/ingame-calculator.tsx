@@ -31,6 +31,8 @@ export function IngameCalculator() {
   const handleGameSelect = (selectedGame: "MM2" | "SAB" | "GAG" | "Adopt Me") => {
     if (selectedGame === "SAB") {
       router.push("/sab-calculator")
+    } else if (selectedGame === "Adopt Me") {
+      router.push("/adoptme-calculator")
     } else {
       setGame(selectedGame)
     }
