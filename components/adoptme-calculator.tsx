@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { X, Search, Info } from "lucide-react"
+import { X, Search, Info, AlertCircle } from "lucide-react"
 
 interface AdoptMePet {
   id: string
@@ -50,12 +50,12 @@ export function AdoptMeCalculator() {
           id: item.id,
           name: item.name,
           game: item.game,
-          baseValue: toNumber(item.rapValue || item.rap_value || item.value || item.baseValue),
-          neonValue: toNumber(item.neonValue || item.neon_value || 0),
-          megaValue: toNumber(item.megaValue || item.mega_value || 0),
-          flyBonus: toNumber(item.flyBonus || item.fly_bonus || 50),
-          rideBonus: toNumber(item.rideBonus || item.ride_bonus || 50),
-          imageUrl: item.imageUrl || item.image_url,
+          baseValue: toNumber(item.rap_value || item.value),
+          neonValue: toNumber(item.neon_value),
+          megaValue: toNumber(item.mega_value),
+          flyBonus: toNumber(item.fly_bonus || 50),
+          rideBonus: toNumber(item.ride_bonus || 50),
+          imageUrl: item.image_url,
           section: item.section,
           rarity: item.rarity,
         }))
@@ -172,6 +172,13 @@ export function AdoptMeCalculator() {
     setSearchQuery("")
   }
 
+  const isVariantValueMissing = () => {
+    if (!selectedPet) return false
+    if (variant === "neon" && selectedPet.neonValue === 0) return true
+    if (variant === "mega" && selectedPet.megaValue === 0) return true
+    return false
+  }
+
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -179,6 +186,19 @@ export function AdoptMeCalculator() {
         <h1 className="text-2xl md:text-3xl font-bold text-balance">Adopt Me Value Calculator</h1>
         <p className="mt-1 text-xs md:text-sm text-muted-foreground">Calculate pet values with potions and variants</p>
       </div>
+
+      <Card className="p-3 bg-blue-500/10 border-blue-500/20">
+        <div className="flex gap-2">
+          <Info className="h-4 w-4 text-blue-500 flex-shrink-0 mt-0.5" />
+          <div className="text-xs text-muted-foreground">
+            <p className="font-medium text-foreground mb-1">Values from Your Value List</p>
+            <p>
+              This calculator uses values from your items database. NFR (Neon) and MFR (Mega) values must be manually
+              set for each pet in the database, as they vary significantly and cannot be calculated automatically.
+            </p>
+          </div>
+        </div>
+      </Card>
 
       <Card className="p-3 md:p-4">
         <div className="space-y-3">
@@ -267,6 +287,23 @@ export function AdoptMeCalculator() {
                 </p>
               </div>
 
+              {isVariantValueMissing() && (
+                <Card className="p-2.5 bg-yellow-500/10 border-yellow-500/20">
+                  <div className="flex gap-2">
+                    <AlertCircle className="h-4 w-4 text-yellow-500 flex-shrink-0 mt-0.5" />
+                    <div className="text-xs">
+                      <p className="font-medium text-yellow-600 dark:text-yellow-500">
+                        {variant === "neon" ? "Neon" : "Mega"} value not set
+                      </p>
+                      <p className="text-muted-foreground mt-0.5">
+                        This pet doesn't have a {variant} value in the database yet. Add it to your value list to see
+                        accurate calculations.
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              )}
+
               <Card className="p-2.5 bg-muted/50">
                 <div className="space-y-1.5 text-xs">
                   <div className="flex items-center justify-between">
@@ -277,7 +314,9 @@ export function AdoptMeCalculator() {
                     <>
                       <div className="flex items-center justify-between">
                         <span className="text-muted-foreground">Neon Value:</span>
-                        <span className="font-medium">{formatNumber(selectedPet.neonValue)}</span>
+                        <span className="font-medium">
+                          {selectedPet.neonValue > 0 ? formatNumber(selectedPet.neonValue) : "Not set"}
+                        </span>
                       </div>
                       {getValueMultiplier() && (
                         <div className="flex items-center justify-between text-[10px]">
@@ -294,7 +333,9 @@ export function AdoptMeCalculator() {
                     <>
                       <div className="flex items-center justify-between">
                         <span className="text-muted-foreground">Mega Value:</span>
-                        <span className="font-medium">{formatNumber(selectedPet.megaValue)}</span>
+                        <span className="font-medium">
+                          {selectedPet.megaValue > 0 ? formatNumber(selectedPet.megaValue) : "Not set"}
+                        </span>
                       </div>
                       {getValueMultiplier() && (
                         <div className="flex items-center justify-between text-[10px]">
@@ -336,15 +377,9 @@ export function AdoptMeCalculator() {
                       </p>
                       <p>
                         {variant === "neon"
-                          ? "Neon pets require 3 identical pets to create. Values are manually set and vary by pet."
-                          : "Mega pets require 3 identical Neon pets to create. Values are manually set and vary by pet."}
+                          ? "Neon pets require 4 identical pets to create. Values are manually set and vary by pet."
+                          : "Mega pets require 4 identical Neon pets to create. Values are manually set and vary by pet."}
                       </p>
-                      {(variant === "neon" && selectedPet.neonValue === 0) ||
-                      (variant === "mega" && selectedPet.megaValue === 0) ? (
-                        <p className="mt-1 text-yellow-600 dark:text-yellow-500 font-medium">
-                          ⚠️ {variant === "neon" ? "Neon" : "Mega"} value not set for this pet yet.
-                        </p>
-                      ) : null}
                     </div>
                   </div>
                 </div>

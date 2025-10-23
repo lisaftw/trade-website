@@ -1,0 +1,7740 @@
+{
+   "Fragile_G_2023": {
+      "chroma": false,
+      "display_name": "Fragile",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "12965349193",
+      "rarity": "Common"
+   },
+   "Gingerscythe": {
+      "chroma": false,
+      "display_name": "Gingerscythe",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15683138101",
+      "rarity": "Rare"
+   },
+   "Skulls_K_2021": {
+      "chroma": false,
+      "display_name": "Skulls",
+      "item_type": "Knife",
+      "value": 5,
+      "thumbnail": "7800220325",
+      "rarity": "Uncommon"
+   },
+   "Stickers_G_2024": {
+      "chroma": false,
+      "display_name": "Stickers",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "108122054293502",
+      "rarity": "Common"
+   },
+   "Frozen_K_2023": {
+      "chroma": false,
+      "display_name": "Frozen",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15635556891",
+      "rarity": "Common"
+   },
+   "Tropical_K_2025": {
+      "chroma": false,
+      "display_name": "Tropical",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "111291962899457",
+      "rarity": "Rare"
+   },
+   "Sparkle1": {
+      "chroma": false,
+      "display_name": "Sparkle1",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "310709709",
+      "rarity": "Common"
+   },
+   "BronzeIcebreaker": {
+      "chroma": false,
+      "display_name": "Bronze Icebreaker",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "6404127119",
+      "rarity": "Unique"
+   },
+   "SwirlyGun": {
+      "chroma": false,
+      "display_name": "Swirly Gun",
+      "item_type": "Gun",
+      "value": 45,
+      "thumbnail": "8305002569",
+      "rarity": "Godly"
+   },
+   "DogFire": {
+      "chroma": false,
+      "display_name": "Fire Dog",
+      "item_type": "Pet",
+      "value": 17,
+      "thumbnail": "3215185833",
+      "rarity": "Godly"
+   },
+   "SeerChroma": {
+      "chroma": true,
+      "display_name": "Seer",
+      "item_type": "Knife",
+      "value": 45,
+      "thumbnail": "3184140321",
+      "rarity": "Godly"
+   },
+   "UFO": {
+      "chroma": false,
+      "display_name": "UFO",
+      "item_type": "Pet",
+      "value": 5,
+      "thumbnail": "357654905",
+      "rarity": "Common"
+   },
+   "Bunny": {
+      "chroma": false,
+      "display_name": "Bunny",
+      "item_type": "Pet",
+      "value": 1,
+      "thumbnail": "3215086319",
+      "rarity": "Common"
+   },
+   "Prismatic": {
+      "chroma": false,
+      "display_name": "Prismatic",
+      "item_type": "Knife",
+      "value": 7,
+      "thumbnail": "5360359935",
+      "rarity": "Godly"
+   },
+   "Summer_Stickers_K_2023": {
+      "chroma": false,
+      "display_name": "Stickers",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "13944129977",
+      "rarity": "Common"
+   },
+   "Ghosts_K_2020": {
+      "chroma": false,
+      "display_name": "Ghosts",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "5866442790",
+      "rarity": "Uncommon"
+   },
+   "Cane": {
+      "chroma": false,
+      "display_name": "Cane",
+      "item_type": "Knife",
+      "value": 63,
+      "thumbnail": "331140746",
+      "rarity": "Rare"
+   },
+   "FangChroma": {
+      "chroma": true,
+      "display_name": "Fang",
+      "item_type": "Knife",
+      "value": 50,
+      "thumbnail": "3187397850",
+      "rarity": "Godly"
+   },
+   "Jack_K_2022": {
+      "chroma": false,
+      "display_name": "Lantern",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11254093910",
+      "rarity": "Uncommon"
+   },
+   "EternalCane": {
+      "chroma": false,
+      "display_name": "Eternalcane",
+      "item_type": "Knife",
+      "value": 20,
+      "thumbnail": "4488391411",
+      "rarity": "Godly"
+   },
+   "Striped_G_2025": {
+      "chroma": false,
+      "display_name": "Striped",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "118530164125152",
+      "rarity": "Common"
+   },
+   "Arctic_G_2022": {
+      "chroma": false,
+      "display_name": "Arctic",
+      "item_type": "Gun",
+      "value": 4,
+      "thumbnail": "11834443783",
+      "rarity": "Legendary"
+   },
+   "Snowflakes_K_2020": {
+      "chroma": false,
+      "display_name": "Snowflakes",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "6123338102",
+      "rarity": "Rare"
+   },
+   "Scarf_K_2023": {
+      "chroma": false,
+      "display_name": "Scarf",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15415482999",
+      "rarity": "Common"
+   },
+   "Stockings_G_2022": {
+      "chroma": false,
+      "display_name": "Stockings",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "11834440319",
+      "rarity": "Uncommon"
+   },
+   "Ritual_G_2024": {
+      "chroma": false,
+      "display_name": "Ritual",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "122021199074749",
+      "rarity": "Rare"
+   },
+   "Deathspeaker": {
+      "chroma": false,
+      "display_name": "Deathspeaker",
+      "item_type": "Pet",
+      "value": 4,
+      "thumbnail": "357651865",
+      "rarity": "Godly"
+   },
+   "Snowflakes_G_2019": {
+      "chroma": false,
+      "display_name": "Snowflakes",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "4534866065",
+      "rarity": "Common"
+   },
+   "BronzeIceblaster": {
+      "chroma": false,
+      "display_name": "Bronze Iceblaster",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "6404167442",
+      "rarity": "Unique"
+   },
+   "Brains2019": {
+      "chroma": false,
+      "display_name": "Brains",
+      "item_type": "Knife",
+      "value": 40,
+      "thumbnail": "4210929184",
+      "rarity": "Uncommon"
+   },
+   "ConstellationChroma": {
+      "chroma": true,
+      "display_name": "Constellation",
+      "item_type": "Gun",
+      "value": 13500,
+      "thumbnail": "98517109155878",
+      "rarity": "Godly"
+   },
+   "Camo": {
+      "chroma": false,
+      "display_name": "Camo",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "160024789",
+      "rarity": "Uncommon"
+   },
+   "Season1TestKnife": {
+      "chroma": false,
+      "display_name": "S1 Test Knife",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "191788694",
+      "rarity": "Common"
+   },
+   "Stickers_K_2022": {
+      "chroma": false,
+      "display_name": "Stickers",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11254067158",
+      "rarity": "Common"
+   },
+   "Elf": {
+      "chroma": false,
+      "display_name": "Elf",
+      "item_type": "Knife",
+      "value": 8,
+      "thumbnail": "331746317",
+      "rarity": "Common"
+   },
+   "SilverHallow": {
+      "chroma": false,
+      "display_name": "Silver Hallow",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "2511341094",
+      "rarity": "Unique"
+   },
+   "FoxFire": {
+      "chroma": false,
+      "display_name": "Fire Fox",
+      "item_type": "Pet",
+      "value": 13,
+      "thumbnail": "3215186192",
+      "rarity": "Godly"
+   },
+   "Saw": {
+      "chroma": false,
+      "display_name": "Saw",
+      "item_type": "Knife",
+      "value": 7,
+      "thumbnail": "3187397991",
+      "rarity": "Godly"
+   },
+   "Ribbons_K_2021": {
+      "chroma": false,
+      "display_name": "Ribbons",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "8304754882",
+      "rarity": "Common"
+   },
+   "Sparkle6": {
+      "chroma": false,
+      "display_name": "Sparkle6",
+      "item_type": "Knife",
+      "value": 12,
+      "thumbnail": "310713648",
+      "rarity": "Common"
+   },
+   "RbxScary_K_2023": {
+      "chroma": false,
+      "display_name": "Ghoulish",
+      "item_type": "Knife",
+      "value": 30,
+      "thumbnail": "14967668214",
+      "rarity": "Common"
+   },
+   "SunsetGun": {
+      "chroma": false,
+      "display_name": "Sunrise",
+      "item_type": "Gun",
+      "value": 265,
+      "thumbnail": "129480661108374",
+      "rarity": "Godly"
+   },
+   "Vampire": {
+      "chroma": false,
+      "display_name": "Vampire",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "531873248",
+      "rarity": "Uncommon"
+   },
+   "Carrots_K_2025": {
+      "chroma": false,
+      "display_name": "Carrots",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "76914260444878",
+      "rarity": "Common"
+   },
+   "GhostG2018": {
+      "chroma": false,
+      "display_name": "Ghost",
+      "item_type": "Gun",
+      "value": 2,
+      "thumbnail": "2513741407",
+      "rarity": "Legendary"
+   },
+   "Roses": {
+      "chroma": false,
+      "display_name": "Roses",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "363352002",
+      "rarity": "Common"
+   },
+   "GoldCandy": {
+      "chroma": false,
+      "display_name": "Gold Candy",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "1520188792",
+      "rarity": "Unique"
+   },
+   "Phaser": {
+      "chroma": false,
+      "display_name": "Phaser",
+      "item_type": "Gun",
+      "value": 6,
+      "thumbnail": "144325423",
+      "rarity": "Classic"
+   },
+   "ElderwoodGunSilver": {
+      "chroma": false,
+      "display_name": "Silver Elderwood",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "4468583758",
+      "rarity": "Unique"
+   },
+   "Fairy": {
+      "chroma": false,
+      "display_name": "Fairy",
+      "item_type": "Pet",
+      "value": 15,
+      "thumbnail": "358125321",
+      "rarity": "Uncommon"
+   },
+   "Ornament1": {
+      "chroma": false,
+      "display_name": "Ornament",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "331745428",
+      "rarity": "Common"
+   },
+   "Passion": {
+      "chroma": false,
+      "display_name": "Passion",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "363150334",
+      "rarity": "Common"
+   },
+   "Ripper_G_2020": {
+      "chroma": false,
+      "display_name": "Ripper",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "5866460591",
+      "rarity": "Legendary"
+   },
+   "IceHammerRed": {
+      "chroma": false,
+      "display_name": "Red Icecrusher",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "12227186408",
+      "rarity": "Unique"
+   },
+   "Harvester": {
+      "chroma": false,
+      "display_name": "Harvester",
+      "item_type": "Gun",
+      "value": 525,
+      "thumbnail": "7800847534",
+      "rarity": "Ancient"
+   },
+   "Nether": {
+      "chroma": false,
+      "display_name": "Nether",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "197657098",
+      "rarity": "Rare"
+   },
+   "BronzeHallow": {
+      "chroma": false,
+      "display_name": "Bronze Hallow",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "2511342846",
+      "rarity": "Unique"
+   },
+   "GreenLuger": {
+      "chroma": false,
+      "display_name": "Green Luger",
+      "item_type": "Gun",
+      "value": 35,
+      "thumbnail": "332044679",
+      "rarity": "Godly"
+   },
+   "Melon": {
+      "chroma": false,
+      "display_name": "Melon",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "315501369",
+      "rarity": "Uncommon"
+   },
+   "BronzeVampiresEdge": {
+      "chroma": false,
+      "display_name": "Bronze Vamp's Edge",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "12253493272",
+      "rarity": "Unique"
+   },
+   "Plasmablade": {
+      "chroma": false,
+      "display_name": "Plasmablade",
+      "item_type": "Knife",
+      "value": 25,
+      "thumbnail": "10014680882",
+      "rarity": "Godly"
+   },
+   "Wraith_K_2022": {
+      "chroma": false,
+      "display_name": "Wraith",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11254118399",
+      "rarity": "Rare"
+   },
+   "Zombie_K_2021": {
+      "chroma": false,
+      "display_name": "Zombie",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "7800222975",
+      "rarity": "Uncommon"
+   },
+   "MagmaK": {
+      "chroma": false,
+      "display_name": "Magma",
+      "item_type": "Knife",
+      "value": 5,
+      "thumbnail": "1133317890",
+      "rarity": "Rare"
+   },
+   "Chromatic_G_2023": {
+      "chroma": false,
+      "display_name": "Chromatic",
+      "item_type": "Gun",
+      "value": 2,
+      "thumbnail": "12965339774",
+      "rarity": "Legendary"
+   },
+   "RedPumpkin2021": {
+      "chroma": false,
+      "display_name": "Red Pumpkin",
+      "item_type": "Pet",
+      "value": 7,
+      "thumbnail": "7808168565",
+      "rarity": "Legendary"
+   },
+   "HallowsBlade": {
+      "chroma": false,
+      "display_name": "Hallow's Blade",
+      "item_type": "Knife",
+      "value": 8,
+      "thumbnail": "1132775323",
+      "rarity": "Godly"
+   },
+   "Bones": {
+      "chroma": false,
+      "display_name": "Bones",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "531873816",
+      "rarity": "Common"
+   },
+   "WraithGun": {
+      "chroma": false,
+      "display_name": "Soul",
+      "item_type": "Gun",
+      "value": 255,
+      "thumbnail": "75233248021696",
+      "rarity": "Godly"
+   },
+   "Pumpkin_K_2020": {
+      "chroma": false,
+      "display_name": "Pumpkin",
+      "item_type": "Knife",
+      "value": 2,
+      "thumbnail": "5872490600",
+      "rarity": "Uncommon"
+   },
+   "FallCamo_G_2021": {
+      "chroma": false,
+      "display_name": "Fall Camo",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "7800257544",
+      "rarity": "Uncommon"
+   },
+   "Rainbow_G": {
+      "chroma": false,
+      "display_name": "Rainbow Gun",
+      "item_type": "Gun",
+      "value": 250,
+      "thumbnail": "12966354606",
+      "rarity": "Godly"
+   },
+   "Darkbringer": {
+      "chroma": false,
+      "display_name": "Darkbringer",
+      "item_type": "Gun",
+      "value": 60,
+      "thumbnail": "4751387674",
+      "rarity": "Godly"
+   },
+   "Web": {
+      "chroma": false,
+      "display_name": "Web",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "315104004",
+      "rarity": "Legendary"
+   },
+   "Pumpkin2020": {
+      "chroma": false,
+      "display_name": "Pumpkin",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "5872653912",
+      "rarity": "Common"
+   },
+   "DogChroma": {
+      "chroma": true,
+      "display_name": "Fire Dog",
+      "item_type": "Pet",
+      "value": 15,
+      "thumbnail": "3215183415",
+      "rarity": "Godly"
+   },
+   "Wrapped_K_2018": {
+      "chroma": false,
+      "display_name": "Wrapped",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "2669640357",
+      "rarity": "Common"
+   },
+   "News": {
+      "chroma": false,
+      "display_name": "News",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "238546032",
+      "rarity": "Common"
+   },
+   "Tankie": {
+      "chroma": false,
+      "display_name": "Tankie",
+      "item_type": "Pet",
+      "value": 10,
+      "thumbnail": "357793334",
+      "rarity": "Rare"
+   },
+   "Meadow_G_2025": {
+      "chroma": false,
+      "display_name": "Meadow",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "107321881182350",
+      "rarity": "Uncommon"
+   },
+   "Brains_G_2022": {
+      "chroma": false,
+      "display_name": "Brains",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "11284145298",
+      "rarity": "Uncommon"
+   },
+   "BronzeCandy": {
+      "chroma": false,
+      "display_name": "Bronze Candy",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "1520189487",
+      "rarity": "Unique"
+   },
+   "Retro_K_2025": {
+      "chroma": false,
+      "display_name": "Retro",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "85299848190695",
+      "rarity": "Uncommon"
+   },
+   "Stickers_K_2025": {
+      "chroma": false,
+      "display_name": "Stickers",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "98868784444742",
+      "rarity": "Common"
+   },
+   "Candleflame_G_2024": {
+      "chroma": false,
+      "display_name": "Candleflame",
+      "item_type": "Gun",
+      "value": 68,
+      "thumbnail": "90595111293037",
+      "rarity": "Rare"
+   },
+   "Haunted_K_2021": {
+      "chroma": false,
+      "display_name": "Haunted",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "7800222135",
+      "rarity": "Common"
+   },
+   "Giftwrap_K_2021": {
+      "chroma": false,
+      "display_name": "Giftwrap",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "8304754179",
+      "rarity": "Common"
+   },
+   "SilentNight_G_2020": {
+      "chroma": false,
+      "display_name": "Silent Night",
+      "item_type": "Gun",
+      "value": 15,
+      "thumbnail": "6121862034",
+      "rarity": "Rare"
+   },
+   "Gift_G_2020": {
+      "chroma": false,
+      "display_name": "Wrap",
+      "item_type": "Gun",
+      "value": 5,
+      "thumbnail": "6121867603",
+      "rarity": "Uncommon"
+   },
+   "SnakebiteK": {
+      "chroma": false,
+      "display_name": "Snakebite",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "4210939388",
+      "rarity": "Rare"
+   },
+   "WatergunChroma": {
+      "chroma": true,
+      "display_name": "Watergun",
+      "item_type": "Gun",
+      "value": 2700,
+      "thumbnail": "18351465514",
+      "rarity": "Godly"
+   },
+   "Ghosts_G_2021": {
+      "chroma": false,
+      "display_name": "Wraiths",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "7800251557",
+      "rarity": "Uncommon"
+   },
+   "BlueCandy": {
+      "chroma": false,
+      "display_name": "Blue Candy",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "1489495701",
+      "rarity": "Unique"
+   },
+   "Sakura_K": {
+      "chroma": false,
+      "display_name": "Sakura",
+      "item_type": "Knife",
+      "value": 940,
+      "thumbnail": "12339366064",
+      "rarity": "Godly"
+   },
+   "GreenPumpkin19": {
+      "chroma": false,
+      "display_name": "Green Pumpkin",
+      "item_type": "Pet",
+      "value": 50,
+      "thumbnail": "4213261644",
+      "rarity": "Rare"
+   },
+   "Pool_K_2025": {
+      "chroma": false,
+      "display_name": "Pool",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "112511843095202",
+      "rarity": "Uncommon"
+   },
+   "BlackCat": {
+      "chroma": false,
+      "display_name": "Black Cat",
+      "item_type": "Pet",
+      "value": 65,
+      "thumbnail": "4212593167",
+      "rarity": "Common"
+   },
+   "BatChroma": {
+      "chroma": true,
+      "display_name": "Fire Bat",
+      "item_type": "Pet",
+      "value": 15,
+      "thumbnail": "3215184228",
+      "rarity": "Godly"
+   },
+   "BluePumpkin19": {
+      "chroma": false,
+      "display_name": "Blue Pumpkin",
+      "item_type": "Pet",
+      "value": 80,
+      "thumbnail": "4213225657",
+      "rarity": "Uncommon"
+   },
+   "Fanta": {
+      "chroma": false,
+      "display_name": "Orange",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "473626025",
+      "rarity": "Common"
+   },
+   "Snoop": {
+      "chroma": false,
+      "display_name": "Red",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "473626150",
+      "rarity": "Uncommon"
+   },
+   "Pig": {
+      "chroma": false,
+      "display_name": "Pig",
+      "item_type": "Pet",
+      "value": 13,
+      "thumbnail": "3215087054",
+      "rarity": "Uncommon"
+   },
+   "ElderwoodGunGold": {
+      "chroma": false,
+      "display_name": "Gold Elderwood",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "4468584345",
+      "rarity": "Unique"
+   },
+   "Frostbird": {
+      "chroma": false,
+      "display_name": "Frostbird",
+      "item_type": "Pet",
+      "value": 2,
+      "thumbnail": "2669820759",
+      "rarity": "Godly"
+   },
+   "Cheddar": {
+      "chroma": false,
+      "display_name": "Cheddar",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "203808317",
+      "rarity": "Uncommon"
+   },
+   "Pengy": {
+      "chroma": false,
+      "display_name": "Pengy",
+      "item_type": "Pet",
+      "value": 13,
+      "thumbnail": "357655751",
+      "rarity": "Common"
+   },
+   "Aurora_G_2021": {
+      "chroma": false,
+      "display_name": "Aurora",
+      "item_type": "Gun",
+      "value": 2,
+      "thumbnail": "8304766165",
+      "rarity": "Legendary"
+   },
+   "Cheesy": {
+      "chroma": false,
+      "display_name": "Cheesy",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "198455898",
+      "rarity": "Uncommon"
+   },
+   "Darkness_G_2022": {
+      "chroma": false,
+      "display_name": "Darkness",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "11255507374",
+      "rarity": "Common"
+   },
+   "Ghosts_K_2021": {
+      "chroma": false,
+      "display_name": "Wraiths",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "7808362279",
+      "rarity": "Uncommon"
+   },
+   "Steel_G_2023": {
+      "chroma": false,
+      "display_name": "Steel",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "15091341552",
+      "rarity": "Uncommon"
+   },
+   "SilverIceblaster": {
+      "chroma": false,
+      "display_name": "Silver Iceblaster",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "6404166698",
+      "rarity": "Unique"
+   },
+   "TravelerGun": {
+      "chroma": false,
+      "display_name": "Traveler's Gun",
+      "item_type": "Gun",
+      "value": 3950,
+      "thumbnail": "15091442039",
+      "rarity": "Godly"
+   },
+   "Pepper": {
+      "chroma": false,
+      "display_name": "Brown",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "473625645",
+      "rarity": "Common"
+   },
+   "Moons_K_2024": {
+      "chroma": false,
+      "display_name": "Moons",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "91446990047399",
+      "rarity": "Uncommon"
+   },
+   "Graffiti": {
+      "chroma": false,
+      "display_name": "Graffiti",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "4659634630",
+      "rarity": "Uncommon"
+   },
+   "Spectral_K_2021": {
+      "chroma": false,
+      "display_name": "Spectral",
+      "item_type": "Knife",
+      "value": 2,
+      "thumbnail": "7800226793",
+      "rarity": "Legendary"
+   },
+   "ShadowPumpkin2021": {
+      "chroma": false,
+      "display_name": "Shadow Pumpkin",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "7808169962",
+      "rarity": "Uncommon"
+   },
+   "Constellation_Bronze": {
+      "chroma": false,
+      "display_name": "Bronze Constellation",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "112811587103866",
+      "rarity": "Unique"
+   },
+   "Cat": {
+      "chroma": false,
+      "display_name": "Cat",
+      "item_type": "Pet",
+      "value": 18,
+      "thumbnail": "3215085475",
+      "rarity": "Common"
+   },
+   "Biogun": {
+      "chroma": false,
+      "display_name": "Biogun",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "4659627458",
+      "rarity": "Uncommon"
+   },
+   "BluePumpkin2020": {
+      "chroma": false,
+      "display_name": "Blue Pumpkin",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "5872655265",
+      "rarity": "Uncommon"
+   },
+   "Leaves_G_2024": {
+      "chroma": false,
+      "display_name": "Leaves",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "129970927613267",
+      "rarity": "Uncommon"
+   },
+   "Cursed_K_2024": {
+      "chroma": false,
+      "display_name": "Cursed",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "132565936309463",
+      "rarity": "Legendary"
+   },
+   "Fang": {
+      "chroma": false,
+      "display_name": "Fang",
+      "item_type": "Knife",
+      "value": 13,
+      "thumbnail": "3187397768",
+      "rarity": "Godly"
+   },
+   "Heart_K_2023": {
+      "chroma": false,
+      "display_name": "Heart",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "12339327069",
+      "rarity": "Rare"
+   },
+   "VoidRbx": {
+      "chroma": false,
+      "display_name": "Void",
+      "item_type": "Knife",
+      "value": 12,
+      "thumbnail": "11548082732",
+      "rarity": "Uncommon"
+   },
+   "Phantom": {
+      "chroma": false,
+      "display_name": "Phantom",
+      "item_type": "Knife",
+      "value": 8,
+      "thumbnail": "1133332075",
+      "rarity": "Common"
+   },
+   "Snowbear2021": {
+      "chroma": false,
+      "display_name": "Snowbear",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "8304824809",
+      "rarity": "Common"
+   },
+   "Snowman_K_2022": {
+      "chroma": false,
+      "display_name": "Snowman",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11834391469",
+      "rarity": "Common"
+   },
+   "Splash": {
+      "chroma": false,
+      "display_name": "Splash",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "235371439",
+      "rarity": "Legendary"
+   },
+   "BigKill": {
+      "chroma": false,
+      "display_name": "Big Kill",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "162669041",
+      "rarity": "Common"
+   },
+   "Fox": {
+      "chroma": false,
+      "display_name": "Fox",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "3215086785",
+      "rarity": "Uncommon"
+   },
+   "Wrapped": {
+      "chroma": false,
+      "display_name": "Wrapped",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "331745500",
+      "rarity": "Uncommon"
+   },
+   "Dark_K_2023": {
+      "chroma": false,
+      "display_name": "Darkknife",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "15091343579",
+      "rarity": "Rare"
+   },
+   "Cracks_K_2021": {
+      "chroma": false,
+      "display_name": "Cracks",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "7800224981",
+      "rarity": "Common"
+   },
+   "Darkshot": {
+      "chroma": false,
+      "display_name": "Darkshot",
+      "item_type": "Gun",
+      "value": 745,
+      "thumbnail": "15080280688",
+      "rarity": "Godly"
+   },
+   "Lucky": {
+      "chroma": false,
+      "display_name": "Lucky",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "365569265",
+      "rarity": "Uncommon"
+   },
+   "Bluesteel": {
+      "chroma": false,
+      "display_name": "Bluesteel",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "159947939",
+      "rarity": "Uncommon"
+   },
+   "HighTech": {
+      "chroma": false,
+      "display_name": "High Tech",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "4659635055",
+      "rarity": "Uncommon"
+   },
+   "Snowflakes_K_2019": {
+      "chroma": false,
+      "display_name": "Snowflakes",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "4534855045",
+      "rarity": "Common"
+   },
+   "Reindeer2020": {
+      "chroma": false,
+      "display_name": "Mr. Reindeer",
+      "item_type": "Pet",
+      "value": 2,
+      "thumbnail": "6121725088",
+      "rarity": "Rare"
+   },
+   "Electro": {
+      "chroma": false,
+      "display_name": "Electro",
+      "item_type": "Pet",
+      "value": 2,
+      "thumbnail": "386277688",
+      "rarity": "Godly"
+   },
+   "CandyCorn_G_2020": {
+      "chroma": false,
+      "display_name": "Candy Corn",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "5866454590",
+      "rarity": "Common"
+   },
+   "Traveler_K_2023": {
+      "chroma": false,
+      "display_name": "Traveler",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "15091407901",
+      "rarity": "Legendary"
+   },
+   "Splat": {
+      "chroma": false,
+      "display_name": "Splat",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "3183639522",
+      "rarity": "Common"
+   },
+   "Jetstream": {
+      "chroma": false,
+      "display_name": "Jetstream",
+      "item_type": "Pet",
+      "value": 15,
+      "thumbnail": "358126292",
+      "rarity": "Rare"
+   },
+   "Gingerbread_K_2020": {
+      "chroma": false,
+      "display_name": "Gingerbread",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "6121850031",
+      "rarity": "Uncommon"
+   },
+   "SwirlyAxeBronze": {
+      "chroma": false,
+      "display_name": "Bronze Swirly",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "9552050165",
+      "rarity": "Unique"
+   },
+   "RIP": {
+      "chroma": false,
+      "display_name": "RIP",
+      "item_type": "Gun",
+      "value": 12,
+      "thumbnail": "4210947993",
+      "rarity": "Common"
+   },
+   "GreenPumpkin2020": {
+      "chroma": false,
+      "display_name": "Pumpkin",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "5872657101",
+      "rarity": "Rare"
+   },
+   "PumpkinPet19": {
+      "chroma": false,
+      "display_name": "Pumpkin",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "4213215455",
+      "rarity": "Common"
+   },
+   "XmasStickers_K_2021": {
+      "chroma": false,
+      "display_name": "Stickers",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "8304755417",
+      "rarity": "Common"
+   },
+   "Aurora_G_2019": {
+      "chroma": false,
+      "display_name": "Aurora",
+      "item_type": "Gun",
+      "value": 2,
+      "thumbnail": "4534875165",
+      "rarity": "Rare"
+   },
+   "Carrot_K_2023": {
+      "chroma": false,
+      "display_name": "Carrot",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "12965307410",
+      "rarity": "Uncommon"
+   },
+   "Gingerscythe_Bronze": {
+      "chroma": false,
+      "display_name": "Bronze Gingerscythe",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "16964449392",
+      "rarity": "Unique"
+   },
+   "Steambird": {
+      "chroma": false,
+      "display_name": "Steambird",
+      "item_type": "Pet",
+      "value": 1,
+      "thumbnail": "360615840",
+      "rarity": "Godly"
+   },
+   "Tree_K_2022": {
+      "chroma": false,
+      "display_name": "Tree",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "11834400185",
+      "rarity": "Rare"
+   },
+   "Frozen_G_2022": {
+      "chroma": false,
+      "display_name": "Frozen",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "11834445016",
+      "rarity": "Common"
+   },
+   "Dog": {
+      "chroma": false,
+      "display_name": "Dog",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "3215085821",
+      "rarity": "Common"
+   },
+   "Gingerscope_Silver": {
+      "chroma": false,
+      "display_name": "Silver Gingerscope",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "16964468980",
+      "rarity": "Unique"
+   },
+   "Reaver": {
+      "chroma": false,
+      "display_name": "Reaver",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "7791484774",
+      "rarity": "Rare"
+   },
+   "RandomLegendaryWeapon": {
+      "chroma": false,
+      "value": 12,
+      "thumbnail": "582222766",
+      "rarity": "Legendary"
+   },
+   "Indy": {
+      "chroma": false,
+      "display_name": "Indy",
+      "item_type": "Knife",
+      "value": 2,
+      "thumbnail": "305506951",
+      "rarity": "Common"
+   },
+   "Bunny2023": {
+      "chroma": false,
+      "display_name": "Carrot Bunny",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "12980467961",
+      "rarity": "Common"
+   },
+   "Elfy": {
+      "chroma": false,
+      "display_name": "Elf",
+      "item_type": "Pet",
+      "value": 8,
+      "thumbnail": "585798235",
+      "rarity": "Common"
+   },
+   "WebbedG": {
+      "chroma": false,
+      "display_name": "Webbed",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "4210936652",
+      "rarity": "Common"
+   },
+   "Scarecrow2020": {
+      "chroma": false,
+      "display_name": "Scarecrow",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "5872999805",
+      "rarity": "Rare"
+   },
+   "Whiteout": {
+      "chroma": false,
+      "display_name": "Whiteout",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "191788694",
+      "rarity": "Common"
+   },
+   "SwirlyAxeBlue": {
+      "chroma": false,
+      "display_name": "Blue Swirly",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "9552048857",
+      "rarity": "Unique"
+   },
+   "VampireGun": {
+      "chroma": false,
+      "display_name": "Vampire's Gun",
+      "item_type": "Gun",
+      "value": 1075,
+      "thumbnail": "90274872705656",
+      "rarity": "Godly"
+   },
+   "Lights_G_2019": {
+      "chroma": false,
+      "display_name": "Lights",
+      "item_type": "Gun",
+      "value": 8,
+      "thumbnail": "4534872673",
+      "rarity": "Uncommon"
+   },
+   "ElderwoodGunBlue": {
+      "chroma": false,
+      "display_name": "Blue Elderwood",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "4468574885",
+      "rarity": "Unique"
+   },
+   "Stickers_X_K_2024": {
+      "chroma": false,
+      "display_name": "Stickers",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "83843575465564",
+      "rarity": "Common"
+   },
+   "Hive": {
+      "chroma": false,
+      "display_name": "Hive",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "315501434",
+      "rarity": "Uncommon"
+   },
+   "Coal_G_2022": {
+      "chroma": false,
+      "display_name": "Coal",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "11834434264",
+      "rarity": "Common"
+   },
+   "Hazmat": {
+      "chroma": false,
+      "display_name": "Hazmat",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "315501297",
+      "rarity": "Uncommon"
+   },
+   "Clown_G_2024": {
+      "chroma": false,
+      "display_name": "Clown",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "71982363966070",
+      "rarity": "Uncommon"
+   },
+   "Aquarium_G_2025": {
+      "chroma": false,
+      "display_name": "Aquarium",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "129460052425837",
+      "rarity": "Legendary"
+   },
+   "Bat": {
+      "chroma": false,
+      "display_name": "Bat",
+      "item_type": "Knife",
+      "value": 260,
+      "thumbnail": "3215087822",
+      "rarity": "Godly"
+   },
+   "Sparkle4": {
+      "chroma": false,
+      "display_name": "Sparkle4",
+      "item_type": "Knife",
+      "value": 8,
+      "thumbnail": "310712788",
+      "rarity": "Common"
+   },
+   "Mistletoe_K_2022": {
+      "chroma": false,
+      "display_name": "Mistletoe",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11834394793",
+      "rarity": "Uncommon"
+   },
+   "Mechbug": {
+      "chroma": false,
+      "display_name": "Mechbug",
+      "item_type": "Pet",
+      "value": 5,
+      "thumbnail": "357789913",
+      "rarity": "Rare"
+   },
+   "BattleAxe": {
+      "chroma": false,
+      "display_name": "BattleAxe",
+      "item_type": "Knife",
+      "value": 12,
+      "thumbnail": "1133237368",
+      "rarity": "Godly"
+   },
+   "Patrick": {
+      "chroma": false,
+      "display_name": "Patrick",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "383476085",
+      "rarity": "Common"
+   },
+   "Icey": {
+      "chroma": false,
+      "display_name": "Icey",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "4528373379",
+      "rarity": "Godly"
+   },
+   "PigChroma": {
+      "chroma": true,
+      "display_name": "Fire Pig",
+      "item_type": "Pet",
+      "value": 10,
+      "thumbnail": "3215183776",
+      "rarity": "Godly"
+   },
+   "Elf2019": {
+      "chroma": false,
+      "display_name": "Elf",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "4535364090",
+      "rarity": "Uncommon"
+   },
+   "BunnyChroma": {
+      "chroma": true,
+      "display_name": "Fire Bunny",
+      "item_type": "Pet",
+      "value": 13,
+      "thumbnail": "3215183621",
+      "rarity": "Godly"
+   },
+   "BearFire": {
+      "chroma": false,
+      "display_name": "Fire Bear",
+      "item_type": "Pet",
+      "value": 1,
+      "thumbnail": "3215186820",
+      "rarity": "Godly"
+   },
+   "HeartBalloon": {
+      "chroma": false,
+      "display_name": "<3",
+      "item_type": "Pet",
+      "value": 10,
+      "thumbnail": "363155463",
+      "rarity": "Common"
+   },
+   "Plasmite": {
+      "chroma": false,
+      "display_name": "Plasmite",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "161369368",
+      "rarity": "Legendary"
+   },
+   "ElderwoodGun": {
+      "chroma": false,
+      "display_name": "Elderwood Revolver",
+      "item_type": "Gun",
+      "value": 60,
+      "thumbnail": "4468571736",
+      "rarity": "Godly"
+   },
+   "Snowman_G_2018": {
+      "chroma": false,
+      "display_name": "Snowman",
+      "item_type": "Gun",
+      "value": 5,
+      "thumbnail": "2669786846",
+      "rarity": "Common"
+   },
+   "Splatter": {
+      "chroma": false,
+      "display_name": "Splatter",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "16964346058",
+      "rarity": "Common"
+   },
+   "Seahorsey": {
+      "chroma": false,
+      "display_name": "Seahorsey",
+      "item_type": "Pet",
+      "value": 15,
+      "thumbnail": "357818987",
+      "rarity": "Uncommon"
+   },
+   "SantaDog": {
+      "chroma": false,
+      "display_name": "Santa Dog",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "1268970057",
+      "rarity": "Common"
+   },
+   "VampireBat": {
+      "chroma": false,
+      "display_name": "Vampire Bat",
+      "item_type": "Pet",
+      "value": 15,
+      "thumbnail": "4212355997",
+      "rarity": "Legendary"
+   },
+   "Bleached": {
+      "chroma": false,
+      "display_name": "Bleached",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "315500879",
+      "rarity": "Common"
+   },
+   "Painted_K_2023": {
+      "chroma": false,
+      "display_name": "Painted",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "12965311567",
+      "rarity": "Rare"
+   },
+   "Ecto": {
+      "chroma": false,
+      "display_name": "Ecto",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "1133331679",
+      "rarity": "Common"
+   },
+   "Frozen_G_2019": {
+      "chroma": false,
+      "display_name": "Frozen",
+      "item_type": "Gun",
+      "value": 10,
+      "thumbnail": "4534873956",
+      "rarity": "Uncommon"
+   },
+   "Infiltrator": {
+      "chroma": false,
+      "display_name": "Infiltrator",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "203806022",
+      "rarity": "Common"
+   },
+   "Toy_K_2023": {
+      "chroma": false,
+      "display_name": "Toy",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "13944128440",
+      "rarity": "Common"
+   },
+   "MoltenKnife": {
+      "chroma": false,
+      "display_name": "Molten",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "235371809",
+      "rarity": "Rare"
+   },
+   "Spider_K_2023": {
+      "chroma": false,
+      "display_name": "Spider",
+      "item_type": "Knife",
+      "value": 17,
+      "thumbnail": "15091399982",
+      "rarity": "Common"
+   },
+   "Forest_G_2024": {
+      "chroma": false,
+      "display_name": "Forest",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "78199422065424",
+      "rarity": "Uncommon"
+   },
+   "Bioblade": {
+      "chroma": false,
+      "display_name": "Bioblade",
+      "item_type": "Knife",
+      "value": 13,
+      "thumbnail": "4751540097",
+      "rarity": "Godly"
+   },
+   "Nutcracker": {
+      "chroma": false,
+      "display_name": "Nutcracker",
+      "item_type": "Gun",
+      "value": 1,
+      "thumbnail": "332497657",
+      "rarity": "Uncommon"
+   },
+   "RedPumpkin19": {
+      "chroma": false,
+      "display_name": "Red Pumpkin",
+      "item_type": "Pet",
+      "value": 12,
+      "thumbnail": "4213263102",
+      "rarity": "Rare"
+   },
+   "Skelly": {
+      "chroma": false,
+      "display_name": "Skelly",
+      "item_type": "Pet",
+      "value": 1,
+      "thumbnail": "475477388",
+      "rarity": "Godly"
+   },
+   "Circuit": {
+      "chroma": false,
+      "display_name": "Circuit",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "235366945",
+      "rarity": "Uncommon"
+   },
+   "Gingerheart_K_2024": {
+      "chroma": false,
+      "display_name": "Gingerheart",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "115273559455814",
+      "rarity": "Uncommon"
+   },
+   "Borders": {
+      "chroma": false,
+      "display_name": "Borders",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "198453499",
+      "rarity": "Common"
+   },
+   "Rudolph": {
+      "chroma": false,
+      "display_name": "Rudolph",
+      "item_type": "Pet",
+      "value": 15,
+      "thumbnail": "4535282322",
+      "rarity": "Legendary"
+   },
+   "TreeGun": {
+      "chroma": false,
+      "display_name": "Tree",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "332497688",
+      "rarity": "Legendary"
+   },
+   "Dogey": {
+      "chroma": false,
+      "display_name": "Dogey",
+      "item_type": "Pet",
+      "value": 65,
+      "thumbnail": "357823389",
+      "rarity": "Uncommon"
+   },
+   "Frostflame_G_2024": {
+      "chroma": false,
+      "display_name": "Frostflame",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "114781759936576",
+      "rarity": "Rare"
+   },
+   "ZombieDog": {
+      "chroma": false,
+      "display_name": "Zombie Dog",
+      "item_type": "Pet",
+      "value": 450,
+      "thumbnail": "4223186641",
+      "rarity": "Common"
+   },
+   "BatFire": {
+      "chroma": false,
+      "display_name": "Fire Bat",
+      "item_type": "Pet",
+      "value": 1,
+      "thumbnail": "3215186931",
+      "rarity": "Godly"
+   },
+   "Midnight": {
+      "chroma": false,
+      "display_name": "Midnight",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "197664126",
+      "rarity": "Legendary"
+   },
+   "GoldIcebreaker": {
+      "chroma": false,
+      "display_name": "Gold Icebreaker",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "6404115112",
+      "rarity": "Unique"
+   },
+   "SantaGun": {
+      "chroma": false,
+      "display_name": "Santa",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "332496861",
+      "rarity": "Common"
+   },
+   "Moonlight_G_2022": {
+      "chroma": false,
+      "display_name": "Moonlight",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "11284143055",
+      "rarity": "Uncommon"
+   },
+   "Runic_K_2022": {
+      "chroma": false,
+      "display_name": "Curse",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11254123390",
+      "rarity": "Rare"
+   },
+   "Universe": {
+      "chroma": false,
+      "display_name": "Universe",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "238546660",
+      "rarity": "Legendary"
+   },
+   "DefaultKnife": {
+      "chroma": false,
+      "display_name": "Default Knife",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "584555920",
+      "rarity": "Common"
+   },
+   "Witch": {
+      "chroma": false,
+      "display_name": "Witch",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "531873553",
+      "rarity": "Common"
+   },
+   "PurpleP": {
+      "chroma": false,
+      "display_name": "Purple Pumpkin",
+      "item_type": "Pet",
+      "value": 15,
+      "thumbnail": "2513907604",
+      "rarity": "Common"
+   },
+   "Ripper_K_2020": {
+      "chroma": false,
+      "display_name": "Ripper",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "5866441301",
+      "rarity": "Legendary"
+   },
+   "LogchopperGold": {
+      "chroma": false,
+      "display_name": "Gold Logchopper",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "4753354638",
+      "rarity": "Unique"
+   },
+   "Popsicle_K_2023": {
+      "chroma": false,
+      "display_name": "Popsicle",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "13944131578",
+      "rarity": "Uncommon"
+   },
+   "<3": {
+      "chroma": false,
+      "display_name": "<3",
+      "item_type": "Pet",
+      "value": 10,
+      "thumbnail": "363155463",
+      "rarity": "Common"
+   },
+   "Cherry": {
+      "chroma": false,
+      "display_name": "Cherry",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "6711852603",
+      "rarity": "Common"
+   },
+   "Pea": {
+      "chroma": false,
+      "display_name": "Pea",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "238545971",
+      "rarity": "Common"
+   },
+   "IcepiercerGold": {
+      "chroma": false,
+      "display_name": "Gold Icepiercer",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "12226688172",
+      "rarity": "Unique"
+   },
+   "MintyBronze": {
+      "chroma": false,
+      "display_name": "Bronze Minty",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "4753348263",
+      "rarity": "Unique"
+   },
+   "Traveller": {
+      "chroma": false,
+      "display_name": "Traveller",
+      "item_type": "Pet",
+      "value": 1,
+      "thumbnail": "1133253877",
+      "rarity": "Godly"
+   },
+   "Oily": {
+      "chroma": false,
+      "display_name": "Oily",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "315501170",
+      "rarity": "Common"
+   },
+   "Frostfade_G_2023": {
+      "chroma": false,
+      "display_name": "Frostfade",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "15635577623",
+      "rarity": "Legendary"
+   },
+   "Coal_K_2018": {
+      "chroma": false,
+      "display_name": "Coal",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "2669638285",
+      "rarity": "Common"
+   },
+   "Piggy": {
+      "chroma": false,
+      "display_name": "Piggy",
+      "item_type": "Pet",
+      "value": 25,
+      "thumbnail": "357816542",
+      "rarity": "Common"
+   },
+   "RedPumpkin2020": {
+      "chroma": false,
+      "display_name": "Red Pumpkin",
+      "item_type": "Pet",
+      "value": 7,
+      "thumbnail": "5872657790",
+      "rarity": "Legendary"
+   },
+   "StickersX_G_2022": {
+      "chroma": false,
+      "display_name": "Stickers",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "11834432971",
+      "rarity": "Common"
+   },
+   "AmericaGun": {
+      "chroma": false,
+      "display_name": "America",
+      "item_type": "Gun",
+      "value": 8,
+      "thumbnail": "164676043",
+      "rarity": "Classic"
+   },
+   "TravelerAxeBronze": {
+      "chroma": false,
+      "display_name": "Bronze Traveler's",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15695407020",
+      "rarity": "Unique"
+   },
+   "SlouseClownGun": {
+      "chroma": false,
+      "display_name": "Clown",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "4659627976",
+      "rarity": "Unique"
+   },
+   "WrapPaperBoxUltra": {
+      "chroma": false,
+      "display_name": "Box of Ultra Wrapping Paper",
+      "item_type": "Misc",
+      "value": 5,
+      "thumbnail": "1262588010",
+      "rarity": "Christmas"
+   },
+   "Clockwork": {
+      "chroma": false,
+      "display_name": "Clockwork",
+      "item_type": "Knife",
+      "value": 17,
+      "thumbnail": "360609441",
+      "rarity": "Godly"
+   },
+   "Tree2017": {
+      "chroma": false,
+      "display_name": "Tree",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "1268704124",
+      "rarity": "Uncommon"
+   },
+   "Glowy_K_2023": {
+      "chroma": false,
+      "display_name": "Glowy",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15091403551",
+      "rarity": "Uncommon"
+   },
+   "Icicles_K_2018": {
+      "chroma": false,
+      "display_name": "Icicles",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "2669639638",
+      "rarity": "Rare"
+   },
+   "ToxicK": {
+      "chroma": false,
+      "display_name": "Toxic",
+      "item_type": "Knife",
+      "value": 15,
+      "thumbnail": "2513734535",
+      "rarity": "Rare"
+   },
+   "ElderwoodKnifeBlue": {
+      "chroma": false,
+      "display_name": "Blue Elderwood",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11505913287",
+      "rarity": "Unique"
+   },
+   "Snowflake": {
+      "chroma": false,
+      "display_name": "Snowflake",
+      "item_type": "Knife",
+      "value": 5,
+      "thumbnail": "1268932977",
+      "rarity": "Godly"
+   },
+   "JD": {
+      "chroma": false,
+      "display_name": "JD",
+      "item_type": "Knife",
+      "value": 40,
+      "thumbnail": "566867312",
+      "rarity": "Legendary"
+   },
+   "Carrot": {
+      "chroma": false,
+      "display_name": "Carrot",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "387874071",
+      "rarity": "Common"
+   },
+   "Brains": {
+      "chroma": false,
+      "display_name": "Brains",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "531873956",
+      "rarity": "Common"
+   },
+   "SilverVampiresEdge": {
+      "chroma": false,
+      "display_name": "Silver Vamp's Edge",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "12253494893",
+      "rarity": "Unique"
+   },
+   "Sparkle3": {
+      "chroma": false,
+      "display_name": "Sparkle3",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "310710694",
+      "rarity": "Common"
+   },
+   "Snowman": {
+      "chroma": false,
+      "display_name": "Snowman",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "4535275289",
+      "rarity": "Common"
+   },
+   "Wrapped_G_2018": {
+      "chroma": false,
+      "display_name": "Wrapped",
+      "item_type": "Gun",
+      "value": 5,
+      "thumbnail": "2669787533",
+      "rarity": "Common"
+   },
+   "Cane_K_2021": {
+      "chroma": false,
+      "display_name": "Cane",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "8304750295",
+      "rarity": "Common"
+   },
+   "Corl": {
+      "chroma": false,
+      "display_name": "Corl",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "546161858",
+      "rarity": "Common"
+   },
+   "GoldHallow": {
+      "chroma": false,
+      "display_name": "Gold Hallow",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "2511340308",
+      "rarity": "Unique"
+   },
+   "Rainbow": {
+      "chroma": false,
+      "display_name": "Rainbow",
+      "item_type": "Knife",
+      "value": 250,
+      "thumbnail": "159747377",
+      "rarity": "Rare"
+   },
+   "BaubleChroma": {
+      "chroma": true,
+      "display_name": "Bauble",
+      "item_type": "Gun",
+      "value": 17000,
+      "thumbnail": "137938731902685",
+      "rarity": "Godly"
+   },
+   "Makeshift": {
+      "chroma": false,
+      "display_name": "Makeshift",
+      "item_type": "Gun",
+      "value": 60,
+      "thumbnail": "11229837140",
+      "rarity": "Godly"
+   },
+   "Wrapped_K_2022": {
+      "chroma": false,
+      "display_name": "Wrapped",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11834403282",
+      "rarity": "Common"
+   },
+   "Spider": {
+      "chroma": false,
+      "display_name": "Spider",
+      "item_type": "Knife",
+      "value": 13,
+      "thumbnail": "315120760",
+      "rarity": "Godly"
+   },
+   "Wooden": {
+      "chroma": false,
+      "display_name": "Wooden",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "238546356",
+      "rarity": "Uncommon"
+   },
+   "Ghastly_K_2023": {
+      "chroma": false,
+      "display_name": "Ghastly",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15091407068",
+      "rarity": "Rare"
+   },
+   "Splash_G": {
+      "chroma": false,
+      "display_name": "Splash",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "4659626370",
+      "rarity": "Legendary"
+   },
+   "Dark_G_2023": {
+      "chroma": false,
+      "display_name": "Darkgun",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "15091406343",
+      "rarity": "Rare"
+   },
+   "Icecracker_K_2020": {
+      "chroma": false,
+      "display_name": "Icecracker",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "6121848805",
+      "rarity": "Legendary"
+   },
+   "IceHammer": {
+      "chroma": false,
+      "display_name": "Icecrusher",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11855360152",
+      "rarity": "Rare"
+   },
+   "Leaves_K_2023": {
+      "chroma": false,
+      "display_name": "Leaves",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15091400883",
+      "rarity": "Common"
+   },
+   "Squire": {
+      "chroma": false,
+      "display_name": "Squire",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "315501560",
+      "rarity": "Rare"
+   },
+   "Aquarium_K_2025": {
+      "chroma": false,
+      "display_name": "Aquarium",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "80900354672590",
+      "rarity": "Legendary"
+   },
+   "Gifts_G_2019": {
+      "chroma": false,
+      "display_name": "Gifts",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "4534867381",
+      "rarity": "Common"
+   },
+   "ShadowKnife": {
+      "chroma": false,
+      "display_name": "Shadow",
+      "item_type": "Knife",
+      "value": 6,
+      "thumbnail": "144070096",
+      "rarity": "Classic"
+   },
+   "Bones_K_2020": {
+      "chroma": false,
+      "display_name": "Bones",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "5872492951",
+      "rarity": "Rare"
+   },
+   "Missing": {
+      "chroma": false,
+      "display_name": "Missing",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "198455936",
+      "rarity": "Uncommon"
+   },
+   "Bear": {
+      "chroma": false,
+      "display_name": "Bear",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "3215087365",
+      "rarity": "Rare"
+   },
+   "Space": {
+      "chroma": false,
+      "display_name": "Space",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "3183607442",
+      "rarity": "Rare"
+   },
+   "Teddy2023": {
+      "chroma": false,
+      "display_name": "Teddy",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "12339340721",
+      "rarity": "Common"
+   },
+   "Gift": {
+      "chroma": false,
+      "display_name": "Gifts 2015",
+      "item_type": "Misc",
+      "value": 0,
+      "thumbnail": "330192109",
+      "rarity": "Christmas"
+   },
+   "Wrapped_K_2024": {
+      "chroma": false,
+      "display_name": "Wrapped",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "72638846676083",
+      "rarity": "Uncommon"
+   },
+   "Candles_K_2024": {
+      "chroma": false,
+      "display_name": "Candles",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "133654810681274",
+      "rarity": "Common"
+   },
+   "Euro": {
+      "chroma": false,
+      "display_name": "Euro",
+      "item_type": "Knife",
+      "value": 5,
+      "thumbnail": "305504173",
+      "rarity": "Common"
+   },
+   "SilverCandy": {
+      "chroma": false,
+      "display_name": "Silver Candy",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "1520190188",
+      "rarity": "Unique"
+   },
+   "Skulls": {
+      "chroma": false,
+      "display_name": "Skulls",
+      "item_type": "Knife",
+      "value": 7,
+      "thumbnail": "4210915060",
+      "rarity": "Legendary"
+   },
+   "Bats_K_2024": {
+      "chroma": false,
+      "display_name": "Bats",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "104747488009018",
+      "rarity": "Common"
+   },
+   "RedHallow": {
+      "chroma": false,
+      "display_name": "Red Hallow",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "2511343130",
+      "rarity": "Unique"
+   },
+   "Carved_G_2020": {
+      "chroma": false,
+      "display_name": "Carved",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "5866457985",
+      "rarity": "Common"
+   },
+   "Sketch": {
+      "chroma": false,
+      "display_name": "Sketch",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "203808108",
+      "rarity": "Uncommon"
+   },
+   "Peppermint": {
+      "chroma": false,
+      "display_name": "Peppermint",
+      "item_type": "Knife",
+      "value": 4,
+      "thumbnail": "6076067750",
+      "rarity": "Godly"
+   },
+   "Portal_G_2020": {
+      "chroma": false,
+      "display_name": "Portal",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "5866461926",
+      "rarity": "Uncommon"
+   },
+   "Coal_K_2022": {
+      "chroma": false,
+      "display_name": "Coal",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11834390120",
+      "rarity": "Common"
+   },
+   "Mummy_G_2020": {
+      "chroma": false,
+      "display_name": "Mummy",
+      "item_type": "Gun",
+      "value": 1,
+      "thumbnail": "5866463755",
+      "rarity": "Uncommon"
+   },
+   "Present_K_2023": {
+      "chroma": false,
+      "display_name": "Present",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15635553149",
+      "rarity": "Common"
+   },
+   "Soda_G_2025": {
+      "chroma": false,
+      "display_name": "Soda",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "132525981806780",
+      "rarity": "Uncommon"
+   },
+   "Coal": {
+      "chroma": false,
+      "display_name": "Coal",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "1268699677",
+      "rarity": "Common"
+   },
+   "Sandy_G_2024": {
+      "chroma": false,
+      "display_name": "Sandy",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "18323752709",
+      "rarity": "Common"
+   },
+   "SketchYT": {
+      "chroma": false,
+      "display_name": "Sketchy",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "546161470",
+      "rarity": "Common"
+   },
+   "Broken_K_2023": {
+      "chroma": false,
+      "display_name": "Broken",
+      "item_type": "Knife",
+      "value": 7,
+      "thumbnail": "12339323856",
+      "rarity": "Legendary"
+   },
+   "Gingerbread_G_2019": {
+      "chroma": false,
+      "display_name": "Gingerbread",
+      "item_type": "Gun",
+      "value": 3,
+      "thumbnail": "4534872116",
+      "rarity": "Uncommon"
+   },
+   "ElderwoodKnifeChroma": {
+      "chroma": true,
+      "display_name": "Elderwood Blade",
+      "item_type": "Knife",
+      "value": 60,
+      "thumbnail": "11255021976",
+      "rarity": "Godly"
+   },
+   "Frostsaber": {
+      "chroma": false,
+      "display_name": "Frostsaber",
+      "item_type": "Knife",
+      "value": 10,
+      "thumbnail": "1268934541",
+      "rarity": "Godly"
+   },
+   "GingerLuger": {
+      "chroma": false,
+      "display_name": "Ginger Luger",
+      "item_type": "Gun",
+      "value": 20,
+      "thumbnail": "2674983099",
+      "rarity": "Godly"
+   },
+   "Blossom_G": {
+      "chroma": false,
+      "display_name": "Blossom",
+      "item_type": "Gun",
+      "value": 950,
+      "thumbnail": "12339377105",
+      "rarity": "Godly"
+   },
+   "RedIcebreaker": {
+      "chroma": false,
+      "display_name": "Red Icebreaker",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "6404129111",
+      "rarity": "Unique"
+   },
+   "Candleflame": {
+      "chroma": false,
+      "display_name": "Candleflame",
+      "item_type": "Knife",
+      "value": 60,
+      "thumbnail": "7805833970",
+      "rarity": "Godly"
+   },
+   "Dartbringer": {
+      "chroma": false,
+      "display_name": "Dartbringer",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "8626617523",
+      "rarity": "Unique"
+   },
+   "TreeKnife2023Chroma": {
+      "chroma": true,
+      "display_name": "Evergreen",
+      "item_type": "Knife",
+      "value": 27000,
+      "thumbnail": "15694192241",
+      "rarity": "Godly"
+   },
+   "VampireAxe_Purple": {
+      "chroma": false,
+      "display_name": "Vampire's Axe",
+      "item_type": "Knife",
+      "value": 575,
+      "thumbnail": "131000108157235",
+      "rarity": "Unique"
+   },
+   "Denis": {
+      "chroma": false,
+      "display_name": "Denis",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "546161062",
+      "rarity": "Common"
+   },
+   "SlasherChroma": {
+      "chroma": true,
+      "display_name": "Slasher",
+      "item_type": "Knife",
+      "value": 55,
+      "thumbnail": "3187398385",
+      "rarity": "Godly"
+   },
+   "YellowSeer": {
+      "chroma": false,
+      "display_name": "Yellow Seer",
+      "item_type": "Knife",
+      "value": 2,
+      "thumbnail": "3184139648",
+      "rarity": "Godly"
+   },
+   "Ace": {
+      "chroma": false,
+      "display_name": "Ace",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "238546577",
+      "rarity": "Rare"
+   },
+   "Stars_G_2023": {
+      "chroma": false,
+      "display_name": "Stars",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "15635574031",
+      "rarity": "Uncommon"
+   },
+   "Summer_Stickers_G_2023": {
+      "chroma": false,
+      "display_name": "Stickers",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "13944151909",
+      "rarity": "Common"
+   },
+   "AmericanEagle": {
+      "chroma": false,
+      "display_name": "Sammy",
+      "item_type": "Pet",
+      "value": 2,
+      "thumbnail": "446052376",
+      "rarity": "Godly"
+   },
+   "CandyCorn2019": {
+      "chroma": false,
+      "display_name": "Candy Corn",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "4210934082",
+      "rarity": "Common"
+   },
+   "LogchopperBronze": {
+      "chroma": false,
+      "display_name": "Bronze Logchopper",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "4753354123",
+      "rarity": "Unique"
+   },
+   "Phoenix": {
+      "chroma": false,
+      "display_name": "Phoenix",
+      "item_type": "Pet",
+      "value": 2,
+      "thumbnail": "365355267",
+      "rarity": "Godly"
+   },
+   "SkeletonKey": {
+      "chroma": false,
+      "display_name": "Skeleton Key 2018",
+      "item_type": "Misc",
+      "value": 5,
+      "thumbnail": "2507222605",
+      "rarity": "Halloween"
+   },
+   "Ice": {
+      "chroma": false,
+      "display_name": "Ice",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "191976710",
+      "rarity": "Common"
+   },
+   "Survivors_K_2022": {
+      "chroma": false,
+      "display_name": "Makeshift",
+      "item_type": "Knife",
+      "value": 13,
+      "thumbnail": "11254180750",
+      "rarity": "Rare"
+   },
+   "Bio_K_2023": {
+      "chroma": false,
+      "display_name": "Bio",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "12965298174",
+      "rarity": "Rare"
+   },
+   "Vampire_G_2022": {
+      "chroma": false,
+      "display_name": "Vampire",
+      "item_type": "Gun",
+      "value": 12,
+      "thumbnail": "11255503583",
+      "rarity": "Legendary"
+   },
+   "Elf_G_2023": {
+      "chroma": false,
+      "display_name": "Elf",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "15635569893",
+      "rarity": "Common"
+   },
+   "Mistletoe_G_2022": {
+      "chroma": false,
+      "display_name": "Mistletoe",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "11834438982",
+      "rarity": "Uncommon"
+   },
+   "Gingerbread2017": {
+      "chroma": false,
+      "display_name": "Gingerbread",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "1268705527",
+      "rarity": "Rare"
+   },
+   "Tiger": {
+      "chroma": false,
+      "display_name": "Tiger",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "3183606579",
+      "rarity": "Uncommon"
+   },
+   "Frosted_K_2019": {
+      "chroma": false,
+      "display_name": "Frosted",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "4534853444",
+      "rarity": "Common"
+   },
+   "Damp": {
+      "chroma": false,
+      "display_name": "Damp",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "198461253",
+      "rarity": "Rare"
+   },
+   "Starry_G_2020": {
+      "chroma": false,
+      "display_name": "Starry",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "5930731295",
+      "rarity": "Common"
+   },
+   "Witch_K_2022": {
+      "chroma": false,
+      "display_name": "Witchbrew",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11254115609",
+      "rarity": "Uncommon"
+   },
+   "TravelerAxeGold": {
+      "chroma": false,
+      "display_name": "Gold Traveler's",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15695408631",
+      "rarity": "Unique"
+   },
+   "Krypto": {
+      "chroma": false,
+      "display_name": "Krypto",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "198458841",
+      "rarity": "Rare"
+   },
+   "Mummified": {
+      "chroma": false,
+      "display_name": "Mummified",
+      "item_type": "Knife",
+      "value": 2,
+      "thumbnail": "4210946577",
+      "rarity": "Common"
+   },
+   "Mummy_K_2020": {
+      "chroma": false,
+      "display_name": "Mummy",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "5866447521",
+      "rarity": "Uncommon"
+   },
+   "Tree_K_2021": {
+      "chroma": false,
+      "display_name": "Tree",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "8304756423",
+      "rarity": "Uncommon"
+   },
+   "DeathshardChroma": {
+      "chroma": true,
+      "display_name": "Deathshard",
+      "item_type": "Knife",
+      "value": 55,
+      "thumbnail": "3187397317",
+      "rarity": "Godly"
+   },
+   "SunsetGunChroma": {
+      "chroma": true,
+      "display_name": "Sunrise",
+      "item_type": "Gun",
+      "value": 5650,
+      "thumbnail": "124766755976937",
+      "rarity": "Godly"
+   },
+   "RedLuger": {
+      "chroma": false,
+      "display_name": "Red Luger",
+      "item_type": "Gun",
+      "value": 45,
+      "thumbnail": "332044583",
+      "rarity": "Godly"
+   },
+   "Gingerbread_G_2020": {
+      "chroma": false,
+      "display_name": "Gingerbread",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "6121860619",
+      "rarity": "Uncommon"
+   },
+   "TheSeer": {
+      "chroma": false,
+      "display_name": "Seer",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "3184139765",
+      "rarity": "Godly"
+   },
+   "Stickers_K_2024": {
+      "chroma": false,
+      "display_name": "Stickers",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "120248733900674",
+      "rarity": "Common"
+   },
+   "Sleigh_K_2024": {
+      "chroma": false,
+      "display_name": "Sleigh",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "74917318027165",
+      "rarity": "Rare"
+   },
+   "Sunset_G_2023": {
+      "chroma": false,
+      "display_name": "Sun",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "13944156090",
+      "rarity": "Rare"
+   },
+   "Coal_K_2021": {
+      "chroma": false,
+      "display_name": "Coal",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "8304751659",
+      "rarity": "Common"
+   },
+   "Holly_G_2018": {
+      "chroma": false,
+      "display_name": "Holly",
+      "item_type": "Gun",
+      "value": 3,
+      "thumbnail": "2669786261",
+      "rarity": "Uncommon"
+   },
+   "ElderwoodGunBronze": {
+      "chroma": false,
+      "display_name": "Bronze Elderwood",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "4468585407",
+      "rarity": "Unique"
+   },
+   "Pixel": {
+      "chroma": false,
+      "display_name": "Pixel",
+      "item_type": "Knife",
+      "value": 22,
+      "thumbnail": "365347166",
+      "rarity": "Godly"
+   },
+   "Eye": {
+      "chroma": false,
+      "display_name": "Eyeball",
+      "item_type": "Pet",
+      "value": 15,
+      "thumbnail": "358134944",
+      "rarity": "Rare"
+   },
+   "CaneGun": {
+      "chroma": false,
+      "display_name": "Cane",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "332497187",
+      "rarity": "Rare"
+   },
+   "Synthwave_Ancient": {
+      "chroma": false,
+      "display_name": "Synthwave",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "133828016595037",
+      "rarity": "Ancient"
+   },
+   "CandleflameChroma": {
+      "chroma": true,
+      "display_name": "Candleflame",
+      "item_type": "Knife",
+      "value": 70,
+      "thumbnail": "7806149582",
+      "rarity": "Godly"
+   },
+   "Snowman_K_2018": {
+      "chroma": false,
+      "display_name": "Snowman",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "2669640152",
+      "rarity": "Common"
+   },
+   "Heat": {
+      "chroma": false,
+      "display_name": "Heat",
+      "item_type": "Knife",
+      "value": 13,
+      "thumbnail": "3187444758",
+      "rarity": "Godly"
+   },
+   "SlimeK": {
+      "chroma": false,
+      "display_name": "Slime",
+      "item_type": "Knife",
+      "value": 5,
+      "thumbnail": "2513734227",
+      "rarity": "Common"
+   },
+   "Key": {
+      "chroma": false,
+      "display_name": "Mystery Key",
+      "item_type": "Misc",
+      "value": 1,
+      "thumbnail": "3059784291",
+      "rarity": "Common"
+   },
+   "SwirlyAxeSilver": {
+      "chroma": false,
+      "display_name": "Silver Swirly",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "9552051805",
+      "rarity": "Unique"
+   },
+   "ElderwoodKnifeSilver": {
+      "chroma": false,
+      "display_name": "Silver Elderwood",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11505916486",
+      "rarity": "Unique"
+   },
+   "Predator": {
+      "chroma": false,
+      "display_name": "Red Predator",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "203810176",
+      "rarity": "Legendary"
+   },
+   "Skull_K_2023": {
+      "chroma": false,
+      "display_name": "Etched",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15091321393",
+      "rarity": "Common"
+   },
+   "Candies": {
+      "chroma": false,
+      "display_name": "Candies",
+      "item_type": "Misc",
+      "value": 0,
+      "thumbnail": "531203559",
+      "rarity": "Halloween"
+   },
+   "Spectrum": {
+      "chroma": false,
+      "display_name": "Spectrum",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "198458862",
+      "rarity": "Rare"
+   },
+   "Donut": {
+      "chroma": false,
+      "display_name": "Donut",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "235366815",
+      "rarity": "Uncommon"
+   },
+   "SwirlyAxeGold": {
+      "chroma": false,
+      "display_name": "Gold Swirly",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "9552054920",
+      "rarity": "Unique"
+   },
+   "Bats_K_2020": {
+      "chroma": false,
+      "display_name": "Bats",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "5930729222",
+      "rarity": "Common"
+   },
+   "Wolf": {
+      "chroma": false,
+      "display_name": "Wolf",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "531873487",
+      "rarity": "Uncommon"
+   },
+   "Grind": {
+      "chroma": false,
+      "display_name": "Grind",
+      "item_type": "Knife",
+      "value": 2,
+      "thumbnail": "305503942",
+      "rarity": "Common"
+   },
+   "Storm_K_2024": {
+      "chroma": false,
+      "display_name": "Storm",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "97369825731567",
+      "rarity": "Rare"
+   },
+   "Star": {
+      "chroma": false,
+      "display_name": "Star",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "203807904",
+      "rarity": "Common"
+   },
+   "Fireplace_K_2023": {
+      "chroma": false,
+      "display_name": "Fireplace",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15635558021",
+      "rarity": "Uncommon"
+   },
+   "Korblox": {
+      "chroma": false,
+      "display_name": "Korblox",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "315501501",
+      "rarity": "Rare"
+   },
+   "Gothic_G_2021": {
+      "chroma": false,
+      "display_name": "Gothic",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "7800253970",
+      "rarity": "Uncommon"
+   },
+   "GreenCamo_K_2022": {
+      "chroma": false,
+      "display_name": "Zombie Camo",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11254145154",
+      "rarity": "Common"
+   },
+   "Love": {
+      "chroma": false,
+      "display_name": "Love",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "196750845",
+      "rarity": "Common"
+   },
+   "TimeKnife": {
+      "chroma": false,
+      "display_name": "Prince",
+      "item_type": "Knife",
+      "value": 6,
+      "thumbnail": "143917700",
+      "rarity": "Classic"
+   },
+   "AuroraGun": {
+      "chroma": false,
+      "display_name": "Borealis",
+      "item_type": "Gun",
+      "value": 105,
+      "thumbnail": "108635848059846",
+      "rarity": "Godly"
+   },
+   "PurpleSeer": {
+      "chroma": false,
+      "display_name": "Purple Seer",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "3184140119",
+      "rarity": "Godly"
+   },
+   "Gingerscythe_Ancient": {
+      "chroma": false,
+      "display_name": "Gingerscythe",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15683188776",
+      "rarity": "Ancient"
+   },
+   "Witched": {
+      "chroma": false,
+      "display_name": "Witched",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "4210938270",
+      "rarity": "Legendary"
+   },
+   "Snowman_G_2022": {
+      "chroma": false,
+      "display_name": "Snowman",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "11834436620",
+      "rarity": "Common"
+   },
+   "Moon_K_2021": {
+      "chroma": false,
+      "display_name": "Moon",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "7800224197",
+      "rarity": "Common"
+   },
+   "Sparkle10": {
+      "chroma": false,
+      "display_name": "Sparkle10",
+      "item_type": "Knife",
+      "value": 20,
+      "thumbnail": "310715768",
+      "rarity": "Common"
+   },
+   "Fade": {
+      "chroma": false,
+      "display_name": "Fade",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "315501640",
+      "rarity": "Legendary"
+   },
+   "Choco": {
+      "chroma": false,
+      "display_name": "Choco",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "387874991",
+      "rarity": "Common"
+   },
+   "BlueP": {
+      "chroma": false,
+      "display_name": "Blue Pumpkin",
+      "item_type": "Pet",
+      "value": 80,
+      "thumbnail": "2513908242",
+      "rarity": "Common"
+   },
+   "EliteBlue": {
+      "chroma": false,
+      "display_name": "Blue Elite",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "1269374321",
+      "rarity": "Legendary"
+   },
+   "Stickers_G_2021": {
+      "chroma": false,
+      "display_name": "Stickers",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "7800257010",
+      "rarity": "Common"
+   },
+   "Stockings_K_2020": {
+      "chroma": false,
+      "display_name": "Stockings",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "6123335682",
+      "rarity": "Common"
+   },
+   "VampireK2018": {
+      "chroma": false,
+      "display_name": "Vampire",
+      "item_type": "Knife",
+      "value": 2,
+      "thumbnail": "2513734708",
+      "rarity": "Rare"
+   },
+   "FoxChroma": {
+      "chroma": true,
+      "display_name": "Fire Fox",
+      "item_type": "Pet",
+      "value": 12,
+      "thumbnail": "3215183922",
+      "rarity": "Godly"
+   },
+   "Celestial": {
+      "chroma": false,
+      "display_name": "Celestial",
+      "item_type": "Knife",
+      "value": 1150,
+      "thumbnail": "136673966529736",
+      "rarity": "Ancient"
+   },
+   "Cracks_G_2021": {
+      "chroma": false,
+      "display_name": "Cracks",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "7800254737",
+      "rarity": "Common"
+   },
+   "Sidewinder": {
+      "chroma": false,
+      "display_name": "Sidewinder",
+      "item_type": "Knife",
+      "value": 7,
+      "thumbnail": "305503783",
+      "rarity": "Common"
+   },
+   "BearChroma": {
+      "chroma": true,
+      "display_name": "Fire Bear",
+      "item_type": "Pet",
+      "value": 10,
+      "thumbnail": "3215184104",
+      "rarity": "Godly"
+   },
+   "Musical": {
+      "chroma": false,
+      "display_name": "Musical",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "365569566",
+      "rarity": "Rare"
+   },
+   "Lava_G_2025": {
+      "chroma": false,
+      "display_name": "Lava",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "90170220549489",
+      "rarity": "Uncommon"
+   },
+   "Snowflake_G_2023": {
+      "chroma": false,
+      "display_name": "Snowflake",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "15635575718",
+      "rarity": "Rare"
+   },
+   "Bones_K_2022": {
+      "chroma": false,
+      "display_name": "Boney",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11254152435",
+      "rarity": "Common"
+   },
+   "Gingermint_G": {
+      "chroma": false,
+      "display_name": "Gingermint",
+      "item_type": "Gun",
+      "value": 20,
+      "thumbnail": "11872179646",
+      "rarity": "Godly"
+   },
+   "Zombie": {
+      "chroma": false,
+      "display_name": "Zombie",
+      "item_type": "Knife",
+      "value": 5,
+      "thumbnail": "1133331875",
+      "rarity": "Common"
+   },
+   "SilverHarvester": {
+      "chroma": false,
+      "display_name": "Silver Harvester",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "8194217388",
+      "rarity": "Unique"
+   },
+   "Tree": {
+      "chroma": false,
+      "display_name": "Tree",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "331745577",
+      "rarity": "Legendary"
+   },
+   "Xbox": {
+      "chroma": false,
+      "display_name": "Xbox",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "439325100",
+      "rarity": "Common"
+   },
+   "IceHammerGold": {
+      "chroma": false,
+      "display_name": "Gold Icecrusher",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "12227137860",
+      "rarity": "Unique"
+   },
+   "LogchopperSilver": {
+      "chroma": false,
+      "display_name": "Silver Logchopper",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "4753352581",
+      "rarity": "Unique"
+   },
+   "molten": {
+      "chroma": false,
+      "display_name": "TestItem",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11254158802",
+      "rarity": "Common"
+   },
+   "Marina": {
+      "chroma": false,
+      "display_name": "Marina",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "203808190",
+      "rarity": "Uncommon"
+   },
+   "VampireAxe_Bronze": {
+      "chroma": false,
+      "display_name": "Bronze Vampire's Axe",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "124355442556907",
+      "rarity": "Unique"
+   },
+   "Shark": {
+      "chroma": false,
+      "display_name": "Shark",
+      "item_type": "Gun",
+      "value": 23,
+      "thumbnail": "3187421705",
+      "rarity": "Godly"
+   },
+   "Sparkle7": {
+      "chroma": false,
+      "display_name": "Sparkle7",
+      "item_type": "Knife",
+      "value": 18,
+      "thumbnail": "310714089",
+      "rarity": "Common"
+   },
+   "Bleed": {
+      "chroma": false,
+      "display_name": "Rupture",
+      "item_type": "Gun",
+      "value": 1,
+      "thumbnail": "315100702",
+      "rarity": "Legendary"
+   },
+   "Badger": {
+      "chroma": false,
+      "display_name": "Badger",
+      "item_type": "Pet",
+      "value": 1,
+      "thumbnail": "357817300",
+      "rarity": "Common"
+   },
+   "Ornament1Gun": {
+      "chroma": false,
+      "display_name": "Ornament1",
+      "item_type": "Gun",
+      "value": 1,
+      "thumbnail": "332497144",
+      "rarity": "Common"
+   },
+   "Constellation_Gold": {
+      "chroma": false,
+      "display_name": "Gold Constellation",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "132975248521820",
+      "rarity": "Unique"
+   },
+   "ElderwoodKnifeGold": {
+      "chroma": false,
+      "display_name": "Gold Elderwood",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11505917850",
+      "rarity": "Unique"
+   },
+   "IceHammer_Legendary": {
+      "chroma": false,
+      "display_name": "Icecrusher",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11855361567",
+      "rarity": "Legendary"
+   },
+   "Pine_K_2019": {
+      "chroma": false,
+      "display_name": "Pine",
+      "item_type": "Knife",
+      "value": 100,
+      "thumbnail": "4534855710",
+      "rarity": "Common"
+   },
+   "Arctic_K_2022": {
+      "chroma": false,
+      "display_name": "Arctic",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11834401547",
+      "rarity": "Legendary"
+   },
+   "IceHammerSilver": {
+      "chroma": false,
+      "display_name": "Silver Icecrusher",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "12227142478",
+      "rarity": "Unique"
+   },
+   "Ornament2": {
+      "chroma": false,
+      "display_name": "Ornament2",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "331745341",
+      "rarity": "Common"
+   },
+   "Stickers_G_2025": {
+      "chroma": false,
+      "display_name": "Stickers",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "75123474631661",
+      "rarity": "Common"
+   },
+   "Constellation_Silver": {
+      "chroma": false,
+      "display_name": "Silver Constellation",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "100747436297625",
+      "rarity": "Unique"
+   },
+   "Vines_K_2023": {
+      "chroma": false,
+      "display_name": "Vines",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15091325210",
+      "rarity": "Common"
+   },
+   "WrappedGun": {
+      "chroma": false,
+      "display_name": "Wrapped",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "332497103",
+      "rarity": "Uncommon"
+   },
+   "Popsicle_G_2024": {
+      "chroma": false,
+      "display_name": "Popsicle",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "18322191060",
+      "rarity": "Uncommon"
+   },
+   "Abstract": {
+      "chroma": false,
+      "display_name": "Abstract",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "365569428",
+      "rarity": "Rare"
+   },
+   "2015": {
+      "chroma": false,
+      "display_name": "2015",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "199026945",
+      "rarity": "Common"
+   },
+   "Pumpkin_G_2023": {
+      "chroma": false,
+      "display_name": "Pumpkin",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "15091327743",
+      "rarity": "Common"
+   },
+   "Spitfire": {
+      "chroma": false,
+      "display_name": "Spitfire",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "159971321",
+      "rarity": "Rare"
+   },
+   "Virtual": {
+      "chroma": false,
+      "display_name": "Virtual",
+      "item_type": "Knife",
+      "value": 18,
+      "thumbnail": "386276987",
+      "rarity": "Godly"
+   },
+   "Overseer Eye": {
+      "chroma": false,
+      "display_name": "Overseer Eye",
+      "item_type": "Pet",
+      "value": 15,
+      "thumbnail": "358135658",
+      "rarity": "Legendary"
+   },
+   "Vampire_K_2022": {
+      "chroma": false,
+      "display_name": "Vampire",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11254125546",
+      "rarity": "Legendary"
+   },
+   "Fallout": {
+      "chroma": false,
+      "display_name": "Fallout",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "175668592",
+      "rarity": "Common"
+   },
+   "Frozen_K_2022": {
+      "chroma": false,
+      "display_name": "Frozen",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11834404402",
+      "rarity": "Common"
+   },
+   "Copper": {
+      "chroma": false,
+      "display_name": "Copper",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "3183605392",
+      "rarity": "Common"
+   },
+   "CandyCorn": {
+      "chroma": false,
+      "display_name": "CandyCorn",
+      "item_type": "Knife",
+      "value": 12,
+      "thumbnail": "1133337797",
+      "rarity": "Common"
+   },
+   "ScratchBlue": {
+      "chroma": false,
+      "display_name": "Blue Scratch",
+      "item_type": "Knife",
+      "value": 2,
+      "thumbnail": "1133316381",
+      "rarity": "Legendary"
+   },
+   "Molten": {
+      "chroma": false,
+      "display_name": "Molten",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "203869308",
+      "rarity": "Rare"
+   },
+   "Eyes_K_2020": {
+      "chroma": false,
+      "display_name": "Watcher",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "5866438542",
+      "rarity": "Common"
+   },
+   "LogchopperBlue": {
+      "chroma": false,
+      "display_name": "Blue Logchopper",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "4753353471",
+      "rarity": "Unique"
+   },
+   "Reaver_Godly": {
+      "chroma": false,
+      "display_name": "Reaver",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "7791511648",
+      "rarity": "Godly"
+   },
+   "Zombie_K_2023": {
+      "chroma": false,
+      "display_name": "Zombie",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15091339932",
+      "rarity": "Uncommon"
+   },
+   "Ornaments_G_2020": {
+      "chroma": false,
+      "display_name": "Ornaments",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "6121863515",
+      "rarity": "Common"
+   },
+   "Cavern_G_2019": {
+      "chroma": false,
+      "display_name": "Cavern",
+      "item_type": "Gun",
+      "value": 1,
+      "thumbnail": "4534875511",
+      "rarity": "Legendary"
+   },
+   "Gingerbread_G_2022": {
+      "chroma": false,
+      "display_name": "Gingerbread",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "11834442414",
+      "rarity": "Rare"
+   },
+   "Tides": {
+      "chroma": false,
+      "display_name": "Tides",
+      "item_type": "Knife",
+      "value": 13,
+      "thumbnail": "3187398809",
+      "rarity": "Godly"
+   },
+   "Leaf": {
+      "chroma": false,
+      "display_name": "Leaf",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "4659636452",
+      "rarity": "Common"
+   },
+   "PigFire": {
+      "chroma": false,
+      "display_name": "Fire Pig",
+      "item_type": "Pet",
+      "value": 1,
+      "thumbnail": "3215186086",
+      "rarity": "Godly"
+   },
+   "Snowman_G_2023": {
+      "chroma": false,
+      "display_name": "Snowman",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "15635572427",
+      "rarity": "Uncommon"
+   },
+   "Sugar": {
+      "chroma": false,
+      "display_name": "Sugar",
+      "item_type": "Gun",
+      "value": 75,
+      "thumbnail": "3215356000",
+      "rarity": "Godly"
+   },
+   "Celestial_Silver": {
+      "chroma": false,
+      "display_name": "Silver Celestial",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "90241292303974",
+      "rarity": "Unique"
+   },
+   "Infected_G_2022": {
+      "chroma": false,
+      "display_name": "Infected",
+      "item_type": "Gun",
+      "value": 1,
+      "thumbnail": "11255502768",
+      "rarity": "Common"
+   },
+   "Stars_K_2023": {
+      "chroma": false,
+      "display_name": "Stars",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15635559978",
+      "rarity": "Uncommon"
+   },
+   "Lovely": {
+      "chroma": false,
+      "display_name": "Lovely",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "4659635584",
+      "rarity": "Common"
+   },
+   "MintySilver": {
+      "chroma": false,
+      "display_name": "Silver Minty",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "4753346087",
+      "rarity": "Unique"
+   },
+   "Luger": {
+      "chroma": false,
+      "display_name": "Luger",
+      "item_type": "Gun",
+      "value": 65,
+      "thumbnail": "3187399148",
+      "rarity": "Godly"
+   },
+   "Spectral_G_2021": {
+      "chroma": false,
+      "display_name": "Spectral",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "7800255531",
+      "rarity": "Legendary"
+   },
+   "Marley": {
+      "chroma": false,
+      "display_name": "Green",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "473625785",
+      "rarity": "Common"
+   },
+   "Hearts": {
+      "chroma": false,
+      "display_name": "Hearts",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "363362737",
+      "rarity": "Common"
+   },
+   "TreeGun2023Chroma": {
+      "chroma": true,
+      "display_name": "Evergun",
+      "item_type": "Gun",
+      "value": 57000,
+      "thumbnail": "15694208971",
+      "rarity": "Godly"
+   },
+   "PotionK2018": {
+      "chroma": false,
+      "display_name": "Potion",
+      "item_type": "Knife",
+      "value": 10,
+      "thumbnail": "2513733987",
+      "rarity": "Uncommon"
+   },
+   "Logchopper": {
+      "chroma": false,
+      "display_name": "Logchopper",
+      "item_type": "Knife",
+      "value": 20,
+      "thumbnail": "4528268775",
+      "rarity": "Ancient"
+   },
+   "Bacon": {
+      "chroma": false,
+      "display_name": "Bacon",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "238546467",
+      "rarity": "Rare"
+   },
+   "IceHammer_Godly": {
+      "chroma": false,
+      "display_name": "Icecrusher",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11855282546",
+      "rarity": "Godly"
+   },
+   "Hazard_K_2022": {
+      "chroma": false,
+      "display_name": "Hazard",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11254083234",
+      "rarity": "Uncommon"
+   },
+   "Monster_K_2024": {
+      "chroma": false,
+      "display_name": "Monster",
+      "item_type": "Knife",
+      "value": 7,
+      "thumbnail": "109292073070223",
+      "rarity": "Uncommon"
+   },
+   "Stalker": {
+      "chroma": false,
+      "display_name": "Stalker",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "198455980",
+      "rarity": "Uncommon"
+   },
+   "ZombifiedG": {
+      "chroma": false,
+      "display_name": "Zombified",
+      "item_type": "Gun",
+      "value": 7,
+      "thumbnail": "4210944924",
+      "rarity": "Uncommon"
+   },
+   "Infected_K_2022": {
+      "chroma": false,
+      "display_name": "Infected",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11254175272",
+      "rarity": "Common"
+   },
+   "GhostKnife": {
+      "chroma": false,
+      "display_name": "Ghost",
+      "item_type": "Knife",
+      "value": 12,
+      "thumbnail": "144268841",
+      "rarity": "Classic"
+   },
+   "Snowflake_K_2018": {
+      "chroma": false,
+      "display_name": "Snowflake",
+      "item_type": "Knife",
+      "value": 5,
+      "thumbnail": "2669639913",
+      "rarity": "Uncommon"
+   },
+   "Lugercane": {
+      "chroma": false,
+      "display_name": "Lugercane",
+      "item_type": "Gun",
+      "value": 20,
+      "thumbnail": "4535482609",
+      "rarity": "Godly"
+   },
+   "Ginger_G_2018": {
+      "chroma": false,
+      "display_name": "Ginger",
+      "item_type": "Gun",
+      "value": 6,
+      "thumbnail": "2669785821",
+      "rarity": "Legendary"
+   },
+   "Celestial_Bronze": {
+      "chroma": false,
+      "display_name": "Bronze Celestial",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "119399643874968",
+      "rarity": "Unique"
+   },
+   "Snowman2020": {
+      "chroma": false,
+      "display_name": "Mr. Snowman",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "6121720416",
+      "rarity": "Common"
+   },
+   "XmasStickers_G_2021": {
+      "chroma": false,
+      "display_name": "Stickers",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "8304770115",
+      "rarity": "Common"
+   },
+   "Pearl_K": {
+      "chroma": false,
+      "display_name": "Pearl",
+      "item_type": "Knife",
+      "value": 65,
+      "thumbnail": "18322621319",
+      "rarity": "Godly"
+   },
+   "Gothic_K_2021": {
+      "chroma": false,
+      "display_name": "Gothic",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "7800221141",
+      "rarity": "Uncommon"
+   },
+   "Lightbringer": {
+      "chroma": false,
+      "display_name": "Lightbringer",
+      "item_type": "Gun",
+      "value": 50,
+      "thumbnail": "4751387063",
+      "rarity": "Godly"
+   },
+   "Clown_G": {
+      "chroma": false,
+      "display_name": "Clown",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "4659627976",
+      "rarity": "Common"
+   },
+   "BunnyFire": {
+      "chroma": false,
+      "display_name": "Fire Bunny",
+      "item_type": "Pet",
+      "value": 1,
+      "thumbnail": "3279847553",
+      "rarity": "Godly"
+   },
+   "Dolphins_K_2025": {
+      "chroma": false,
+      "display_name": "Dolphins",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "133219566412887",
+      "rarity": "Common"
+   },
+   "Xmas": {
+      "chroma": false,
+      "display_name": "Xmas",
+      "item_type": "Knife",
+      "value": 8,
+      "thumbnail": "332077449",
+      "rarity": "Godly"
+   },
+   "Elf2017": {
+      "chroma": false,
+      "display_name": "Elf",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "1268703023",
+      "rarity": "Common"
+   },
+   "Santa2017": {
+      "chroma": false,
+      "display_name": "Santa",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "1268703618",
+      "rarity": "Common"
+   },
+   "Latte_G_2023": {
+      "chroma": false,
+      "display_name": "Latte",
+      "item_type": "Gun",
+      "value": 150,
+      "thumbnail": "15413116029",
+      "rarity": "Legendary"
+   },
+   "Gingerscope": {
+      "chroma": false,
+      "display_name": "Gingerscope",
+      "item_type": "Gun",
+      "value": 11500,
+      "thumbnail": "15666596216",
+      "rarity": "Ancient"
+   },
+   "TNL": {
+      "chroma": false,
+      "display_name": "TNL",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "201542790",
+      "rarity": "Common"
+   },
+   "Lights_K_2019": {
+      "chroma": false,
+      "display_name": "Lights",
+      "item_type": "Knife",
+      "value": 2,
+      "thumbnail": "4534858185",
+      "rarity": "Uncommon"
+   },
+   "Gifts_K_2024": {
+      "chroma": false,
+      "display_name": "Gifts",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "129290011017110",
+      "rarity": "Common"
+   },
+   "Laser": {
+      "chroma": false,
+      "display_name": "Laser",
+      "item_type": "Gun",
+      "value": 28,
+      "thumbnail": "3187422496",
+      "rarity": "Godly"
+   },
+   "Wanwood": {
+      "chroma": false,
+      "display_name": "Wanwood",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "192132094",
+      "rarity": "Uncommon"
+   },
+   "Goo": {
+      "chroma": false,
+      "display_name": "Goo",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "237336076",
+      "rarity": "Common"
+   },
+   "Wavy_G_2024": {
+      "chroma": false,
+      "display_name": "Wavy",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "16960077712",
+      "rarity": "Common"
+   },
+   "Magma_K_2021": {
+      "chroma": false,
+      "display_name": "Magma",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "7800225996",
+      "rarity": "Rare"
+   },
+   "Melon_G_2023": {
+      "chroma": false,
+      "display_name": "Melon",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "13944154336",
+      "rarity": "Uncommon"
+   },
+   "Constellation_G_2024": {
+      "chroma": false,
+      "display_name": "Nightsky",
+      "item_type": "Gun",
+      "value": 4,
+      "thumbnail": "94311965719769",
+      "rarity": "Legendary"
+   },
+   "Wood_K_2023": {
+      "chroma": false,
+      "display_name": "Wood",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15091401811",
+      "rarity": "Common"
+   },
+   "Latte_K_2023": {
+      "chroma": false,
+      "display_name": "Latte",
+      "item_type": "Knife",
+      "value": 150,
+      "thumbnail": "15413114703",
+      "rarity": "Legendary"
+   },
+   "Webs_G_2022": {
+      "chroma": false,
+      "display_name": "Webs",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "11284147880",
+      "rarity": "Common"
+   },
+   "Snowglobe_K_2023": {
+      "chroma": false,
+      "display_name": "Snowglobe",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15635576863",
+      "rarity": "Rare"
+   },
+   "Flora": {
+      "chroma": false,
+      "display_name": "Flora",
+      "item_type": "Gun",
+      "value": 170,
+      "thumbnail": "139276091458016",
+      "rarity": "Godly"
+   },
+   "Sparkle2": {
+      "chroma": false,
+      "display_name": "Sparkle2",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "310710191",
+      "rarity": "Common"
+   },
+   "Hacker": {
+      "chroma": false,
+      "display_name": "Hacker",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "203819271",
+      "rarity": "Rare"
+   },
+   "SunsetKnifeChroma": {
+      "chroma": true,
+      "display_name": "Sunset",
+      "item_type": "Knife",
+      "value": 2350,
+      "thumbnail": "118232478609755",
+      "rarity": "Godly"
+   },
+   "SawChroma": {
+      "chroma": true,
+      "display_name": "Saw",
+      "item_type": "Knife",
+      "value": 40,
+      "thumbnail": "3187398132",
+      "rarity": "Godly"
+   },
+   "Mummy": {
+      "chroma": false,
+      "display_name": "Mummy",
+      "item_type": "Gun",
+      "value": 1,
+      "thumbnail": "315155591",
+      "rarity": "Rare"
+   },
+   "Boneblade": {
+      "chroma": false,
+      "display_name": "Boneblade",
+      "item_type": "Knife",
+      "value": 7,
+      "thumbnail": "2513505477",
+      "rarity": "Godly"
+   },
+   "GhostK2018": {
+      "chroma": false,
+      "display_name": "Ghost",
+      "item_type": "Knife",
+      "value": 5,
+      "thumbnail": "2513732969",
+      "rarity": "Legendary"
+   },
+   "GreenMarble": {
+      "chroma": false,
+      "display_name": "Green Marble",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "1133366830",
+      "rarity": "Rare"
+   },
+   "RedFire": {
+      "chroma": false,
+      "display_name": "Red Fire",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "1269256860",
+      "rarity": "Legendary"
+   },
+   "Aqua": {
+      "chroma": false,
+      "display_name": "Aqua",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "315501208",
+      "rarity": "Common"
+   },
+   "Frostfade_K_2023": {
+      "chroma": false,
+      "display_name": "Frostfade",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15635565488",
+      "rarity": "Legendary"
+   },
+   "Iceflake": {
+      "chroma": false,
+      "display_name": "Iceflake",
+      "item_type": "Knife",
+      "value": 25,
+      "thumbnail": "8304818186",
+      "rarity": "Godly"
+   },
+   "Combat": {
+      "chroma": false,
+      "display_name": "Combat",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "3183604570",
+      "rarity": "Common"
+   },
+   "Icewing": {
+      "chroma": false,
+      "display_name": "Icewing",
+      "item_type": "Knife",
+      "value": 10,
+      "thumbnail": "2669997196",
+      "rarity": "Ancient"
+   },
+   "BronzeSugar": {
+      "chroma": false,
+      "display_name": "Bronze Sugar",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "3215355397",
+      "rarity": "Unique"
+   },
+   "Starfish_K_2024": {
+      "chroma": false,
+      "display_name": "Starfish",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "18322176343",
+      "rarity": "Common"
+   },
+   "GreenP": {
+      "chroma": false,
+      "display_name": "Green Pumpkin",
+      "item_type": "Pet",
+      "value": 50,
+      "thumbnail": "2513906167",
+      "rarity": "Common"
+   },
+   "Kool": {
+      "chroma": false,
+      "display_name": "Yellow",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "473625906",
+      "rarity": "Common"
+   },
+   "Snowflake_K_2022": {
+      "chroma": false,
+      "display_name": "Snowflake",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11834397133",
+      "rarity": "Uncommon"
+   },
+   "Gingerscythe_Godly": {
+      "chroma": false,
+      "display_name": "Gingerscythe",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15683175970",
+      "rarity": "Godly"
+   },
+   "SilverSugar": {
+      "chroma": false,
+      "display_name": "Silver Sugar",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "3215355602",
+      "rarity": "Unique"
+   },
+   "Frostbite": {
+      "chroma": false,
+      "display_name": "Frostbite",
+      "item_type": "Knife",
+      "value": 7,
+      "thumbnail": "4528373246",
+      "rarity": "Godly"
+   },
+   "Skull2021": {
+      "chroma": false,
+      "display_name": "Skully",
+      "item_type": "Pet",
+      "value": 1,
+      "thumbnail": "7808245514",
+      "rarity": "Legendary"
+   },
+   "WitchBrew_K_2024": {
+      "chroma": false,
+      "display_name": "Witch's Brew",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "108331177567412",
+      "rarity": "Uncommon"
+   },
+   "Stockings_K_2022": {
+      "chroma": false,
+      "display_name": "Stockings",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11834392930",
+      "rarity": "Uncommon"
+   },
+   "Doge": {
+      "chroma": false,
+      "display_name": "Doge",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "357823389",
+      "rarity": "Uncommon"
+   },
+   "SantasSpirit": {
+      "chroma": false,
+      "display_name": "Santa's Spirit",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "6123357775",
+      "rarity": "Legendary"
+   },
+   "Steel_K_2023": {
+      "chroma": false,
+      "display_name": "Steel",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15091405483",
+      "rarity": "Uncommon"
+   },
+   "Gingerscythe_Blue": {
+      "chroma": false,
+      "display_name": "Blue Gingerscythe",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "16964448042",
+      "rarity": "Unique"
+   },
+   "ElfGun": {
+      "chroma": false,
+      "display_name": "Elf",
+      "item_type": "Gun",
+      "value": 2,
+      "thumbnail": "332767999",
+      "rarity": "Common"
+   },
+   "Viper": {
+      "chroma": false,
+      "display_name": "Viper",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "160299600",
+      "rarity": "Legendary"
+   },
+   "iRevolver": {
+      "chroma": false,
+      "display_name": "iRevolver",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "203809168",
+      "rarity": "Rare"
+   },
+   "IceCamo_G_2021": {
+      "chroma": false,
+      "display_name": "Ice Camo",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "8304767724",
+      "rarity": "Rare"
+   },
+   "ZombifiedK": {
+      "chroma": false,
+      "display_name": "Zombified",
+      "item_type": "Knife",
+      "value": 65,
+      "thumbnail": "4210928053",
+      "rarity": "Uncommon"
+   },
+   "Constellation_K_2024": {
+      "chroma": false,
+      "display_name": "Nightstar",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "113979322866878",
+      "rarity": "Legendary"
+   },
+   "OrangeMarble": {
+      "chroma": false,
+      "display_name": "Orange Marble",
+      "item_type": "Knife",
+      "value": 2,
+      "thumbnail": "531873011",
+      "rarity": "Rare"
+   },
+   "Darkness_K_2022": {
+      "chroma": false,
+      "display_name": "Darkness",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11254081561",
+      "rarity": "Common"
+   },
+   "Palms_K_2024": {
+      "chroma": false,
+      "display_name": "Palms",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "18322137551",
+      "rarity": "Legendary"
+   },
+   "Apoc_G_2022": {
+      "chroma": false,
+      "display_name": "Apocalypse",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "11255501940",
+      "rarity": "Common"
+   },
+   "SantasMagic": {
+      "chroma": false,
+      "display_name": "Santa's Magic",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "4535483042",
+      "rarity": "Legendary"
+   },
+   "Flames": {
+      "chroma": false,
+      "display_name": "Flames",
+      "item_type": "Knife",
+      "value": 7,
+      "thumbnail": "585873746",
+      "rarity": "Godly"
+   },
+   "Sub": {
+      "chroma": false,
+      "display_name": "Sub",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "546159250",
+      "rarity": "Common"
+   },
+   "GoldIceblaster": {
+      "chroma": false,
+      "display_name": "Gold Iceblaster",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "6404165933",
+      "rarity": "Unique"
+   },
+   "Ginger_K_2018": {
+      "chroma": false,
+      "display_name": "Ginger",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "2669638742",
+      "rarity": "Legendary"
+   },
+   "Bats": {
+      "chroma": false,
+      "display_name": "Bats",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "531873625",
+      "rarity": "Rare"
+   },
+   "CandyCorn_K_2024": {
+      "chroma": false,
+      "display_name": "Candy Corn",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "115093067149752",
+      "rarity": "Common"
+   },
+   "Eclipse_K_2023": {
+      "chroma": false,
+      "display_name": "Eclipse",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15091404278",
+      "rarity": "Uncommon"
+   },
+   "Leaves_K_2025": {
+      "chroma": false,
+      "display_name": "Leaves",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "73486056426142",
+      "rarity": "Common"
+   },
+   "Iron": {
+      "chroma": false,
+      "display_name": "Iron",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "160201541",
+      "rarity": "Common"
+   },
+   "IceShard": {
+      "chroma": false,
+      "display_name": "Ice Shard",
+      "item_type": "Knife",
+      "value": 7,
+      "thumbnail": "1268710824",
+      "rarity": "Godly"
+   },
+   "Plasmabeam": {
+      "chroma": false,
+      "display_name": "Plasmabeam",
+      "item_type": "Gun",
+      "value": 25,
+      "thumbnail": "10014717343",
+      "rarity": "Godly"
+   },
+   "Gifted": {
+      "chroma": false,
+      "display_name": "Gifted",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "197627734",
+      "rarity": "Uncommon"
+   },
+   "Nova": {
+      "chroma": false,
+      "display_name": "Nova",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "235371686",
+      "rarity": "Rare"
+   },
+   "Cookieblade": {
+      "chroma": false,
+      "display_name": "Cookieblade",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "6121574620",
+      "rarity": "Godly"
+   },
+   "Reptile": {
+      "chroma": false,
+      "display_name": "Reptile",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "162672131",
+      "rarity": "Common"
+   },
+   "Zombified_K_2022": {
+      "chroma": false,
+      "display_name": "Zombified",
+      "item_type": "Knife",
+      "value": 8,
+      "thumbnail": "11254182560",
+      "rarity": "Rare"
+   },
+   "RedSeer": {
+      "chroma": false,
+      "display_name": "Red Seer",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "3184139367",
+      "rarity": "Godly"
+   },
+   "Prism": {
+      "chroma": false,
+      "display_name": "Prism",
+      "item_type": "Knife",
+      "value": 8,
+      "thumbnail": "306046703",
+      "rarity": "Common"
+   },
+   "Chill": {
+      "chroma": false,
+      "display_name": "Chill",
+      "item_type": "Knife",
+      "value": 13,
+      "thumbnail": "332022166",
+      "rarity": "Godly"
+   },
+   "HeatChroma": {
+      "chroma": true,
+      "display_name": "Heat",
+      "item_type": "Knife",
+      "value": 50,
+      "thumbnail": "3187444849",
+      "rarity": "Godly"
+   },
+   "Snowman_K_2021": {
+      "chroma": false,
+      "display_name": "Snowman",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "8304753468",
+      "rarity": "Uncommon"
+   },
+   "Neon_G_2025": {
+      "chroma": false,
+      "display_name": "Neon",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "134429631587448",
+      "rarity": "Rare"
+   },
+   "Starry_G_2021": {
+      "chroma": false,
+      "display_name": "Starry",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "8304772774",
+      "rarity": "Rare"
+   },
+   "Pirate": {
+      "chroma": false,
+      "display_name": "Pirate",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "3183639867",
+      "rarity": "Uncommon"
+   },
+   "Heartblade": {
+      "chroma": false,
+      "display_name": "Heartblade",
+      "item_type": "Knife",
+      "value": 120,
+      "thumbnail": "6413214382",
+      "rarity": "Godly"
+   },
+   "HauntedK": {
+      "chroma": false,
+      "display_name": "Haunted",
+      "item_type": "Knife",
+      "value": 5,
+      "thumbnail": "2513733741",
+      "rarity": "Common"
+   },
+   "Watcher_G_2021": {
+      "chroma": false,
+      "display_name": "Watcher",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "7800256309",
+      "rarity": "Rare"
+   },
+   "Cat_G_2021": {
+      "chroma": false,
+      "display_name": "Cat",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "7800253444",
+      "rarity": "Common"
+   },
+   "Cursed_G_2024": {
+      "chroma": false,
+      "display_name": "Cursed",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "122855768693454",
+      "rarity": "Legendary"
+   },
+   "Blaster": {
+      "chroma": false,
+      "display_name": "Blaster",
+      "item_type": "Gun",
+      "value": 20,
+      "thumbnail": "386277381",
+      "rarity": "Godly"
+   },
+   "Rune": {
+      "chroma": false,
+      "display_name": "Rune",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "3183607894",
+      "rarity": "Legendary"
+   },
+   "Cola": {
+      "chroma": false,
+      "display_name": "Soda",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "238546400",
+      "rarity": "Uncommon"
+   },
+   "Sparkle": {
+      "chroma": false,
+      "display_name": "Sparkle",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "203869110",
+      "rarity": "Legendary"
+   },
+   "Cardboard": {
+      "chroma": false,
+      "display_name": "Cardboard",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "235366729",
+      "rarity": "Common"
+   },
+   "BronzeHarvester": {
+      "chroma": false,
+      "display_name": "Bronze Harvester",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "8194221072",
+      "rarity": "Unique"
+   },
+   "Present": {
+      "chroma": false,
+      "display_name": "Present",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "1268699212",
+      "rarity": "Common"
+   },
+   "SlouseClown": {
+      "chroma": false,
+      "display_name": "Clown",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "315501118",
+      "rarity": "Unique"
+   },
+   "Hallowgun": {
+      "chroma": false,
+      "display_name": "Hallowgun",
+      "item_type": "Gun",
+      "value": 27,
+      "thumbnail": "5877089721",
+      "rarity": "Godly"
+   },
+   "Ghostblade": {
+      "chroma": false,
+      "display_name": "Ghostblade",
+      "item_type": "Knife",
+      "value": 7,
+      "thumbnail": "4217586790",
+      "rarity": "Godly"
+   },
+   "GingerGun": {
+      "chroma": false,
+      "display_name": "Ginger",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "332497038",
+      "rarity": "Rare"
+   },
+   "Jinglegun": {
+      "chroma": false,
+      "display_name": "Jinglegun",
+      "item_type": "Gun",
+      "value": 17,
+      "thumbnail": "6121678262",
+      "rarity": "Godly"
+   },
+   "Rainbow_K": {
+      "chroma": false,
+      "display_name": "Rainbow",
+      "item_type": "Knife",
+      "value": 245,
+      "thumbnail": "12966184630",
+      "rarity": "Godly"
+   },
+   "Dungeon": {
+      "chroma": false,
+      "display_name": "Dungeon",
+      "item_type": "Knife",
+      "value": 27,
+      "thumbnail": "4210920512",
+      "rarity": "Rare"
+   },
+   "VampiresEdge": {
+      "chroma": false,
+      "display_name": "Vampire's Edge",
+      "item_type": "Knife",
+      "value": 15,
+      "thumbnail": "5873256998",
+      "rarity": "Godly"
+   },
+   "Gingerblade": {
+      "chroma": false,
+      "display_name": "Gingerblade",
+      "item_type": "Knife",
+      "value": 18,
+      "thumbnail": "2669336659",
+      "rarity": "Godly"
+   },
+   "Gingerscythe_Silver": {
+      "chroma": false,
+      "display_name": "Silver Gingerscythe",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "16964450895",
+      "rarity": "Unique"
+   },
+   "BatsG": {
+      "chroma": false,
+      "display_name": "Bats",
+      "item_type": "Gun",
+      "value": 2,
+      "thumbnail": "2513741174",
+      "rarity": "Common"
+   },
+   "Icedriller_G_2020": {
+      "chroma": false,
+      "display_name": "Icedriller",
+      "item_type": "Gun",
+      "value": 5,
+      "thumbnail": "6121866490",
+      "rarity": "Legendary"
+   },
+   "RBKnife": {
+      "chroma": false,
+      "display_name": "RB Knife",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "5984754897",
+      "rarity": "Common"
+   },
+   "IcepiercerRed": {
+      "chroma": false,
+      "display_name": "Red Icepiercer",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "12227133450",
+      "rarity": "Unique"
+   },
+   "Snowy": {
+      "chroma": false,
+      "display_name": "Snowy",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "332011125",
+      "rarity": "Uncommon"
+   },
+   "Giftbag_K_2020": {
+      "chroma": false,
+      "display_name": "Gift Bag",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "6121847170",
+      "rarity": "Common"
+   },
+   "Frosty": {
+      "chroma": false,
+      "display_name": "Frosty",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "1268704507",
+      "rarity": "Uncommon"
+   },
+   "Valentine": {
+      "chroma": false,
+      "display_name": "Valentine",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "363362726",
+      "rarity": "Common"
+   },
+   "ZombieG2018": {
+      "chroma": false,
+      "display_name": "Zombie",
+      "item_type": "Gun",
+      "value": 10,
+      "thumbnail": "2513743298",
+      "rarity": "Uncommon"
+   },
+   "Skool": {
+      "chroma": false,
+      "display_name": "Skool",
+      "item_type": "Knife",
+      "value": 8,
+      "thumbnail": "295269977",
+      "rarity": "Common"
+   },
+   "GhostRbx_K_2022": {
+      "chroma": false,
+      "display_name": "Ghostly",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11117375743",
+      "rarity": "Uncommon"
+   },
+   "Scythe": {
+      "chroma": false,
+      "display_name": "Batwing",
+      "item_type": "Knife",
+      "value": 60,
+      "thumbnail": "375690925",
+      "rarity": "Ancient"
+   },
+   "Swirl_K_2021": {
+      "chroma": false,
+      "display_name": "Swirl",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "8304757110",
+      "rarity": "Rare"
+   },
+   "RedP": {
+      "chroma": false,
+      "display_name": "Red Pumpkin",
+      "item_type": "Pet",
+      "value": 60,
+      "thumbnail": "2513907910",
+      "rarity": "Common"
+   },
+   "Nightblade": {
+      "chroma": false,
+      "display_name": "Nightblade",
+      "item_type": "Knife",
+      "value": 23,
+      "thumbnail": "475478854",
+      "rarity": "Godly"
+   },
+   "Brush": {
+      "chroma": false,
+      "display_name": "Brush",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "365568602",
+      "rarity": "Uncommon"
+   },
+   "Starry_K_2021": {
+      "chroma": false,
+      "display_name": "Starry",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "8304757707",
+      "rarity": "Rare"
+   },
+   "Emerald": {
+      "chroma": false,
+      "display_name": "Emerald",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "198461276",
+      "rarity": "Legendary"
+   },
+   "Alex": {
+      "chroma": false,
+      "display_name": "Alex",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "546159020",
+      "rarity": "Common"
+   },
+   "GreenPumpkin2021": {
+      "chroma": false,
+      "display_name": "Green Pumpkin",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "7808169444",
+      "rarity": "Rare"
+   },
+   "Spring_K_2024": {
+      "chroma": false,
+      "display_name": "Spring",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "16959775902",
+      "rarity": "Rare"
+   },
+   "Galaxy": {
+      "chroma": false,
+      "display_name": "Galaxy",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "192480941",
+      "rarity": "Rare"
+   },
+   "Snowflake_G_2018": {
+      "chroma": false,
+      "display_name": "Snowflake",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "2669786515",
+      "rarity": "Uncommon"
+   },
+   "Chips": {
+      "chroma": false,
+      "display_name": "Blue",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "473626317",
+      "rarity": "Uncommon"
+   },
+   "Noodle_K_2023": {
+      "chroma": false,
+      "display_name": "Pool Noodle",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "13944133313",
+      "rarity": "Uncommon"
+   },
+   "SunsetKnife": {
+      "chroma": false,
+      "display_name": "Sunset",
+      "item_type": "Knife",
+      "value": 145,
+      "thumbnail": "103526268515240",
+      "rarity": "Godly"
+   },
+   "Gingermint_K": {
+      "chroma": false,
+      "display_name": "Cookiecane",
+      "item_type": "Knife",
+      "value": 22,
+      "thumbnail": "11855306927",
+      "rarity": "Godly"
+   },
+   "Celestial_Red": {
+      "chroma": false,
+      "display_name": "Red Celestial",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "119157529694972",
+      "rarity": "Unique"
+   },
+   "GemstoneChroma": {
+      "chroma": true,
+      "display_name": "Gemstone",
+      "item_type": "Knife",
+      "value": 50,
+      "thumbnail": "3183657875",
+      "rarity": "Godly"
+   },
+   "DeepSea": {
+      "chroma": false,
+      "display_name": "Deep Sea",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "4659634072",
+      "rarity": "Rare"
+   },
+   "Soda_K_2025": {
+      "chroma": false,
+      "display_name": "Soda",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "89899263078420",
+      "rarity": "Uncommon"
+   },
+   "GreenFire": {
+      "chroma": false,
+      "display_name": "Green Fire",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "1268706374",
+      "rarity": "Legendary"
+   },
+   "Webs": {
+      "chroma": false,
+      "display_name": "Webs",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "1133325465",
+      "rarity": "Uncommon"
+   },
+   "VampireG2018": {
+      "chroma": false,
+      "display_name": "Vampire",
+      "item_type": "Gun",
+      "value": 8,
+      "thumbnail": "2513742751",
+      "rarity": "Rare"
+   },
+   "Elitey": {
+      "chroma": false,
+      "display_name": "Elitey",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "357525407",
+      "rarity": "Legendary"
+   },
+   "Tree_K_2023": {
+      "chroma": false,
+      "display_name": "Tree",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15635563249",
+      "rarity": "Rare"
+   },
+   "SwirlyGunSilver": {
+      "chroma": false,
+      "display_name": "Silver Swirly",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "9552064240",
+      "rarity": "Unique"
+   },
+   "Sweater": {
+      "chroma": false,
+      "display_name": "Sweater",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "1268704902",
+      "rarity": "Uncommon"
+   },
+   "BattleAxe2": {
+      "chroma": false,
+      "display_name": "BattleAxe II",
+      "item_type": "Knife",
+      "value": 18,
+      "thumbnail": "2513535503",
+      "rarity": "Godly"
+   },
+   "HotChocolate_K_2024": {
+      "chroma": false,
+      "display_name": "Hot Chocolate",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "133307062463653",
+      "rarity": "Common"
+   },
+   "Skyline_K_2025": {
+      "chroma": false,
+      "display_name": "Skyline",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "75608370390005",
+      "rarity": "Common"
+   },
+   "Clown": {
+      "chroma": false,
+      "display_name": "Clown",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "315501118",
+      "rarity": "Common"
+   },
+   "SwirlyGunChroma": {
+      "chroma": true,
+      "display_name": "Swirly Gun",
+      "item_type": "Gun",
+      "value": 62,
+      "thumbnail": "8311453396",
+      "rarity": "Godly"
+   },
+   "ElderwoodKnife": {
+      "chroma": false,
+      "display_name": "Elderwood Blade",
+      "item_type": "Knife",
+      "value": 60,
+      "thumbnail": "11254879631",
+      "rarity": "Godly"
+   },
+   "AmericaSword": {
+      "chroma": false,
+      "display_name": "Old Glory",
+      "item_type": "Knife",
+      "value": 20,
+      "thumbnail": "446047742",
+      "rarity": "Godly"
+   },
+   "Iceblaster": {
+      "chroma": false,
+      "display_name": "Iceblaster",
+      "item_type": "Gun",
+      "value": 65,
+      "thumbnail": "6121579464",
+      "rarity": "Godly"
+   },
+   "Vines_G_2023": {
+      "chroma": false,
+      "display_name": "Vines",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "15091402817",
+      "rarity": "Common"
+   },
+   "Nuke_G_2023": {
+      "chroma": false,
+      "display_name": "Nuke",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "12965335931",
+      "rarity": "Rare"
+   },
+   "Frosted_G_2019": {
+      "chroma": false,
+      "display_name": "Frosted",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "4534866678",
+      "rarity": "Common"
+   },
+   "FlowerwoodGun": {
+      "chroma": false,
+      "display_name": "Flowerwood Gun",
+      "item_type": "Gun",
+      "value": 150,
+      "thumbnail": "16963894455",
+      "rarity": "Godly"
+   },
+   "Jellyfish_K_2024": {
+      "chroma": false,
+      "display_name": "Jellyfish",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "18322181701",
+      "rarity": "Uncommon"
+   },
+   "EliteGreen": {
+      "chroma": false,
+      "display_name": "Green Elite",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "332754554",
+      "rarity": "Legendary"
+   },
+   "Painted_G_2023": {
+      "chroma": false,
+      "display_name": "Painted",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "12965344675",
+      "rarity": "Uncommon"
+   },
+   "Eggblade": {
+      "chroma": false,
+      "display_name": "Eggblade",
+      "item_type": "Knife",
+      "value": 5,
+      "thumbnail": "6607512359",
+      "rarity": "Godly"
+   },
+   "GraveK": {
+      "chroma": false,
+      "display_name": "Grave",
+      "item_type": "Knife",
+      "value": 2,
+      "thumbnail": "2513728474",
+      "rarity": "Common"
+   },
+   "Knife1": {
+      "chroma": false,
+      "display_name": "Splitter",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "143820641",
+      "rarity": "Classic"
+   },
+   "OrangeSeer": {
+      "chroma": false,
+      "display_name": "Orange Seer",
+      "item_type": "Knife",
+      "value": 2,
+      "thumbnail": "3184139504",
+      "rarity": "Godly"
+   },
+   "GoldSugar": {
+      "chroma": false,
+      "display_name": "Gold Sugar",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "3215355797",
+      "rarity": "Unique"
+   },
+   "Robot_K_2024": {
+      "chroma": false,
+      "display_name": "Robot",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "16959778188",
+      "rarity": "Rare"
+   },
+   "Cane_G_2018": {
+      "chroma": false,
+      "display_name": "Cane",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "2669785546",
+      "rarity": "Rare"
+   },
+   "Hardened": {
+      "chroma": false,
+      "display_name": "Hardened",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "3183605810",
+      "rarity": "Common"
+   },
+   "Cavern_K_2019": {
+      "chroma": false,
+      "display_name": "Cavern",
+      "item_type": "Knife",
+      "value": 13,
+      "thumbnail": "4534861110",
+      "rarity": "Legendary"
+   },
+   "Aliens_G_2021": {
+      "chroma": false,
+      "display_name": "Aliens",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "7800250906",
+      "rarity": "Common"
+   },
+   "Stickers_K_2021": {
+      "chroma": false,
+      "display_name": "Stickers",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "7800229084",
+      "rarity": "Common"
+   },
+   "Candies2017": {
+      "chroma": false,
+      "display_name": "Candies",
+      "item_type": "Misc",
+      "value": 0,
+      "thumbnail": "1130939504",
+      "rarity": "Halloween"
+   },
+   "Snowflake_G_2022": {
+      "chroma": false,
+      "display_name": "Snowflake",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "11834437796",
+      "rarity": "Uncommon"
+   },
+   "Waves_K": {
+      "chroma": false,
+      "display_name": "Waves",
+      "item_type": "Knife",
+      "value": 150,
+      "thumbnail": "13933066522",
+      "rarity": "Godly"
+   },
+   "Carved_K_2020": {
+      "chroma": false,
+      "display_name": "Carved",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "5866436906",
+      "rarity": "Common"
+   },
+   "FertilizerBox": {
+      "chroma": false,
+      "display_name": "Box of Fertilizer",
+      "item_type": "Misc",
+      "value": 2,
+      "thumbnail": "2672223475",
+      "rarity": "Christmas"
+   },
+   "BlueSeer": {
+      "chroma": false,
+      "display_name": "Blue Seer",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "3184139996",
+      "rarity": "Godly"
+   },
+   "Darksword": {
+      "chroma": false,
+      "display_name": "Darksword",
+      "item_type": "Knife",
+      "value": 735,
+      "thumbnail": "15080267070",
+      "rarity": "Godly"
+   },
+   "GoldenGun": {
+      "chroma": false,
+      "display_name": "Golden",
+      "item_type": "Gun",
+      "value": 4,
+      "thumbnail": "147835357",
+      "rarity": "Classic"
+   },
+   "GoldVampiresEdge": {
+      "chroma": false,
+      "display_name": "Gold Vamp's Edge",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "12253496571",
+      "rarity": "Unique"
+   },
+   "Sparkle5": {
+      "chroma": false,
+      "display_name": "Sparkle5",
+      "item_type": "Knife",
+      "value": 8,
+      "thumbnail": "310713235",
+      "rarity": "Common"
+   },
+   "PopArt_K_2025": {
+      "chroma": false,
+      "display_name": "Pop Art",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "123269723073737",
+      "rarity": "Rare"
+   },
+   "VampireAxe": {
+      "chroma": false,
+      "display_name": "Vampire's Axe",
+      "item_type": "Knife",
+      "value": 625,
+      "thumbnail": "130837676383567",
+      "rarity": "Ancient"
+   },
+   "Canes_G_2023": {
+      "chroma": false,
+      "display_name": "Canes",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "15635558982",
+      "rarity": "Uncommon"
+   },
+   "SwirlyBlade": {
+      "chroma": false,
+      "display_name": "Swirly Blade",
+      "item_type": "Knife",
+      "value": 25,
+      "thumbnail": "8304805693",
+      "rarity": "Godly"
+   },
+   "Ollie": {
+      "chroma": false,
+      "display_name": "Ollie",
+      "item_type": "Knife",
+      "value": 7,
+      "thumbnail": "305504399",
+      "rarity": "Common"
+   },
+   "DefaultGun": {
+      "chroma": false,
+      "display_name": "Default Gun",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "197518111",
+      "rarity": "Common"
+   },
+   "MintyGold": {
+      "chroma": false,
+      "display_name": "Gold Minty",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "4753347636",
+      "rarity": "Unique"
+   },
+   "Fusion": {
+      "chroma": false,
+      "display_name": "Fusion",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "365569686",
+      "rarity": "Legendary"
+   },
+   "Toy_G_2023": {
+      "chroma": false,
+      "display_name": "Toy",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "13944153112",
+      "rarity": "Common"
+   },
+   "Apoc_K_2022": {
+      "chroma": false,
+      "display_name": "Apocalypse",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11254172968",
+      "rarity": "Common"
+   },
+   "Kraken_K_2024": {
+      "chroma": false,
+      "display_name": "Kraken",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "116059045830205",
+      "rarity": "Rare"
+   },
+   "WrapPaperBoxBlue": {
+      "chroma": false,
+      "display_name": "Blue Box of Blue Wrapping Paper",
+      "item_type": "Misc",
+      "value": 3,
+      "thumbnail": "1262587998",
+      "rarity": "Christmas"
+   },
+   "Night": {
+      "chroma": false,
+      "display_name": "Night",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "159971385",
+      "rarity": "Uncommon"
+   },
+   "Frostflame_K_2024": {
+      "chroma": false,
+      "display_name": "Frostflame",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "104988218477551",
+      "rarity": "Rare"
+   },
+   "Batwing": {
+      "chroma": false,
+      "display_name": "Glitch1",
+      "item_type": "Knife",
+      "value": 70,
+      "thumbnail": "196751515",
+      "rarity": "Common"
+   },
+   "Sandy": {
+      "chroma": false,
+      "display_name": "Sandy",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "365568056",
+      "rarity": "Common"
+   },
+   "Carrot_K_2024": {
+      "chroma": false,
+      "display_name": "Carrot",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "16959771850",
+      "rarity": "Uncommon"
+   },
+   "Blossom": {
+      "chroma": false,
+      "display_name": "Blossom",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "363150561",
+      "rarity": "Common"
+   },
+   "PumpkinPet18": {
+      "chroma": false,
+      "display_name": "Pumpkin",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "314773056",
+      "rarity": "Common"
+   },
+   "HL2": {
+      "chroma": false,
+      "display_name": "HL2",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "238546100",
+      "rarity": "Common"
+   },
+   "NikKnife": {
+      "chroma": false,
+      "display_name": "Nik's Scythe",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "2533350813",
+      "rarity": "Ancient"
+   },
+   "Doritos": {
+      "chroma": false,
+      "display_name": "Purple",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "473626740",
+      "rarity": "Rare"
+   },
+   "Icebreaker": {
+      "chroma": false,
+      "display_name": "Icebreaker",
+      "item_type": "Knife",
+      "value": 125,
+      "thumbnail": "6121572723",
+      "rarity": "Ancient"
+   },
+   "Gemstone": {
+      "chroma": false,
+      "display_name": "Gemstone",
+      "item_type": "Knife",
+      "value": 18,
+      "thumbnail": "3183657748",
+      "rarity": "Godly"
+   },
+   "Palms_G_2024": {
+      "chroma": false,
+      "display_name": "Palms",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "18322192817",
+      "rarity": "Legendary"
+   },
+   "Gingerscope_Bronze": {
+      "chroma": false,
+      "display_name": "Bronze Gingerscope",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "16964465320",
+      "rarity": "Unique"
+   },
+   "Turkey2023": {
+      "chroma": false,
+      "display_name": "Turkey",
+      "item_type": "Knife",
+      "value": 1800,
+      "thumbnail": "15413162319",
+      "rarity": "Godly"
+   },
+   "PopArt_G_2025": {
+      "chroma": false,
+      "display_name": "Pop Art",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "90526048501163",
+      "rarity": "Rare"
+   },
+   "Tree_G_2022": {
+      "chroma": false,
+      "display_name": "Tree",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "11834441321",
+      "rarity": "Rare"
+   },
+   "Igloo_K_2024": {
+      "chroma": false,
+      "display_name": "Igloo",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "73203940450745",
+      "rarity": "Common"
+   },
+   "Sparkle9": {
+      "chroma": false,
+      "display_name": "Sparkle9",
+      "item_type": "Knife",
+      "value": 30,
+      "thumbnail": "310715104",
+      "rarity": "Common"
+   },
+   "Candy": {
+      "chroma": false,
+      "display_name": "Candy",
+      "item_type": "Knife",
+      "value": 175,
+      "thumbnail": "332021011",
+      "rarity": "Godly"
+   },
+   "TravelerAxeSilver": {
+      "chroma": false,
+      "display_name": "Silver Traveler's",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15695407742",
+      "rarity": "Unique"
+   },
+   "LaserChroma": {
+      "chroma": true,
+      "display_name": "Laser",
+      "item_type": "Gun",
+      "value": 60,
+      "thumbnail": "3187422628",
+      "rarity": "Godly"
+   },
+   "Chilly": {
+      "chroma": false,
+      "display_name": "Chilly",
+      "item_type": "Pet",
+      "value": 13,
+      "thumbnail": "357821774",
+      "rarity": "Uncommon"
+   },
+   "SharkChroma": {
+      "chroma": true,
+      "display_name": "Shark",
+      "item_type": "Gun",
+      "value": 55,
+      "thumbnail": "3187421856",
+      "rarity": "Godly"
+   },
+   "BlueSugar": {
+      "chroma": false,
+      "display_name": "Blue Sugar",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "3215355152",
+      "rarity": "Unique"
+   },
+   "Ocean_G": {
+      "chroma": false,
+      "display_name": "Ocean",
+      "item_type": "Gun",
+      "value": 155,
+      "thumbnail": "13933165014",
+      "rarity": "Godly"
+   },
+   "SnowflakeKey": {
+      "chroma": false,
+      "display_name": "Snowflake Key 2018",
+      "item_type": "Misc",
+      "value": 0,
+      "thumbnail": "4528872048",
+      "rarity": "Christmas"
+   },
+   "Constellation_Red": {
+      "chroma": false,
+      "display_name": "Red Constellation",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "85766514163212",
+      "rarity": "Unique"
+   },
+   "IceDragon": {
+      "chroma": false,
+      "display_name": "Ice Dragon",
+      "item_type": "Knife",
+      "value": 7,
+      "thumbnail": "585846454",
+      "rarity": "Godly"
+   },
+   "Tulip": {
+      "chroma": false,
+      "display_name": "Tulip",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "387874661",
+      "rarity": "Common"
+   },
+   "Reaver_Ancient": {
+      "chroma": false,
+      "display_name": "Reaver",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "7791640819",
+      "rarity": "Ancient"
+   },
+   "Gingerscope_Gold": {
+      "chroma": false,
+      "display_name": "Gold Gingerscope",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "16964471890",
+      "rarity": "Unique"
+   },
+   "ToxicG": {
+      "chroma": false,
+      "display_name": "Toxic",
+      "item_type": "Gun",
+      "value": 2,
+      "thumbnail": "2513742519",
+      "rarity": "Rare"
+   },
+   "Synthwave_Legendary": {
+      "chroma": false,
+      "display_name": "Synthwave",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "132040985617451",
+      "rarity": "Legendary"
+   },
+   "Sweater_K_2018": {
+      "chroma": false,
+      "display_name": "Sweater",
+      "item_type": "Knife",
+      "value": 40,
+      "thumbnail": "2669640567",
+      "rarity": "Uncommon"
+   },
+   "Floral_K_2023": {
+      "chroma": false,
+      "display_name": "Floral",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "13944135218",
+      "rarity": "Rare"
+   },
+   "Dew": {
+      "chroma": false,
+      "display_name": "Black",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "473626646",
+      "rarity": "Rare"
+   },
+   "Reindeer": {
+      "chroma": false,
+      "display_name": "Reindeer",
+      "item_type": "Pet",
+      "value": 12,
+      "thumbnail": "585789096",
+      "rarity": "Common"
+   },
+   "MummyK2018": {
+      "chroma": false,
+      "display_name": "Mummy",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "2513733542",
+      "rarity": "Uncommon"
+   },
+   "Cane_G_2021": {
+      "chroma": false,
+      "display_name": "Cane",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "8304768700",
+      "rarity": "Common"
+   },
+   "Eternal3": {
+      "chroma": false,
+      "display_name": "Eternal III",
+      "item_type": "Knife",
+      "value": 10,
+      "thumbnail": "3281170430",
+      "rarity": "Godly"
+   },
+   "TravelerAxeRed": {
+      "chroma": false,
+      "display_name": "Red Traveler's",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15695405379",
+      "rarity": "Unique"
+   },
+   "Ghastly_G_2023": {
+      "chroma": false,
+      "display_name": "Ghastly",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "15091342564",
+      "rarity": "Rare"
+   },
+   "Spectre2022": {
+      "chroma": false,
+      "display_name": "Spectre",
+      "item_type": "Gun",
+      "value": 60,
+      "thumbnail": "11229779932",
+      "rarity": "Godly"
+   },
+   "WrapPaperBoxGreen": {
+      "chroma": false,
+      "display_name": "Box of Green Wrapping Paper",
+      "item_type": "Misc",
+      "value": 2,
+      "thumbnail": "1262587992",
+      "rarity": "Christmas"
+   },
+   "Ghosts_K_2024": {
+      "chroma": false,
+      "display_name": "Ghosts",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "134681523511387",
+      "rarity": "Common"
+   },
+   "Adurite": {
+      "chroma": false,
+      "display_name": "Adurite",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "192492943",
+      "rarity": "Uncommon"
+   },
+   "CandyCorn_G_2022": {
+      "chroma": false,
+      "display_name": "Candy Corn",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "11255558166",
+      "rarity": "Common"
+   },
+   "Wreaths_K_2024": {
+      "chroma": false,
+      "display_name": "Wreaths",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "78432760615312",
+      "rarity": "Uncommon"
+   },
+   "Santa_K_2018": {
+      "chroma": false,
+      "display_name": "Santa",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "2669637780",
+      "rarity": "Common"
+   },
+   "TravelerGunChroma": {
+      "chroma": true,
+      "display_name": "Traveler's Gun",
+      "item_type": "Gun",
+      "value": 145000,
+      "thumbnail": "15097920149",
+      "rarity": "Godly"
+   },
+   "Lava_K_2025": {
+      "chroma": false,
+      "display_name": "Lava",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "131417913843701",
+      "rarity": "Uncommon"
+   },
+   "Ribbon_K_2023": {
+      "chroma": false,
+      "display_name": "Ribbon",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15635552019",
+      "rarity": "Common"
+   },
+   "Pumpking": {
+      "chroma": false,
+      "display_name": "Pumpking",
+      "item_type": "Knife",
+      "value": 8,
+      "thumbnail": "1133082421",
+      "rarity": "Godly"
+   },
+   "Engraved": {
+      "chroma": false,
+      "display_name": "Engraved",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "203807690",
+      "rarity": "Common"
+   },
+   "Chick_K_2025": {
+      "chroma": false,
+      "display_name": "Chick",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "116361515042274",
+      "rarity": "Common"
+   },
+   "MummyG2018": {
+      "chroma": false,
+      "display_name": "Mummy",
+      "item_type": "Gun",
+      "value": 13,
+      "thumbnail": "2513741663",
+      "rarity": "Uncommon"
+   },
+   "Gun1": {
+      "chroma": false,
+      "display_name": "Cowboy",
+      "item_type": "Gun",
+      "value": 5,
+      "thumbnail": "144290769",
+      "rarity": "Classic"
+   },
+   "WaterBalloons_G_2024": {
+      "chroma": false,
+      "display_name": "Balloons",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "18323751962",
+      "rarity": "Common"
+   },
+   "LMFAO": {
+      "chroma": false,
+      "display_name": "Pink",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "473626473",
+      "rarity": "Uncommon"
+   },
+   "Nightfire": {
+      "chroma": false,
+      "display_name": "Nightfire",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "4659626966",
+      "rarity": "Rare"
+   },
+   "Pine_G_2019": {
+      "chroma": false,
+      "display_name": "Pine",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "4534871260",
+      "rarity": "Common"
+   },
+   "Deathshard": {
+      "chroma": false,
+      "display_name": "Deathshard",
+      "item_type": "Knife",
+      "value": 18,
+      "thumbnail": "3175017717",
+      "rarity": "Godly"
+   },
+   "Pumpkin2021": {
+      "chroma": false,
+      "display_name": "Pumpkin",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "7808170514",
+      "rarity": "Common"
+   },
+   "Wraith_G_2022": {
+      "chroma": false,
+      "display_name": "Wraith",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "11255504462",
+      "rarity": "Rare"
+   },
+   "Rose_K_2023": {
+      "chroma": false,
+      "display_name": "Rose",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "12339325736",
+      "rarity": "Uncommon"
+   },
+   "GoldHarvester": {
+      "chroma": false,
+      "display_name": "Gold Harvester",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "8194222523",
+      "rarity": "Unique"
+   },
+   "Bells_K_2023": {
+      "chroma": false,
+      "display_name": "Bells",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15635570486",
+      "rarity": "Common"
+   },
+   "SwirlyAxe": {
+      "chroma": false,
+      "display_name": "Swirly Axe",
+      "item_type": "Knife",
+      "value": 60,
+      "thumbnail": "8304801000",
+      "rarity": "Ancient"
+   },
+   "TreeGun2023": {
+      "chroma": false,
+      "display_name": "Evergun",
+      "item_type": "Gun",
+      "value": 2900,
+      "thumbnail": "15694357721",
+      "rarity": "Godly"
+   },
+   "LugerChroma": {
+      "chroma": true,
+      "display_name": "Luger",
+      "item_type": "Gun",
+      "value": 62,
+      "thumbnail": "3187399258",
+      "rarity": "Godly"
+   },
+   "Eternal4": {
+      "chroma": false,
+      "display_name": "Eternal IV",
+      "item_type": "Knife",
+      "value": 10,
+      "thumbnail": "4999958740",
+      "rarity": "Godly"
+   },
+   "Logcutter_K_2024": {
+      "chroma": false,
+      "display_name": "Logcutter",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "71088901904009",
+      "rarity": "Rare"
+   },
+   "Gingerbread_K_2019": {
+      "chroma": false,
+      "display_name": "Gingerbread",
+      "item_type": "Knife",
+      "value": 50,
+      "thumbnail": "4534856940",
+      "rarity": "Uncommon"
+   },
+   "Combat2": {
+      "chroma": false,
+      "display_name": "Combat II",
+      "item_type": "Knife",
+      "value": 10,
+      "thumbnail": "4972196241",
+      "rarity": "Common"
+   },
+   "SlimeG": {
+      "chroma": false,
+      "display_name": "Slime",
+      "item_type": "Gun",
+      "value": 3,
+      "thumbnail": "2513742319",
+      "rarity": "Common"
+   },
+   "Gingermint_KChroma": {
+      "chroma": true,
+      "display_name": "Cookiecane",
+      "item_type": "Knife",
+      "value": 60,
+      "thumbnail": "11979596437",
+      "rarity": "Godly"
+   },
+   "VampireAxe_Silver": {
+      "chroma": false,
+      "display_name": "Silver Vampire's Axe",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "112808340410054",
+      "rarity": "Unique"
+   },
+   "Portal_K_2020": {
+      "chroma": false,
+      "display_name": "Portal",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "5866444722",
+      "rarity": "Rare"
+   },
+   "Santa": {
+      "chroma": false,
+      "display_name": "Santa",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "4535365003",
+      "rarity": "Rare"
+   },
+   "Giftbag_G_2020": {
+      "chroma": false,
+      "display_name": "Gift Bag",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "6121864813",
+      "rarity": "Common"
+   },
+   "ZombieBat": {
+      "chroma": false,
+      "display_name": "Bat",
+      "item_type": "Knife",
+      "value": 290,
+      "thumbnail": "11229814357",
+      "rarity": "Godly"
+   },
+   "Hallowscythe": {
+      "chroma": false,
+      "display_name": "Hallowscythe",
+      "item_type": "Knife",
+      "value": 45,
+      "thumbnail": "5877016863",
+      "rarity": "Ancient"
+   },
+   "Static": {
+      "chroma": false,
+      "display_name": "Static",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "365568163",
+      "rarity": "Common"
+   },
+   "CottonCandy": {
+      "chroma": false,
+      "display_name": "Cotton Candy",
+      "item_type": "Knife",
+      "value": 40,
+      "thumbnail": "435933179",
+      "rarity": "Legendary"
+   },
+   "Gingerscope_Blue": {
+      "chroma": false,
+      "display_name": "Blue Gingerscope",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "16964462231",
+      "rarity": "Unique"
+   },
+   "CandyCorn_K_2022": {
+      "chroma": false,
+      "display_name": "Candy Corn",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11254057417",
+      "rarity": "Common"
+   },
+   "Igloo_G_2024": {
+      "chroma": false,
+      "display_name": "Igloo",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "95517099886712",
+      "rarity": "Common"
+   },
+   "LoveGun": {
+      "chroma": false,
+      "display_name": "Love",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "203867650",
+      "rarity": "Uncommon"
+   },
+   "VampireGunChroma": {
+      "chroma": true,
+      "display_name": "Vampire's Gun",
+      "item_type": "Gun",
+      "value": 19500,
+      "thumbnail": "85107391551890",
+      "rarity": "Godly"
+   },
+   "PumpkinPie_K_2023": {
+      "chroma": false,
+      "display_name": "Pumpkin Pie",
+      "item_type": "Knife",
+      "value": 5,
+      "thumbnail": "15413117611",
+      "rarity": "Uncommon"
+   },
+   "Sparkle8": {
+      "chroma": false,
+      "display_name": "Sparkle8",
+      "item_type": "Knife",
+      "value": 20,
+      "thumbnail": "310714407",
+      "rarity": "Common"
+   },
+   "WrapPaperBoxGold": {
+      "chroma": false,
+      "display_name": "Gold Box of Gold Wrapping Paper ",
+      "item_type": "Misc",
+      "value": 4,
+      "thumbnail": "586083489",
+      "rarity": "Christmas"
+   },
+   "WrapPaperBoxPurple": {
+      "chroma": false,
+      "display_name": "Purple Box of Purple Wrapping Paper",
+      "item_type": "Misc",
+      "value": 3,
+      "thumbnail": "586083461",
+      "rarity": "Christmas"
+   },
+   "ZombieK2018": {
+      "chroma": false,
+      "display_name": "Zombie",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "2513734908",
+      "rarity": "Uncommon"
+   },
+   "Sweetheart": {
+      "chroma": false,
+      "display_name": "Sweetheart",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "363150761",
+      "rarity": "Common"
+   },
+   "Sweater_G_2018": {
+      "chroma": false,
+      "display_name": "Sweater",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "2669787088",
+      "rarity": "Uncommon"
+   },
+   "Candied_K_2022": {
+      "chroma": false,
+      "display_name": "Candied",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11834384755",
+      "rarity": "Common"
+   },
+   "SilverIcebreaker": {
+      "chroma": false,
+      "display_name": "Silver Icebreaker",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "6404126280",
+      "rarity": "Unique"
+   },
+   "MintyBlue": {
+      "chroma": false,
+      "display_name": "Blue Minty",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "4753347062",
+      "rarity": "Unique"
+   },
+   "Clownfish_K_2024": {
+      "chroma": false,
+      "display_name": "Clownfish",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "18322183619",
+      "rarity": "Common"
+   },
+   "WraithKnife": {
+      "chroma": false,
+      "display_name": "Spirit",
+      "item_type": "Knife",
+      "value": 250,
+      "thumbnail": "107190526940939",
+      "rarity": "Godly"
+   },
+   "Hunter_K_2022": {
+      "chroma": false,
+      "display_name": "Hunter",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11254154978",
+      "rarity": "Common"
+   },
+   "Beach_K_2023": {
+      "chroma": false,
+      "display_name": "Beach",
+      "item_type": "Knife",
+      "value": 13,
+      "thumbnail": "13944136198",
+      "rarity": "Legendary"
+   },
+   "Eternal2": {
+      "chroma": false,
+      "display_name": "Eternal II",
+      "item_type": "Knife",
+      "value": 8,
+      "thumbnail": "2545253030",
+      "rarity": "Godly"
+   },
+   "SharkSeeker": {
+      "chroma": false,
+      "display_name": "SharkSeeker",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "6967771328",
+      "rarity": "Unique"
+   },
+   "SilentNight_K_2020": {
+      "chroma": false,
+      "display_name": "Silent Night",
+      "item_type": "Knife",
+      "value": 65,
+      "thumbnail": "6121851313",
+      "rarity": "Rare"
+   },
+   "OverseerKnife": {
+      "chroma": false,
+      "display_name": "Overseer",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "198458910",
+      "rarity": "Legendary"
+   },
+   "BluesteelGun": {
+      "chroma": false,
+      "display_name": "Bluesteel",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "162668203",
+      "rarity": "Uncommon"
+   },
+   "CamoKnife": {
+      "chroma": false,
+      "display_name": "Camo",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "3183606225",
+      "rarity": "Uncommon"
+   },
+   "BlueVampiresEdge": {
+      "chroma": false,
+      "display_name": "Blue Vamp's Edge",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "12253491988",
+      "rarity": "Unique"
+   },
+   "Canes_K_2023": {
+      "chroma": false,
+      "display_name": "Canes",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15635574962",
+      "rarity": "Uncommon"
+   },
+   "Coal_G_2018": {
+      "chroma": false,
+      "display_name": "Coal",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "2669784920",
+      "rarity": "Common"
+   },
+   "Stockings_G_2024": {
+      "chroma": false,
+      "display_name": "Stockings",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "76288270695961",
+      "rarity": "Common"
+   },
+   "Stainless": {
+      "chroma": false,
+      "display_name": "Stainless",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "235366771",
+      "rarity": "Common"
+   },
+   "Floral_G_2024": {
+      "chroma": false,
+      "display_name": "Floral",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "18323751219",
+      "rarity": "Rare"
+   },
+   "Ghostfire_G_2022": {
+      "chroma": false,
+      "display_name": "Ghostfire",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "11284140034",
+      "rarity": "Rare"
+   },
+   "Eco": {
+      "chroma": false,
+      "display_name": "Eco",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "365567889",
+      "rarity": "Common"
+   },
+   "IceHammer_Ancient": {
+      "chroma": false,
+      "display_name": "Icecrusher",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11855274019",
+      "rarity": "Ancient"
+   },
+   "Shaded": {
+      "chroma": false,
+      "display_name": "Shaded",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "4659636085",
+      "rarity": "Common"
+   },
+   "Ornaments_K_2020": {
+      "chroma": false,
+      "display_name": "Ornaments",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "6121853160",
+      "rarity": "Common"
+   },
+   "SlimyK": {
+      "chroma": false,
+      "display_name": "Slimy",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "4210932676",
+      "rarity": "Common"
+   },
+   "Frozen_K_2019": {
+      "chroma": false,
+      "display_name": "Frozen",
+      "item_type": "Knife",
+      "value": 5,
+      "thumbnail": "4534857523",
+      "rarity": "Uncommon"
+   },
+   "Reindeer_K_2024": {
+      "chroma": false,
+      "display_name": "Reindeer",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "109101361674956",
+      "rarity": "Common"
+   },
+   "Slashed_K_2020": {
+      "chroma": false,
+      "display_name": "Slashed",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "5929317433",
+      "rarity": "Common"
+   },
+   "Jack": {
+      "chroma": false,
+      "display_name": "Jack",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "315099010",
+      "rarity": "Rare"
+   },
+   "Amerilaser": {
+      "chroma": false,
+      "display_name": "Amerilaser",
+      "item_type": "Gun",
+      "value": 25,
+      "thumbnail": "446050753",
+      "rarity": "Godly"
+   },
+   "Ornament2Gun": {
+      "chroma": false,
+      "display_name": "Ornament2",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "332497550",
+      "rarity": "Common"
+   },
+   "Snowy2017": {
+      "chroma": false,
+      "display_name": "Snowy",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "1268705947",
+      "rarity": "Rare"
+   },
+   "Frozen_G_2023": {
+      "chroma": false,
+      "display_name": "Frozen",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "15635571468",
+      "rarity": "Common"
+   },
+   "Bauble": {
+      "chroma": false,
+      "display_name": "Bauble",
+      "item_type": "Gun",
+      "value": 500,
+      "thumbnail": "84481559639371",
+      "rarity": "Godly"
+   },
+   "ElderwoodKnifeBronze": {
+      "chroma": false,
+      "display_name": "Bronze Elderwood",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11505914752",
+      "rarity": "Unique"
+   },
+   "BatsK": {
+      "chroma": false,
+      "display_name": "Bats",
+      "item_type": "Knife",
+      "value": 105,
+      "thumbnail": "2513732731",
+      "rarity": "Common"
+   },
+   "Marble_K_2023": {
+      "chroma": false,
+      "display_name": "Marble",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "12965302237",
+      "rarity": "Uncommon"
+   },
+   "RainbowGun": {
+      "chroma": false,
+      "display_name": "Rainbow",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "3183640145",
+      "rarity": "Rare"
+   },
+   "Eyes_G_2020": {
+      "chroma": false,
+      "display_name": "Watcher",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "5866459380",
+      "rarity": "Common"
+   },
+   "Snowman_K_2024": {
+      "chroma": false,
+      "display_name": "Snowman",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "85751270338066",
+      "rarity": "Uncommon"
+   },
+   "Meltdown_K_2023": {
+      "chroma": false,
+      "display_name": "Meltdown",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15091340751",
+      "rarity": "Uncommon"
+   },
+   "ChromaLightbringer": {
+      "chroma": true,
+      "display_name": "Lightbringer",
+      "item_type": "Gun",
+      "value": 90,
+      "thumbnail": "4751507078",
+      "rarity": "Godly"
+   },
+   "Cane_K_2018": {
+      "chroma": false,
+      "display_name": "Cane",
+      "item_type": "Knife",
+      "value": 300,
+      "thumbnail": "2669638508",
+      "rarity": "Rare"
+   },
+   "TreeKnife2023": {
+      "chroma": false,
+      "display_name": "Evergreen",
+      "item_type": "Knife",
+      "value": 1325,
+      "thumbnail": "15694357137",
+      "rarity": "Godly"
+   },
+   "Eternal": {
+      "chroma": false,
+      "display_name": "Eternal",
+      "item_type": "Knife",
+      "value": 8,
+      "thumbnail": "538706317",
+      "rarity": "Godly"
+   },
+   "AduriteGun": {
+      "chroma": false,
+      "display_name": "Adurite",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "175668921",
+      "rarity": "Uncommon"
+   },
+   "ElderwoodScythe": {
+      "chroma": false,
+      "display_name": "Elderwood Scythe",
+      "item_type": "Knife",
+      "value": 60,
+      "thumbnail": "4468593654",
+      "rarity": "Ancient"
+   },
+   "RandomRareWeapon": {
+      "chroma": false,
+      "value": 0,
+      "thumbnail": "582222760",
+      "rarity": "Rare"
+   },
+   "Starfish_G_2024": {
+      "chroma": false,
+      "display_name": "Starfish",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "18322189584",
+      "rarity": "Common"
+   },
+   "Gingerscythe_Legendary": {
+      "chroma": false,
+      "display_name": "Gingerscythe",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15683140564",
+      "rarity": "Legendary"
+   },
+   "Cookie_K_2021": {
+      "chroma": false,
+      "display_name": "Cookie",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "8304752586",
+      "rarity": "Uncommon"
+   },
+   "Future": {
+      "chroma": false,
+      "display_name": "Future",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "197639041",
+      "rarity": "Uncommon"
+   },
+   "IcePhoenix": {
+      "chroma": false,
+      "display_name": "Ice Phoenix",
+      "item_type": "Pet",
+      "value": 1,
+      "thumbnail": "1268829924",
+      "rarity": "Godly"
+   },
+   "Log": {
+      "chroma": false,
+      "display_name": "Log",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "365567962",
+      "rarity": "Common"
+   },
+   "Clan": {
+      "chroma": false,
+      "display_name": "Clan",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "235366460",
+      "rarity": "Common"
+   },
+   "Bloom": {
+      "chroma": false,
+      "display_name": "Bloom",
+      "item_type": "Knife",
+      "value": 165,
+      "thumbnail": "132419834610569",
+      "rarity": "Godly"
+   },
+   "Constellation": {
+      "chroma": false,
+      "display_name": "Constellation",
+      "item_type": "Gun",
+      "value": 1800,
+      "thumbnail": "114197436469014",
+      "rarity": "Godly"
+   },
+   "PotionG2018": {
+      "chroma": false,
+      "display_name": "Potion",
+      "item_type": "Gun",
+      "value": 7,
+      "thumbnail": "2513742133",
+      "rarity": "Uncommon"
+   },
+   "Galactic": {
+      "chroma": false,
+      "display_name": "Galactic",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "173913533",
+      "rarity": "Rare"
+   },
+   "Fragile_K_2023": {
+      "chroma": false,
+      "display_name": "Fragile",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "12965294432",
+      "rarity": "Common"
+   },
+   "Turtle_K_2024": {
+      "chroma": false,
+      "display_name": "Turtle",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "18322166908",
+      "rarity": "Uncommon"
+   },
+   "SnakebiteG": {
+      "chroma": false,
+      "display_name": "Snakebite",
+      "item_type": "Gun",
+      "value": 1,
+      "thumbnail": "4210925026",
+      "rarity": "Rare"
+   },
+   "Bats_G_2024": {
+      "chroma": false,
+      "display_name": "Bats",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "71258273720666",
+      "rarity": "Common"
+   },
+   "VampireAxe_Gold": {
+      "chroma": false,
+      "display_name": "Gold Vampire's Axe",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "78223003853564",
+      "rarity": "Unique"
+   },
+   "Disint": {
+      "chroma": false,
+      "display_name": "Laser",
+      "item_type": "Gun",
+      "value": 8,
+      "thumbnail": "54798135",
+      "rarity": "Classic"
+   },
+   "Carrot_G_2024": {
+      "chroma": false,
+      "display_name": "Carrot",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "16960082652",
+      "rarity": "Uncommon"
+   },
+   "AuroraKnife": {
+      "chroma": false,
+      "display_name": "Australis",
+      "item_type": "Knife",
+      "value": 100,
+      "thumbnail": "101343256002049",
+      "rarity": "Godly"
+   },
+   "WrapPaperBoxRed": {
+      "chroma": false,
+      "display_name": "Red Box of Red Wrapping Paper",
+      "item_type": "Misc",
+      "value": 3,
+      "thumbnail": "586083433",
+      "rarity": "Christmas"
+   },
+   "Chromatic_K_2023": {
+      "chroma": false,
+      "display_name": "Chromatic",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "12965304445",
+      "rarity": "Legendary"
+   },
+   "Watergun": {
+      "chroma": false,
+      "display_name": "Watergun",
+      "item_type": "Gun",
+      "value": 120,
+      "thumbnail": "18351388416",
+      "rarity": "Godly"
+   },
+   "RedIceblaster": {
+      "chroma": false,
+      "display_name": "Red Iceblaster",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "6404168049",
+      "rarity": "Unique"
+   },
+   "Tailslide": {
+      "chroma": false,
+      "display_name": "Tailslide",
+      "item_type": "Knife",
+      "value": 8,
+      "thumbnail": "305506822",
+      "rarity": "Common"
+   },
+   "CandyCorn_K_2020": {
+      "chroma": false,
+      "display_name": "Candy Corn",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "5866435364",
+      "rarity": "Common"
+   },
+   "Waves_K_2024": {
+      "chroma": false,
+      "display_name": "Waves",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "18322178053",
+      "rarity": "Rare"
+   },
+   "Sunny_G_2025": {
+      "chroma": false,
+      "display_name": "Sunny",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "93906279038399",
+      "rarity": "Rare"
+   },
+   "Santa_G_2023": {
+      "chroma": false,
+      "display_name": "Santa",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "15635550625",
+      "rarity": "Common"
+   },
+   "Caution": {
+      "chroma": false,
+      "display_name": "Caution",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "238546422",
+      "rarity": "Uncommon"
+   },
+   "IcepiercerBronze": {
+      "chroma": false,
+      "display_name": "Bronze Icepiercer",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "12226920195",
+      "rarity": "Unique"
+   },
+   "Wrapped_G_2024": {
+      "chroma": false,
+      "display_name": "Wrapped",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "109929760056853",
+      "rarity": "Uncommon"
+   },
+   "CatChroma": {
+      "chroma": true,
+      "display_name": "Fire Cat",
+      "item_type": "Pet",
+      "value": 13,
+      "thumbnail": "3215183286",
+      "rarity": "Godly"
+   },
+   "Infected": {
+      "chroma": false,
+      "display_name": "Infected",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "200953094",
+      "rarity": "Common"
+   },
+   "Wavy_K_2024": {
+      "chroma": false,
+      "display_name": "Wavy",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "16959755393",
+      "rarity": "Common"
+   },
+   "Candle_K_2020": {
+      "chroma": false,
+      "display_name": "Candle",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "5872491708",
+      "rarity": "Common"
+   },
+   "Traveler_G_2023": {
+      "chroma": false,
+      "display_name": "Traveler",
+      "item_type": "Gun",
+      "value": 5,
+      "thumbnail": "15091344462",
+      "rarity": "Legendary"
+   },
+   "CatFire": {
+      "chroma": false,
+      "display_name": "Fire Cat",
+      "item_type": "Pet",
+      "value": 1,
+      "thumbnail": "3215185696",
+      "rarity": "Godly"
+   },
+   "Vortex": {
+      "chroma": false,
+      "display_name": "Vortex",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "235371508",
+      "rarity": "Rare"
+   },
+   "Minty": {
+      "chroma": false,
+      "display_name": "Minty",
+      "item_type": "Gun",
+      "value": 20,
+      "thumbnail": "4528291487",
+      "rarity": "Godly"
+   },
+   "Potion": {
+      "chroma": false,
+      "display_name": "Potion",
+      "item_type": "Knife",
+      "value": 5,
+      "thumbnail": "1133366632",
+      "rarity": "Uncommon"
+   },
+   "Bones2019": {
+      "chroma": false,
+      "display_name": "Bones",
+      "item_type": "Gun",
+      "value": 65,
+      "thumbnail": "4210926347",
+      "rarity": "Uncommon"
+   },
+   "Asteroid": {
+      "chroma": false,
+      "display_name": "Asteroid",
+      "item_type": "Gun",
+      "value": 5,
+      "thumbnail": "476599365",
+      "rarity": "Common"
+   },
+   "Branches": {
+      "chroma": false,
+      "display_name": "Branches",
+      "item_type": "Knife",
+      "value": 25,
+      "thumbnail": "4210943691",
+      "rarity": "Uncommon"
+   },
+   "Clownfish_G_2024": {
+      "chroma": false,
+      "display_name": "Clownfish",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "18322197952",
+      "rarity": "Common"
+   },
+   "FlowerwoodKnife": {
+      "chroma": false,
+      "display_name": "Flowerwood",
+      "item_type": "Knife",
+      "value": 145,
+      "thumbnail": "16963860501",
+      "rarity": "Godly"
+   },
+   "BloodKnife": {
+      "chroma": false,
+      "display_name": "Blood",
+      "item_type": "Knife",
+      "value": 10,
+      "thumbnail": "144307188",
+      "rarity": "Classic"
+   },
+   "Reaver_Legendary": {
+      "chroma": false,
+      "display_name": "Reaver",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "7791485669",
+      "rarity": "Legendary"
+   },
+   "Eggs": {
+      "chroma": false,
+      "display_name": "Egg",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "387875405",
+      "rarity": "Common"
+   },
+   "Butterflies_G_2025": {
+      "chroma": false,
+      "display_name": "Butterflies",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "135662872427976",
+      "rarity": "Rare"
+   },
+   "PumpkinPet": {
+      "chroma": false,
+      "display_name": "Pumpkin",
+      "item_type": "Pet",
+      "value": 0,
+      "thumbnail": "314773056",
+      "rarity": "Common"
+   },
+   "Love_K_2023": {
+      "chroma": false,
+      "display_name": "Love",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "12339328595",
+      "rarity": "Common"
+   },
+   "Coconut_K_2025": {
+      "chroma": false,
+      "display_name": "Coconut",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "75237025203058",
+      "rarity": "Common"
+   },
+   "Synthwave_Godly": {
+      "chroma": false,
+      "display_name": "Synthwave",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "116075729415230",
+      "rarity": "Godly"
+   },
+   "Neon": {
+      "chroma": false,
+      "display_name": "Neon",
+      "item_type": "Knife",
+      "value": 2,
+      "thumbnail": "159746637",
+      "rarity": "Common"
+   },
+   "SwirlyGunGold": {
+      "chroma": false,
+      "display_name": "Gold Swirly",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "9552065167",
+      "rarity": "Unique"
+   },
+   "Scratch": {
+      "chroma": false,
+      "display_name": "Scratch",
+      "item_type": "Knife",
+      "value": 4,
+      "thumbnail": "531873371",
+      "rarity": "Legendary"
+   },
+   "PumpkinPatch": {
+      "chroma": false,
+      "display_name": "Pumpkin Patch",
+      "item_type": "Knife",
+      "value": 5,
+      "thumbnail": "4210931354",
+      "rarity": "Common"
+   },
+   "Gift_K_2020": {
+      "chroma": false,
+      "display_name": "Wrap",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "6121854816",
+      "rarity": "Uncommon"
+   },
+   "Stickers_X_G_2024": {
+      "chroma": false,
+      "display_name": "Stickers",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "91224254479440",
+      "rarity": "Common"
+   },
+   "Bunnies_K_2025": {
+      "chroma": false,
+      "display_name": "Bunnies",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "90549252812333",
+      "rarity": "Legendary"
+   },
+   "Phantom2022": {
+      "chroma": false,
+      "display_name": "Phantom",
+      "item_type": "Knife",
+      "value": 60,
+      "thumbnail": "11229732037",
+      "rarity": "Godly"
+   },
+   "Snowman_G_2021": {
+      "chroma": false,
+      "display_name": "Snowman",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "8304766932",
+      "rarity": "Uncommon"
+   },
+   "Paper": {
+      "chroma": false,
+      "display_name": "Paper",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "235366870",
+      "rarity": "Uncommon"
+   },
+   "Ghosty": {
+      "chroma": false,
+      "display_name": "Ghosty",
+      "item_type": "Pet",
+      "value": 1,
+      "thumbnail": "4217595606",
+      "rarity": "Godly"
+   },
+   "Imbued": {
+      "chroma": false,
+      "display_name": "Imbued",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "162668312",
+      "rarity": "Rare"
+   },
+   "Checker": {
+      "chroma": false,
+      "display_name": "Checker",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "198461230",
+      "rarity": "Uncommon"
+   },
+   "Ghosts_K_2023": {
+      "chroma": false,
+      "display_name": "Ghosts",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15091326116",
+      "rarity": "Common"
+   },
+   "HauntedG": {
+      "chroma": false,
+      "display_name": "Haunted",
+      "item_type": "Gun",
+      "value": 5,
+      "thumbnail": "2513741901",
+      "rarity": "Common"
+   },
+   "Nebula": {
+      "chroma": false,
+      "display_name": "Nebula",
+      "item_type": "Knife",
+      "value": 17,
+      "thumbnail": "6598123521",
+      "rarity": "Godly"
+   },
+   "BonebladeChroma": {
+      "chroma": true,
+      "display_name": "Boneblade",
+      "item_type": "Knife",
+      "value": 40,
+      "thumbnail": "2513597845",
+      "rarity": "Godly"
+   },
+   "Candied_G_2022": {
+      "chroma": false,
+      "display_name": "Candied",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "11834435627",
+      "rarity": "Common"
+   },
+   "Icepiercer": {
+      "chroma": false,
+      "display_name": "Icepiercer",
+      "item_type": "Gun",
+      "value": 400,
+      "thumbnail": "11874071041",
+      "rarity": "Ancient"
+   },
+   "Moons": {
+      "chroma": false,
+      "display_name": "Moons",
+      "item_type": "Knife",
+      "value": 3,
+      "thumbnail": "531873154",
+      "rarity": "Uncommon"
+   },
+   "StickersX_K_2022": {
+      "chroma": false,
+      "display_name": "Stickers",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11834387858",
+      "rarity": "Common"
+   },
+   "Icebeam": {
+      "chroma": false,
+      "display_name": "Icebeam",
+      "item_type": "Gun",
+      "value": 25,
+      "thumbnail": "8305000161",
+      "rarity": "Godly"
+   },
+   "GraveG": {
+      "chroma": false,
+      "display_name": "Grave",
+      "item_type": "Gun",
+      "value": 7,
+      "thumbnail": "2513731746",
+      "rarity": "Common"
+   },
+   "Snowfall_K_2023": {
+      "chroma": false,
+      "display_name": "Snowfall",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "15635568751",
+      "rarity": "Common"
+   },
+   "Cookie_G_2021": {
+      "chroma": false,
+      "display_name": "Cookie",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "8304771148",
+      "rarity": "Uncommon"
+   },
+   "WintersEdge": {
+      "chroma": false,
+      "display_name": "Winter's Edge",
+      "item_type": "Knife",
+      "value": 7,
+      "thumbnail": "1268708987",
+      "rarity": "Godly"
+   },
+   "SnowmanGun": {
+      "chroma": false,
+      "display_name": "Snowman",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "332497603",
+      "rarity": "Uncommon"
+   },
+   "Gingerbread_K_2022": {
+      "chroma": false,
+      "display_name": "Gingerbread",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11834399071",
+      "rarity": "Rare"
+   },
+   "Aurora_K_2019": {
+      "chroma": false,
+      "display_name": "Aurora",
+      "item_type": "Knife",
+      "value": 17,
+      "thumbnail": "4534860689",
+      "rarity": "Rare"
+   },
+   "Neon_G_2023": {
+      "chroma": false,
+      "display_name": "Neon",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "15635560825",
+      "rarity": "Rare"
+   },
+   "Celestial_Gold": {
+      "chroma": false,
+      "display_name": "Gold Celestial",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "104229967982042",
+      "rarity": "Unique"
+   },
+   "IcepiercerSilver": {
+      "chroma": false,
+      "display_name": "Silver Icepiercer",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "12226843957",
+      "rarity": "Unique"
+   },
+   "Elite": {
+      "chroma": false,
+      "display_name": "Elite",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "241095344",
+      "rarity": "Legendary"
+   },
+   "Ginger": {
+      "chroma": false,
+      "display_name": "Ginger",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "331744703",
+      "rarity": "Rare"
+   },
+   "Linked": {
+      "chroma": false,
+      "display_name": "Linked",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "198453528",
+      "rarity": "Common"
+   },
+   "Sorry": {
+      "chroma": false,
+      "display_name": "Corrupt",
+      "item_type": "Knife",
+      "value": 825,
+      "thumbnail": "197879343",
+      "rarity": "Unique"
+   },
+   "Handsaw": {
+      "chroma": false,
+      "display_name": "Handsaw",
+      "item_type": "Knife",
+      "value": 8,
+      "thumbnail": "332042435",
+      "rarity": "Godly"
+   },
+   "BlueCamo_K_2022": {
+      "chroma": false,
+      "display_name": "Blue Survivor Camo",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11254146743",
+      "rarity": "Common"
+   },
+   "Slate": {
+      "chroma": false,
+      "display_name": "Slate",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "198453556",
+      "rarity": "Common"
+   },
+   "Cold": {
+      "chroma": false,
+      "display_name": "Cold",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "161309889",
+      "rarity": "Common"
+   },
+   "MLG": {
+      "chroma": false,
+      "display_name": "Shiny",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "473626979",
+      "rarity": "Legendary"
+   },
+   "Overseer": {
+      "chroma": false,
+      "display_name": "Overseer",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "175668680",
+      "rarity": "Legendary"
+   },
+   "Hazard_G_2022": {
+      "chroma": false,
+      "display_name": "Hazard",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "11255505449",
+      "rarity": "Uncommon"
+   },
+   "Floatie_G_2024": {
+      "chroma": false,
+      "display_name": "Floatie",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "18322194067",
+      "rarity": "Uncommon"
+   },
+   "ChromaDarkbringer": {
+      "chroma": true,
+      "display_name": "Darkbringer",
+      "item_type": "Gun",
+      "value": 95,
+      "thumbnail": "4751507011",
+      "rarity": "Godly"
+   },
+   "Sharky_K_2024": {
+      "chroma": false,
+      "display_name": "Sharky",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "18322179563",
+      "rarity": "Rare"
+   },
+   "Icicles_G_2018": {
+      "chroma": false,
+      "display_name": "Icicles",
+      "item_type": "Gun",
+      "value": 15,
+      "thumbnail": "2669786044",
+      "rarity": "Rare"
+   },
+   "Watcher_K_2021": {
+      "chroma": false,
+      "display_name": "Watcher",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "7800227475",
+      "rarity": "Rare"
+   },
+   "MummyK": {
+      "chroma": false,
+      "display_name": "Mummy",
+      "item_type": "Knife",
+      "value": 2,
+      "thumbnail": "1133352032",
+      "rarity": "Uncommon"
+   },
+   "Gingerbread_G_2021": {
+      "chroma": false,
+      "display_name": "Gingerbread",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "8304772140",
+      "rarity": "Uncommon"
+   },
+   "Santa_G_2018": {
+      "chroma": false,
+      "display_name": "Elf",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "2669785184",
+      "rarity": "Common"
+   },
+   "Trees_K_2020": {
+      "chroma": false,
+      "display_name": "Trees",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "6123336879",
+      "rarity": "Common"
+   },
+   "PredatorKnife": {
+      "chroma": false,
+      "display_name": "Red Predator",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "235372015",
+      "rarity": "Legendary"
+   },
+   "Hallow": {
+      "chroma": false,
+      "display_name": "Hallow's Edge",
+      "item_type": "Knife",
+      "value": 8,
+      "thumbnail": "531878205",
+      "rarity": "Godly"
+   },
+   "IceHammerBronze": {
+      "chroma": false,
+      "display_name": "Bronze Icecrusher",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "12227148356",
+      "rarity": "Unique"
+   },
+   "TravelerAxe": {
+      "chroma": false,
+      "display_name": "Traveler's Axe",
+      "item_type": "Knife",
+      "value": 7250,
+      "thumbnail": "15070870271",
+      "rarity": "Ancient"
+   },
+   "Jigsaw": {
+      "chroma": false,
+      "display_name": "Jigsaw",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "365569126",
+      "rarity": "Uncommon"
+   },
+   "Synthwave": {
+      "chroma": false,
+      "display_name": "Synthwave",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "84935740002917",
+      "rarity": "Rare"
+   },
+   "Striped_K_2025": {
+      "chroma": false,
+      "display_name": "Striped",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "136747578920542",
+      "rarity": "Common"
+   },
+   "WebbedK": {
+      "chroma": false,
+      "display_name": "Webbed",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "4210949599",
+      "rarity": "Common"
+   },
+   "TidesChroma": {
+      "chroma": true,
+      "display_name": "Tides",
+      "item_type": "Knife",
+      "value": 50,
+      "thumbnail": "3187398906",
+      "rarity": "Godly"
+   },
+   "Bit": {
+      "chroma": false,
+      "display_name": "Bit",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "238549030",
+      "rarity": "Common"
+   },
+   "RandLuger": {
+      "chroma": false,
+      "display_name": "Glitch2",
+      "item_type": "Knife",
+      "value": 60,
+      "thumbnail": "196751515",
+      "rarity": "Common"
+   },
+   "Coal_G_2021": {
+      "chroma": false,
+      "display_name": "Coal",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "8304769409",
+      "rarity": "Common"
+   },
+   "Bones_K_2024": {
+      "chroma": false,
+      "display_name": "Bones",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "76461209737867",
+      "rarity": "Uncommon"
+   },
+   "Gifts_K_2019": {
+      "chroma": false,
+      "display_name": "Gifts",
+      "item_type": "Knife",
+      "value": 75,
+      "thumbnail": "4534856285",
+      "rarity": "Common"
+   },
+   "GingerbladeChroma": {
+      "chroma": true,
+      "display_name": "Gingerblade",
+      "item_type": "Knife",
+      "value": 40,
+      "thumbnail": "2672351679",
+      "rarity": "Godly"
+   },
+   "RandomUncommonWeapon": {
+      "chroma": false,
+      "value": 0,
+      "thumbnail": "582222761",
+      "rarity": "Uncommon"
+   },
+   "BlueHarvester": {
+      "chroma": false,
+      "display_name": "Blue Harvester",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "8194219645",
+      "rarity": "Unique"
+   },
+   "Aid": {
+      "chroma": false,
+      "display_name": "Juice",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "203807397",
+      "rarity": "Common"
+   },
+   "Eyeball_K_2022": {
+      "chroma": false,
+      "display_name": "Eyeball",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "11254065007",
+      "rarity": "Common"
+   },
+   "Emptybringer": {
+      "chroma": false,
+      "display_name": "???",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "4751388150",
+      "rarity": "Godly"
+   },
+   "Monster": {
+      "chroma": false,
+      "display_name": "Monster",
+      "item_type": "Gun",
+      "value": 5,
+      "thumbnail": "4210941474",
+      "rarity": "Rare"
+   },
+   "CandySwirl_G_2019": {
+      "chroma": false,
+      "display_name": "Candy Swirl",
+      "item_type": "Gun",
+      "value": 12,
+      "thumbnail": "4534874602",
+      "rarity": "Rare"
+   },
+   "Decorated_K_2025": {
+      "chroma": false,
+      "display_name": "Decorated",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "124860763249593",
+      "rarity": "Uncommon"
+   },
+   "Gingerscythe_Gold": {
+      "chroma": false,
+      "display_name": "Gold Gingerscythe",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "16964452491",
+      "rarity": "Unique"
+   },
+   "Slasher": {
+      "chroma": false,
+      "display_name": "Slasher",
+      "item_type": "Knife",
+      "value": 20,
+      "thumbnail": "3187398274",
+      "rarity": "Godly"
+   },
+   "8bit": {
+      "chroma": false,
+      "display_name": "8bit",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "198453482",
+      "rarity": "Common"
+   },
+   "Nobledragon": {
+      "chroma": false,
+      "display_name": "Nobledragon",
+      "item_type": "Pet",
+      "value": 17,
+      "thumbnail": "357813086",
+      "rarity": "Legendary"
+   },
+   "Pearl_G": {
+      "chroma": false,
+      "display_name": "Pearlshine",
+      "item_type": "Gun",
+      "value": 65,
+      "thumbnail": "18322646152",
+      "rarity": "Godly"
+   },
+   "SwirlyGunBlue": {
+      "chroma": false,
+      "display_name": "Blue Swirly",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "9552060741",
+      "rarity": "Unique"
+   },
+   "Aurora_K_2021": {
+      "chroma": false,
+      "display_name": "Aurora",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "8304750877",
+      "rarity": "Legendary"
+   },
+   "SwirlyGunBronze": {
+      "chroma": false,
+      "display_name": "Bronze Swirly",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "9552063524",
+      "rarity": "Unique"
+   },
+   "CandySwirl_K_2019": {
+      "chroma": false,
+      "display_name": "Candy Swirl",
+      "item_type": "Knife",
+      "value": 1,
+      "thumbnail": "4534860226",
+      "rarity": "Rare"
+   },
+   "Ghosts_G_2020": {
+      "chroma": false,
+      "display_name": "Ghosts",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "5866465099",
+      "rarity": "Rare"
+   },
+   "Holly_K_2018": {
+      "chroma": false,
+      "display_name": "Holly",
+      "item_type": "Knife",
+      "value": 0,
+      "thumbnail": "2669638990",
+      "rarity": "Uncommon"
+   },
+   "CandyCorn_G_2024": {
+      "chroma": false,
+      "display_name": "Candy Corn",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "117473869340749",
+      "rarity": "Common"
+   },
+   "Magma_G_2021": {
+      "chroma": false,
+      "display_name": "Magma",
+      "item_type": "Gun",
+      "value": 0,
+      "thumbnail": "7800252572",
+      "rarity": "Rare"
+   }
+}

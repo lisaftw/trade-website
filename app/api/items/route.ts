@@ -45,6 +45,10 @@ export async function GET(request: NextRequest) {
         image_url: imageUrl,
         // Map value fields (new schema uses 'value', old uses 'rap_value')
         rap_value: item.value || item.rap_value || item.rapValue || item.rap || 0,
+        neon_value: item.neon_value || item.neonValue || 0,
+        mega_value: item.mega_value || item.megaValue || 0,
+        fly_bonus: item.fly_bonus || item.flyBonus || 50,
+        ride_bonus: item.ride_bonus || item.rideBonus || 50,
         // Map section/type fields
         exist_count: item.exist_count || item.existCount || item.exist || 0,
         rating: item.section || item.rating || item.rarity || 0,
