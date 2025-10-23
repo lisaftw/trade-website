@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json()
-  const { itemId, quantity = 1 } = body
+  const { itemId, quantity = 1, itemData } = body
 
   console.log("[v0] Adding to inventory:", { discordId: session.discordId, itemId, quantity })
 
@@ -64,8 +64,31 @@ export async function POST(req: NextRequest) {
   const { data: itemExists, error: itemError } = await supabase.from("items").select("id").eq("id", itemId).single()
 
   if (itemError || !itemExists) {
-    console.error("[v0] Item not found:", itemId, itemError)
-    return Response.json({ error: "Item not found" }, { status: 404 })
+    console.log("[v0] Item not found in database, creating it:", itemId)
+
+    // If itemData is provided, create the item first
+    if (itemData) {
+      const { error: createError } = await supabase.from("items").insert({
+        id: itemId,
+        name: itemData.name,
+        game: itemData.game,
+        image_url: itemData.image_url,
+        rap_value: itemData.rap_value,
+        exist_count: itemData.exist_count,
+        change_percent: itemData.change_percent,
+        rating: itemData.rating,
+        last_updated_at: itemData.last_updated_at || new Date().toISOString(),
+      })
+
+      if (createError) {
+        console.error("[v0] Error creating item:", createError)
+        return Response.json({ error: "Failed to create item" }, { status: 500 })
+      }
+      console.log("[v0] Item created successfully")
+    } else {
+      console.error("[v0] Item not found and no itemData provided:", itemId)
+      return Response.json({ error: "Item not found" }, { status: 404 })
+    }
   }
 
   const { data: existing } = await supabase

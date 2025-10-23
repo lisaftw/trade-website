@@ -83,7 +83,20 @@ export function ItemCard({ item }: ItemCardProps) {
       const response = await fetch("/api/inventory", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ itemId: item.id, quantity: 1 }),
+        body: JSON.stringify({
+          itemId: item.id,
+          quantity: 1,
+          itemData: {
+            name: item.name,
+            game: item.game,
+            image_url: item.image_url,
+            rap_value: item.rap_value,
+            exist_count: item.exist_count,
+            change_percent: item.change_percent,
+            rating: item.rating,
+            last_updated_at: item.last_updated_at,
+          },
+        }),
       })
 
       if (!response.ok) {
