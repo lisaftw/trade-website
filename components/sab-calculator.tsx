@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { X, Search, Info } from "lucide-react"
+import { X, Search } from "lucide-react"
 
 // Mutations data with multipliers
 const MUTATIONS = [
@@ -252,25 +252,6 @@ export function SABCalculator() {
                   </span>
                 </button>
               ))}
-            </div>
-          </Card>
-
-          {/* Value Information */}
-          <Card className="p-3 bg-blue-500/10 border-blue-500/20">
-            <div className="flex gap-2">
-              <Info className="h-4 w-4 text-blue-500 flex-shrink-0 mt-0.5" />
-              <div className="text-xs text-muted-foreground space-y-1">
-                <p className="font-medium text-foreground">How Values Are Calculated</p>
-                <p>Base Value × Mutation Multiplier × (Trait 1 × Trait 2 × ...)</p>
-                {selectedMutation && (
-                  <p>
-                    Current: {formatNumber(selectedPet.rapValue)} ×{" "}
-                    {MUTATIONS.find((m) => m.id === selectedMutation)?.multiplier}x
-                    {selectedTraits.length > 0 &&
-                      ` × ${selectedTraits.map((t) => `${TRAITS.find((tr) => tr.id === t)?.multiplier}x`).join(" × ")}`}
-                  </p>
-                )}
-              </div>
             </div>
           </Card>
         </>
