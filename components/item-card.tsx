@@ -105,8 +105,9 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
       }
 
       toast({
-        title: "Added to inventory",
+        title: "Item added to inventory",
         description: `${item.name} has been added to your inventory.`,
+        duration: 3000,
       })
     } catch (error) {
       console.error("[v0] Error adding to inventory:", error)

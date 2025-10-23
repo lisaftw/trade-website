@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { ItemCard } from "@/components/item-card"
 import { Search } from "lucide-react"
+import Link from "next/link"
 
 const GAMES = ["MM2", "SAB", "GAG", "Adopt Me"] as const
 type Game = (typeof GAMES)[number]
@@ -57,17 +58,35 @@ export function ValuesContent() {
   return (
     <div className="space-y-4 md:space-y-6">
       <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-        {GAMES.map((game) => (
-          <Button
-            key={game}
-            onClick={() => setSelectedGame(game)}
-            variant={selectedGame === game ? "default" : "secondary"}
-            className="rounded-full whitespace-nowrap flex-shrink-0"
-            size="sm"
-          >
-            {game}
-          </Button>
-        ))}
+        {GAMES.map((game) => {
+          // SAB navigates to dedicated page
+          if (game === "SAB") {
+            return (
+              <Button
+                key={game}
+                asChild
+                variant="secondary"
+                className="rounded-full whitespace-nowrap flex-shrink-0"
+                size="sm"
+              >
+                <Link href="/sab">{game}</Link>
+              </Button>
+            )
+          }
+
+          // Other games filter on this page
+          return (
+            <Button
+              key={game}
+              onClick={() => setSelectedGame(game)}
+              variant={selectedGame === game ? "default" : "secondary"}
+              className="rounded-full whitespace-nowrap flex-shrink-0"
+              size="sm"
+            >
+              {game}
+            </Button>
+          )
+        })}
       </div>
 
       {/* Search */}
