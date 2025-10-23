@@ -36,12 +36,44 @@ export function SABContent() {
       const response = await fetch("/api/items?game=SAB")
       const data = await response.json()
       console.log("[v0] Received SAB brainrots:", data.items?.length || 0)
+      if (data.items && data.items.length > 0) {
+        const rarities = [...new Set(data.items.map((item: SABItem) => item.rarity))]
+        console.log("[v0] Unique rarity values in database:", rarities)
+        console.log(
+          "[v0] First 5 items:",
+          data.items.slice(0, 5).map((item: SABItem) => ({ name: item.name, rarity: item.rarity })),
+        )
+      }
       setItems(data.items || [])
     } catch (error) {
       console.error("[v0] Error fetching SAB brainrots:", error)
     } finally {
       setLoading(false)
     }
+  }
+
+  const normalizeRarity = (rarity: string): string => {
+    if (!rarity) return "Common"
+
+    // Normalize to title case and handle special cases
+    const normalized = rarity.trim()
+
+    // Map common variations to standard names
+    const rarityMap: Record<string, string> = {
+      common: "Common",
+      rare: "Rare",
+      epic: "Epic",
+      legendary: "Legendary",
+      mythic: "Mythic",
+      "brainrot god": "Brainrot God",
+      "brainrot god tier": "Brainrot God",
+      secret: "Secret",
+      og: "OG",
+      admin: "Admin",
+    }
+
+    const lowerRarity = normalized.toLowerCase()
+    return rarityMap[lowerRarity] || normalized
   }
 
   const getGroupedAndSortedItems = () => {
@@ -54,19 +86,24 @@ export function SABContent() {
 
     // Rarity filter
     if (selectedRarity !== "All") {
-      filtered = filtered.filter((item) => item.rarity === selectedRarity)
+      filtered = filtered.filter((item) => normalizeRarity(item.rarity) === selectedRarity)
     }
 
     // Group by rarity
     const grouped: Record<string, SABItem[]> = {}
 
     filtered.forEach((item) => {
-      const rarity = item.rarity || "Common"
+      const rarity = normalizeRarity(item.rarity)
       if (!grouped[rarity]) {
         grouped[rarity] = []
       }
       grouped[rarity].push(item)
     })
+
+    console.log(
+      "[v0] Grouped items by rarity:",
+      Object.keys(grouped).map((r) => `${r}: ${grouped[r].length}`),
+    )
 
     // Sort items within each group by value (lowest to highest)
     Object.keys(grouped).forEach((rarity) => {
