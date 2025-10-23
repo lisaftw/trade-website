@@ -11,7 +11,7 @@ export async function POST(request: Request) {
 
     console.log(`[v0] Connecting to MongoDB...`)
     const client = await clientPromise
-    const db = client.db("tradegame")
+    const db = client.db("trading-db")
     const collection = db.collection("items")
 
     // Find the corrupt item
