@@ -24,6 +24,7 @@ interface ItemCardProps {
     demand?: string
     pot?: string
   }
+  hideAddButton?: boolean
 }
 
 function toNumber(value: any): number {
@@ -55,7 +56,7 @@ function getTimeAgo(timestamp: string): string {
   return `${diffDays} days ago`
 }
 
-export function ItemCard({ item }: ItemCardProps) {
+export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
   const changePercent = toNumber(item.change_percent)
   const isPositive = changePercent >= 0
   const [imageError, setImageError] = useState(false)
@@ -188,14 +189,16 @@ export function ItemCard({ item }: ItemCardProps) {
           </div>
         )}
 
-        <Button
-          onClick={handleAddToInventory}
-          disabled={isAdding || userLoading}
-          variant="secondary"
-          className="mt-3 md:mt-4 w-full rounded-lg bg-muted/60 text-[10px] md:text-xs font-medium uppercase tracking-wide text-muted-foreground hover:bg-muted/80 disabled:opacity-50"
-        >
-          {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
-        </Button>
+        {!hideAddButton && (
+          <Button
+            onClick={handleAddToInventory}
+            disabled={isAdding || userLoading}
+            variant="secondary"
+            className="mt-3 md:mt-4 w-full rounded-lg bg-muted/60 text-[10px] md:text-xs font-medium uppercase tracking-wide text-muted-foreground hover:bg-muted/80 disabled:opacity-50"
+          >
+            {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
+          </Button>
+        )}
       </div>
 
       <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>

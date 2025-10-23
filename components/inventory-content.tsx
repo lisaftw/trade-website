@@ -181,7 +181,7 @@ export function InventoryContent() {
 
           return (
             <div key={invItem.id} className="relative group">
-              <ItemCard item={item} />
+              <ItemCard item={item} hideAddButton={true} />
               <Button
                 variant="destructive"
                 size="sm"
