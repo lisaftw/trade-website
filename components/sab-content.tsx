@@ -22,7 +22,6 @@ const RARITIES = ["All", "Common", "Rare", "Epic", "Legendary", "Mythic", "Brain
 
 export function SABContent() {
   const [items, setItems] = useState<SABItem[]>([])
-  const [filteredItems, setFilteredItems] = useState<SABItem[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedRarity, setSelectedRarity] = useState("All")
@@ -30,10 +29,6 @@ export function SABContent() {
   useEffect(() => {
     fetchSABItems()
   }, [])
-
-  useEffect(() => {
-    filterItems()
-  }, [items, searchQuery, selectedRarity]) // Removed selectedDemand from dependencies
 
   const fetchSABItems = async () => {
     try {
@@ -49,7 +44,7 @@ export function SABContent() {
     }
   }
 
-  const filterItems = () => {
+  const getGroupedAndSortedItems = () => {
     let filtered = [...items]
 
     // Search filter
@@ -62,8 +57,28 @@ export function SABContent() {
       filtered = filtered.filter((item) => item.rarity === selectedRarity)
     }
 
-    setFilteredItems(filtered)
+    // Group by rarity
+    const grouped: Record<string, SABItem[]> = {}
+
+    filtered.forEach((item) => {
+      const rarity = item.rarity || "Common"
+      if (!grouped[rarity]) {
+        grouped[rarity] = []
+      }
+      grouped[rarity].push(item)
+    })
+
+    // Sort items within each group by value (lowest to highest)
+    Object.keys(grouped).forEach((rarity) => {
+      grouped[rarity].sort((a, b) => (a.value || 0) - (b.value || 0))
+    })
+
+    return grouped
   }
+
+  const groupedItems = getGroupedAndSortedItems()
+  const totalItems = items.length
+  const filteredCount = Object.values(groupedItems).reduce((sum, group) => sum + group.length, 0)
 
   if (loading) {
     return (
@@ -116,20 +131,32 @@ export function SABContent() {
 
       {/* Stats */}
       <div className="flex items-center gap-4 text-sm text-muted-foreground">
-        <span>Total: {items.length} brainrots</span>
+        <span>Total: {totalItems} brainrots</span>
         <span>•</span>
-        <span>Showing: {filteredItems.length} brainrots</span>
+        <span>Showing: {filteredCount} brainrots</span>
       </div>
 
-      {/* Items Grid */}
-      {filteredItems.length === 0 ? (
+      {filteredCount === 0 ? (
         <div className="py-12 text-center">
           <p className="text-muted-foreground">No brainrots found matching your filters.</p>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredItems.map((item) => (
-            <ItemCard key={item.id} item={item} />
+        <div className="space-y-12">
+          {RARITIES.filter((rarity) => rarity !== "All" && groupedItems[rarity]?.length > 0).map((rarity) => (
+            <div key={rarity} className="space-y-6">
+              {/* Section Header */}
+              <div className="flex items-center gap-4">
+                <h2 className="text-2xl font-bold">{rarity}</h2>
+                <span className="text-sm text-muted-foreground">({groupedItems[rarity].length} items)</span>
+              </div>
+
+              {/* Items Grid */}
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {groupedItems[rarity].map((item) => (
+                  <ItemCard key={item.id} item={item} />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       )}
