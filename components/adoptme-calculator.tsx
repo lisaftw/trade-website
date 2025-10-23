@@ -4,8 +4,7 @@ import { useState, useMemo, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { X, Search, Info, AlertCircle } from "lucide-react"
+import { X, Search, Info, Plus } from "lucide-react"
 
 interface AdoptMePet {
   id: string
@@ -21,6 +20,14 @@ interface AdoptMePet {
   rarity?: string
 }
 
+interface SelectedPet {
+  id: string
+  pet: AdoptMePet
+  isFly: boolean
+  isRide: boolean
+  variant: "normal" | "neon" | "mega"
+}
+
 const toNumber = (value: any): number => {
   if (value === null || value === undefined) return 0
   const num = typeof value === "string" ? Number.parseFloat(value) : Number(value)
@@ -31,14 +38,8 @@ export function AdoptMeCalculator() {
   const [pets, setPets] = useState<AdoptMePet[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
-  const [selectedPet, setSelectedPet] = useState<AdoptMePet | null>(null)
-
-  // Potion states
-  const [isFly, setIsFly] = useState(false)
-  const [isRide, setIsRide] = useState(false)
-
-  // Variant state
-  const [variant, setVariant] = useState<"normal" | "neon" | "mega">("normal")
+  const [selectedPets, setSelectedPets] = useState<SelectedPet[]>([])
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
 
   useEffect(() => {
     const fetchPets = async () => {
@@ -74,89 +75,48 @@ export function AdoptMeCalculator() {
     return pets.filter((pet) => pet.name.toLowerCase().includes(searchQuery.toLowerCase()))
   }, [pets, searchQuery])
 
-  const calculatedValue = useMemo(() => {
-    if (!selectedPet) return 0
+  const totalValue = useMemo(() => {
+    return selectedPets.reduce((total, selectedPet) => {
+      let baseValue = 0
+      switch (selectedPet.variant) {
+        case "normal":
+          baseValue = selectedPet.pet.baseValue
+          break
+        case "neon":
+          baseValue = selectedPet.pet.neonValue
+          break
+        case "mega":
+          baseValue = selectedPet.pet.megaValue
+          break
+      }
 
-    let baseValue = 0
-    switch (variant) {
-      case "normal":
-        baseValue = selectedPet.baseValue
-        break
-      case "neon":
-        baseValue = selectedPet.neonValue
-        break
-      case "mega":
-        baseValue = selectedPet.megaValue
-        break
+      let potionBonus = 0
+      if (selectedPet.isFly) potionBonus += selectedPet.pet.flyBonus
+      if (selectedPet.isRide) potionBonus += selectedPet.pet.rideBonus
+
+      return total + baseValue + potionBonus
+    }, 0)
+  }, [selectedPets])
+
+  const addPet = (pet: AdoptMePet) => {
+    const newPet: SelectedPet = {
+      id: `${pet.id}-${Date.now()}`,
+      pet,
+      isFly: false,
+      isRide: false,
+      variant: "normal",
     }
-
-    // Add potion bonuses
-    let potionBonus = 0
-    if (isFly) potionBonus += selectedPet.flyBonus
-    if (isRide) potionBonus += selectedPet.rideBonus
-
-    return baseValue + potionBonus
-  }, [selectedPet, variant, isFly, isRide])
-
-  const getValueMultiplier = () => {
-    if (!selectedPet || selectedPet.baseValue === 0) return null
-
-    if (variant === "neon" && selectedPet.neonValue > 0) {
-      return (selectedPet.neonValue / selectedPet.baseValue).toFixed(2)
-    }
-    if (variant === "mega" && selectedPet.megaValue > 0) {
-      return (selectedPet.megaValue / selectedPet.baseValue).toFixed(2)
-    }
-    return null
+    setSelectedPets((prev) => [...prev, newPet])
+    setIsSearchOpen(false)
+    setSearchQuery("")
   }
 
-  const getPetDisplayName = () => {
-    if (!selectedPet) return ""
-
-    const parts: string[] = []
-
-    if (variant === "neon") parts.push("Neon")
-    if (variant === "mega") parts.push("Mega")
-
-    if (isFly && isRide) {
-      parts.push("Fly Ride")
-    } else if (isFly) {
-      parts.push("Fly")
-    } else if (isRide) {
-      parts.push("Ride")
-    } else {
-      parts.push("No Potion")
-    }
-
-    parts.push(selectedPet.name)
-
-    return parts.join(" ")
+  const removePet = (id: string) => {
+    setSelectedPets((prev) => prev.filter((p) => p.id !== id))
   }
 
-  const getShortDisplayName = () => {
-    if (!selectedPet) return ""
-
-    const parts: string[] = []
-
-    if (variant === "mega") {
-      if (isFly && isRide) parts.push("MFR")
-      else if (isFly) parts.push("MF")
-      else if (isRide) parts.push("MR")
-      else parts.push("M")
-    } else if (variant === "neon") {
-      if (isFly && isRide) parts.push("NFR")
-      else if (isFly) parts.push("NF")
-      else if (isRide) parts.push("NR")
-      else parts.push("N")
-    } else {
-      if (isFly && isRide) parts.push("FR")
-      else if (isFly) parts.push("F")
-      else if (isRide) parts.push("R")
-    }
-
-    parts.push(selectedPet.name)
-
-    return parts.join(" ")
+  const updatePet = (id: string, updates: Partial<Omit<SelectedPet, "id" | "pet">>) => {
+    setSelectedPets((prev) => prev.map((p) => (p.id === id ? { ...p, ...updates } : p)))
   }
 
   const formatNumber = (num: number) => {
@@ -164,19 +124,36 @@ export function AdoptMeCalculator() {
     return safeNum.toLocaleString()
   }
 
-  const resetCalculator = () => {
-    setSelectedPet(null)
-    setIsFly(false)
-    setIsRide(false)
-    setVariant("normal")
-    setSearchQuery("")
+  const getPetDisplayName = (selectedPet: SelectedPet) => {
+    const parts: string[] = []
+    if (selectedPet.variant === "neon") parts.push("Neon")
+    if (selectedPet.variant === "mega") parts.push("Mega")
+    if (selectedPet.isFly && selectedPet.isRide) parts.push("Fly Ride")
+    else if (selectedPet.isFly) parts.push("Fly")
+    else if (selectedPet.isRide) parts.push("Ride")
+    parts.push(selectedPet.pet.name)
+    return parts.join(" ")
   }
 
-  const isVariantValueMissing = () => {
-    if (!selectedPet) return false
-    if (variant === "neon" && selectedPet.neonValue === 0) return true
-    if (variant === "mega" && selectedPet.megaValue === 0) return true
-    return false
+  const getShortDisplayName = (selectedPet: SelectedPet) => {
+    const parts: string[] = []
+    if (selectedPet.variant === "mega") {
+      if (selectedPet.isFly && selectedPet.isRide) parts.push("MFR")
+      else if (selectedPet.isFly) parts.push("MF")
+      else if (selectedPet.isRide) parts.push("MR")
+      else parts.push("M")
+    } else if (selectedPet.variant === "neon") {
+      if (selectedPet.isFly && selectedPet.isRide) parts.push("NFR")
+      else if (selectedPet.isFly) parts.push("NF")
+      else if (selectedPet.isRide) parts.push("NR")
+      else parts.push("N")
+    } else {
+      if (selectedPet.isFly && selectedPet.isRide) parts.push("FR")
+      else if (selectedPet.isFly) parts.push("F")
+      else if (selectedPet.isRide) parts.push("R")
+    }
+    parts.push(selectedPet.pet.name)
+    return parts.join(" ")
   }
 
   return (
@@ -194,58 +171,188 @@ export function AdoptMeCalculator() {
             <p className="font-medium text-foreground mb-1">Values from Your Value List</p>
             <p>
               This calculator uses values from your items database. NFR (Neon) and MFR (Mega) values must be manually
-              set for each pet in the database, as they vary significantly and cannot be calculated automatically.
+              set for each pet in the database.
             </p>
           </div>
         </div>
       </Card>
 
-      <Card className="p-3 md:p-4">
-        <div className="space-y-3">
-          <div>
-            <Label htmlFor="pet-search" className="text-sm font-semibold">
-              Select Pet
-            </Label>
-            <div className="relative mt-1.5">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="pet-search"
-                type="text"
-                placeholder="Search for a pet..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-9 pl-9 text-sm"
-              />
-            </div>
-          </div>
+      {selectedPets.length > 0 && (
+        <div className="rounded-lg border-2 border-brand/50 bg-brand/10 p-3 text-center">
+          <p className="text-xs text-muted-foreground">Total Value</p>
+          <p className="mt-0.5 text-2xl md:text-3xl font-bold text-brand">{formatNumber(totalValue)}</p>
+          <p className="mt-0.5 text-[10px] text-muted-foreground">{selectedPets.length} pets selected</p>
+        </div>
+      )}
 
-          {/* Selected Pet Display */}
-          {selectedPet && (
-            <div className="rounded-lg border-2 border-brand/50 bg-brand/10 p-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  {selectedPet.imageUrl && (
-                    <img
-                      src={selectedPet.imageUrl || "/placeholder.svg"}
-                      alt={selectedPet.name}
-                      className="h-10 w-10 rounded object-cover"
-                    />
-                  )}
-                  <div>
-                    <p className="text-sm font-semibold">{getShortDisplayName()}</p>
-                    <p className="text-xs text-muted-foreground">{getPetDisplayName()}</p>
-                  </div>
+      {selectedPets.map((selectedPet) => {
+        const petValue = (() => {
+          let baseValue = 0
+          switch (selectedPet.variant) {
+            case "normal":
+              baseValue = selectedPet.pet.baseValue
+              break
+            case "neon":
+              baseValue = selectedPet.pet.neonValue
+              break
+            case "mega":
+              baseValue = selectedPet.pet.megaValue
+              break
+          }
+          let potionBonus = 0
+          if (selectedPet.isFly) potionBonus += selectedPet.pet.flyBonus
+          if (selectedPet.isRide) potionBonus += selectedPet.pet.rideBonus
+          return baseValue + potionBonus
+        })()
+
+        return (
+          <Card key={selectedPet.id} className="p-3 md:p-4">
+            {/* Pet Header */}
+            <div className="mb-3 flex items-center justify-between rounded-lg border-2 border-brand/50 bg-brand/10 p-3">
+              <div className="flex items-center gap-2.5">
+                {selectedPet.pet.imageUrl && (
+                  <img
+                    src={selectedPet.pet.imageUrl || "/placeholder.svg"}
+                    alt={selectedPet.pet.name}
+                    className="h-10 w-10 rounded object-cover"
+                  />
+                )}
+                <div>
+                  <p className="text-sm font-semibold">{getShortDisplayName(selectedPet)}</p>
+                  <p className="text-xs text-muted-foreground">Value: {formatNumber(petValue)}</p>
                 </div>
-                <Button variant="ghost" size="sm" onClick={() => setSelectedPet(null)} className="h-7 w-7 p-0">
-                  <X className="h-3.5 w-3.5" />
-                </Button>
+              </div>
+              <Button variant="ghost" size="sm" onClick={() => removePet(selectedPet.id)} className="h-7 w-7 p-0">
+                <X className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+
+            {/* Potions */}
+            <div className="mb-3">
+              <h3 className="mb-2 text-sm font-semibold">Potions</h3>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => updatePet(selectedPet.id, { isFly: !selectedPet.isFly })}
+                  className={`relative flex items-center justify-between rounded-lg p-2 transition-all duration-200 ${
+                    selectedPet.isFly
+                      ? "bg-gradient-to-r from-blue-500 to-cyan-500 ring-2 ring-white/50 scale-105"
+                      : "bg-gray-700 opacity-70 hover:opacity-100"
+                  }`}
+                >
+                  <span className="text-xs font-semibold text-white drop-shadow-md">Fly</span>
+                  {selectedPet.isFly && <X className="h-3.5 w-3.5 text-white" />}
+                </button>
+
+                <button
+                  onClick={() => updatePet(selectedPet.id, { isRide: !selectedPet.isRide })}
+                  className={`relative flex items-center justify-between rounded-lg p-2 transition-all duration-200 ${
+                    selectedPet.isRide
+                      ? "bg-gradient-to-r from-pink-500 to-purple-500 ring-2 ring-white/50 scale-105"
+                      : "bg-gray-700 opacity-70 hover:opacity-100"
+                  }`}
+                >
+                  <span className="text-xs font-semibold text-white drop-shadow-md">Ride</span>
+                  {selectedPet.isRide && <X className="h-3.5 w-3.5 text-white" />}
+                </button>
               </div>
             </div>
-          )}
 
-          {/* Pet List */}
-          {!selectedPet && (
-            <div className="max-h-56 overflow-y-auto space-y-1.5 rounded-lg border p-2">
+            {/* Variants */}
+            <div>
+              <h3 className="mb-2 text-sm font-semibold">Variant</h3>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  onClick={() => updatePet(selectedPet.id, { variant: "normal" })}
+                  className={`relative flex items-center justify-center rounded-lg p-2 transition-all duration-200 ${
+                    selectedPet.variant === "normal"
+                      ? "bg-gradient-to-r from-gray-600 to-gray-700 ring-2 ring-white/50 scale-105"
+                      : "bg-gray-700 opacity-70 hover:opacity-100"
+                  }`}
+                >
+                  <span className="text-xs font-semibold text-white drop-shadow-md">Normal</span>
+                </button>
+
+                <button
+                  onClick={() => updatePet(selectedPet.id, { variant: "neon" })}
+                  className={`relative flex items-center justify-center rounded-lg p-2 transition-all duration-200 ${
+                    selectedPet.variant === "neon"
+                      ? "bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 ring-2 ring-white/50 scale-105"
+                      : "bg-gray-700 opacity-70 hover:opacity-100"
+                  }`}
+                >
+                  <span className="text-xs font-semibold text-white drop-shadow-md">Neon</span>
+                </button>
+
+                <button
+                  onClick={() => updatePet(selectedPet.id, { variant: "mega" })}
+                  className={`relative flex items-center justify-center rounded-lg p-2 transition-all duration-200 ${
+                    selectedPet.variant === "mega"
+                      ? "bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 to-purple-500 ring-2 ring-white/50 scale-105"
+                      : "bg-gray-700 opacity-70 hover:opacity-100"
+                  }`}
+                >
+                  <span className="text-xs font-semibold text-white drop-shadow-md">Mega</span>
+                </button>
+              </div>
+            </div>
+          </Card>
+        )
+      })}
+
+      <Card className="p-3 md:p-4">
+        <button
+          onClick={() => setIsSearchOpen(true)}
+          className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-700 p-4 text-gray-400 transition-colors hover:border-gray-600 hover:text-white"
+        >
+          <Plus className="h-5 w-5" />
+          <span className="text-sm font-semibold">Add Pet</span>
+        </button>
+      </Card>
+
+      {/* Reset Button */}
+      {selectedPets.length > 0 && (
+        <div className="flex justify-center">
+          <Button
+            onClick={() => {
+              setSelectedPets([])
+              setSearchQuery("")
+            }}
+            variant="outline"
+            className="h-9 px-6 text-sm bg-transparent"
+          >
+            Clear All Pets
+          </Button>
+        </div>
+      )}
+
+      {isSearchOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
+          <div className="w-full max-w-2xl rounded-xl border-2 border-gray-700 bg-gray-900 p-4 shadow-2xl">
+            <div className="mb-3 flex items-center justify-between">
+              <h3 className="text-lg font-bold text-white">Add Adopt Me Pet</h3>
+              <button
+                onClick={() => {
+                  setIsSearchOpen(false)
+                  setSearchQuery("")
+                }}
+                className="rounded-full p-1.5 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="relative mb-3">
+              <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <Input
+                placeholder="Search pets..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="border-gray-700 bg-gray-800 pl-9 text-sm text-white placeholder:text-gray-500"
+                autoFocus
+              />
+            </div>
+
+            <div className="max-h-80 space-y-1.5 overflow-y-auto rounded-lg border p-2">
               {loading ? (
                 <p className="text-center text-xs text-muted-foreground py-6">Loading pets...</p>
               ) : filteredPets.length === 0 ? (
@@ -254,7 +361,7 @@ export function AdoptMeCalculator() {
                 filteredPets.map((pet) => (
                   <button
                     key={pet.id}
-                    onClick={() => setSelectedPet(pet)}
+                    onClick={() => addPet(pet)}
                     className="w-full flex items-center gap-2.5 rounded-lg p-2.5 hover:bg-accent transition-colors text-left"
                   >
                     {pet.imageUrl && (
@@ -272,202 +379,7 @@ export function AdoptMeCalculator() {
                 ))
               )}
             </div>
-          )}
-
-          {selectedPet && (
-            <div className="space-y-2">
-              <div className="rounded-lg border-2 border-brand/50 bg-brand/10 p-3 text-center">
-                <p className="text-xs text-muted-foreground">Calculated Value</p>
-                <p className="mt-0.5 text-2xl md:text-3xl font-bold text-brand">{formatNumber(calculatedValue)}</p>
-                <p className="mt-0.5 text-[10px] text-muted-foreground">
-                  {variant === "normal" && "Base Value"}
-                  {variant === "neon" && "Neon Value"}
-                  {variant === "mega" && "Mega Value"}
-                  {(isFly || isRide) && " + Potions"}
-                </p>
-              </div>
-
-              {isVariantValueMissing() && (
-                <Card className="p-2.5 bg-yellow-500/10 border-yellow-500/20">
-                  <div className="flex gap-2">
-                    <AlertCircle className="h-4 w-4 text-yellow-500 flex-shrink-0 mt-0.5" />
-                    <div className="text-xs">
-                      <p className="font-medium text-yellow-600 dark:text-yellow-500">
-                        {variant === "neon" ? "Neon" : "Mega"} value not set
-                      </p>
-                      <p className="text-muted-foreground mt-0.5">
-                        This pet doesn't have a {variant} value in the database yet. Add it to your value list to see
-                        accurate calculations.
-                      </p>
-                    </div>
-                  </div>
-                </Card>
-              )}
-
-              <Card className="p-2.5 bg-muted/50">
-                <div className="space-y-1.5 text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Base Pet Value:</span>
-                    <span className="font-medium">{formatNumber(selectedPet.baseValue)}</span>
-                  </div>
-                  {variant === "neon" && (
-                    <>
-                      <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Neon Value:</span>
-                        <span className="font-medium">
-                          {selectedPet.neonValue > 0 ? formatNumber(selectedPet.neonValue) : "Not set"}
-                        </span>
-                      </div>
-                      {getValueMultiplier() && (
-                        <div className="flex items-center justify-between text-[10px]">
-                          <span className="text-muted-foreground flex items-center gap-1">
-                            <Info className="h-3 w-3" />
-                            Neon Multiplier:
-                          </span>
-                          <span className="font-medium">{getValueMultiplier()}×</span>
-                        </div>
-                      )}
-                    </>
-                  )}
-                  {variant === "mega" && (
-                    <>
-                      <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Mega Value:</span>
-                        <span className="font-medium">
-                          {selectedPet.megaValue > 0 ? formatNumber(selectedPet.megaValue) : "Not set"}
-                        </span>
-                      </div>
-                      {getValueMultiplier() && (
-                        <div className="flex items-center justify-between text-[10px]">
-                          <span className="text-muted-foreground flex items-center gap-1">
-                            <Info className="h-3 w-3" />
-                            Mega Multiplier:
-                          </span>
-                          <span className="font-medium">{getValueMultiplier()}×</span>
-                        </div>
-                      )}
-                    </>
-                  )}
-                  {isFly && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Fly Potion:</span>
-                      <span className="font-medium text-blue-500">+{formatNumber(selectedPet.flyBonus)}</span>
-                    </div>
-                  )}
-                  {isRide && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Ride Potion:</span>
-                      <span className="font-medium text-pink-500">+{formatNumber(selectedPet.rideBonus)}</span>
-                    </div>
-                  )}
-                  <div className="pt-1.5 border-t flex items-center justify-between font-semibold">
-                    <span>Total Value:</span>
-                    <span className="text-brand">{formatNumber(calculatedValue)}</span>
-                  </div>
-                </div>
-              </Card>
-
-              {variant !== "normal" && (
-                <div className="rounded-lg bg-blue-500/10 border border-blue-500/20 p-2.5">
-                  <div className="flex gap-2">
-                    <Info className="h-4 w-4 text-blue-500 flex-shrink-0 mt-0.5" />
-                    <div className="text-xs text-muted-foreground">
-                      <p className="font-medium text-foreground mb-1">
-                        {variant === "neon" ? "Neon" : "Mega"} Value Information
-                      </p>
-                      <p>
-                        {variant === "neon"
-                          ? "Neon pets require 4 identical pets to create. Values are manually set and vary by pet."
-                          : "Mega pets require 4 identical Neon pets to create. Values are manually set and vary by pet."}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </Card>
-
-      {/* Potions Section */}
-      {selectedPet && (
-        <Card className="p-3 md:p-4">
-          <h2 className="text-base font-semibold mb-2.5">Potions</h2>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={() => setIsFly(!isFly)}
-              className={`relative flex items-center justify-between rounded-lg p-2.5 transition-all duration-200 ${
-                isFly
-                  ? "bg-gradient-to-r from-blue-500 to-cyan-500 ring-2 ring-white/50 scale-105 shadow-lg"
-                  : "bg-gray-700 opacity-70 hover:opacity-100 hover:scale-102"
-              }`}
-            >
-              <span className="text-sm font-semibold text-white drop-shadow-md">Fly</span>
-              {isFly && <X className="h-4 w-4 text-white" />}
-            </button>
-
-            <button
-              onClick={() => setIsRide(!isRide)}
-              className={`relative flex items-center justify-between rounded-lg p-2.5 transition-all duration-200 ${
-                isRide
-                  ? "bg-gradient-to-r from-pink-500 to-purple-500 ring-2 ring-white/50 scale-105 shadow-lg"
-                  : "bg-gray-700 opacity-70 hover:opacity-100 hover:scale-102"
-              }`}
-            >
-              <span className="text-sm font-semibold text-white drop-shadow-md">Ride</span>
-              {isRide && <X className="h-4 w-4 text-white" />}
-            </button>
           </div>
-        </Card>
-      )}
-
-      {/* Variants Section */}
-      {selectedPet && (
-        <Card className="p-3 md:p-4">
-          <h2 className="text-base font-semibold mb-2.5">Variant (Select One)</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <button
-              onClick={() => setVariant("normal")}
-              className={`relative flex items-center justify-center rounded-lg p-2.5 transition-all duration-200 ${
-                variant === "normal"
-                  ? "bg-gradient-to-r from-gray-600 to-gray-700 ring-2 ring-white/50 scale-105 shadow-lg"
-                  : "bg-gray-700 opacity-70 hover:opacity-100 hover:scale-102"
-              }`}
-            >
-              <span className="text-sm font-semibold text-white drop-shadow-md">Normal</span>
-            </button>
-
-            <button
-              onClick={() => setVariant("neon")}
-              className={`relative flex items-center justify-center rounded-lg p-2.5 transition-all duration-200 ${
-                variant === "neon"
-                  ? "bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 ring-2 ring-white/50 scale-105 shadow-lg"
-                  : "bg-gray-700 opacity-70 hover:opacity-100 hover:scale-102"
-              }`}
-            >
-              <span className="text-sm font-semibold text-white drop-shadow-md">Neon</span>
-            </button>
-
-            <button
-              onClick={() => setVariant("mega")}
-              className={`relative flex items-center justify-center rounded-lg p-2.5 transition-all duration-200 ${
-                variant === "mega"
-                  ? "bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 to-purple-500 ring-2 ring-white/50 scale-105 shadow-lg"
-                  : "bg-gray-700 opacity-70 hover:opacity-100 hover:scale-102"
-              }`}
-            >
-              <span className="text-sm font-semibold text-white drop-shadow-md">Mega</span>
-            </button>
-          </div>
-        </Card>
-      )}
-
-      {/* Reset Button */}
-      {selectedPet && (
-        <div className="flex justify-center">
-          <Button onClick={resetCalculator} variant="outline" className="h-9 px-6 text-sm bg-transparent">
-            Reset Calculator
-          </Button>
         </div>
       )}
     </div>
