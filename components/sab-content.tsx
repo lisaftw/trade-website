@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react"
 import { ItemCard } from "./item-card"
 import { Input } from "./ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { Search } from "lucide-react"
+import { Button } from "./ui/button"
 
 interface SABItem {
   id: string
@@ -94,8 +94,39 @@ export function SABContent() {
       </div>
 
       {/* Filters */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <div className="relative">
+      <div className="space-y-4">
+        {/* Rarity Filter Pills */}
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          {RARITIES.map((rarity) => (
+            <Button
+              key={rarity}
+              variant={selectedRarity === rarity ? "default" : "secondary"}
+              size="sm"
+              onClick={() => setSelectedRarity(rarity)}
+              className="shrink-0 rounded-full"
+            >
+              {rarity}
+            </Button>
+          ))}
+        </div>
+
+        {/* Demand Filter Pills */}
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          {DEMANDS.map((demand) => (
+            <Button
+              key={demand}
+              variant={selectedDemand === demand ? "default" : "secondary"}
+              size="sm"
+              onClick={() => setSelectedDemand(demand)}
+              className="shrink-0 rounded-full"
+            >
+              {demand}
+            </Button>
+          ))}
+        </div>
+
+        {/* Search Bar */}
+        <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search brainrots..."
@@ -104,30 +135,6 @@ export function SABContent() {
             className="pl-9"
           />
         </div>
-        <Select value={selectedRarity} onValueChange={setSelectedRarity}>
-          <SelectTrigger>
-            <SelectValue placeholder="Filter by rarity" />
-          </SelectTrigger>
-          <SelectContent>
-            {RARITIES.map((rarity) => (
-              <SelectItem key={rarity} value={rarity}>
-                {rarity}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={selectedDemand} onValueChange={setSelectedDemand}>
-          <SelectTrigger>
-            <SelectValue placeholder="Filter by demand" />
-          </SelectTrigger>
-          <SelectContent>
-            {DEMANDS.map((demand) => (
-              <SelectItem key={demand} value={demand}>
-                {demand}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
       </div>
 
       {/* Stats */}

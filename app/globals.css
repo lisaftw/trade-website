@@ -219,6 +219,15 @@ a[href*="v0.app"][aria-label*="Built"] {
     -webkit-backdrop-filter: blur(12px) saturate(180%);
   }
 
+  /* Hide scrollbar for horizontal pill navigation */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   /* Enhanced button hover effects */
   .hover\:scale-105:hover {
     transform: scale(1.05);
