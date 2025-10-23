@@ -40,6 +40,14 @@ export function SiteHeader() {
           className="h-9 rounded-full border border-border bg-secondary/40 px-5 text-sm text-secondary-foreground hover:bg-secondary/60"
           variant="secondary"
         >
+          <Link href="/sab">SAB</Link>
+        </Button>
+        <Button
+          asChild
+          size="sm"
+          className="h-9 rounded-full border border-border bg-secondary/40 px-5 text-sm text-secondary-foreground hover:bg-secondary/60"
+          variant="secondary"
+        >
           <Link href="/calculator">
             <Calculator className="mr-2 h-4 w-4" />
             Calculator
@@ -95,6 +103,13 @@ export function SiteHeader() {
                 className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors hover:bg-secondary/60"
               >
                 Our Values
+              </Link>
+              <Link
+                href="/sab"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors hover:bg-secondary/60"
+              >
+                SAB
               </Link>
               <Link
                 href="/calculator"
