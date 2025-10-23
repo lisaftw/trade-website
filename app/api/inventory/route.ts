@@ -87,14 +87,15 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    await supabase
-      .from("activities")
-      .insert({
-        discord_id: session.discordId,
-        type: "add_inventory",
-        meta: { item_id: itemId, quantity },
-      })
-      .catch((err) => console.error("[v0] Activity log failed:", err))
+    const { error: activityError } = await supabase.from("activities").insert({
+      discord_id: session.discordId,
+      type: "add_inventory",
+      meta: { item_id: itemId, quantity },
+    })
+
+    if (activityError) {
+      console.error("[v0] Activity log failed:", activityError)
+    }
 
     console.log("[v0] Successfully added to inventory")
     return Response.json({ success: true })
