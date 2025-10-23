@@ -180,23 +180,26 @@ export function InventoryContent() {
           }
 
           return (
-            <div key={invItem.id} className="relative">
+            <div key={invItem.id} className="relative group">
               <ItemCard item={item} />
               <Button
                 variant="destructive"
                 size="sm"
-                className="absolute top-2 right-2 z-10 h-8 w-8 p-0"
+                className="absolute bottom-20 right-2 z-10 h-9 px-3 opacity-90 hover:opacity-100 transition-opacity shadow-lg"
                 onClick={() => handleRemove(invItem.id, item.name)}
                 disabled={removing === invItem.id}
               >
                 {removing === invItem.id ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  <Trash2 className="h-4 w-4" />
+                  <>
+                    <Trash2 className="mr-1.5 h-4 w-4" />
+                    Remove
+                  </>
                 )}
               </Button>
               {invItem.quantity > 1 && (
-                <div className="absolute top-2 left-2 z-10 rounded-full bg-primary px-2 py-1 text-xs font-semibold text-primary-foreground">
+                <div className="absolute top-2 right-2 z-10 rounded-full bg-primary px-2.5 py-1 text-xs font-bold text-primary-foreground shadow-md border-2 border-background">
                   ×{invItem.quantity}
                 </div>
               )}
