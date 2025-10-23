@@ -37,7 +37,7 @@ export default function ItemSelector({ game, onSelect }: ItemSelectorProps) {
     fetchItems()
   }, [game])
 
-  const filteredItems = items.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredItems = items.filter((item) => (item.name || "").toLowerCase().includes(searchQuery.toLowerCase()))
 
   return (
     <div className="space-y-3 rounded-lg border border-foreground/10 bg-gradient-to-b from-foreground/5 to-foreground/2 p-4 backdrop-blur-sm">

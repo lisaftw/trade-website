@@ -52,7 +52,7 @@ export function ValuesContent() {
     return () => clearInterval(interval)
   }, [selectedGame])
 
-  const filteredItems = items.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredItems = items.filter((item) => (item.name || "").toLowerCase().includes(searchQuery.toLowerCase()))
 
   return (
     <div className="space-y-4 md:space-y-6">
