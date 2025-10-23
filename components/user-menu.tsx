@@ -13,6 +13,7 @@ import {
 import Image from "next/image"
 import Link from "next/link"
 import { useTheme } from "next-themes"
+import { Package } from "lucide-react"
 
 export function UserMenu() {
   const { user, loading, logout } = useUser()
@@ -73,6 +74,13 @@ export function UserMenu() {
           }}
         >
           Toggle theme
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href="/inventory">
+            <Package className="mr-2 h-4 w-4" />
+            Inventory
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
