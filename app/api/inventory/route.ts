@@ -46,17 +46,27 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const session = await getSession()
   if (!session) {
+    console.log("[v0] Inventory add failed: No session")
     return Response.json({ error: "Unauthorized" }, { status: 401 })
   }
 
   const body = await req.json()
   const { itemId, quantity = 1 } = body
 
+  console.log("[v0] Adding to inventory:", { discordId: session.discordId, itemId, quantity })
+
   if (!itemId) {
     return Response.json({ error: "Item ID is required" }, { status: 400 })
   }
 
   const supabase = await createServiceClient()
+
+  const { data: itemExists, error: itemError } = await supabase.from("items").select("id").eq("id", itemId).single()
+
+  if (itemError || !itemExists) {
+    console.error("[v0] Item not found:", itemId, itemError)
+    return Response.json({ error: "Item not found" }, { status: 404 })
+  }
 
   const { data: existing } = await supabase
     .from("user_inventories")
@@ -66,6 +76,7 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (existing) {
+    console.log("[v0] Updating existing inventory item:", existing.id)
     const { error } = await supabase
       .from("user_inventories")
       .update({
@@ -79,6 +90,7 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: "Failed to update inventory" }, { status: 500 })
     }
   } else {
+    console.log("[v0] Creating new inventory item")
     const { error } = await supabase.from("user_inventories").insert({
       discord_id: session.discordId,
       item_id: itemId,
@@ -91,11 +103,15 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  await supabase.from("activities").insert({
-    discord_id: session.discordId,
-    type: "add_inventory",
-    meta: { item_id: itemId, quantity },
-  })
+  await supabase
+    .from("activities")
+    .insert({
+      discord_id: session.discordId,
+      type: "add_inventory",
+      meta: { item_id: itemId, quantity },
+    })
+    .catch((err) => console.error("[v0] Activity log failed:", err))
 
+  console.log("[v0] Successfully added to inventory")
   return Response.json({ success: true })
 }
