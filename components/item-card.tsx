@@ -80,6 +80,12 @@ export function ItemCard({ item }: ItemCardProps) {
 
     setIsAdding(true)
     try {
+      console.log("[v0] Attempting to add item to inventory:", {
+        itemId: item.id,
+        itemName: item.name,
+        userId: user?.discordId,
+      })
+
       const response = await fetch("/api/inventory", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -89,9 +95,12 @@ export function ItemCard({ item }: ItemCardProps) {
         }),
       })
 
+      console.log("[v0] API response status:", response.status)
+
       if (!response.ok) {
         const data = await response.json()
-        throw new Error(data.error || "Failed to add to inventory")
+        console.error("[v0] API error response:", data)
+        throw new Error(data.details || data.error || "Failed to add to inventory")
       }
 
       toast({
