@@ -19,7 +19,6 @@ interface SABItem {
 }
 
 const RARITIES = ["All", "Common", "Rare", "Epic", "Legendary", "Mythic", "Brainrot God", "Secret", "OG", "Admin"]
-const DEMANDS = ["All", "Very High", "High", "Medium", "Low", "Very Low"]
 
 export function SABContent() {
   const [items, setItems] = useState<SABItem[]>([])
@@ -27,7 +26,6 @@ export function SABContent() {
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedRarity, setSelectedRarity] = useState("All")
-  const [selectedDemand, setSelectedDemand] = useState("All")
 
   useEffect(() => {
     fetchSABItems()
@@ -35,7 +33,7 @@ export function SABContent() {
 
   useEffect(() => {
     filterItems()
-  }, [items, searchQuery, selectedRarity, selectedDemand])
+  }, [items, searchQuery, selectedRarity]) // Removed selectedDemand from dependencies
 
   const fetchSABItems = async () => {
     try {
@@ -64,11 +62,6 @@ export function SABContent() {
       filtered = filtered.filter((item) => item.rarity === selectedRarity)
     }
 
-    // Demand filter
-    if (selectedDemand !== "All") {
-      filtered = filtered.filter((item) => item.demand === selectedDemand)
-    }
-
     setFilteredItems(filtered)
   }
 
@@ -95,32 +88,16 @@ export function SABContent() {
 
       {/* Filters */}
       <div className="space-y-4">
-        {/* Rarity Filter Pills */}
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="flex flex-wrap justify-center gap-3 pb-2">
           {RARITIES.map((rarity) => (
             <Button
               key={rarity}
               variant={selectedRarity === rarity ? "default" : "secondary"}
-              size="sm"
+              size="lg"
               onClick={() => setSelectedRarity(rarity)}
-              className="shrink-0 rounded-full"
+              className="shrink-0 rounded-full px-6 text-base"
             >
               {rarity}
-            </Button>
-          ))}
-        </div>
-
-        {/* Demand Filter Pills */}
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-          {DEMANDS.map((demand) => (
-            <Button
-              key={demand}
-              variant={selectedDemand === demand ? "default" : "secondary"}
-              size="sm"
-              onClick={() => setSelectedDemand(demand)}
-              className="shrink-0 rounded-full"
-            >
-              {demand}
             </Button>
           ))}
         </div>
