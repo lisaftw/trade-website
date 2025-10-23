@@ -13,24 +13,7 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from("user_inventories")
-    .select(
-      `
-      id,
-      quantity,
-      created_at,
-      items (
-        id,
-        name,
-        game,
-        image_url,
-        rap_value,
-        section,
-        rarity,
-        demand,
-        pot
-      )
-    `,
-    )
+    .select("id, item_id, quantity, created_at")
     .eq("discord_id", session.discordId)
     .order("created_at", { ascending: false })
 
@@ -51,7 +34,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json()
-  const { itemId, quantity = 1, itemData } = body
+  const { itemId, quantity = 1 } = body
 
   console.log("[v0] Adding to inventory:", { discordId: session.discordId, itemId, quantity })
 
@@ -60,36 +43,6 @@ export async function POST(req: NextRequest) {
   }
 
   const supabase = await createServiceClient()
-
-  const { data: itemExists, error: itemError } = await supabase.from("items").select("id").eq("id", itemId).single()
-
-  if (itemError || !itemExists) {
-    console.log("[v0] Item not found in database, creating it:", itemId)
-
-    // If itemData is provided, create the item first
-    if (itemData) {
-      const { error: createError } = await supabase.from("items").insert({
-        id: itemId,
-        name: itemData.name,
-        game: itemData.game,
-        image_url: itemData.image_url,
-        rap_value: itemData.rap_value,
-        exist_count: itemData.exist_count,
-        change_percent: itemData.change_percent,
-        rating: itemData.rating,
-        last_updated_at: itemData.last_updated_at || new Date().toISOString(),
-      })
-
-      if (createError) {
-        console.error("[v0] Error creating item:", createError)
-        return Response.json({ error: "Failed to create item" }, { status: 500 })
-      }
-      console.log("[v0] Item created successfully")
-    } else {
-      console.error("[v0] Item not found and no itemData provided:", itemId)
-      return Response.json({ error: "Item not found" }, { status: 404 })
-    }
-  }
 
   const { data: existing } = await supabase
     .from("user_inventories")
