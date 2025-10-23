@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { X, Search, Plus } from "lucide-react"
+import { X, Search, Info } from "lucide-react"
 
 // Mutations data with multipliers
 const MUTATIONS = [
@@ -72,13 +72,6 @@ interface Item {
   imageUrl?: string
 }
 
-interface SelectedPet {
-  id: string
-  pet: Item
-  mutation: string | null
-  traits: string[]
-}
-
 const toNumber = (value: any): number => {
   if (value === null || value === undefined) return 0
   const num = typeof value === "string" ? Number.parseFloat(value) : Number(value)
@@ -89,7 +82,9 @@ export function SABCalculator() {
   const [pets, setPets] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
-  const [selectedPets, setSelectedPets] = useState<SelectedPet[]>([])
+  const [selectedPet, setSelectedPet] = useState<Item | null>(null)
+  const [selectedMutation, setSelectedMutation] = useState<string | null>(null)
+  const [selectedTraits, setSelectedTraits] = useState<string[]>([])
   const [isSearchOpen, setIsSearchOpen] = useState(false)
 
   useEffect(() => {
@@ -121,57 +116,28 @@ export function SABCalculator() {
     return pets.filter((pet) => pet.name.toLowerCase().includes(searchQuery.toLowerCase()))
   }, [pets, searchQuery])
 
-  const totalValue = useMemo(() => {
-    return selectedPets.reduce((total, selectedPet) => {
-      const base = toNumber(selectedPet.pet.rapValue)
-      if (base === 0) return total
+  const calculatedValue = useMemo(() => {
+    if (!selectedPet) return 0
 
-      const mutationMultiplier = selectedPet.mutation
-        ? MUTATIONS.find((m) => m.id === selectedPet.mutation)?.multiplier || 1
-        : 1
+    const base = toNumber(selectedPet.rapValue)
+    if (base === 0) return 0
 
-      const traitsMultiplier = selectedPet.traits.reduce((acc, traitId) => {
-        const trait = TRAITS.find((t) => t.id === traitId)
-        return acc * (trait?.multiplier || 1)
-      }, 1)
+    const mutationMultiplier = selectedMutation ? MUTATIONS.find((m) => m.id === selectedMutation)?.multiplier || 1 : 1
 
-      return total + base * mutationMultiplier * traitsMultiplier
-    }, 0)
-  }, [selectedPets])
+    const traitsMultiplier = selectedTraits.reduce((acc, traitId) => {
+      const trait = TRAITS.find((t) => t.id === traitId)
+      return acc * (trait?.multiplier || 1)
+    }, 1)
 
-  const addPet = (pet: Item) => {
-    const newPet: SelectedPet = {
-      id: `${pet.id}-${Date.now()}`,
-      pet,
-      mutation: null,
-      traits: [],
-    }
-    setSelectedPets((prev) => [...prev, newPet])
-    setIsSearchOpen(false)
-    setSearchQuery("")
+    return base * mutationMultiplier * traitsMultiplier
+  }, [selectedPet, selectedMutation, selectedTraits])
+
+  const toggleMutation = (mutationId: string) => {
+    setSelectedMutation((prev) => (prev === mutationId ? null : mutationId))
   }
 
-  const removePet = (id: string) => {
-    setSelectedPets((prev) => prev.filter((p) => p.id !== id))
-  }
-
-  const updateMutation = (petId: string, mutationId: string) => {
-    setSelectedPets((prev) =>
-      prev.map((p) => (p.id === petId ? { ...p, mutation: p.mutation === mutationId ? null : mutationId } : p)),
-    )
-  }
-
-  const toggleTrait = (petId: string, traitId: string) => {
-    setSelectedPets((prev) =>
-      prev.map((p) =>
-        p.id === petId
-          ? {
-              ...p,
-              traits: p.traits.includes(traitId) ? p.traits.filter((t) => t !== traitId) : [...p.traits, traitId],
-            }
-          : p,
-      ),
-    )
+  const toggleTrait = (traitId: string) => {
+    setSelectedTraits((prev) => (prev.includes(traitId) ? prev.filter((t) => t !== traitId) : [...prev, traitId]))
   }
 
   const formatNumber = (num: number) => {
@@ -192,133 +158,130 @@ export function SABCalculator() {
         <p className="mt-1 text-xs md:text-sm text-muted-foreground">Calculate pet values with mutations and traits</p>
       </div>
 
-      {selectedPets.length > 0 && (
-        <div className="rounded-lg border-2 border-brand/50 bg-brand/10 p-3 text-center">
-          <p className="text-xs text-muted-foreground">Total Value</p>
-          <p className="mt-0.5 text-2xl md:text-3xl font-bold text-brand">{formatNumber(totalValue)}</p>
-          <p className="mt-0.5 text-[10px] text-muted-foreground">{selectedPets.length} pets selected</p>
-        </div>
-      )}
+      {/* Pet Selection */}
+      <Card className="p-3 md:p-4">
+        {!selectedPet ? (
+          <button
+            onClick={() => setIsSearchOpen(true)}
+            className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-700 p-6 text-gray-400 transition-colors hover:border-gray-600 hover:text-white"
+          >
+            <Search className="h-5 w-5" />
+            <span className="text-sm font-semibold">Select a Pet</span>
+          </button>
+        ) : (
+          <div className="flex items-center justify-between rounded-lg border-2 border-brand/50 bg-brand/10 p-3">
+            <div className="flex items-center gap-2.5">
+              {selectedPet.imageUrl && (
+                <img
+                  src={selectedPet.imageUrl || "/placeholder.svg"}
+                  alt={selectedPet.name}
+                  className="h-12 w-12 rounded object-cover"
+                />
+              )}
+              <div>
+                <p className="text-sm font-semibold">{selectedPet.name}</p>
+                <p className="text-xs text-muted-foreground">Base: {formatNumber(selectedPet.rapValue)}</p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setSelectedPet(null)
+                setSelectedMutation(null)
+                setSelectedTraits([])
+              }}
+              className="h-8 w-8 p-0"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
+      </Card>
 
-      {selectedPets.map((selectedPet) => {
-        const petValue = (() => {
-          const base = toNumber(selectedPet.pet.rapValue)
-          const mutationMultiplier = selectedPet.mutation
-            ? MUTATIONS.find((m) => m.id === selectedPet.mutation)?.multiplier || 1
-            : 1
-          const traitsMultiplier = selectedPet.traits.reduce((acc, traitId) => {
-            const trait = TRAITS.find((t) => t.id === traitId)
-            return acc * (trait?.multiplier || 1)
-          }, 1)
-          return base * mutationMultiplier * traitsMultiplier
-        })()
+      {selectedPet && (
+        <>
+          {/* Calculated Value */}
+          <div className="rounded-lg border-2 border-brand/50 bg-brand/10 p-4 text-center">
+            <p className="text-xs text-muted-foreground">Calculated Value</p>
+            <p className="mt-1 text-3xl md:text-4xl font-bold text-brand">{formatNumber(calculatedValue)}</p>
+          </div>
 
-        return (
-          <Card key={selectedPet.id} className="p-3 md:p-4">
-            {/* Pet Header */}
-            <div className="mb-3 flex items-center justify-between rounded-lg border-2 border-brand/50 bg-brand/10 p-3">
-              <div className="flex items-center gap-2.5">
-                {selectedPet.pet.imageUrl && (
-                  <img
-                    src={selectedPet.pet.imageUrl || "/placeholder.svg"}
-                    alt={selectedPet.pet.name}
-                    className="h-10 w-10 rounded object-cover"
-                  />
+          {/* Mutations */}
+          <Card className="p-3 md:p-4">
+            <h3 className="mb-3 text-sm font-semibold">Mutation</h3>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {MUTATIONS.map((mutation) => (
+                <button
+                  key={mutation.id}
+                  onClick={() => toggleMutation(mutation.id)}
+                  className={`relative flex items-center justify-between rounded-lg p-2.5 transition-all duration-200 ${
+                    mutation.color
+                  } ${
+                    selectedMutation === mutation.id ? "ring-2 ring-white/50 scale-105" : "opacity-70 hover:opacity-100"
+                  }`}
+                >
+                  <span className="text-xs font-semibold text-white drop-shadow-md">{mutation.name}</span>
+                  <span className="rounded-full bg-white/90 px-1.5 py-0.5 text-[10px] font-bold text-gray-900">
+                    {mutation.multiplier}x
+                  </span>
+                </button>
+              ))}
+            </div>
+          </Card>
+
+          {/* Traits */}
+          <Card className="p-3 md:p-4">
+            <h3 className="mb-3 text-sm font-semibold">Traits (Multiple Selection)</h3>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {TRAITS.map((trait) => (
+                <button
+                  key={trait.id}
+                  onClick={() => toggleTrait(trait.id)}
+                  className={`relative flex items-center justify-between rounded-lg p-2.5 transition-all duration-200 ${
+                    trait.color
+                  } ${
+                    selectedTraits.includes(trait.id)
+                      ? "ring-2 ring-white/50 scale-105"
+                      : "opacity-70 hover:opacity-100"
+                  }`}
+                >
+                  <span className="text-xs font-semibold text-white drop-shadow-md">{trait.name}</span>
+                  <span className="rounded-full bg-white/90 px-1.5 py-0.5 text-[10px] font-bold text-gray-900">
+                    {trait.multiplier}x
+                  </span>
+                </button>
+              ))}
+            </div>
+          </Card>
+
+          {/* Value Information */}
+          <Card className="p-3 bg-blue-500/10 border-blue-500/20">
+            <div className="flex gap-2">
+              <Info className="h-4 w-4 text-blue-500 flex-shrink-0 mt-0.5" />
+              <div className="text-xs text-muted-foreground space-y-1">
+                <p className="font-medium text-foreground">How Values Are Calculated</p>
+                <p>Base Value × Mutation Multiplier × (Trait 1 × Trait 2 × ...)</p>
+                {selectedMutation && (
+                  <p>
+                    Current: {formatNumber(selectedPet.rapValue)} ×{" "}
+                    {MUTATIONS.find((m) => m.id === selectedMutation)?.multiplier}x
+                    {selectedTraits.length > 0 &&
+                      ` × ${selectedTraits.map((t) => `${TRAITS.find((tr) => tr.id === t)?.multiplier}x`).join(" × ")}`}
+                  </p>
                 )}
-                <div>
-                  <p className="text-sm font-semibold">{selectedPet.pet.name}</p>
-                  <p className="text-xs text-muted-foreground">Value: {formatNumber(petValue)}</p>
-                </div>
-              </div>
-              <Button variant="ghost" size="sm" onClick={() => removePet(selectedPet.id)} className="h-7 w-7 p-0">
-                <X className="h-3.5 w-3.5" />
-              </Button>
-            </div>
-
-            {/* Mutations */}
-            <div className="mb-3">
-              <h3 className="mb-2 text-sm font-semibold">Mutation</h3>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                {MUTATIONS.slice(0, 6).map((mutation) => (
-                  <button
-                    key={mutation.id}
-                    onClick={() => updateMutation(selectedPet.id, mutation.id)}
-                    className={`relative flex items-center justify-between rounded-lg p-2 transition-all duration-200 ${
-                      mutation.color
-                    } ${
-                      selectedPet.mutation === mutation.id
-                        ? "ring-2 ring-white/50 scale-105"
-                        : "opacity-70 hover:opacity-100"
-                    }`}
-                  >
-                    <span className="text-xs font-semibold text-white drop-shadow-md">{mutation.name}</span>
-                    <span className="rounded-full bg-white/90 px-1.5 py-0.5 text-[10px] font-bold text-gray-900">
-                      {mutation.multiplier}x
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Traits */}
-            <div>
-              <h3 className="mb-2 text-sm font-semibold">Traits</h3>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                {TRAITS.slice(0, 6).map((trait) => (
-                  <button
-                    key={trait.id}
-                    onClick={() => toggleTrait(selectedPet.id, trait.id)}
-                    className={`relative flex items-center justify-between rounded-lg p-2 transition-all duration-200 ${
-                      trait.color
-                    } ${
-                      selectedPet.traits.includes(trait.id)
-                        ? "ring-2 ring-white/50 scale-105"
-                        : "opacity-70 hover:opacity-100"
-                    }`}
-                  >
-                    <span className="text-xs font-semibold text-white drop-shadow-md">{trait.name}</span>
-                    <span className="rounded-full bg-white/90 px-1.5 py-0.5 text-[10px] font-bold text-gray-900">
-                      {trait.multiplier}x
-                    </span>
-                  </button>
-                ))}
               </div>
             </div>
           </Card>
-        )
-      })}
-
-      <Card className="p-3 md:p-4">
-        <button
-          onClick={() => setIsSearchOpen(true)}
-          className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-700 p-4 text-gray-400 transition-colors hover:border-gray-600 hover:text-white"
-        >
-          <Plus className="h-5 w-5" />
-          <span className="text-sm font-semibold">Add Pet</span>
-        </button>
-      </Card>
-
-      {/* Reset Button */}
-      {selectedPets.length > 0 && (
-        <div className="flex justify-center">
-          <Button
-            onClick={() => {
-              setSelectedPets([])
-              setSearchQuery("")
-            }}
-            variant="outline"
-            className="h-9 px-6 text-sm"
-          >
-            Clear All Pets
-          </Button>
-        </div>
+        </>
       )}
 
+      {/* Search Modal */}
       {isSearchOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
           <div className="w-full max-w-2xl rounded-xl border-2 border-gray-700 bg-gray-900 p-4 shadow-2xl">
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-lg font-bold text-white">Add SAB Pet</h3>
+              <h3 className="text-lg font-bold text-white">Select SAB Pet</h3>
               <button
                 onClick={() => {
                   setIsSearchOpen(false)
@@ -350,7 +313,11 @@ export function SABCalculator() {
                 filteredPets.map((pet) => (
                   <button
                     key={pet.id}
-                    onClick={() => addPet(pet)}
+                    onClick={() => {
+                      setSelectedPet(pet)
+                      setIsSearchOpen(false)
+                      setSearchQuery("")
+                    }}
                     className="w-full flex items-center gap-2.5 rounded-lg p-2.5 hover:bg-accent transition-colors text-left"
                   >
                     {pet.imageUrl && (
