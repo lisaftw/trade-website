@@ -226,7 +226,7 @@ function TradeGrid({
               item ? "border-gray-700/50 bg-[#1a1a1a] hover:border-gray-600" : "border-gray-800/50 bg-[#0d0d0d]",
             )}
           >
-            {!item ? (
+            {index === items.length && !item ? (
               <button
                 onClick={onAddClick}
                 className="flex h-full w-full flex-col items-center justify-center gap-1.5 text-gray-400 transition-colors hover:text-white"
@@ -234,7 +234,7 @@ function TradeGrid({
                 <Plus className="h-6 w-6 stroke-[2.5]" />
                 <span className="text-[10px] font-semibold tracking-wide">Add Item</span>
               </button>
-            ) : (
+            ) : item ? (
               <div className="group relative h-full w-full p-1.5">
                 <Image
                   src={item.imageUrl || "/placeholder.svg"}
@@ -252,7 +252,7 @@ function TradeGrid({
                   <p className="truncate text-[10px] font-semibold text-white">{item.name}</p>
                 </div>
               </div>
-            )}
+            ) : null}
           </div>
         ))}
       </div>
