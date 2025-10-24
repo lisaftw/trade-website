@@ -17,16 +17,35 @@ export function useUser() {
 
   useEffect(() => {
     fetchUser()
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "user_logged_in") {
+        fetchUser()
+      }
+    }
+
+    window.addEventListener("storage", handleStorageChange)
+    return () => window.removeEventListener("storage", handleStorageChange)
   }, [])
 
   const fetchUser = async () => {
     try {
       setLoading(true)
-      const res = await fetch("/api/user/me")
+      const res = await fetch("/api/user/me", {
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache",
+        },
+      })
       const data = await res.json()
 
       if (res.ok) {
         setUser(data.user)
+        if (data.user) {
+          try {
+            localStorage.setItem("user_logged_in", Date.now().toString())
+          } catch {}
+        }
       } else {
         setUser(null)
       }
@@ -43,6 +62,9 @@ export function useUser() {
     try {
       await fetch("/api/auth/logout", { method: "POST" })
       setUser(null)
+      try {
+        localStorage.removeItem("user_logged_in")
+      } catch {}
       window.location.href = "/"
     } catch (err) {
       console.error("[v0] Logout failed:", err)

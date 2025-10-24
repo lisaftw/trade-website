@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ChevronDown, ChevronUp, LogIn } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { useUser } from "@/lib/hooks/use-user"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -61,9 +61,19 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
   const isPositive = changePercent >= 0
   const [imageError, setImageError] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
-  const { user, loading: userLoading } = useUser()
+  const { user, loading: userLoading, refetch } = useUser()
   const [showLoginDialog, setShowLoginDialog] = useState(false)
   const { toast } = useToast()
+
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const urlParams = new URLSearchParams(window.location.search)
+      if (urlParams.get("welcome") === "true" || document.referrer.includes("/api/auth/discord")) {
+        refetch()
+      }
+    }
+    checkLoginStatus()
+  }, [refetch])
 
   const imageUrl = imageError
     ? "/placeholder.svg?height=200&width=200"
@@ -105,16 +115,23 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
       }
 
       toast({
-        title: "Item added to inventory",
-        description: `${item.name} has been added to your inventory.`,
-        duration: 3000,
+        title: "✓ Added to your inventory",
+        description: (
+          <div className="flex flex-col gap-1">
+            <span className="font-semibold text-base">{item.name}</span>
+            <span className="text-sm text-muted-foreground">Successfully added to your collection</span>
+          </div>
+        ),
+        duration: 4000,
+        className: "border-green-500/50 bg-green-500/10",
       })
     } catch (error) {
       console.error("[v0] Error adding to inventory:", error)
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to add to inventory. Please try again.",
+        title: "Failed to add item",
+        description: error instanceof Error ? error.message : "Please try again or check your connection.",
         variant: "destructive",
+        duration: 4000,
       })
     } finally {
       setIsAdding(false)

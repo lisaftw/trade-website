@@ -14,10 +14,20 @@ import Image from "next/image"
 import Link from "next/link"
 import { useTheme } from "next-themes"
 import { Package } from "lucide-react"
+import { useEffect } from "react"
 
 export function UserMenu() {
-  const { user, loading, logout } = useUser()
+  const { user, loading, logout, refetch } = useUser()
   const { setTheme, resolvedTheme } = useTheme()
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.get("welcome") === "true") {
+      refetch()
+      // Clean up URL parameter
+      window.history.replaceState({}, "", window.location.pathname)
+    }
+  }, [refetch])
 
   if (loading) {
     return <div className="h-16 w-16 md:h-20 md:w-20 animate-pulse rounded-full bg-muted" />
