@@ -15,6 +15,9 @@ export function DiscordMemberCount() {
 
         if (!response.ok) {
           console.error("[v0] Discord API returned non-OK status:", response.status)
+          setMemberCount(10000) // Fallback
+          setIsLoading(false)
+          return
         }
 
         const data = await response.json()

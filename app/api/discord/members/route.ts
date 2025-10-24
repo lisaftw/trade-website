@@ -3,12 +3,12 @@ import { NextResponse } from "next"
 export const dynamic = "force-dynamic"
 export const revalidate = 300 // Cache for 5 minutes
 
-export async function GET() {
-  const fallbackData = {
-    memberCount: 10000,
-    onlineCount: 0,
-  }
+const FALLBACK_DATA = {
+  memberCount: 10000,
+  onlineCount: 0,
+}
 
+export async function GET() {
   try {
     const inviteCode = "j44ZNCWVkW"
 
@@ -25,7 +25,7 @@ export async function GET() {
 
     if (!response.ok) {
       console.error("[v0] Discord API returned non-OK status:", response.status)
-      return NextResponse.json(fallbackData, { status: 200 })
+      return NextResponse.json(FALLBACK_DATA, { status: 200 })
     }
 
     let data
@@ -33,7 +33,7 @@ export async function GET() {
       data = await response.json()
     } catch (parseError) {
       console.error("[v0] Failed to parse Discord API response:", parseError)
-      return NextResponse.json(fallbackData, { status: 200 })
+      return NextResponse.json(FALLBACK_DATA, { status: 200 })
     }
 
     console.log("[v0] Discord data received:", {
@@ -41,8 +41,8 @@ export async function GET() {
       online: data.approximate_presence_count,
     })
 
-    const memberCount = data.approximate_member_count || fallbackData.memberCount
-    const onlineCount = data.approximate_presence_count || fallbackData.onlineCount
+    const memberCount = data.approximate_member_count || FALLBACK_DATA.memberCount
+    const onlineCount = data.approximate_presence_count || FALLBACK_DATA.onlineCount
 
     return NextResponse.json(
       {
@@ -53,6 +53,6 @@ export async function GET() {
     )
   } catch (error) {
     console.error("[v0] Error in Discord API route:", error)
-    return NextResponse.json(fallbackData, { status: 200 })
+    return NextResponse.json(FALLBACK_DATA, { status: 200 })
   }
 }
