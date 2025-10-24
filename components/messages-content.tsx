@@ -33,13 +33,131 @@ export function MessagesContent({
 
   useEffect(() => {
     fetchConversations()
-  }, [currentUserId])
+
+    const supabase = createClient()
+
+    // Subscribe to new conversations
+    const conversationsChannel = supabase
+      .channel("user-conversations")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "conversations",
+          filter: `or(participant_1_id.eq.${currentUserId},participant_2_id.eq.${currentUserId})`,
+        },
+        async (payload) => {
+          console.log("[v0] New conversation created:", payload)
+          // Fetch the new conversation with user details
+          const newConvo = payload.new as any
+          const otherUserId =
+            newConvo.participant_1_id === currentUserId ? newConvo.participant_2_id : newConvo.participant_1_id
+
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("discord_id, username, global_name, avatar_url")
+            .eq("discord_id", otherUserId)
+            .single()
+
+          setConversations((prev) => [
+            {
+              ...newConvo,
+              otherUser: profile || {
+                discord_id: otherUserId,
+                username: "Unknown User",
+                global_name: null,
+                avatar_url: null,
+              },
+              unreadCount: 0,
+            },
+            ...prev,
+          ])
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "conversations",
+          filter: `or(participant_1_id.eq.${currentUserId},participant_2_id.eq.${currentUserId})`,
+        },
+        (payload) => {
+          console.log("[v0] Conversation updated:", payload)
+          // Update last_message_at to re-sort conversations
+          setConversations((prev) => {
+            const updated = prev.map((c) =>
+              c.id === payload.new.id ? { ...c, last_message_at: (payload.new as any).last_message_at } : c,
+            )
+            // Re-sort by last_message_at
+            return updated.sort((a, b) => {
+              const aTime = a.last_message_at ? new Date(a.last_message_at).getTime() : 0
+              const bTime = b.last_message_at ? new Date(b.last_message_at).getTime() : 0
+              return bTime - aTime
+            })
+          })
+        },
+      )
+      .subscribe()
+
+    // Subscribe to new messages to update unread counts
+    const messagesChannel = supabase
+      .channel("user-messages")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "messages",
+        },
+        async (payload) => {
+          const message = payload.new as any
+          console.log("[v0] New message received in conversation:", message.conversation_id)
+
+          // Update unread count if message is not from current user and not in selected conversation
+          if (message.sender_id !== currentUserId && message.conversation_id !== selectedConversationId) {
+            setConversations((prev) =>
+              prev.map((c) => (c.id === message.conversation_id ? { ...c, unreadCount: c.unreadCount + 1 } : c)),
+            )
+          }
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "messages",
+        },
+        async (payload) => {
+          const message = payload.new as any
+          // If message was marked as read, update unread count
+          if (message.is_read) {
+            await updateUnreadCount(message.conversation_id)
+          }
+        },
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(conversationsChannel)
+      supabase.removeChannel(messagesChannel)
+    }
+  }, [currentUserId, selectedConversationId])
 
   useEffect(() => {
     if (initialConversationId) {
       setSelectedConversationId(initialConversationId)
     }
   }, [initialConversationId])
+
+  useEffect(() => {
+    if (selectedConversationId) {
+      // Reset unread count for selected conversation
+      setConversations((prev) => prev.map((c) => (c.id === selectedConversationId ? { ...c, unreadCount: 0 } : c)))
+    }
+  }, [selectedConversationId])
 
   async function fetchConversations() {
     try {
@@ -95,6 +213,18 @@ export function MessagesContent({
     } finally {
       setLoading(false)
     }
+  }
+
+  async function updateUnreadCount(conversationId: string) {
+    const supabase = createClient()
+    const { count } = await supabase
+      .from("messages")
+      .select("*", { count: "exact", head: true })
+      .eq("conversation_id", conversationId)
+      .eq("is_read", false)
+      .neq("sender_id", currentUserId)
+
+    setConversations((prev) => prev.map((c) => (c.id === conversationId ? { ...c, unreadCount: count || 0 } : c)))
   }
 
   const selectedConversation = conversations.find((c) => c.id === selectedConversationId)

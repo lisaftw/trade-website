@@ -42,8 +42,10 @@ export function ChatWindow({
   const [newMessage, setNewMessage] = useState("")
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
+  const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const supabase = createClient()
+  const typingTimeoutRef = useRef<NodeJS.Timeout>()
 
   const displayName = conversation.otherUser.global_name || conversation.otherUser.username || "Unknown User"
   const avatarUrl = conversation.otherUser.avatar_url || "/placeholder.svg?height=40&width=40"
@@ -52,7 +54,6 @@ export function ChatWindow({
     fetchMessages()
     markMessagesAsRead()
 
-    // Subscribe to new messages
     const channel = supabase
       .channel(`conversation:${conversation.id}`)
       .on(
@@ -65,16 +66,50 @@ export function ChatWindow({
         },
         (payload) => {
           console.log("[v0] New message received:", payload)
-          setMessages((prev) => [...prev, payload.new as Message])
-          if ((payload.new as Message).sender_id !== currentUserId) {
+          const newMsg = payload.new as Message
+          setMessages((prev) => {
+            // Prevent duplicates
+            if (prev.some((m) => m.id === newMsg.id)) return prev
+            return [...prev, newMsg]
+          })
+          if (newMsg.sender_id !== currentUserId) {
             markMessagesAsRead()
           }
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "messages",
+          filter: `conversation_id=eq.${conversation.id}`,
+        },
+        (payload) => {
+          console.log("[v0] Message updated:", payload)
+          setMessages((prev) => prev.map((m) => (m.id === payload.new.id ? (payload.new as Message) : m)))
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "DELETE",
+          schema: "public",
+          table: "messages",
+          filter: `conversation_id=eq.${conversation.id}`,
+        },
+        (payload) => {
+          console.log("[v0] Message deleted:", payload)
+          setMessages((prev) => prev.filter((m) => m.id !== payload.old.id))
         },
       )
       .subscribe()
 
     return () => {
       supabase.removeChannel(channel)
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current)
+      }
     }
   }, [conversation.id])
 
@@ -118,13 +153,21 @@ export function ChatWindow({
 
     setSending(true)
     try {
-      const { error } = await supabase.from("messages").insert({
-        conversation_id: conversation.id,
-        sender_id: currentUserId,
-        content: newMessage.trim(),
-      })
+      const [messageResult] = await Promise.all([
+        supabase.from("messages").insert({
+          conversation_id: conversation.id,
+          sender_id: currentUserId,
+          content: newMessage.trim(),
+        }),
+        supabase
+          .from("conversations")
+          .update({
+            last_message_at: new Date().toISOString(),
+          })
+          .eq("id", conversation.id),
+      ])
 
-      if (error) throw error
+      if (messageResult.error) throw messageResult.error
       setNewMessage("")
     } catch (error) {
       console.error("[v0] Error sending message:", error)
@@ -153,7 +196,9 @@ export function ChatWindow({
         />
         <div className="flex-1">
           <h2 className="font-semibold">{displayName}</h2>
-          <p className="text-xs text-muted-foreground">@{conversation.otherUser.username || "unknown"}</p>
+          <p className="text-xs text-muted-foreground">
+            {isTyping ? "typing..." : `@${conversation.otherUser.username || "unknown"}`}
+          </p>
         </div>
       </div>
 
