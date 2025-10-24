@@ -99,27 +99,31 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
   useEffect(() => {
     const fetchItemImages = async () => {
       try {
-        const allItemNames = [...trade.offering, ...trade.requesting]
+        console.log("[v0] Fetching item images for game:", trade.game)
         const response = await fetch(`/api/items?game=${trade.game}`)
         if (!response.ok) throw new Error("Failed to fetch items")
 
-        const allItems: ItemWithImage[] = await response.json()
+        const data = await response.json()
+        const allItems: ItemWithImage[] = data.items || data
+        console.log("[v0] Fetched items count:", allItems.length)
 
         const offeringWithImages = trade.offering.map((itemName) => {
           const item = allItems.find((i) => i.name === itemName)
+          console.log("[v0] Offering item:", itemName, "Found:", !!item, "Image:", item?.image_url)
           return {
             name: itemName,
             image_url: item?.image_url,
-            value: item?.value,
+            value: item?.value || item?.rap_value,
           }
         })
 
         const requestingWithImages = trade.requesting.map((itemName) => {
           const item = allItems.find((i) => i.name === itemName)
+          console.log("[v0] Requesting item:", itemName, "Found:", !!item, "Image:", item?.image_url)
           return {
             name: itemName,
             image_url: item?.image_url,
-            value: item?.value,
+            value: item?.value || item?.rap_value,
           }
         })
 
