@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { Inter, Roboto_Mono } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "@/components/ui/sonner"
+import { Toaster } from "@/components/ui/toaster"
 
 const geistSans = Inter({
   variable: "--font-geist-sans",
@@ -18,7 +18,7 @@ const geistMono = Roboto_Mono({
 export const metadata: Metadata = {
   title: "Trade - Gaming Item Trading Platform",
   description: "Trade items across MM2, SAB, Adopt Me and more",
-    generator: 'v0.app'
+  generator: "v0.app",
 }
 
 export default function RootLayout({
