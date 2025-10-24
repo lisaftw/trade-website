@@ -3,9 +3,10 @@
 import { MessageCircle, ArrowRightLeft, MoreVertical, Trash2, Edit2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useUser } from "@/lib/hooks/use-user"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { TradeInteractionModal } from "@/components/trade-interaction-modal"
+import Image from "next/image"
 
 interface Trade {
   id: string
@@ -16,6 +17,18 @@ interface Trade {
   notes: string
   created_at: string
   status?: string
+  creator?: {
+    discord_id: string
+    username: string | null
+    global_name: string | null
+    avatar_url: string | null
+  }
+}
+
+interface ItemWithImage {
+  name: string
+  image_url?: string
+  value?: number
 }
 
 interface TradeCardProps {
@@ -29,6 +42,9 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
   const { user } = useUser()
   const [isDeleting, setIsDeleting] = useState(false)
   const [showInteractionModal, setShowInteractionModal] = useState(false)
+  const [offeringItems, setOfferingItems] = useState<ItemWithImage[]>([])
+  const [requestingItems, setRequestingItems] = useState<ItemWithImage[]>([])
+  const [loadingItems, setLoadingItems] = useState(true)
 
   const timeAgo = new Date(trade.created_at)
   const now = new Date()
@@ -80,15 +96,69 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
     }
   }
 
+  useEffect(() => {
+    const fetchItemImages = async () => {
+      try {
+        const allItemNames = [...trade.offering, ...trade.requesting]
+        const response = await fetch(`/api/items?game=${trade.game}`)
+        if (!response.ok) throw new Error("Failed to fetch items")
+
+        const allItems: ItemWithImage[] = await response.json()
+
+        const offeringWithImages = trade.offering.map((itemName) => {
+          const item = allItems.find((i) => i.name === itemName)
+          return {
+            name: itemName,
+            image_url: item?.image_url,
+            value: item?.value,
+          }
+        })
+
+        const requestingWithImages = trade.requesting.map((itemName) => {
+          const item = allItems.find((i) => i.name === itemName)
+          return {
+            name: itemName,
+            image_url: item?.image_url,
+            value: item?.value,
+          }
+        })
+
+        setOfferingItems(offeringWithImages)
+        setRequestingItems(requestingWithImages)
+      } catch (error) {
+        console.error("[v0] Error fetching item images:", error)
+        setOfferingItems(trade.offering.map((name) => ({ name })))
+        setRequestingItems(trade.requesting.map((name) => ({ name })))
+      } finally {
+        setLoadingItems(false)
+      }
+    }
+
+    fetchItemImages()
+  }, [trade.offering, trade.requesting, trade.game])
+
+  const displayName = trade.creator?.global_name || trade.creator?.username || "Trader"
+  const avatarUrl = trade.creator?.avatar_url || null
+
   return (
     <>
       <div className="card-neo space-y-4 p-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400" />
+            {avatarUrl ? (
+              <Image
+                src={avatarUrl || "/placeholder.svg"}
+                alt={displayName}
+                width={40}
+                height={40}
+                className="h-10 w-10 rounded-full object-cover"
+              />
+            ) : (
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400" />
+            )}
             <div>
-              <p className="font-semibold text-foreground">Trader</p>
+              <p className="font-semibold text-foreground">{displayName}</p>
               <p className="text-sm text-foreground/50">{timeStr}</p>
             </div>
           </div>
@@ -138,11 +208,27 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
           <div>
             <p className="mb-3 text-sm font-semibold text-foreground/70">Offering</p>
             <div className="flex flex-wrap gap-2">
-              {trade.offering.map((item, idx) => (
-                <div key={idx} className="rounded-lg bg-foreground/5 p-2 text-xs">
-                  <p className="font-medium text-foreground">{item}</p>
-                </div>
-              ))}
+              {loadingItems ? (
+                <p className="text-xs text-foreground/50">Loading items...</p>
+              ) : (
+                offeringItems.map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-2 rounded-lg bg-foreground/5 p-2">
+                    {item.image_url && (
+                      <Image
+                        src={item.image_url || "/placeholder.svg"}
+                        alt={item.name}
+                        width={32}
+                        height={32}
+                        className="h-8 w-8 rounded object-cover"
+                      />
+                    )}
+                    <div className="flex flex-col">
+                      <p className="text-xs font-medium text-foreground">{item.name}</p>
+                      {item.value && <p className="text-[10px] text-foreground/50">{item.value.toLocaleString()}</p>}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 
@@ -150,11 +236,27 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
           <div>
             <p className="mb-3 text-sm font-semibold text-foreground/70">Requesting</p>
             <div className="flex flex-wrap gap-2">
-              {trade.requesting.map((item, idx) => (
-                <div key={idx} className="rounded-lg bg-foreground/5 p-2 text-xs">
-                  <p className="font-medium text-foreground">{item}</p>
-                </div>
-              ))}
+              {loadingItems ? (
+                <p className="text-xs text-foreground/50">Loading items...</p>
+              ) : (
+                requestingItems.map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-2 rounded-lg bg-foreground/5 p-2">
+                    {item.image_url && (
+                      <Image
+                        src={item.image_url || "/placeholder.svg"}
+                        alt={item.name}
+                        width={32}
+                        height={32}
+                        className="h-8 w-8 rounded object-cover"
+                      />
+                    )}
+                    <div className="flex flex-col">
+                      <p className="text-xs font-medium text-foreground">{item.name}</p>
+                      {item.value && <p className="text-[10px] text-foreground/50">{item.value.toLocaleString()}</p>}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>

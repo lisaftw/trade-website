@@ -111,13 +111,29 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
-    const parsedData = (data || []).map((trade) => ({
-      ...trade,
-      offering: typeof trade.offering === "string" ? JSON.parse(trade.offering) : trade.offering,
-      requesting: typeof trade.requesting === "string" ? JSON.parse(trade.requesting) : trade.requesting,
-    }))
+    const tradesWithCreators = await Promise.all(
+      (data || []).map(async (trade) => {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("discord_id, username, global_name, avatar_url")
+          .eq("discord_id", trade.discord_id)
+          .single()
 
-    return NextResponse.json(parsedData)
+        return {
+          ...trade,
+          offering: typeof trade.offering === "string" ? JSON.parse(trade.offering) : trade.offering,
+          requesting: typeof trade.requesting === "string" ? JSON.parse(trade.requesting) : trade.requesting,
+          creator: profile || {
+            discord_id: trade.discord_id,
+            username: "Unknown User",
+            global_name: null,
+            avatar_url: null,
+          },
+        }
+      }),
+    )
+
+    return NextResponse.json(tradesWithCreators)
   } catch (error) {
     console.error("[v0] Error fetching trades:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
