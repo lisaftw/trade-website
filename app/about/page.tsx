@@ -2,6 +2,7 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { PageBackground } from "@/components/page-background"
 import { ScrollParallax } from "@/components/scroll-parallax"
+import { DiscordMemberCount } from "@/components/discord-member-count"
 import Link from "next/link"
 
 export default function AboutPage() {
@@ -46,10 +47,7 @@ export default function AboutPage() {
                 <p className="text-xs text-muted-foreground">Daily Updates</p>
                 <p className="mt-1 text-xl font-semibold">24/7</p>
               </div>
-              <div className="rounded-2xl border border-border bg-secondary/20 p-4">
-                <p className="text-xs text-muted-foreground">Community Members</p>
-                <p className="mt-1 text-xl font-semibold">10k+</p>
-              </div>
+              <DiscordMemberCount />
             </div>
           </div>
         </section>
@@ -58,7 +56,8 @@ export default function AboutPage() {
           <div className="rounded-2xl border border-border bg-secondary/10 p-6">
             <h2 className="text-lg font-semibold">Our Mission</h2>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Everyone deserves access to reliable value data. We monitor market trends, verify trades, and maintain accurate lists for MM2, SAB, GAG &amp; Adopt Me.
+              Everyone deserves access to reliable value data. We monitor market trends, verify trades, and maintain
+              accurate lists for MM2, SAB, GAG &amp; Adopt Me.
             </p>
           </div>
 
