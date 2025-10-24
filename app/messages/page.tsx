@@ -2,7 +2,11 @@ import { getSession } from "@/lib/auth/session"
 import { redirect } from "next/navigation"
 import { MessagesContent } from "@/components/messages-content"
 
-export default async function MessagesPage() {
+export default async function MessagesPage({
+  searchParams,
+}: {
+  searchParams: { conversation?: string }
+}) {
   const session = await getSession()
 
   if (!session) {
@@ -11,7 +15,7 @@ export default async function MessagesPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <MessagesContent currentUserId={session.discordId} />
+      <MessagesContent currentUserId={session.discordId} initialConversationId={searchParams.conversation} />
     </div>
   )
 }

@@ -90,17 +90,28 @@ export function TradesContent({ currentUser }: { currentUser: UserSession | null
     }
 
     try {
-      // Check if conversation already exists
-      const { data: existing } = await supabase
+      // Check if conversation already exists (either direction)
+      const { data: existing1 } = await supabase
         .from("conversations")
         .select("id")
-        .or(
-          `and(participant_1_id.eq.${currentUser.discordId},participant_2_id.eq.${traderId}),and(participant_1_id.eq.${traderId},participant_2_id.eq.${currentUser.discordId})`,
-        )
-        .single()
+        .eq("participant_1_id", currentUser.discordId)
+        .eq("participant_2_id", traderId)
+        .maybeSingle()
 
-      if (existing) {
-        router.push(`/messages?conversation=${existing.id}`)
+      if (existing1) {
+        router.push(`/messages?conversation=${existing1.id}`)
+        return
+      }
+
+      const { data: existing2 } = await supabase
+        .from("conversations")
+        .select("id")
+        .eq("participant_1_id", traderId)
+        .eq("participant_2_id", currentUser.discordId)
+        .maybeSingle()
+
+      if (existing2) {
+        router.push(`/messages?conversation=${existing2.id}`)
         return
       }
 

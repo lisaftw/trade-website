@@ -20,31 +20,47 @@ type Conversation = {
   unreadCount: number
 }
 
-export function MessagesContent({ currentUserId }: { currentUserId: string }) {
+export function MessagesContent({
+  currentUserId,
+  initialConversationId,
+}: {
+  currentUserId: string
+  initialConversationId?: string
+}) {
   const [conversations, setConversations] = useState<Conversation[]>([])
-  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null)
+  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(initialConversationId || null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     fetchConversations()
   }, [currentUserId])
 
+  useEffect(() => {
+    if (initialConversationId) {
+      setSelectedConversationId(initialConversationId)
+    }
+  }, [initialConversationId])
+
   async function fetchConversations() {
     try {
       const supabase = createClient()
 
-      // Fetch conversations where user is a participant
-      const { data: convos, error } = await supabase
-        .from("conversations")
-        .select("*")
-        .or(`participant_1_id.eq.${currentUserId},participant_2_id.eq.${currentUserId}`)
-        .order("last_message_at", { ascending: false, nullsFirst: false })
+      // Fetch conversations where user is participant_1
+      const { data: convos1 } = await supabase.from("conversations").select("*").eq("participant_1_id", currentUserId)
 
-      if (error) throw error
+      // Fetch conversations where user is participant_2
+      const { data: convos2 } = await supabase.from("conversations").select("*").eq("participant_2_id", currentUserId)
+
+      // Merge and sort by last_message_at
+      const allConvos = [...(convos1 || []), ...(convos2 || [])].sort((a, b) => {
+        const aTime = a.last_message_at ? new Date(a.last_message_at).getTime() : 0
+        const bTime = b.last_message_at ? new Date(b.last_message_at).getTime() : 0
+        return bTime - aTime
+      })
 
       // Fetch other user profiles and unread counts
       const conversationsWithUsers = await Promise.all(
-        (convos || []).map(async (convo) => {
+        allConvos.map(async (convo) => {
           const otherUserId = convo.participant_1_id === currentUserId ? convo.participant_2_id : convo.participant_1_id
 
           const { data: profile } = await supabase
