@@ -317,9 +317,13 @@ export function ChatWindow({
   }
 
   const handleReaction = async (messageId: string, emoji: string) => {
+    console.log("[v0] Adding reaction:", { messageId, emoji, currentUserId })
     try {
       const message = messages.find((m) => m.id === messageId)
-      if (!message) return
+      if (!message) {
+        console.log("[v0] Message not found for reaction")
+        return
+      }
 
       const reactions = message.reactions || []
       const existingReaction = reactions.find((r) => r.emoji === emoji)
@@ -342,13 +346,20 @@ export function ChatWindow({
         updatedReactions = [...reactions, { emoji, users: [currentUserId] }]
       }
 
+      console.log("[v0] Updating reactions:", updatedReactions)
+
       const { error } = await supabase.from("messages").update({ reactions: updatedReactions }).eq("id", messageId)
 
-      if (error) throw error
+      if (error) {
+        console.error("[v0] Supabase error updating reactions:", error)
+        throw error
+      }
 
+      console.log("[v0] Reaction updated successfully")
       setShowEmojiPicker(null)
     } catch (error) {
       console.error("[v0] Error adding reaction:", error)
+      alert("Failed to add reaction. Make sure you've run the SQL script 011_add_message_features.sql")
     }
   }
 
@@ -631,8 +642,19 @@ export function ChatWindow({
                   </div>
 
                   {showEmojiPicker === message.id && (
-                    <div className="mt-1">
-                      <EmojiPicker onSelect={(emoji) => handleReaction(message.id, emoji)} trigger={<div />} />
+                    <div className="mt-1 relative z-50">
+                      <EmojiPicker
+                        onSelect={(emoji) => {
+                          console.log("[v0] Emoji selected:", emoji)
+                          handleReaction(message.id, emoji)
+                        }}
+                        open={true}
+                        onOpenChange={(open) => {
+                          console.log("[v0] Emoji picker open state changed:", open)
+                          if (!open) setShowEmojiPicker(null)
+                        }}
+                        trigger={<div />}
+                      />
                     </div>
                   )}
                 </div>

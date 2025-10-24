@@ -37,6 +37,12 @@ export function MessageActionsMenu({
     setOpen(false)
   }
 
+  const handleReact = () => {
+    console.log("[v0] React button clicked for message:", messageId)
+    setOpen(false)
+    onReact()
+  }
+
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
@@ -45,7 +51,7 @@ export function MessageActionsMenu({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuItem onClick={onReact}>
+        <DropdownMenuItem onClick={handleReact}>
           <Smile className="h-4 w-4 mr-2" />
           React
         </DropdownMenuItem>
