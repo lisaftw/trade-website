@@ -33,18 +33,11 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
 (function(){
-  try {
-    var ls = localStorage.getItem('theme');
-    // default to dark if unset
-    var wantDark = ls ? (ls === 'dark' || (ls === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) : true;
-    document.documentElement.classList.toggle('dark', !!wantDark);
-  } catch (e) {
-    document.documentElement.classList.add('dark');
-  }
+  document.documentElement.classList.add('dark');
 })();`,
           }}
         />
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" forcedTheme="dark" disableTransitionOnChange>
           {children}
           <Toaster />
         </ThemeProvider>

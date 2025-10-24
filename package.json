@@ -7,6 +7,7 @@
     "bot:deploy": "tsx bot/deploy-commands.ts",
     "build": "next build",
     "dev": "next dev",
+    "import:adoptme": "tsx scripts/import-adoptme-excel.ts",
     "import:mm2": "tsx scripts/import-mm2-values.ts",
     "lint": "next lint",
     "start": "next start"
@@ -85,6 +86,7 @@
     "tailwindcss-animate": "^1.0.7",
     "three": "latest",
     "vaul": "^0.9.9",
+    "xlsx": "latest",
     "zod": "3.25.67"
   },
   "devDependencies": {

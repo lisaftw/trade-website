@@ -12,19 +12,16 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Image from "next/image"
 import Link from "next/link"
-import { useTheme } from "next-themes"
-import { Package, Moon, Sun, User } from "lucide-react"
+import { Package, User } from "lucide-react"
 import { useEffect } from "react"
 
 export function UserMenu() {
   const { user, loading, logout, refetch } = useUser()
-  const { setTheme, resolvedTheme } = useTheme()
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search)
     if (urlParams.get("welcome") === "true") {
       refetch()
-      // Clean up URL parameter
       window.history.replaceState({}, "", window.location.pathname)
     }
   }, [refetch])
@@ -73,19 +70,6 @@ export function UserMenu() {
             {user.email && <p className="text-xs leading-none text-muted-foreground">{user.email}</p>}
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() => {
-            const next = resolvedTheme === "dark" ? "light" : "dark"
-            setTheme(next)
-            try {
-              localStorage.setItem("theme", next)
-            } catch {}
-          }}
-        >
-          {resolvedTheme === "dark" ? <Sun className="mr-2 h-4 w-4" /> : <Moon className="mr-2 h-4 w-4" />}
-          Toggle theme
-        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/inventory">
