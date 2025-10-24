@@ -13,7 +13,7 @@ import {
 import Image from "next/image"
 import Link from "next/link"
 import { useTheme } from "next-themes"
-import { Package } from "lucide-react"
+import { Package, Moon, Sun, User } from "lucide-react"
 import { useEffect } from "react"
 
 export function UserMenu() {
@@ -83,6 +83,7 @@ export function UserMenu() {
             } catch {}
           }}
         >
+          {resolvedTheme === "dark" ? <Sun className="mr-2 h-4 w-4" /> : <Moon className="mr-2 h-4 w-4" />}
           Toggle theme
         </DropdownMenuItem>
         <DropdownMenuSeparator />
@@ -94,7 +95,10 @@ export function UserMenu() {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/profile">Profile</Link>
+          <Link href="/profile">
+            <User className="mr-2 h-4 w-4" />
+            Profile
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logout} className="text-destructive">
