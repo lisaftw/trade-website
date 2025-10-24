@@ -49,6 +49,13 @@ export default function CreateTradePage() {
 
     setIsSubmitting(true)
     try {
+      console.log("[v0] Publishing trade:", {
+        game: selectedGame,
+        offering: offering.map((item) => item.name),
+        requesting: requesting.map((item) => item.name),
+        notes: notes.slice(0, 100),
+      })
+
       const response = await fetch("/api/trades", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -61,13 +68,16 @@ export default function CreateTradePage() {
       })
 
       if (response.ok) {
+        console.log("[v0] Trade published successfully")
         router.push("/trading")
       } else {
-        alert("Failed to publish trade")
+        const errorData = await response.json()
+        console.error("[v0] Failed to publish trade:", errorData)
+        alert(errorData.error || "Failed to publish trade")
       }
     } catch (error) {
-      console.error("Error publishing trade:", error)
-      alert("Error publishing trade")
+      console.error("[v0] Error publishing trade:", error)
+      alert("Error publishing trade. Please check your connection and try again.")
     } finally {
       setIsSubmitting(false)
     }
