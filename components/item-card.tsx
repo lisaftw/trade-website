@@ -79,11 +79,13 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
     ? "/placeholder.svg?height=200&width=200"
     : item.image_url || "/placeholder.svg?height=200&width=200"
 
-  const displayRating = item.rarity || item.rating || 0
-  const sectionLabel = item.section ? item.section.toUpperCase() : "VALUE"
+  const variant = item.rarity || "Normal"
+  const rapValue = toNumber(item.rap_value)
+  const existCount = toNumber(item.exist_count)
+
+  const demandRating = item.demand || (item.rating ? `${toNumber(item.rating)}/10` : null)
 
   const handleAddToInventory = async () => {
-    // If user is not logged in, show login dialog
     if (!user) {
       setShowLoginDialog(true)
       return
@@ -159,79 +161,75 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
   return (
     <>
-      <div className="group relative overflow-hidden rounded-2xl border border-border bg-secondary/10 p-3 md:p-4 transition-all hover:border-border/60 hover:bg-secondary/20">
-        <div className="mb-2 md:mb-3 flex items-center justify-between gap-2 flex-wrap">
-          <div className="rounded-full bg-muted/60 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-muted-foreground">
-            {sectionLabel}: {formatValue(item.rap_value)}
-          </div>
-          {item.rarity && (
-            <div className="rounded-full bg-purple-500/20 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-purple-300">
-              Rarity: {item.rarity}
-            </div>
-          )}
-          {item.pot && (
-            <div className="rounded-full bg-blue-500/20 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-blue-300">
-              Pot: {item.pot}
-            </div>
-          )}
+      <div className="relative overflow-hidden rounded-2xl border-2 border-dashed border-gray-600/50 bg-black p-4 transition-all hover:border-gray-500/70">
+        {/* Logo */}
+        <div className="mb-3 flex justify-center">
+          <Image src="/ui/logo-tr3de.png" alt="TR3DE" width={120} height={36} className="h-auto w-24 opacity-90" />
         </div>
 
-        <div className="relative mx-auto aspect-square w-full max-w-[200px] md:max-w-[240px] overflow-hidden rounded-xl border border-border bg-card/60 shadow-lg">
+        {/* Item Image */}
+        <div className="relative mx-auto mb-3 aspect-square w-full max-w-[200px] overflow-hidden rounded-xl border-2 border-gray-700/50 bg-gray-900/60">
           <Image
             src={imageUrl || "/placeholder.svg"}
             alt={item.name}
             fill
-            className="object-contain p-2"
+            className="object-contain p-3"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            onError={(e) => {
-              console.error("[v0] Image failed to load:", {
-                itemName: item.name,
-                imageUrl: item.image_url,
-                error: e,
-              })
-              setImageError(true)
-            }}
-            onLoad={() => {
-              console.log("[v0] Image loaded successfully:", item.name)
-            }}
+            onError={() => setImageError(true)}
           />
         </div>
 
-        <h3 className="mt-2 md:mt-3 text-center text-xs md:text-sm font-semibold line-clamp-2">{item.name}</h3>
-
-        {item.demand && (
-          <p className="mt-1 text-center text-[10px] md:text-xs text-muted-foreground">Demand: {item.demand}</p>
-        )}
-
-        <p className="mt-1 text-center text-[10px] md:text-xs text-muted-foreground">
+        {/* Last Updated */}
+        <p className="mb-3 text-center font-mono text-xs text-gray-400">
           Last Updated: {getTimeAgo(item.last_updated_at)}
         </p>
 
-        {changePercent !== 0 && (
-          <div className="mt-3 md:mt-4 flex items-center justify-center gap-1">
-            {isPositive ? (
-              <ChevronUp className="h-3 w-3 md:h-4 md:w-4 text-green-500" />
-            ) : (
-              <ChevronDown className="h-3 w-3 md:h-4 md:w-4 text-red-500" />
+        {/* Item Name */}
+        <h3 className="mb-4 text-center font-mono text-lg font-bold uppercase tracking-wider text-white">
+          {item.name}
+        </h3>
+
+        {/* Variant Row */}
+        <div className="mb-3 flex items-center justify-between border-b border-gray-700/50 pb-2">
+          <span className="font-mono text-sm text-gray-300">Variant</span>
+          <span className="font-mono text-sm text-white">{variant}</span>
+        </div>
+
+        {/* Value Row */}
+        <div className="mb-3 flex items-center justify-between border-b border-gray-700/50 pb-2">
+          <span className="font-mono text-sm text-gray-300">Value</span>
+          <div className="flex items-center gap-2">
+            {changePercent !== 0 && (
+              <div className="flex items-center gap-1">
+                {isPositive ? (
+                  <ChevronUp className="h-3 w-3 text-green-500" />
+                ) : (
+                  <ChevronDown className="h-3 w-3 text-red-500" />
+                )}
+                <span className={`font-mono text-xs font-semibold ${isPositive ? "text-green-500" : "text-red-500"}`}>
+                  {Math.abs(changePercent).toFixed(1)}%
+                </span>
+              </div>
             )}
-            <span className={`text-xs md:text-sm font-semibold ${isPositive ? "text-green-500" : "text-red-500"}`}>
-              {Math.abs(changePercent).toFixed(1)}%
-            </span>
+            <span className="font-mono text-sm text-white">{formatValue(rapValue)}</span>
+          </div>
+        </div>
+
+        {/* Demand Row */}
+        {demandRating && (
+          <div className="mb-4 flex items-center justify-between">
+            <span className="font-mono text-sm text-gray-300">Demand</span>
+            <span className="font-mono text-base font-bold text-yellow-500">{demandRating}</span>
           </div>
         )}
 
-        {displayRating !== 0 && (
-          <div className="mt-2 text-center text-base md:text-lg font-bold text-yellow-500">
-            {typeof displayRating === "string" ? displayRating : `${toNumber(displayRating).toFixed(1)}/10`}
-          </div>
-        )}
-
+        {/* Add to Inventory Button */}
         {!hideAddButton && (
           <Button
             onClick={handleAddToInventory}
             disabled={isAdding || userLoading}
             variant="secondary"
-            className="mt-3 md:mt-4 w-full rounded-lg bg-muted/60 text-[10px] md:text-xs font-medium uppercase tracking-wide text-muted-foreground hover:bg-muted/80 disabled:opacity-50"
+            className="w-full rounded-lg bg-gray-700/60 font-mono text-xs font-medium uppercase tracking-widest text-gray-300 hover:bg-gray-700/80 disabled:opacity-50"
           >
             {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
           </Button>
