@@ -161,22 +161,22 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
   return (
     <>
-      <div className="relative w-[420px] overflow-hidden rounded-[32px] border-[3px] border-dashed border-gray-600/70 bg-black p-6">
+      <div className="relative w-[340px] overflow-hidden rounded-[32px] border-[3px] border-dashed border-gray-600/70 bg-black p-5">
         {/* Inner container with dashed border around image section */}
-        <div className="mb-6 overflow-hidden rounded-[24px] border-[3px] border-dashed border-gray-600/60 bg-black/50 p-5">
+        <div className="mb-5 overflow-hidden rounded-[24px] border-[3px] border-dashed border-gray-600/60 bg-black/50 p-4">
           {/* TR3DE Logo */}
-          <div className="mb-4 flex justify-center">
-            <Image src="/ui/logo-tr3de.png" alt="TR3DE" width={140} height={40} className="h-auto w-32" />
+          <div className="mb-3 flex justify-center">
+            <Image src="/ui/logo-tr3de.png" alt="TR3DE" width={120} height={35} className="h-auto w-28" />
           </div>
 
           {/* Item Image - Square with brightness overlay */}
-          <div className="relative mx-auto mb-4 aspect-square w-[260px] overflow-hidden rounded-lg bg-gradient-to-br from-gray-900/50 to-black/40">
+          <div className="relative mx-auto mb-3 aspect-square w-[220px] overflow-hidden rounded-lg bg-gradient-to-br from-gray-900/50 to-black/40">
             <Image
               src={imageUrl || "/placeholder.svg"}
               alt={item.name}
               fill
               className="object-contain p-3"
-              sizes="260px"
+              sizes="220px"
               onError={() => setImageError(true)}
             />
             {/* Brightness overlay */}
@@ -186,36 +186,36 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
           </div>
 
           {/* Last Updated */}
-          <p className="text-center font-mono text-[13px] tracking-wide text-gray-400">
+          <p className="text-center font-mono text-[12px] tracking-wide text-gray-400">
             Last Updated: {getTimeAgo(item.last_updated_at)}
           </p>
         </div>
 
         {/* Item Name */}
-        <h3 className="mb-5 text-center font-mono text-[28px] font-bold uppercase leading-tight tracking-wider text-white">
+        <h3 className="mb-4 text-center font-mono text-[24px] font-bold uppercase leading-tight tracking-wider text-white">
           {item.name}
         </h3>
 
         {/* Divider line using image */}
-        <div className="relative mb-5 h-[2px] w-full">
+        <div className="relative mb-4 h-[2px] w-full">
           <Image src="/ui/divider-line-1.png" alt="" fill className="object-cover" />
         </div>
 
         {/* Variant Row */}
-        <div className="mb-4 flex items-center justify-between pb-3">
-          <span className="font-mono text-[18px] text-white">Variant</span>
-          <span className="font-mono text-[18px] text-white underline decoration-gray-600 decoration-[1.5px] underline-offset-4">
+        <div className="mb-3 flex items-center justify-between pb-2">
+          <span className="font-mono text-[16px] text-white">Variant</span>
+          <span className="font-mono text-[16px] text-white underline decoration-gray-600 decoration-[1.5px] underline-offset-4">
             {variant}
           </span>
         </div>
         {/* Divider line using image */}
-        <div className="relative mb-4 h-[1px] w-full">
+        <div className="relative mb-3 h-[1px] w-full">
           <Image src="/ui/divider-line-2.png" alt="" fill className="object-cover opacity-60" />
         </div>
 
         {/* Value Row */}
-        <div className="mb-4 flex items-center justify-between pb-3">
-          <span className="font-mono text-[18px] text-white">Value</span>
+        <div className="mb-3 flex items-center justify-between pb-2">
+          <span className="font-mono text-[16px] text-white">Value</span>
           <div className="flex items-center gap-2">
             {changePercent !== 0 && (
               <div className="flex items-center gap-1">
@@ -224,42 +224,42 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
                 ) : (
                   <ChevronDown className="h-4 w-4 text-red-500" />
                 )}
-                <span className={`font-mono text-[17px] font-bold ${isPositive ? "text-green-500" : "text-red-500"}`}>
+                <span className={`font-mono text-[15px] font-bold ${isPositive ? "text-green-500" : "text-red-500"}`}>
                   {Math.abs(changePercent).toFixed(1)}%
                 </span>
               </div>
             )}
-            <span className="font-mono text-[17px] text-gray-400">|</span>
-            <span className="font-mono text-[18px] text-white">{formatValue(rapValue)}</span>
+            <span className="font-mono text-[15px] text-gray-400">|</span>
+            <span className="font-mono text-[16px] text-white">{formatValue(rapValue)}</span>
           </div>
         </div>
         {/* Divider line using image */}
-        <div className="relative mb-4 h-[1px] w-full">
+        <div className="relative mb-3 h-[1px] w-full">
           <Image src="/ui/divider-line-2.png" alt="" fill className="object-cover opacity-60" />
         </div>
 
         {/* Demand Row */}
         {demandRating && (
           <>
-            <div className="mb-6 flex items-center justify-between pb-3">
-              <span className="font-mono text-[18px] text-white">Demand</span>
-              <span className="font-mono text-[22px] font-bold text-yellow-400">{demandRating}</span>
+            <div className="mb-5 flex items-center justify-between pb-2">
+              <span className="font-mono text-[16px] text-white">Demand</span>
+              <span className="font-mono text-[20px] font-bold text-yellow-400">{demandRating}</span>
             </div>
             {/* Divider line using image */}
-            <div className="relative mb-6 h-[1px] w-full">
+            <div className="relative mb-5 h-[1px] w-full">
               <Image src="/ui/divider-line-2.png" alt="" fill className="object-cover opacity-60" />
             </div>
           </>
         )}
 
         {!hideAddButton && (
-          <div className="relative h-[56px] w-full">
+          <div className="relative h-[52px] w-full">
             {/* Button background image */}
             <Image src="/ui/button-gray.png" alt="" fill className="rounded-full object-cover" />
             <Button
               onClick={handleAddToInventory}
               disabled={isAdding || userLoading}
-              className="relative h-full w-full rounded-full border-none bg-transparent font-mono text-[15px] font-bold uppercase tracking-[0.2em] text-gray-300 hover:bg-white/5 hover:text-white disabled:opacity-50"
+              className="relative h-full w-full rounded-full border-none bg-transparent font-mono text-[14px] font-bold uppercase tracking-[0.2em] text-gray-300 hover:bg-white/5 hover:text-white disabled:opacity-50"
             >
               {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
             </Button>
