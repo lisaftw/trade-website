@@ -79,13 +79,11 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
     ? "/placeholder.svg?height=200&width=200"
     : item.image_url || "/placeholder.svg?height=200&width=200"
 
-  const variant = item.rarity || "Normal"
-  const rapValue = toNumber(item.rap_value)
-  const existCount = toNumber(item.exist_count)
-
-  const demandRating = item.demand || (item.rating ? `${toNumber(item.rating)}/10` : null)
+  const displayRating = item.rarity || item.rating || 0
+  const sectionLabel = item.section ? item.section.toUpperCase() : "VALUE"
 
   const handleAddToInventory = async () => {
+    // If user is not logged in, show login dialog
     if (!user) {
       setShowLoginDialog(true)
       return
@@ -161,99 +159,83 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
   return (
     <>
-      <div className="relative h-[900px] w-[680px]">
-        {/* Outer container background image */}
-        <div className="absolute inset-0">
-          <Image src="/ui/flattened.png" alt="" fill className="object-contain" priority />
-        </div>
-
-        {/* Content overlay - positioned to match the reference design */}
-        <div className="relative z-10 flex h-full flex-col items-center px-16 py-12">
-          {/* TR3DE Logo */}
-          <div className="mb-6">
-            <Image src="/ui/logo-tr3de.png" alt="TR3DE" width={200} height={60} className="h-auto w-48" />
+      <div className="group relative overflow-hidden rounded-2xl border border-border bg-secondary/10 p-3 md:p-4 transition-all hover:border-border/60 hover:bg-secondary/20">
+        <div className="mb-2 md:mb-3 flex items-center justify-between gap-2 flex-wrap">
+          <div className="rounded-full bg-muted/60 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-muted-foreground">
+            {sectionLabel}: {formatValue(item.rap_value)}
           </div>
-
-          {/* Inner container with item image - positioned to match reference */}
-          <div className="relative mb-8 h-[380px] w-[520px]">
-            {/* Item Image */}
-            <div className="absolute left-1/2 top-[80px] h-[275px] w-[275px] -translate-x-1/2">
-              <Image
-                src={imageUrl || "/placeholder.svg"}
-                alt={item.name}
-                fill
-                className="object-contain"
-                sizes="275px"
-                onError={() => setImageError(true)}
-              />
+          {item.rarity && (
+            <div className="rounded-full bg-purple-500/20 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-purple-300">
+              Rarity: {item.rarity}
             </div>
-
-            {/* Last Updated - positioned at bottom of inner container */}
-            <p className="absolute bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-[14px] tracking-wide text-gray-400">
-              Last Updated: {getTimeAgo(item.last_updated_at)}
-            </p>
-          </div>
-
-          {/* Item Name */}
-          <h3 className="mb-8 text-center font-mono text-[42px] font-bold uppercase leading-tight tracking-[0.15em] text-white">
-            {item.name}
-          </h3>
-
-          {/* Info rows - positioned to match reference */}
-          <div className="w-[520px] space-y-6">
-            {/* Variant Row */}
-            <div className="flex items-center justify-between border-b border-gray-700/50 pb-3">
-              <span className="font-mono text-[22px] text-white">Variant</span>
-              <span className="font-mono text-[22px] text-white">{variant}</span>
-            </div>
-
-            {/* Value Row */}
-            <div className="flex items-center justify-between border-b border-gray-700/50 pb-3">
-              <span className="font-mono text-[22px] text-white">Value</span>
-              <div className="flex items-center gap-3">
-                {changePercent !== 0 && (
-                  <div className="flex items-center gap-1">
-                    {isPositive ? (
-                      <ChevronUp className="h-5 w-5 text-green-500" />
-                    ) : (
-                      <ChevronDown className="h-5 w-5 text-red-500" />
-                    )}
-                    <span
-                      className={`font-mono text-[20px] font-bold ${isPositive ? "text-green-500" : "text-red-500"}`}
-                    >
-                      {Math.abs(changePercent).toFixed(1)}%
-                    </span>
-                  </div>
-                )}
-                <span className="font-mono text-[20px] text-gray-400">|</span>
-                <span className="font-mono text-[22px] text-white">{formatValue(rapValue)}</span>
-              </div>
-            </div>
-
-            {/* Demand Row */}
-            {demandRating && (
-              <div className="flex items-center justify-between border-b border-gray-700/50 pb-3">
-                <span className="font-mono text-[22px] text-white">Demand</span>
-                <span className="font-mono text-[28px] font-bold text-yellow-400">{demandRating}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Button - positioned at bottom */}
-          {!hideAddButton && (
-            <div className="relative mt-10 h-[70px] w-[480px]">
-              {/* Button background image */}
-              <Image src="/ui/button-gray.png" alt="" fill className="rounded-full object-cover" />
-              <Button
-                onClick={handleAddToInventory}
-                disabled={isAdding || userLoading}
-                className="relative h-full w-full rounded-full border-none bg-transparent font-mono text-[16px] font-bold uppercase tracking-[0.25em] text-gray-300 hover:bg-white/10 hover:text-white disabled:opacity-50"
-              >
-                {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
-              </Button>
+          )}
+          {item.pot && (
+            <div className="rounded-full bg-blue-500/20 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-blue-300">
+              Pot: {item.pot}
             </div>
           )}
         </div>
+
+        <div className="relative mx-auto aspect-square w-full max-w-[200px] md:max-w-[240px] overflow-hidden rounded-xl border border-border bg-card/60 shadow-lg">
+          <Image
+            src={imageUrl || "/placeholder.svg"}
+            alt={item.name}
+            fill
+            className="object-contain p-2"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            onError={(e) => {
+              console.error("[v0] Image failed to load:", {
+                itemName: item.name,
+                imageUrl: item.image_url,
+                error: e,
+              })
+              setImageError(true)
+            }}
+            onLoad={() => {
+              console.log("[v0] Image loaded successfully:", item.name)
+            }}
+          />
+        </div>
+
+        <h3 className="mt-2 md:mt-3 text-center text-xs md:text-sm font-semibold line-clamp-2">{item.name}</h3>
+
+        {item.demand && (
+          <p className="mt-1 text-center text-[10px] md:text-xs text-muted-foreground">Demand: {item.demand}</p>
+        )}
+
+        <p className="mt-1 text-center text-[10px] md:text-xs text-muted-foreground">
+          Last Updated: {getTimeAgo(item.last_updated_at)}
+        </p>
+
+        {changePercent !== 0 && (
+          <div className="mt-3 md:mt-4 flex items-center justify-center gap-1">
+            {isPositive ? (
+              <ChevronUp className="h-3 w-3 md:h-4 md:w-4 text-green-500" />
+            ) : (
+              <ChevronDown className="h-3 w-3 md:h-4 md:w-4 text-red-500" />
+            )}
+            <span className={`text-xs md:text-sm font-semibold ${isPositive ? "text-green-500" : "text-red-500"}`}>
+              {Math.abs(changePercent).toFixed(1)}%
+            </span>
+          </div>
+        )}
+
+        {displayRating !== 0 && (
+          <div className="mt-2 text-center text-base md:text-lg font-bold text-yellow-500">
+            {typeof displayRating === "string" ? displayRating : `${toNumber(displayRating).toFixed(1)}/10`}
+          </div>
+        )}
+
+        {!hideAddButton && (
+          <Button
+            onClick={handleAddToInventory}
+            disabled={isAdding || userLoading}
+            variant="secondary"
+            className="mt-3 md:mt-4 w-full rounded-lg bg-muted/60 text-[10px] md:text-xs font-medium uppercase tracking-wide text-muted-foreground hover:bg-muted/80 disabled:opacity-50"
+          >
+            {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
+          </Button>
+        )}
       </div>
 
       <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
