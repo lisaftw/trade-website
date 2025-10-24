@@ -1,39 +1,41 @@
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 import { type NextRequest, NextResponse } from "next/server"
+import { getSession } from "@/lib/auth/session"
 
 export const dynamic = "force-dynamic"
 
 export async function POST(request: NextRequest) {
   try {
-    const cookieStore = await cookies()
-    const supabase = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
-        },
-      },
-    })
+    const session = await getSession()
 
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser()
+    console.log("[v0] Trade creation - Session:", session?.discordId)
 
-    console.log("[v0] Trade creation - User:", user?.id, "Auth error:", authError)
-
-    if (!user) {
+    if (!session) {
       console.error("[v0] Trade creation failed: No authenticated user")
       return NextResponse.json({ error: "You must be logged in to create a trade" }, { status: 401 })
     }
 
+    const cookieStore = await cookies()
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll()
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
+          },
+        },
+      },
+    )
+
     const body = await request.json()
     const { game, offering, requesting, notes } = body
 
-    console.log("[v0] Trade creation request:", { game, offering, requesting, notes, userId: user.id })
+    console.log("[v0] Trade creation request:", { game, offering, requesting, notes, userId: session.discordId })
 
     if (!game || typeof game !== "string") {
       console.error("[v0] Trade creation failed: Invalid game")
@@ -53,7 +55,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase
       .from("trades")
       .insert({
-        discord_id: user.id,
+        discord_id: session.discordId,
         game,
         offering: JSON.stringify(offering),
         requesting: JSON.stringify(requesting),
@@ -105,13 +107,19 @@ export async function GET(request: NextRequest) {
     const { data, error } = await query.order("created_at", { ascending: false })
 
     if (error) {
-      console.error("Supabase error:", error)
+      console.error("[v0] Supabase error fetching trades:", error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
-    return NextResponse.json(data || [])
+    const parsedData = (data || []).map((trade) => ({
+      ...trade,
+      offering: typeof trade.offering === "string" ? JSON.parse(trade.offering) : trade.offering,
+      requesting: typeof trade.requesting === "string" ? JSON.parse(trade.requesting) : trade.requesting,
+    }))
+
+    return NextResponse.json(parsedData)
   } catch (error) {
-    console.error("Error fetching trades:", error)
+    console.error("[v0] Error fetching trades:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
