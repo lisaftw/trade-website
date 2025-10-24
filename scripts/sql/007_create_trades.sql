@@ -3,8 +3,8 @@ CREATE TABLE IF NOT EXISTS public.trades (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   discord_id text NOT NULL REFERENCES public.profiles(discord_id) ON DELETE CASCADE,
   game text NOT NULL,
-  offering jsonb NOT NULL, -- Array of item IDs being offered
-  requesting jsonb NOT NULL, -- Array of item IDs being requested
+  offering jsonb NOT NULL, -- Array of item names being offered
+  requesting jsonb NOT NULL, -- Array of item names being requested
   notes text,
   status text DEFAULT 'active', -- active, completed, cancelled
   created_at timestamp with time zone DEFAULT NOW(),
@@ -20,32 +20,43 @@ CREATE INDEX IF NOT EXISTS idx_trades_created_at ON public.trades(created_at DES
 -- Enable RLS
 ALTER TABLE public.trades ENABLE ROW LEVEL SECURITY;
 
+-- Updated RLS policies to work with custom Discord OAuth session system
 -- Anyone can view active trades
+DROP POLICY IF EXISTS "Anyone can view active trades" ON public.trades;
 CREATE POLICY "Anyone can view active trades"
 ON public.trades
 FOR SELECT
 USING (status = 'active');
 
--- Users can view their own trades
-CREATE POLICY "Users can view own trades"
+-- Service role can manage all trades (for API endpoints)
+DROP POLICY IF EXISTS "Service role can manage trades" ON public.trades;
+CREATE POLICY "Service role can manage trades"
 ON public.trades
-FOR SELECT
-USING (auth.uid()::text = discord_id OR status = 'active');
+FOR ALL
+TO service_role
+USING (true)
+WITH CHECK (true);
 
--- Users can create trades
-CREATE POLICY "Authenticated users can create trades"
+-- Allow anon role to insert trades (API will validate session)
+DROP POLICY IF EXISTS "Anon can create trades" ON public.trades;
+CREATE POLICY "Anon can create trades"
 ON public.trades
 FOR INSERT
-WITH CHECK (auth.uid()::text = discord_id);
+TO anon
+WITH CHECK (true);
 
--- Users can update their own trades
-CREATE POLICY "Users can update own trades"
+-- Allow anon role to update trades (API will validate session)
+DROP POLICY IF EXISTS "Anon can update trades" ON public.trades;
+CREATE POLICY "Anon can update trades"
 ON public.trades
 FOR UPDATE
-USING (auth.uid()::text = discord_id);
+TO anon
+USING (true);
 
--- Users can delete their own trades
-CREATE POLICY "Users can delete own trades"
+-- Allow anon role to delete trades (API will validate session)
+DROP POLICY IF EXISTS "Anon can delete trades" ON public.trades;
+CREATE POLICY "Anon can delete trades"
 ON public.trades
 FOR DELETE
-USING (auth.uid()::text = discord_id);
+TO anon
+USING (true);
