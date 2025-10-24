@@ -10,8 +10,16 @@ export function DiscordMemberCount() {
   useEffect(() => {
     async function fetchMemberCount() {
       try {
+        console.log("[v0] Fetching Discord member count...")
         const response = await fetch("/api/discord/members")
+
+        if (!response.ok) {
+          console.error("[v0] Discord API returned non-OK status:", response.status)
+        }
+
         const data = await response.json()
+        console.log("[v0] Discord member count data:", data)
+
         setMemberCount(data.memberCount)
       } catch (error) {
         console.error("[v0] Error fetching member count:", error)
