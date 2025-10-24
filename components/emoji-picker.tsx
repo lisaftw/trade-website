@@ -1,49 +1,59 @@
 "use client"
 
-import type React from "react"
-
+import { useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Smile } from "lucide-react"
 
 const COMMON_EMOJIS = ["👍", "❤️", "😂", "😮", "😢", "🙏", "🎉", "🔥", "👏", "✨", "💯", "🤔", "😍", "🥳", "😎"]
 
 type EmojiPickerProps = {
   onSelect: (emoji: string) => void
-  trigger?: React.ReactNode
-  open?: boolean
-  onOpenChange?: (open: boolean) => void
+  onClose: () => void
 }
 
-export function EmojiPicker({ onSelect, trigger, open, onOpenChange }: EmojiPickerProps) {
+export function EmojiPicker({ onSelect, onClose }: EmojiPickerProps) {
+  const pickerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (pickerRef.current && !pickerRef.current.contains(event.target as Node)) {
+        onClose()
+      }
+    }
+
+    // Add a small delay before attaching the listener to prevent immediate close
+    const timeoutId = setTimeout(() => {
+      document.addEventListener("mousedown", handleClickOutside)
+    }, 100)
+
+    return () => {
+      clearTimeout(timeoutId)
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [onClose])
+
   return (
-    <Popover open={open} onOpenChange={onOpenChange}>
-      <PopoverTrigger asChild>
-        {trigger || (
-          <Button variant="ghost" size="sm" className="gap-2">
-            <Smile className="h-4 w-4" />
-            React
+    <div
+      ref={pickerRef}
+      className="absolute z-50 bg-popover border border-border rounded-lg shadow-lg p-2 mt-1"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="grid grid-cols-5 gap-1">
+        {COMMON_EMOJIS.map((emoji) => (
+          <Button
+            key={emoji}
+            variant="ghost"
+            size="sm"
+            className="h-10 w-10 text-2xl hover:scale-125 transition-transform p-0"
+            onClick={() => {
+              console.log("[v0] Emoji button clicked:", emoji)
+              onSelect(emoji)
+              onClose()
+            }}
+          >
+            {emoji}
           </Button>
-        )}
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-2" align="start">
-        <div className="grid grid-cols-5 gap-1">
-          {COMMON_EMOJIS.map((emoji) => (
-            <Button
-              key={emoji}
-              variant="ghost"
-              size="sm"
-              className="h-10 w-10 text-2xl hover:scale-125 transition-transform p-0"
-              onClick={() => {
-                onSelect(emoji)
-                onOpenChange?.(false)
-              }}
-            >
-              {emoji}
-            </Button>
-          ))}
-        </div>
-      </PopoverContent>
-    </Popover>
+        ))}
+      </div>
+    </div>
   )
 }

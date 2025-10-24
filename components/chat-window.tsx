@@ -642,18 +642,16 @@ export function ChatWindow({
                   </div>
 
                   {showEmojiPicker === message.id && (
-                    <div className="mt-1 relative z-50">
+                    <div className="relative">
                       <EmojiPicker
                         onSelect={(emoji) => {
                           console.log("[v0] Emoji selected:", emoji)
                           handleReaction(message.id, emoji)
                         }}
-                        open={true}
-                        onOpenChange={(open) => {
-                          console.log("[v0] Emoji picker open state changed:", open)
-                          if (!open) setShowEmojiPicker(null)
+                        onClose={() => {
+                          console.log("[v0] Emoji picker closed")
+                          setShowEmojiPicker(null)
                         }}
-                        trigger={<div />}
                       />
                     </div>
                   )}

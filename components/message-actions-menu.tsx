@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
 import { MoreVertical, Edit, Trash2, Reply, Copy, Smile } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -37,7 +39,8 @@ export function MessageActionsMenu({
     setOpen(false)
   }
 
-  const handleReact = () => {
+  const handleReact = (e: React.MouseEvent) => {
+    e.stopPropagation()
     console.log("[v0] React button clicked for message:", messageId)
     setOpen(false)
     onReact()
