@@ -28,7 +28,14 @@ export async function GET() {
       return NextResponse.json(fallbackData, { status: 200 })
     }
 
-    const data = await response.json()
+    let data
+    try {
+      data = await response.json()
+    } catch (parseError) {
+      console.error("[v0] Failed to parse Discord API response:", parseError)
+      return NextResponse.json(fallbackData, { status: 200 })
+    }
+
     console.log("[v0] Discord data received:", {
       members: data.approximate_member_count,
       online: data.approximate_presence_count,
