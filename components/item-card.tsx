@@ -161,16 +161,16 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
   return (
     <>
-      <div className="relative w-full max-w-sm overflow-hidden rounded-3xl border-2 border-dashed border-gray-700/80 bg-black p-6 transition-all hover:border-gray-600">
+      <div className="relative w-full max-w-sm overflow-hidden rounded-3xl border-2 border-dashed border-gray-700/80 bg-black p-8 transition-all hover:border-gray-600">
         {/* Inner container with dashed border around image section */}
-        <div className="mb-6 overflow-hidden rounded-2xl border-2 border-dashed border-gray-700/60 bg-black/40 p-4">
+        <div className="mb-8 overflow-hidden rounded-2xl border-2 border-dashed border-gray-700/60 bg-black/40 p-6">
           {/* TR3DE Logo */}
-          <div className="mb-4 flex justify-center">
-            <Image src="/ui/logo-tr3de.png" alt="TR3DE" width={140} height={40} className="h-auto w-32 opacity-95" />
+          <div className="mb-6 flex justify-center">
+            <Image src="/ui/logo-tr3de.png" alt="TR3DE" width={160} height={45} className="h-auto w-36 opacity-95" />
           </div>
 
           {/* Item Image - Large square */}
-          <div className="relative mx-auto mb-4 aspect-square w-full max-w-[240px] overflow-hidden rounded-lg bg-gradient-to-br from-gray-900/80 to-black/60">
+          <div className="relative mx-auto mb-5 aspect-square w-full max-w-[280px] overflow-hidden rounded-lg bg-gradient-to-br from-gray-900/80 to-black/60">
             <Image
               src={imageUrl || "/placeholder.svg"}
               alt={item.name}
@@ -182,64 +182,73 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
           </div>
 
           {/* Last Updated */}
-          <p className="text-center font-mono text-xs tracking-wide text-gray-400">
+          <p className="text-center font-mono text-sm tracking-wide text-gray-400">
             Last Updated: {getTimeAgo(item.last_updated_at)}
           </p>
         </div>
 
         {/* Item Name - Large, bold, centered */}
-        <h3 className="mb-6 text-center font-mono text-2xl font-bold uppercase tracking-wider text-white">
+        <h3 className="mb-8 text-center font-mono text-3xl font-bold uppercase tracking-wider text-white">
           {item.name}
         </h3>
 
         {/* Horizontal dashed separator */}
-        <div className="mb-5 border-t-2 border-dashed border-gray-700/60" />
+        <div className="mb-6 border-t-2 border-dashed border-gray-700/60" />
 
         {/* Variant Row */}
-        <div className="mb-4 flex items-center justify-between border-b border-gray-800/80 pb-3">
-          <span className="font-mono text-base text-white">Variant</span>
-          <span className="font-mono text-base text-white underline decoration-gray-600 underline-offset-4">
+        <div className="mb-5 flex items-center justify-between border-b border-gray-800/80 pb-4">
+          <span className="font-mono text-lg text-white">Variant</span>
+          <span className="font-mono text-lg text-white underline decoration-gray-600 underline-offset-4">
             {variant}
           </span>
         </div>
 
         {/* Value Row */}
-        <div className="mb-4 flex items-center justify-between border-b border-gray-800/80 pb-3">
-          <span className="font-mono text-base text-white">Value</span>
+        <div className="mb-5 flex items-center justify-between border-b border-gray-800/80 pb-4">
+          <span className="font-mono text-lg text-white">Value</span>
           <div className="flex items-center gap-3">
             {changePercent !== 0 && (
               <div className="flex items-center gap-1">
                 {isPositive ? (
-                  <ChevronUp className="h-4 w-4 text-green-500" />
+                  <ChevronUp className="h-5 w-5 text-green-500" />
                 ) : (
-                  <ChevronDown className="h-4 w-4 text-red-500" />
+                  <ChevronDown className="h-5 w-5 text-red-500" />
                 )}
-                <span className={`font-mono text-base font-bold ${isPositive ? "text-green-500" : "text-red-500"}`}>
+                <span className={`font-mono text-lg font-bold ${isPositive ? "text-green-500" : "text-red-500"}`}>
                   {Math.abs(changePercent).toFixed(1)}%
                 </span>
               </div>
             )}
-            <span className="font-mono text-base text-white">| {formatValue(rapValue)}</span>
+            <span className="font-mono text-lg text-white">| {formatValue(rapValue)}</span>
           </div>
         </div>
 
         {/* Demand Row */}
         {demandRating && (
-          <div className="mb-6 flex items-center justify-between border-b border-gray-800/80 pb-3">
-            <span className="font-mono text-base text-white">Demand</span>
-            <span className="font-mono text-xl font-bold text-yellow-500">{demandRating}</span>
+          <div className="mb-8 flex items-center justify-between border-b border-gray-800/80 pb-4">
+            <span className="font-mono text-lg text-white">Demand</span>
+            <span className="font-mono text-2xl font-bold text-yellow-500">{demandRating}</span>
           </div>
         )}
 
         {/* Add to Inventory Button */}
         {!hideAddButton && (
-          <Button
-            onClick={handleAddToInventory}
-            disabled={isAdding || userLoading}
-            className="w-full rounded-full border-2 border-gray-700/80 bg-gray-800/60 py-6 font-mono text-sm font-bold uppercase tracking-[0.2em] text-gray-300 hover:bg-gray-700/80 hover:text-white disabled:opacity-50"
-          >
-            {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
-          </Button>
+          <div className="relative">
+            <Image
+              src="/ui/button-gray.png"
+              alt=""
+              width={400}
+              height={60}
+              className="absolute inset-0 h-full w-full object-cover opacity-80"
+            />
+            <Button
+              onClick={handleAddToInventory}
+              disabled={isAdding || userLoading}
+              className="relative w-full rounded-full border-2 border-gray-700/80 bg-transparent py-7 font-mono text-base font-bold uppercase tracking-[0.25em] text-gray-300 hover:bg-gray-700/40 hover:text-white disabled:opacity-50"
+            >
+              {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
+            </Button>
+          </div>
         )}
       </div>
 
