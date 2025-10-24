@@ -7,21 +7,29 @@ export const dynamic = "force-dynamic"
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const cookieStore = await cookies()
-    const supabase = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll()
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
+          },
         },
       },
-    })
+    )
 
     const {
       data: { user },
     } = await supabase.auth.getUser()
+
+    console.log("[v0] Trade request - User:", user?.id)
+
     if (!user) {
+      console.log("[v0] Trade request - No user found, returning 401")
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -32,6 +40,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const { data: trade, error: tradeError } = await supabase.from("trades").select("id").eq("id", params.id).single()
 
     if (tradeError || !trade) {
+      console.log("[v0] Trade not found:", params.id)
       return NextResponse.json({ error: "Trade not found" }, { status: 404 })
     }
 
@@ -46,12 +55,14 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       .select()
 
     if (error) {
+      console.error("[v0] Error creating interaction:", error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
+    console.log("[v0] Trade request created successfully")
     return NextResponse.json(data[0])
   } catch (error) {
-    console.error("Error creating interaction:", error)
+    console.error("[v0] Error creating interaction:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
@@ -59,16 +70,20 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const cookieStore = await cookies()
-    const supabase = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll()
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
+          },
         },
       },
-    })
+    )
 
     const { data, error } = await supabase
       .from("trade_interactions")
