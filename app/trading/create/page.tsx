@@ -225,7 +225,7 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
   const debouncedSearch = useDebounce(searchQuery, 300)
 
   React.useEffect(() => {
-    if (!showSearch || debouncedSearch.length < 2) {
+    if (!showSearch) {
       setSearchResults([])
       return
     }
@@ -233,7 +233,10 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
     const fetchItems = async () => {
       setIsSearching(true)
       try {
-        const params = new URLSearchParams({ game: selectedGame, q: debouncedSearch })
+        const params = new URLSearchParams({ game: selectedGame })
+        if (debouncedSearch) {
+          params.append("q", debouncedSearch)
+        }
         const response = await fetch(`/api/items?${params.toString()}`)
         const data = await response.json()
         setSearchResults(
@@ -294,10 +297,10 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
           <div className="max-h-64 space-y-2 overflow-y-auto">
             {isSearching ? (
               <div className="py-8 text-center text-sm text-muted-foreground">Searching...</div>
-            ) : searchResults.length === 0 && debouncedSearch.length >= 2 ? (
-              <div className="py-8 text-center text-sm text-muted-foreground">No items found</div>
             ) : searchResults.length === 0 ? (
-              <div className="py-8 text-center text-sm text-muted-foreground">Type to search items</div>
+              <div className="py-8 text-center text-sm text-muted-foreground">
+                {debouncedSearch ? "No items found" : "No items available"}
+              </div>
             ) : (
               searchResults.map((item) => (
                 <button
