@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
 
 type User = {
   discordId: string
@@ -14,22 +14,16 @@ export function useUser() {
   const [user, setUser] = useState<User>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const fetchingRef = useRef(false)
 
-  useEffect(() => {
-    fetchUser()
-
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "user_logged_in") {
-        fetchUser()
-      }
+  const fetchUser = useCallback(async () => {
+    if (fetchingRef.current) {
+      console.log("[v0] Skipping duplicate user fetch request")
+      return
     }
 
-    window.addEventListener("storage", handleStorageChange)
-    return () => window.removeEventListener("storage", handleStorageChange)
-  }, [])
-
-  const fetchUser = async () => {
     try {
+      fetchingRef.current = true
       setLoading(true)
       const res = await fetch("/api/user/me", {
         cache: "no-store",
@@ -41,11 +35,6 @@ export function useUser() {
 
       if (res.ok) {
         setUser(data.user)
-        if (data.user) {
-          try {
-            localStorage.setItem("user_logged_in", Date.now().toString())
-          } catch {}
-        }
       } else {
         setUser(null)
       }
@@ -55,8 +44,23 @@ export function useUser() {
       setUser(null)
     } finally {
       setLoading(false)
+      fetchingRef.current = false
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    fetchUser()
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "user_logged_in" && e.storageArea === localStorage) {
+        console.log("[v0] User login detected in another window, refetching")
+        fetchUser()
+      }
+    }
+
+    window.addEventListener("storage", handleStorageChange)
+    return () => window.removeEventListener("storage", handleStorageChange)
+  }, [fetchUser])
 
   const logout = async () => {
     try {
