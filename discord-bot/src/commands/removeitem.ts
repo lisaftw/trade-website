@@ -12,6 +12,8 @@ import { ObjectId } from "mongodb"
 import { getItemsCollection } from "../lib/mongodb.js"
 import { GAME_CHOICES, type BotCommand } from "../lib/types.js"
 
+const paginationState = new Map<string, { game: string; page: number; totalItems: number }>()
+
 export const removeItemCommand: BotCommand = {
   data: new SlashCommandBuilder().setName("removeitem").setDescription("Remove an item from the database"),
 
@@ -61,35 +63,10 @@ export const removeItemCommand: BotCommand = {
 
       const selectedGame = interaction.values[0]
 
+      paginationState.set(interaction.user.id, { game: selectedGame, page: 0, totalItems: 0 })
+
       try {
-        const collection = await getItemsCollection()
-        const items = await collection.find({ game: selectedGame }).limit(25).toArray()
-
-        if (items.length === 0) {
-          await interaction.editReply({
-            content: `❌ No items found for ${selectedGame}!`,
-            components: [],
-          })
-          return
-        }
-
-        const selectMenu = new StringSelectMenuBuilder()
-          .setCustomId("removeitem_item")
-          .setPlaceholder("Select an item to remove")
-          .addOptions(
-            items.map((item) => ({
-              label: `${item.name} (${item.section})`,
-              description: `Value: ${item.value}`,
-              value: item._id.toString(),
-            })),
-          )
-
-        const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu)
-
-        await interaction.editReply({
-          content: `Select an item from **${selectedGame}** to remove:`,
-          components: [row],
-        })
+        await showItemsPage(interaction, selectedGame, 0)
       } catch (error) {
         console.error("Error loading items:", error)
         await interaction.editReply({
@@ -98,7 +75,6 @@ export const removeItemCommand: BotCommand = {
         })
       }
     } else if (action === "item") {
-      // User selected an item, show confirmation
       await interaction.deferUpdate()
 
       const itemId = interaction.values[0]
@@ -142,14 +118,42 @@ export const removeItemCommand: BotCommand = {
   },
 
   async handleButton(interaction: ButtonInteraction) {
-    const [command, action, itemId] = interaction.customId.split("_")
+    const [command, action, param] = interaction.customId.split("_")
 
+    if (action === "page") {
+      await interaction.deferUpdate()
+
+      const state = paginationState.get(interaction.user.id)
+      if (!state) {
+        await interaction.editReply({
+          content: "❌ Session expired. Please run the command again.",
+          components: [],
+        })
+        return
+      }
+
+      const newPage = Number.parseInt(param)
+      state.page = newPage
+
+      try {
+        await showItemsPage(interaction, state.game, newPage)
+      } catch (error) {
+        console.error("Error loading page:", error)
+        await interaction.editReply({
+          content: "❌ Failed to load page. Please try again.",
+          components: [],
+        })
+      }
+      return
+    }
+
+    // Handle confirm/cancel buttons
     if (action === "confirm") {
       await interaction.deferUpdate()
 
       try {
         const collection = await getItemsCollection()
-        const item = await collection.findOne({ _id: new ObjectId(itemId) })
+        const item = await collection.findOne({ _id: new ObjectId(param) })
 
         if (!item) {
           await interaction.editReply({
@@ -159,7 +163,7 @@ export const removeItemCommand: BotCommand = {
           return
         }
 
-        await collection.deleteOne({ _id: new ObjectId(itemId) })
+        await collection.deleteOne({ _id: new ObjectId(param) })
 
         await interaction.editReply({
           content: `✅ Successfully deleted **${item.name}** from ${item.game}!`,
@@ -179,4 +183,67 @@ export const removeItemCommand: BotCommand = {
       })
     }
   },
+}
+
+async function showItemsPage(interaction: StringSelectMenuInteraction | ButtonInteraction, game: string, page: number) {
+  const collection = await getItemsCollection()
+  const ITEMS_PER_PAGE = 25
+
+  // Get total count
+  const totalItems = await collection.countDocuments({ game })
+
+  if (totalItems === 0) {
+    await interaction.editReply({
+      content: `❌ No items found for ${game}!`,
+      components: [],
+    })
+    return
+  }
+
+  // Get items for current page
+  const items = await collection
+    .find({ game })
+    .sort({ rarity: 1, name: 1 })
+    .skip(page * ITEMS_PER_PAGE)
+    .limit(ITEMS_PER_PAGE)
+    .toArray()
+
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE)
+
+  const selectMenu = new StringSelectMenuBuilder()
+    .setCustomId("removeitem_item")
+    .setPlaceholder("Select an item to remove")
+    .addOptions(
+      items.map((item) => ({
+        label: `${item.name} (${item.section})`,
+        description: `Value: ${item.value}`,
+        value: item._id.toString(),
+      })),
+    )
+
+  const components: ActionRowBuilder<StringSelectMenuBuilder | ButtonBuilder>[] = [
+    new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu),
+  ]
+
+  // Add pagination buttons if there are multiple pages
+  if (totalPages > 1) {
+    const prevButton = new ButtonBuilder()
+      .setCustomId(`removeitem_page_${page - 1}`)
+      .setLabel("◀ Previous")
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(page === 0)
+
+    const nextButton = new ButtonBuilder()
+      .setCustomId(`removeitem_page_${page + 1}`)
+      .setLabel("Next ▶")
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(page >= totalPages - 1)
+
+    components.push(new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton))
+  }
+
+  await interaction.editReply({
+    content: `Select an item from **${game}** to remove:\nPage ${page + 1} of ${totalPages} (${totalItems} total items)`,
+    components,
+  })
 }

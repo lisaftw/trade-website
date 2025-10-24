@@ -3,15 +3,20 @@ import {
   type ChatInputCommandInteraction,
   type StringSelectMenuInteraction,
   type ModalSubmitInteraction,
+  type ButtonInteraction,
   ActionRowBuilder,
   StringSelectMenuBuilder,
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
+  ButtonBuilder,
+  ButtonStyle,
 } from "discord.js"
 import { ObjectId } from "mongodb"
 import { getItemsCollection } from "../lib/mongodb.js"
 import { GAME_CHOICES, type BotCommand } from "../lib/types.js"
+
+const paginationState = new Map<string, { game: string; page: number; totalItems: number }>()
 
 export const editItemCommand: BotCommand = {
   data: new SlashCommandBuilder().setName("edititem").setDescription("Edit an existing item in the database"),
@@ -62,35 +67,10 @@ export const editItemCommand: BotCommand = {
 
       const selectedGame = interaction.values[0]
 
+      paginationState.set(interaction.user.id, { game: selectedGame, page: 0, totalItems: 0 })
+
       try {
-        const collection = await getItemsCollection()
-        const items = await collection.find({ game: selectedGame }).limit(25).toArray()
-
-        if (items.length === 0) {
-          await interaction.editReply({
-            content: `❌ No items found for ${selectedGame}!`,
-            components: [],
-          })
-          return
-        }
-
-        const selectMenu = new StringSelectMenuBuilder()
-          .setCustomId("edititem_item")
-          .setPlaceholder("Select an item to edit")
-          .addOptions(
-            items.map((item) => ({
-              label: `${item.name} (${item.section})`,
-              description: `Value: ${item.value}`,
-              value: item._id.toString(),
-            })),
-          )
-
-        const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu)
-
-        await interaction.editReply({
-          content: `Select an item from **${selectedGame}** to edit:`,
-          components: [row],
-        })
+        await showItemsPage(interaction, selectedGame, 0)
       } catch (error) {
         console.error("Error loading items:", error)
         await interaction.editReply({
@@ -233,4 +213,97 @@ export const editItemCommand: BotCommand = {
       await interaction.editReply("❌ Failed to update item. Please try again.")
     }
   },
+
+  async handleButton(interaction: ButtonInteraction) {
+    const [command, action, pageStr] = interaction.customId.split("_")
+
+    if (action === "page") {
+      await interaction.deferUpdate()
+
+      const state = paginationState.get(interaction.user.id)
+      if (!state) {
+        await interaction.editReply({
+          content: "❌ Session expired. Please run the command again.",
+          components: [],
+        })
+        return
+      }
+
+      const newPage = Number.parseInt(pageStr)
+      state.page = newPage
+
+      try {
+        await showItemsPage(interaction, state.game, newPage)
+      } catch (error) {
+        console.error("Error loading page:", error)
+        await interaction.editReply({
+          content: "❌ Failed to load page. Please try again.",
+          components: [],
+        })
+      }
+    }
+  },
+}
+
+async function showItemsPage(interaction: StringSelectMenuInteraction | ButtonInteraction, game: string, page: number) {
+  const collection = await getItemsCollection()
+  const ITEMS_PER_PAGE = 25
+
+  // Get total count
+  const totalItems = await collection.countDocuments({ game })
+
+  if (totalItems === 0) {
+    await interaction.editReply({
+      content: `❌ No items found for ${game}!`,
+      components: [],
+    })
+    return
+  }
+
+  // Get items for current page
+  const items = await collection
+    .find({ game })
+    .sort({ rarity: 1, name: 1 })
+    .skip(page * ITEMS_PER_PAGE)
+    .limit(ITEMS_PER_PAGE)
+    .toArray()
+
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE)
+
+  const selectMenu = new StringSelectMenuBuilder()
+    .setCustomId("edititem_item")
+    .setPlaceholder("Select an item to edit")
+    .addOptions(
+      items.map((item) => ({
+        label: `${item.name} (${item.section})`,
+        description: `Value: ${item.value}`,
+        value: item._id.toString(),
+      })),
+    )
+
+  const components: ActionRowBuilder<StringSelectMenuBuilder | ButtonBuilder>[] = [
+    new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu),
+  ]
+
+  // Add pagination buttons if there are multiple pages
+  if (totalPages > 1) {
+    const prevButton = new ButtonBuilder()
+      .setCustomId(`edititem_page_${page - 1}`)
+      .setLabel("◀ Previous")
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(page === 0)
+
+    const nextButton = new ButtonBuilder()
+      .setCustomId(`edititem_page_${page + 1}`)
+      .setLabel("Next ▶")
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(page >= totalPages - 1)
+
+    components.push(new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton))
+  }
+
+  await interaction.editReply({
+    content: `Select an item from **${game}** to edit:\nPage ${page + 1} of ${totalPages} (${totalItems} total items)`,
+    components,
+  })
 }
