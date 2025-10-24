@@ -48,7 +48,7 @@ export function MessagesContent({
           filter: `or(participant_1_id.eq.${currentUserId},participant_2_id.eq.${currentUserId})`,
         },
         async (payload) => {
-          console.log("[v0] New conversation created:", payload)
+          console.log("New conversation created:", payload)
           // Fetch the new conversation with user details
           const newConvo = payload.new as any
           const otherUserId =
@@ -84,7 +84,7 @@ export function MessagesContent({
           filter: `or(participant_1_id.eq.${currentUserId},participant_2_id.eq.${currentUserId})`,
         },
         (payload) => {
-          console.log("[v0] Conversation updated:", payload)
+          console.log("Conversation updated:", payload)
           // Update last_message_at to re-sort conversations
           setConversations((prev) => {
             const updated = prev.map((c) =>
@@ -113,7 +113,7 @@ export function MessagesContent({
         },
         async (payload) => {
           const message = payload.new as any
-          console.log("[v0] New message received in conversation:", message.conversation_id)
+          console.log("New message received in conversation:", message.conversation_id)
 
           // Update unread count if message is not from current user and not in selected conversation
           if (message.sender_id !== currentUserId && message.conversation_id !== selectedConversationId) {
@@ -209,7 +209,7 @@ export function MessagesContent({
 
       setConversations(conversationsWithUsers)
     } catch (error) {
-      console.error("[v0] Error fetching conversations:", error)
+      console.error("Error fetching conversations:", error)
     } finally {
       setLoading(false)
     }

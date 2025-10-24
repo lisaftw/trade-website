@@ -41,7 +41,7 @@ export function MessageActionsMenu({
 
   const handleReact = (e: React.MouseEvent) => {
     e.stopPropagation()
-    console.log("[v0] React button clicked for message:", messageId)
+    console.log("React button clicked for message:", messageId)
     setOpen(false)
     onReact()
   }

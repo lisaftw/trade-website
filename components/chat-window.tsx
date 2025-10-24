@@ -94,7 +94,7 @@ export function ChatWindow({
     fetchMessages()
     markMessagesAsRead()
 
-    console.log("[v0] Setting up realtime subscription for conversation:", conversation.id)
+    console.log("Setting up realtime subscription for conversation:", conversation.id)
 
     const channel = supabase
       .channel(`conversation:${conversation.id}`)
@@ -107,7 +107,7 @@ export function ChatWindow({
           filter: `conversation_id=eq.${conversation.id}`,
         },
         (payload) => {
-          console.log("[v0] Received new message via realtime:", payload.new)
+          console.log("Received new message via realtime:", payload.new)
           const newMsg = payload.new as Message
           setMessages((prev) => {
             // Remove optimistic message if it exists
@@ -132,7 +132,7 @@ export function ChatWindow({
           filter: `conversation_id=eq.${conversation.id}`,
         },
         (payload) => {
-          console.log("[v0] Message updated via realtime:", payload.new)
+          console.log("Message updated via realtime:", payload.new)
           const updatedMsg = payload.new as Message
           setMessages((prev) =>
             prev.map((m) => {
@@ -153,12 +153,12 @@ export function ChatWindow({
           filter: `conversation_id=eq.${conversation.id}`,
         },
         (payload) => {
-          console.log("[v0] Message deleted via realtime:", payload.old)
+          console.log("Message deleted via realtime:", payload.old)
           setMessages((prev) => prev.filter((m) => m.id !== payload.old.id))
         },
       )
       .on("broadcast", { event: "typing" }, ({ payload }) => {
-        console.log("[v0] Typing indicator received:", payload)
+        console.log("Typing indicator received:", payload)
         if (payload.userId !== currentUserId) {
           setIsTyping(true)
           if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
@@ -166,14 +166,14 @@ export function ChatWindow({
         }
       })
       .subscribe((status) => {
-        console.log("[v0] Realtime subscription status:", status)
+        console.log("Realtime subscription status:", status)
         setIsConnected(status === "SUBSCRIBED")
       })
 
     channelRef.current = channel
 
     return () => {
-      console.log("[v0] Cleaning up realtime subscription")
+      console.log("Cleaning up realtime subscription")
       supabase.removeChannel(channel)
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current)
@@ -213,7 +213,7 @@ export function ChatWindow({
       setMessages(messagesWithStatus)
       setHasMore((data || []).length === 50)
     } catch (error) {
-      console.error("[v0] Error fetching messages:", error)
+      console.error("Error fetching messages:", error)
     } finally {
       setLoading(false)
     }
@@ -246,7 +246,7 @@ export function ChatWindow({
         setHasMore(false)
       }
     } catch (error) {
-      console.error("[v0] Error loading more messages:", error)
+      console.error("Error loading more messages:", error)
     } finally {
       setLoadingMore(false)
     }
@@ -261,7 +261,7 @@ export function ChatWindow({
         .eq("is_read", false)
         .neq("sender_id", currentUserId)
     } catch (error) {
-      console.error("[v0] Error marking messages as read:", error)
+      console.error("Error marking messages as read:", error)
     }
   }
 
@@ -294,7 +294,7 @@ export function ChatWindow({
       setEditingMessageId(null)
       setEditContent("")
     } catch (error) {
-      console.error("[v0] Error editing message:", error)
+      console.error("Error editing message:", error)
     }
   }
 
@@ -312,16 +312,16 @@ export function ChatWindow({
 
       setDeleteMessageId(null)
     } catch (error) {
-      console.error("[v0] Error deleting message:", error)
+      console.error("Error deleting message:", error)
     }
   }
 
   const handleReaction = async (messageId: string, emoji: string) => {
-    console.log("[v0] Adding reaction:", { messageId, emoji, currentUserId })
+    console.log("Adding reaction:", { messageId, emoji, currentUserId })
     try {
       const message = messages.find((m) => m.id === messageId)
       if (!message) {
-        console.log("[v0] Message not found for reaction")
+        console.log("Message not found for reaction")
         return
       }
 
@@ -346,19 +346,19 @@ export function ChatWindow({
         updatedReactions = [...reactions, { emoji, users: [currentUserId] }]
       }
 
-      console.log("[v0] Updating reactions:", updatedReactions)
+      console.log("Updating reactions:", updatedReactions)
 
       const { error } = await supabase.from("messages").update({ reactions: updatedReactions }).eq("id", messageId)
 
       if (error) {
-        console.error("[v0] Supabase error updating reactions:", error)
+        console.error("Supabase error updating reactions:", error)
         throw error
       }
 
-      console.log("[v0] Reaction updated successfully")
+      console.log("Reaction updated successfully")
       setShowEmojiPicker(null)
     } catch (error) {
-      console.error("[v0] Error adding reaction:", error)
+      console.error("Error adding reaction:", error)
       alert("Failed to add reaction. Make sure you've run the SQL script 011_add_message_features.sql")
     }
   }
@@ -421,7 +421,7 @@ export function ChatWindow({
 
       setMessages((prev) => prev.map((m) => (m.tempId === tempId ? { ...messageResult.data, status: "sent" } : m)))
     } catch (error) {
-      console.error("[v0] Error sending message:", error)
+      console.error("Error sending message:", error)
       setMessages((prev) => prev.map((m) => (m.tempId === tempId ? { ...m, status: "failed" } : m)))
     } finally {
       setSending(false)
@@ -448,7 +448,7 @@ export function ChatWindow({
 
       setMessages((prev) => prev.map((m) => (m.tempId === message.tempId ? { ...data, status: "sent" } : m)))
     } catch (error) {
-      console.error("[v0] Error retrying message:", error)
+      console.error("Error retrying message:", error)
       setMessages((prev) => prev.map((m) => (m.tempId === message.tempId ? { ...m, status: "failed" } : m)))
     }
   }
@@ -645,11 +645,11 @@ export function ChatWindow({
                     <div className="relative">
                       <EmojiPicker
                         onSelect={(emoji) => {
-                          console.log("[v0] Emoji selected:", emoji)
+                          console.log("Emoji selected:", emoji)
                           handleReaction(message.id, emoji)
                         }}
                         onClose={() => {
-                          console.log("[v0] Emoji picker closed")
+                          console.log("Emoji picker closed")
                           setShowEmojiPicker(null)
                         }}
                       />

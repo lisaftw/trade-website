@@ -67,7 +67,15 @@ client.on(Events.InteractionCreate, async (interaction) => {
         await command.handleModal(interaction)
       } catch (error) {
         console.error(`❌ Error handling modal:`, error)
-        await interaction.reply({ content: "There was an error processing your submission!", flags: 64 })
+        try {
+          if (!interaction.replied && !interaction.deferred) {
+            await interaction.reply({ content: "There was an error processing your submission!", flags: 64 })
+          } else {
+            await interaction.followUp({ content: "There was an error processing your submission!", flags: 64 })
+          }
+        } catch (replyError) {
+          console.error("Failed to send error message (interaction may have expired)")
+        }
       }
     }
   } else if (interaction.isButton()) {
@@ -79,7 +87,15 @@ client.on(Events.InteractionCreate, async (interaction) => {
         await command.handleButton(interaction)
       } catch (error) {
         console.error(`❌ Error handling button:`, error)
-        await interaction.reply({ content: "There was an error processing your action!", flags: 64 })
+        try {
+          if (!interaction.replied && !interaction.deferred) {
+            await interaction.reply({ content: "There was an error processing your action!", flags: 64 })
+          } else {
+            await interaction.followUp({ content: "There was an error processing your action!", flags: 64 })
+          }
+        } catch (replyError) {
+          console.error("Failed to send error message (interaction may have expired)")
+        }
       }
     }
   }

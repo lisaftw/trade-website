@@ -215,11 +215,11 @@ export const editItemCommand: BotCommand = {
   },
 
   async handleButton(interaction: ButtonInteraction) {
+    await interaction.deferUpdate()
+
     const [command, action, pageStr] = interaction.customId.split("_")
 
     if (action === "page") {
-      await interaction.deferUpdate()
-
       const state = paginationState.get(interaction.user.id)
       if (!state) {
         await interaction.editReply({

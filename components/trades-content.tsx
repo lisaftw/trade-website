@@ -77,7 +77,7 @@ export function TradesContent({ currentUser }: { currentUser: UserSession | null
 
       setTrades(tradesWithCreators)
     } catch (error) {
-      console.error("[v0] Error fetching trades:", error)
+      console.error("Error fetching trades:", error)
     } finally {
       setLoading(false)
     }
@@ -129,7 +129,7 @@ export function TradesContent({ currentUser }: { currentUser: UserSession | null
 
       router.push(`/messages?conversation=${newConvo.id}`)
     } catch (error) {
-      console.error("[v0] Error starting conversation:", error)
+      console.error("Error starting conversation:", error)
     }
   }
 

@@ -26,10 +26,10 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       data: { user },
     } = await supabase.auth.getUser()
 
-    console.log("[v0] Trade request - User:", user?.id)
+    console.log("Trade request - User:", user?.id)
 
     if (!user) {
-      console.log("[v0] Trade request - No user found, returning 401")
+      console.log("Trade request - No user found, returning 401")
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const { data: trade, error: tradeError } = await supabase.from("trades").select("id").eq("id", params.id).single()
 
     if (tradeError || !trade) {
-      console.log("[v0] Trade not found:", params.id)
+      console.log("Trade not found:", params.id)
       return NextResponse.json({ error: "Trade not found" }, { status: 404 })
     }
 
@@ -55,14 +55,14 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       .select()
 
     if (error) {
-      console.error("[v0] Error creating interaction:", error)
+      console.error("Error creating interaction:", error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
-    console.log("[v0] Trade request created successfully")
+    console.log("Trade request created successfully")
     return NextResponse.json(data[0])
   } catch (error) {
-    console.error("[v0] Error creating interaction:", error)
+    console.error("Error creating interaction:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

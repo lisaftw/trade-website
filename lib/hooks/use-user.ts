@@ -18,7 +18,7 @@ export function useUser() {
 
   const fetchUser = useCallback(async () => {
     if (fetchingRef.current) {
-      console.log("[v0] Skipping duplicate user fetch request")
+      console.log("Skipping duplicate user fetch request")
       return
     }
 
@@ -39,7 +39,7 @@ export function useUser() {
         setUser(null)
       }
     } catch (err) {
-      console.error("[v0] Failed to fetch user:", err)
+      console.error("Failed to fetch user:", err)
       setError("Failed to load user")
       setUser(null)
     } finally {
@@ -53,7 +53,7 @@ export function useUser() {
 
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "user_logged_in" && e.storageArea === localStorage) {
-        console.log("[v0] User login detected in another window, refetching")
+        console.log("User login detected in another window, refetching")
         fetchUser()
       }
     }
@@ -71,7 +71,7 @@ export function useUser() {
       } catch {}
       window.location.href = "/"
     } catch (err) {
-      console.error("[v0] Logout failed:", err)
+      console.error("Logout failed:", err)
     }
   }
 

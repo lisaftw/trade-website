@@ -45,7 +45,7 @@ export function EmojiPicker({ onSelect, onClose }: EmojiPickerProps) {
             size="sm"
             className="h-10 w-10 text-2xl hover:scale-125 transition-transform p-0"
             onClick={() => {
-              console.log("[v0] Emoji button clicked:", emoji)
+              console.log("Emoji button clicked:", emoji)
               onSelect(emoji)
               onClose()
             }}
