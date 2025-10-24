@@ -91,12 +91,6 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
     setIsAdding(true)
     try {
-      console.log("[v0] Attempting to add item to inventory:", {
-        itemId: item.id,
-        itemName: item.name,
-        userId: user?.discordId,
-      })
-
       const response = await fetch("/api/inventory", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -106,27 +100,52 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
         }),
       })
 
-      console.log("[v0] API response status:", response.status)
-
       if (!response.ok) {
         const data = await response.json()
-        console.error("[v0] API error response:", data)
         throw new Error(data.details || data.error || "Failed to add to inventory")
       }
 
       toast({
-        title: "✓ Added to your inventory",
-        description: (
-          <div className="flex flex-col gap-1">
-            <span className="font-semibold text-base">{item.name}</span>
-            <span className="text-sm text-muted-foreground">Successfully added to your collection</span>
+        title: (
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-5 w-5 text-white"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </div>
+            <span className="text-lg font-bold">Added to your inventory</span>
           </div>
         ),
-        duration: 4000,
-        className: "border-green-500/50 bg-green-500/10",
+        description: (
+          <div className="mt-3 flex items-center gap-3 rounded-lg bg-background/50 p-3 border border-green-500/30">
+            <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border border-border bg-card">
+              <Image
+                src={imageUrl || "/placeholder.svg"}
+                alt={item.name}
+                fill
+                className="object-contain p-1"
+                sizes="64px"
+              />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-base text-foreground truncate">{item.name}</p>
+              <p className="text-sm text-muted-foreground mt-0.5">Value: {formatValue(item.rap_value)}</p>
+            </div>
+          </div>
+        ),
+        duration: 5000,
+        className: "border-2 border-green-500 bg-green-500/5 shadow-xl shadow-green-500/20",
       })
     } catch (error) {
-      console.error("[v0] Error adding to inventory:", error)
       toast({
         title: "Failed to add item",
         description: error instanceof Error ? error.message : "Please try again or check your connection.",

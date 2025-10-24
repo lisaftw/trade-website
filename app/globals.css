@@ -323,4 +323,39 @@ a[href*="v0.app"][aria-label*="Built"] {
       animation: none !important;
     }
   }
+
+  /* Adding success notification animations */
+  @keyframes success-bounce {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  @keyframes success-glow {
+    0%,
+    100% {
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 30px rgba(34, 197, 94, 0.5);
+    }
+  }
+
+  .animate-success-bounce {
+    animation: success-bounce 0.6s ease-out;
+  }
+
+  .animate-success-glow {
+    animation: success-glow 2s ease-in-out infinite;
+  }
+
+  /* Success toast specific styling */
+  .toast-success {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%);
+    border: 2px solid rgb(34, 197, 94);
+  }
 }
