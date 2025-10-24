@@ -161,110 +161,99 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
   return (
     <>
-      <div className="relative w-[340px] overflow-hidden rounded-[32px] border-[3px] border-dashed border-gray-600/70 bg-black p-5">
-        {/* Inner container with dashed border around image section */}
-        <div className="mb-5 overflow-hidden rounded-[24px] border-[3px] border-dashed border-gray-600/60 bg-black/50 p-4">
+      <div className="relative h-[900px] w-[680px]">
+        {/* Outer container background image */}
+        <div className="absolute inset-0">
+          <Image src="/ui/flattened.png" alt="" fill className="object-contain" priority />
+        </div>
+
+        {/* Content overlay - positioned to match the reference design */}
+        <div className="relative z-10 flex h-full flex-col items-center px-16 py-12">
           {/* TR3DE Logo */}
-          <div className="mb-3 flex justify-center">
-            <Image src="/ui/logo-tr3de.png" alt="TR3DE" width={120} height={35} className="h-auto w-28" />
+          <div className="mb-6">
+            <Image src="/ui/logo-tr3de.png" alt="TR3DE" width={200} height={60} className="h-auto w-48" />
           </div>
 
-          {/* Item Image - Square with brightness overlay */}
-          <div className="relative mx-auto mb-3 aspect-square w-[220px] overflow-hidden rounded-lg bg-gradient-to-br from-gray-900/50 to-black/40">
-            <Image
-              src={imageUrl || "/placeholder.svg"}
-              alt={item.name}
-              fill
-              className="object-contain p-3"
-              sizes="220px"
-              onError={() => setImageError(true)}
-            />
-            {/* Brightness overlay */}
-            <div className="pointer-events-none absolute inset-0">
-              <Image src="/ui/brightness-overlay.png" alt="" fill className="object-cover opacity-30" />
+          {/* Inner container with item image - positioned to match reference */}
+          <div className="relative mb-8 h-[380px] w-[520px]">
+            {/* Item Image */}
+            <div className="absolute left-1/2 top-[80px] h-[275px] w-[275px] -translate-x-1/2">
+              <Image
+                src={imageUrl || "/placeholder.svg"}
+                alt={item.name}
+                fill
+                className="object-contain"
+                sizes="275px"
+                onError={() => setImageError(true)}
+              />
             </div>
+
+            {/* Last Updated - positioned at bottom of inner container */}
+            <p className="absolute bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-[14px] tracking-wide text-gray-400">
+              Last Updated: {getTimeAgo(item.last_updated_at)}
+            </p>
           </div>
 
-          {/* Last Updated */}
-          <p className="text-center font-mono text-[12px] tracking-wide text-gray-400">
-            Last Updated: {getTimeAgo(item.last_updated_at)}
-          </p>
-        </div>
+          {/* Item Name */}
+          <h3 className="mb-8 text-center font-mono text-[42px] font-bold uppercase leading-tight tracking-[0.15em] text-white">
+            {item.name}
+          </h3>
 
-        {/* Item Name */}
-        <h3 className="mb-4 text-center font-mono text-[24px] font-bold uppercase leading-tight tracking-wider text-white">
-          {item.name}
-        </h3>
+          {/* Info rows - positioned to match reference */}
+          <div className="w-[520px] space-y-6">
+            {/* Variant Row */}
+            <div className="flex items-center justify-between border-b border-gray-700/50 pb-3">
+              <span className="font-mono text-[22px] text-white">Variant</span>
+              <span className="font-mono text-[22px] text-white">{variant}</span>
+            </div>
 
-        {/* Divider line using image */}
-        <div className="relative mb-4 h-[2px] w-full">
-          <Image src="/ui/divider-line-1.png" alt="" fill className="object-cover" />
-        </div>
-
-        {/* Variant Row */}
-        <div className="mb-3 flex items-center justify-between pb-2">
-          <span className="font-mono text-[16px] text-white">Variant</span>
-          <span className="font-mono text-[16px] text-white underline decoration-gray-600 decoration-[1.5px] underline-offset-4">
-            {variant}
-          </span>
-        </div>
-        {/* Divider line using image */}
-        <div className="relative mb-3 h-[1px] w-full">
-          <Image src="/ui/divider-line-2.png" alt="" fill className="object-cover opacity-60" />
-        </div>
-
-        {/* Value Row */}
-        <div className="mb-3 flex items-center justify-between pb-2">
-          <span className="font-mono text-[16px] text-white">Value</span>
-          <div className="flex items-center gap-2">
-            {changePercent !== 0 && (
-              <div className="flex items-center gap-1">
-                {isPositive ? (
-                  <ChevronUp className="h-4 w-4 text-green-500" />
-                ) : (
-                  <ChevronDown className="h-4 w-4 text-red-500" />
+            {/* Value Row */}
+            <div className="flex items-center justify-between border-b border-gray-700/50 pb-3">
+              <span className="font-mono text-[22px] text-white">Value</span>
+              <div className="flex items-center gap-3">
+                {changePercent !== 0 && (
+                  <div className="flex items-center gap-1">
+                    {isPositive ? (
+                      <ChevronUp className="h-5 w-5 text-green-500" />
+                    ) : (
+                      <ChevronDown className="h-5 w-5 text-red-500" />
+                    )}
+                    <span
+                      className={`font-mono text-[20px] font-bold ${isPositive ? "text-green-500" : "text-red-500"}`}
+                    >
+                      {Math.abs(changePercent).toFixed(1)}%
+                    </span>
+                  </div>
                 )}
-                <span className={`font-mono text-[15px] font-bold ${isPositive ? "text-green-500" : "text-red-500"}`}>
-                  {Math.abs(changePercent).toFixed(1)}%
-                </span>
+                <span className="font-mono text-[20px] text-gray-400">|</span>
+                <span className="font-mono text-[22px] text-white">{formatValue(rapValue)}</span>
+              </div>
+            </div>
+
+            {/* Demand Row */}
+            {demandRating && (
+              <div className="flex items-center justify-between border-b border-gray-700/50 pb-3">
+                <span className="font-mono text-[22px] text-white">Demand</span>
+                <span className="font-mono text-[28px] font-bold text-yellow-400">{demandRating}</span>
               </div>
             )}
-            <span className="font-mono text-[15px] text-gray-400">|</span>
-            <span className="font-mono text-[16px] text-white">{formatValue(rapValue)}</span>
           </div>
-        </div>
-        {/* Divider line using image */}
-        <div className="relative mb-3 h-[1px] w-full">
-          <Image src="/ui/divider-line-2.png" alt="" fill className="object-cover opacity-60" />
-        </div>
 
-        {/* Demand Row */}
-        {demandRating && (
-          <>
-            <div className="mb-5 flex items-center justify-between pb-2">
-              <span className="font-mono text-[16px] text-white">Demand</span>
-              <span className="font-mono text-[20px] font-bold text-yellow-400">{demandRating}</span>
+          {/* Button - positioned at bottom */}
+          {!hideAddButton && (
+            <div className="relative mt-10 h-[70px] w-[480px]">
+              {/* Button background image */}
+              <Image src="/ui/button-gray.png" alt="" fill className="rounded-full object-cover" />
+              <Button
+                onClick={handleAddToInventory}
+                disabled={isAdding || userLoading}
+                className="relative h-full w-full rounded-full border-none bg-transparent font-mono text-[16px] font-bold uppercase tracking-[0.25em] text-gray-300 hover:bg-white/10 hover:text-white disabled:opacity-50"
+              >
+                {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
+              </Button>
             </div>
-            {/* Divider line using image */}
-            <div className="relative mb-5 h-[1px] w-full">
-              <Image src="/ui/divider-line-2.png" alt="" fill className="object-cover opacity-60" />
-            </div>
-          </>
-        )}
-
-        {!hideAddButton && (
-          <div className="relative h-[52px] w-full">
-            {/* Button background image */}
-            <Image src="/ui/button-gray.png" alt="" fill className="rounded-full object-cover" />
-            <Button
-              onClick={handleAddToInventory}
-              disabled={isAdding || userLoading}
-              className="relative h-full w-full rounded-full border-none bg-transparent font-mono text-[14px] font-bold uppercase tracking-[0.2em] text-gray-300 hover:bg-white/5 hover:text-white disabled:opacity-50"
-            >
-              {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
-            </Button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
