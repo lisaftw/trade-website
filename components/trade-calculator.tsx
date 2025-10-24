@@ -222,7 +222,7 @@ function TradeGrid({
           <div
             key={index}
             className={cn(
-              "relative aspect-square rounded-xl border-2 transition-all",
+              "relative h-24 rounded-xl border-2 transition-all",
               item ? "border-gray-700/50 bg-[#1a1a1a] hover:border-gray-600" : "border-gray-800/50 bg-[#0d0d0d]",
             )}
           >
@@ -240,7 +240,7 @@ function TradeGrid({
                   src={item.imageUrl || "/placeholder.svg"}
                   alt={item.name}
                   fill
-                  className="rounded-lg object-cover"
+                  className="rounded-lg object-contain"
                 />
                 <button
                   onClick={() => onRemove(item.id)}

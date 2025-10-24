@@ -2,14 +2,31 @@
 
 import type React from "react"
 
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, useCallback } from "react"
 import { createClient } from "@/lib/supabase/client"
 import Image from "next/image"
 import { formatDistanceToNow } from "date-fns"
-import { ArrowLeft, Send, Loader2 } from "lucide-react"
+import { ArrowLeft, Send, Loader2, Check, CheckCheck, WifiOff, Wifi, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
+import { MessageActionsMenu } from "@/components/message-actions-menu"
+import { EmojiPicker } from "@/components/emoji-picker"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+
+type Reaction = {
+  emoji: string
+  users: string[]
+}
 
 type Message = {
   id: string
@@ -17,6 +34,12 @@ type Message = {
   content: string
   created_at: string
   is_read: boolean
+  edited_at?: string | null
+  deleted_at?: string | null
+  reply_to?: string | null
+  reactions?: Reaction[]
+  status?: "sending" | "sent" | "delivered" | "read" | "failed"
+  tempId?: string
 }
 
 type Conversation = {
@@ -43,16 +66,35 @@ export function ChatWindow({
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
+  const [isConnected, setIsConnected] = useState(true)
+  const [hasMore, setHasMore] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
   const supabase = createClient()
   const typingTimeoutRef = useRef<NodeJS.Timeout>()
+  const lastTypingTimeRef = useRef<number>(0)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const channelRef = useRef<any>(null)
+  const [editingMessageId, setEditingMessageId] = useState<string | null>(null)
+  const [editContent, setEditContent] = useState("")
+  const [deleteMessageId, setDeleteMessageId] = useState<string | null>(null)
+  const [replyToMessage, setReplyToMessage] = useState<Message | null>(null)
+  const [showEmojiPicker, setShowEmojiPicker] = useState<string | null>(null)
 
   const displayName = conversation.otherUser.global_name || conversation.otherUser.username || "Unknown User"
   const avatarUrl = conversation.otherUser.avatar_url || "/placeholder.svg?height=40&width=40"
 
   useEffect(() => {
+    audioRef.current = new Audio("/notification.mp3")
+    audioRef.current.volume = 0.5
+  }, [])
+
+  useEffect(() => {
     fetchMessages()
     markMessagesAsRead()
+
+    console.log("[v0] Setting up realtime subscription for conversation:", conversation.id)
 
     const channel = supabase
       .channel(`conversation:${conversation.id}`)
@@ -65,14 +107,18 @@ export function ChatWindow({
           filter: `conversation_id=eq.${conversation.id}`,
         },
         (payload) => {
-          console.log("[v0] New message received:", payload)
+          console.log("[v0] Received new message via realtime:", payload.new)
           const newMsg = payload.new as Message
           setMessages((prev) => {
+            // Remove optimistic message if it exists
+            const filtered = prev.filter((m) => m.tempId !== newMsg.id)
             // Prevent duplicates
-            if (prev.some((m) => m.id === newMsg.id)) return prev
-            return [...prev, newMsg]
+            if (filtered.some((m) => m.id === newMsg.id)) return filtered
+            return [...filtered, { ...newMsg, status: "delivered" }]
           })
+
           if (newMsg.sender_id !== currentUserId) {
+            audioRef.current?.play().catch(() => {})
             markMessagesAsRead()
           }
         },
@@ -86,8 +132,16 @@ export function ChatWindow({
           filter: `conversation_id=eq.${conversation.id}`,
         },
         (payload) => {
-          console.log("[v0] Message updated:", payload)
-          setMessages((prev) => prev.map((m) => (m.id === payload.new.id ? (payload.new as Message) : m)))
+          console.log("[v0] Message updated via realtime:", payload.new)
+          const updatedMsg = payload.new as Message
+          setMessages((prev) =>
+            prev.map((m) => {
+              if (m.id === updatedMsg.id) {
+                return { ...updatedMsg, status: updatedMsg.is_read ? "read" : "delivered" }
+              }
+              return m
+            }),
+          )
         },
       )
       .on(
@@ -99,13 +153,27 @@ export function ChatWindow({
           filter: `conversation_id=eq.${conversation.id}`,
         },
         (payload) => {
-          console.log("[v0] Message deleted:", payload)
+          console.log("[v0] Message deleted via realtime:", payload.old)
           setMessages((prev) => prev.filter((m) => m.id !== payload.old.id))
         },
       )
-      .subscribe()
+      .on("broadcast", { event: "typing" }, ({ payload }) => {
+        console.log("[v0] Typing indicator received:", payload)
+        if (payload.userId !== currentUserId) {
+          setIsTyping(true)
+          if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
+          typingTimeoutRef.current = setTimeout(() => setIsTyping(false), 3000)
+        }
+      })
+      .subscribe((status) => {
+        console.log("[v0] Realtime subscription status:", status)
+        setIsConnected(status === "SUBSCRIBED")
+      })
+
+    channelRef.current = channel
 
     return () => {
+      console.log("[v0] Cleaning up realtime subscription")
       supabase.removeChannel(channel)
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current)
@@ -117,20 +185,70 @@ export function ChatWindow({
     scrollToBottom()
   }, [messages])
 
+  const handleScroll = useCallback(() => {
+    const container = messagesContainerRef.current
+    if (!container || loadingMore || !hasMore) return
+
+    if (container.scrollTop === 0) {
+      loadMoreMessages()
+    }
+  }, [loadingMore, hasMore])
+
   async function fetchMessages() {
     try {
       const { data, error } = await supabase
         .from("messages")
         .select("*")
         .eq("conversation_id", conversation.id)
-        .order("created_at", { ascending: true })
+        .order("created_at", { ascending: false })
+        .limit(50)
 
       if (error) throw error
-      setMessages(data || [])
+
+      const messagesWithStatus = (data || []).reverse().map((msg) => ({
+        ...msg,
+        status: msg.is_read ? "read" : msg.sender_id === currentUserId ? "delivered" : undefined,
+      }))
+
+      setMessages(messagesWithStatus)
+      setHasMore((data || []).length === 50)
     } catch (error) {
       console.error("[v0] Error fetching messages:", error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function loadMoreMessages() {
+    if (messages.length === 0) return
+
+    setLoadingMore(true)
+    try {
+      const oldestMessage = messages[0]
+      const { data, error } = await supabase
+        .from("messages")
+        .select("*")
+        .eq("conversation_id", conversation.id)
+        .lt("created_at", oldestMessage.created_at)
+        .order("created_at", { ascending: false })
+        .limit(50)
+
+      if (error) throw error
+
+      if (data && data.length > 0) {
+        const messagesWithStatus = data.reverse().map((msg) => ({
+          ...msg,
+          status: msg.is_read ? "read" : msg.sender_id === currentUserId ? "delivered" : undefined,
+        }))
+        setMessages((prev) => [...messagesWithStatus, ...prev])
+        setHasMore(data.length === 50)
+      } else {
+        setHasMore(false)
+      }
+    } catch (error) {
+      console.error("[v0] Error loading more messages:", error)
+    } finally {
+      setLoadingMore(false)
     }
   }
 
@@ -147,18 +265,139 @@ export function ChatWindow({
     }
   }
 
+  function handleTyping() {
+    const now = Date.now()
+    if (now - lastTypingTimeRef.current > 2000) {
+      channelRef.current?.send({
+        type: "broadcast",
+        event: "typing",
+        payload: { userId: currentUserId },
+      })
+      lastTypingTimeRef.current = now
+    }
+  }
+
+  const handleEditMessage = async (messageId: string) => {
+    if (!editContent.trim()) return
+
+    try {
+      const { error } = await supabase
+        .from("messages")
+        .update({
+          content: editContent.trim(),
+          edited_at: new Date().toISOString(),
+        })
+        .eq("id", messageId)
+
+      if (error) throw error
+
+      setEditingMessageId(null)
+      setEditContent("")
+    } catch (error) {
+      console.error("[v0] Error editing message:", error)
+    }
+  }
+
+  const handleDeleteMessage = async (messageId: string) => {
+    try {
+      const { error } = await supabase
+        .from("messages")
+        .update({
+          deleted_at: new Date().toISOString(),
+          content: "This message was deleted",
+        })
+        .eq("id", messageId)
+
+      if (error) throw error
+
+      setDeleteMessageId(null)
+    } catch (error) {
+      console.error("[v0] Error deleting message:", error)
+    }
+  }
+
+  const handleReaction = async (messageId: string, emoji: string) => {
+    try {
+      const message = messages.find((m) => m.id === messageId)
+      if (!message) return
+
+      const reactions = message.reactions || []
+      const existingReaction = reactions.find((r) => r.emoji === emoji)
+
+      let updatedReactions: Reaction[]
+      if (existingReaction) {
+        if (existingReaction.users.includes(currentUserId)) {
+          // Remove reaction
+          updatedReactions = reactions
+            .map((r) => (r.emoji === emoji ? { ...r, users: r.users.filter((u) => u !== currentUserId) } : r))
+            .filter((r) => r.users.length > 0)
+        } else {
+          // Add user to reaction
+          updatedReactions = reactions.map((r) =>
+            r.emoji === emoji ? { ...r, users: [...r.users, currentUserId] } : r,
+          )
+        }
+      } else {
+        // New reaction
+        updatedReactions = [...reactions, { emoji, users: [currentUserId] }]
+      }
+
+      const { error } = await supabase.from("messages").update({ reactions: updatedReactions }).eq("id", messageId)
+
+      if (error) throw error
+
+      setShowEmojiPicker(null)
+    } catch (error) {
+      console.error("[v0] Error adding reaction:", error)
+    }
+  }
+
+  const startEdit = (message: Message) => {
+    setEditingMessageId(message.id)
+    setEditContent(message.content)
+  }
+
+  const cancelEdit = () => {
+    setEditingMessageId(null)
+    setEditContent("")
+  }
+
   async function sendMessage(e: React.FormEvent) {
     e.preventDefault()
     if (!newMessage.trim() || sending) return
 
+    const tempId = `temp-${Date.now()}`
+    const messageContent = newMessage.trim()
+
+    const optimisticMessage: Message = {
+      id: tempId,
+      tempId,
+      conversation_id: conversation.id,
+      sender_id: currentUserId,
+      content: messageContent,
+      created_at: new Date().toISOString(),
+      is_read: false,
+      status: "sending",
+      reply_to: replyToMessage?.id || null,
+    }
+
+    setMessages((prev) => [...prev, optimisticMessage])
+    setNewMessage("")
+    setReplyToMessage(null)
     setSending(true)
+
     try {
       const [messageResult] = await Promise.all([
-        supabase.from("messages").insert({
-          conversation_id: conversation.id,
-          sender_id: currentUserId,
-          content: newMessage.trim(),
-        }),
+        supabase
+          .from("messages")
+          .insert({
+            conversation_id: conversation.id,
+            sender_id: currentUserId,
+            content: messageContent,
+            reply_to: replyToMessage?.id || null,
+          })
+          .select()
+          .single(),
         supabase
           .from("conversations")
           .update({
@@ -168,16 +407,66 @@ export function ChatWindow({
       ])
 
       if (messageResult.error) throw messageResult.error
-      setNewMessage("")
+
+      setMessages((prev) => prev.map((m) => (m.tempId === tempId ? { ...messageResult.data, status: "sent" } : m)))
     } catch (error) {
       console.error("[v0] Error sending message:", error)
+      setMessages((prev) => prev.map((m) => (m.tempId === tempId ? { ...m, status: "failed" } : m)))
     } finally {
       setSending(false)
     }
   }
 
+  const retryMessage = async (message: Message) => {
+    if (!message.tempId) return
+
+    setMessages((prev) => prev.map((m) => (m.tempId === message.tempId ? { ...m, status: "sending" } : m)))
+
+    try {
+      const { data, error } = await supabase
+        .from("messages")
+        .insert({
+          conversation_id: conversation.id,
+          sender_id: currentUserId,
+          content: message.content,
+        })
+        .select()
+        .single()
+
+      if (error) throw error
+
+      setMessages((prev) => prev.map((m) => (m.tempId === message.tempId ? { ...data, status: "sent" } : m)))
+    } catch (error) {
+      console.error("[v0] Error retrying message:", error)
+      setMessages((prev) => prev.map((m) => (m.tempId === message.tempId ? { ...m, status: "failed" } : m)))
+    }
+  }
+
   function scrollToBottom() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  function renderMessageStatus(message: Message) {
+    if (message.sender_id !== currentUserId) return null
+
+    switch (message.status) {
+      case "sending":
+        return <Loader2 className="h-3 w-3 animate-spin" />
+      case "sent":
+        return <Check className="h-3 w-3" />
+      case "delivered":
+        return <CheckCheck className="h-3 w-3" />
+      case "read":
+        return <CheckCheck className="h-3 w-3 text-blue-500" />
+      case "failed":
+        return (
+          <button onClick={() => retryMessage(message)} className="text-red-500 text-xs underline">
+            Retry
+          </button>
+        )
+      default:
+        return <Check className="h-3 w-3" />
+    }
   }
 
   return (
@@ -200,16 +489,31 @@ export function ChatWindow({
             {isTyping ? "typing..." : `@${conversation.otherUser.username || "unknown"}`}
           </p>
         </div>
+        <div className="flex items-center gap-2">
+          {isConnected ? (
+            <Wifi className="h-4 w-4 text-green-500" title="Connected" />
+          ) : (
+            <WifiOff className="h-4 w-4 text-red-500" title="Disconnected" />
+          )}
+        </div>
       </div>
 
-      {/* Messages Area with WhatsApp-like background */}
+      {/* Messages Area */}
       <div
+        ref={messagesContainerRef}
+        onScroll={handleScroll}
         className="flex-1 overflow-y-auto p-4 space-y-4"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fillRule='evenodd'%3E%3Cg fill='%23000000' fillOpacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           backgroundColor: "hsl(var(--background))",
         }}
       >
+        {loadingMore && (
+          <div className="flex justify-center py-2">
+            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+          </div>
+        )}
+
         {loading ? (
           <div className="flex items-center justify-center h-full">
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -221,18 +525,116 @@ export function ChatWindow({
         ) : (
           messages.map((message) => {
             const isOwn = message.sender_id === currentUserId
+            const isDeleted = !!message.deleted_at
+            const isEditing = editingMessageId === message.id
+            const replyToMsg = message.reply_to ? messages.find((m) => m.id === message.reply_to) : null
+
             return (
-              <div key={message.id} className={cn("flex", isOwn ? "justify-end" : "justify-start")}>
-                <div
-                  className={cn(
-                    "max-w-[70%] rounded-lg px-4 py-2 shadow-sm",
-                    isOwn ? "bg-primary text-primary-foreground" : "bg-card border border-border",
+              <div
+                key={message.id || message.tempId}
+                className={cn("flex group", isOwn ? "justify-end" : "justify-start")}
+              >
+                <div className="flex flex-col max-w-[70%]">
+                  {replyToMsg && (
+                    <div
+                      className={cn(
+                        "text-xs px-3 py-1 mb-1 rounded-t-lg border-l-2",
+                        isOwn ? "bg-primary/10 border-primary" : "bg-muted border-muted-foreground",
+                      )}
+                    >
+                      <p className="text-muted-foreground truncate">Replying to: {replyToMsg.content}</p>
+                    </div>
                   )}
-                >
-                  <p className="text-sm break-words">{message.content}</p>
-                  <p className={cn("text-xs mt-1", isOwn ? "text-primary-foreground/70" : "text-muted-foreground")}>
-                    {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
-                  </p>
+
+                  <div className="flex items-start gap-2">
+                    <div
+                      className={cn(
+                        "flex-1 rounded-lg px-4 py-2 shadow-sm",
+                        isOwn ? "bg-primary text-primary-foreground" : "bg-card border border-border",
+                        message.status === "failed" && "opacity-50",
+                        isDeleted && "italic opacity-60",
+                      )}
+                    >
+                      {isEditing ? (
+                        <div className="space-y-2">
+                          <Input
+                            value={editContent}
+                            onChange={(e) => setEditContent(e.target.value)}
+                            className="text-sm"
+                            autoFocus
+                          />
+                          <div className="flex gap-2">
+                            <Button size="sm" onClick={() => handleEditMessage(message.id)}>
+                              Save
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={cancelEdit}>
+                              Cancel
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <p className="text-sm break-words">{message.content}</p>
+                          <div className="flex items-center gap-1 mt-1">
+                            <p
+                              className={cn("text-xs", isOwn ? "text-primary-foreground/70" : "text-muted-foreground")}
+                            >
+                              {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
+                              {message.edited_at && !isDeleted && " (edited)"}
+                            </p>
+                            {isOwn && (
+                              <span
+                                className={cn(
+                                  "text-xs",
+                                  isOwn ? "text-primary-foreground/70" : "text-muted-foreground",
+                                )}
+                              >
+                                {renderMessageStatus(message)}
+                              </span>
+                            )}
+                          </div>
+                        </>
+                      )}
+
+                      {message.reactions && message.reactions.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-2">
+                          {message.reactions.map((reaction) => (
+                            <button
+                              key={reaction.emoji}
+                              onClick={() => handleReaction(message.id, reaction.emoji)}
+                              className={cn(
+                                "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs",
+                                reaction.users.includes(currentUserId)
+                                  ? "bg-primary/20 border border-primary"
+                                  : "bg-muted hover:bg-muted/80",
+                              )}
+                            >
+                              <span>{reaction.emoji}</span>
+                              <span className="text-xs">{reaction.users.length}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {!isDeleted && !isEditing && (
+                      <MessageActionsMenu
+                        messageId={message.id}
+                        content={message.content}
+                        isOwnMessage={isOwn}
+                        onEdit={() => startEdit(message)}
+                        onDelete={() => setDeleteMessageId(message.id)}
+                        onReply={() => setReplyToMessage(message)}
+                        onReact={() => setShowEmojiPicker(message.id)}
+                      />
+                    )}
+                  </div>
+
+                  {showEmojiPicker === message.id && (
+                    <div className="mt-1">
+                      <EmojiPicker onSelect={(emoji) => handleReaction(message.id, emoji)} trigger={<div />} />
+                    </div>
+                  )}
                 </div>
               </div>
             )
@@ -243,19 +645,53 @@ export function ChatWindow({
 
       {/* Message Input */}
       <form onSubmit={sendMessage} className="p-4 border-t border-border bg-card">
+        {replyToMessage && (
+          <div className="flex items-center gap-2 mb-2 p-2 bg-muted rounded-lg">
+            <div className="flex-1 text-sm">
+              <p className="text-muted-foreground text-xs">Replying to:</p>
+              <p className="truncate">{replyToMessage.content}</p>
+            </div>
+            <Button type="button" variant="ghost" size="icon" onClick={() => setReplyToMessage(null)}>
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
         <div className="flex gap-2">
           <Input
             value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
+            onChange={(e) => {
+              setNewMessage(e.target.value)
+              handleTyping()
+            }}
             placeholder="Type a message..."
             className="flex-1"
-            disabled={sending}
+            disabled={sending || !isConnected}
           />
-          <Button type="submit" size="icon" disabled={sending || !newMessage.trim()}>
+          <Button type="submit" size="icon" disabled={sending || !newMessage.trim() || !isConnected}>
             {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           </Button>
         </div>
       </form>
+
+      <AlertDialog open={!!deleteMessageId} onOpenChange={() => setDeleteMessageId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Message</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this message? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteMessageId && handleDeleteMessage(deleteMessageId)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
