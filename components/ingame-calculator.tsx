@@ -194,7 +194,7 @@ export function IngameCalculator() {
                   </button>
                   <div className="absolute bottom-0 left-0 right-0 rounded-b-xl bg-black/90 p-2 text-center">
                     <p className="truncate text-xs font-semibold text-white">{item.name}</p>
-                    <p className="text-xs text-gray-400">${item.value.toLocaleString()}</p>
+                    <p className="text-xs text-gray-400">{item.value.toLocaleString()}</p>
                   </div>
                 </div>
               </div>
@@ -204,7 +204,7 @@ export function IngameCalculator() {
           {/* Total Value Display */}
           <div className="rounded-xl border-2 border-brand/50 bg-brand/10 p-6 text-center">
             <p className="text-sm text-gray-400">Total Value</p>
-            <p className="mt-2 text-4xl font-bold text-brand">${totalValue.toLocaleString()}</p>
+            <p className="mt-2 text-4xl font-bold text-brand">{totalValue.toLocaleString()}</p>
             <p className="mt-1 text-sm text-gray-400">{selectedItems.length} items</p>
           </div>
 
@@ -284,7 +284,7 @@ export function IngameCalculator() {
                         <p className="font-medium text-white">{item.name}</p>
                         <p className="text-sm text-gray-400">{item.game}</p>
                       </div>
-                      <p className="text-lg font-bold text-white">${item.value.toLocaleString()}</p>
+                      <p className="text-lg font-bold text-white">{item.value.toLocaleString()}</p>
                     </button>
                   ))}
                 </>

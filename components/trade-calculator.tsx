@@ -259,7 +259,7 @@ function TradeGrid({
 
       <div className="flex items-center justify-between px-2">
         <span className="text-base font-bold tracking-wide text-white">VALUE</span>
-        <span className="text-base font-bold text-white">${total.toLocaleString()}</span>
+        <span className="text-base font-bold text-white">{total.toLocaleString()}</span>
       </div>
 
       {isActive && (
@@ -321,7 +321,7 @@ function TradeGrid({
                         <p className="text-sm font-medium text-white">{item.name}</p>
                         <p className="text-xs text-gray-400">{item.game}</p>
                       </div>
-                      <p className="text-base font-bold text-white">${item.value.toLocaleString()}</p>
+                      <p className="text-base font-bold text-white">{item.value.toLocaleString()}</p>
                     </button>
                   ))}
                 </>
