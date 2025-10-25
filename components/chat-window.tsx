@@ -516,7 +516,7 @@ export function ChatWindow({
 
   return (
     <div className="flex flex-col h-full bg-zinc-950">
-      <div className="px-4 py-3 md:px-6 md:py-4 border-b border-border/50 bg-zinc-900/70 backdrop-blur-sm flex items-center gap-3 shadow-sm">
+      <div className="px-4 py-3 md:px-6 md:py-4 border-b border-border/50 bg-zinc-950/70 backdrop-blur-sm flex items-center gap-3 shadow-sm">
         <Button variant="ghost" size="icon" onClick={onBack} className="md:hidden -ml-2">
           <ArrowLeft className="h-5 w-5" />
         </Button>
@@ -606,13 +606,13 @@ export function ChatWindow({
                   <div className="flex items-start gap-2">
                     <div
                       className={cn(
-                        "flex-1 rounded-2xl px-3 py-2 md:px-4 md:py-2.5 shadow-sm transition-all",
+                        "flex-1 rounded-3xl px-3 py-2 md:px-4 md:py-2.5 shadow-md transition-all",
                         isOwn
-                          ? "bg-primary text-primary-foreground rounded-br-md"
-                          : "bg-card border border-border/50 rounded-bl-md",
+                          ? "bg-primary text-primary-foreground rounded-br-lg"
+                          : "bg-card border border-border/50 rounded-bl-lg",
                         message.status === "failed" && "opacity-50",
                         isDeleted && "italic opacity-60",
-                        !isDeleted && "hover:shadow-md",
+                        !isDeleted && "hover:shadow-lg",
                       )}
                     >
                       {isEditing ? (
@@ -666,9 +666,9 @@ export function ChatWindow({
                               key={reaction.emoji}
                               onClick={() => handleReaction(message.id, reaction.emoji)}
                               className={cn(
-                                "inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs transition-all hover:scale-105",
+                                "inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs transition-all hover:scale-110",
                                 reaction.users.includes(currentUserId)
-                                  ? "bg-primary/20 border border-primary/50 shadow-sm"
+                                  ? "bg-primary/20 border border-primary/50 shadow-md"
                                   : "bg-muted/50 hover:bg-muted border border-transparent",
                               )}
                             >

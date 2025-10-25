@@ -20,7 +20,6 @@ export function EmojiPicker({ onSelect, onClose }: EmojiPickerProps) {
       }
     }
 
-    // Add a small delay before attaching the listener to prevent immediate close
     const timeoutId = setTimeout(() => {
       document.addEventListener("mousedown", handleClickOutside)
     }, 100)
@@ -34,16 +33,16 @@ export function EmojiPicker({ onSelect, onClose }: EmojiPickerProps) {
   return (
     <div
       ref={pickerRef}
-      className="absolute z-50 bg-popover border border-border rounded-lg shadow-lg p-2 mt-1"
+      className="absolute z-50 bg-popover/95 backdrop-blur-sm border border-border/50 rounded-2xl shadow-2xl p-3 mt-1"
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="grid grid-cols-5 gap-1">
+      <div className="grid grid-cols-5 gap-1.5">
         {COMMON_EMOJIS.map((emoji) => (
           <Button
             key={emoji}
             variant="ghost"
             size="sm"
-            className="h-10 w-10 text-2xl hover:scale-125 transition-transform p-0"
+            className="h-11 w-11 text-2xl hover:scale-125 hover:bg-accent/50 transition-all rounded-xl p-0"
             onClick={() => {
               console.log("Emoji button clicked:", emoji)
               onSelect(emoji)
