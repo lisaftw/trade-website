@@ -35,6 +35,7 @@ export function TradesContent({ currentUser }: { currentUser: UserSession | null
   const [loading, setLoading] = useState(true)
   const [selectedGame, setSelectedGame] = useState("all")
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
+  const [messagingUserId, setMessagingUserId] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
 
@@ -89,6 +90,9 @@ export function TradesContent({ currentUser }: { currentUser: UserSession | null
       return
     }
 
+    if (messagingUserId) return
+    setMessagingUserId(traderId)
+
     try {
       // Check if conversation already exists (either direction)
       const { data: existing1 } = await supabase
@@ -130,6 +134,8 @@ export function TradesContent({ currentUser }: { currentUser: UserSession | null
       router.push(`/messages?conversation=${newConvo.id}`)
     } catch (error) {
       console.error("Error starting conversation:", error)
+    } finally {
+      setMessagingUserId(null)
     }
   }
 
@@ -220,8 +226,13 @@ export function TradesContent({ currentUser }: { currentUser: UserSession | null
                           variant="outline"
                           size="sm"
                           className="w-full"
+                          disabled={messagingUserId === trade.creator_id}
                         >
-                          <MessageSquare className="mr-2 h-4 w-4" />
+                          {messagingUserId === trade.creator_id ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          ) : (
+                            <MessageSquare className="mr-2 h-4 w-4" />
+                          )}
                           Message Trader
                         </Button>
                       )}

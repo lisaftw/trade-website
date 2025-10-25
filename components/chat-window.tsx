@@ -81,6 +81,8 @@ export function ChatWindow({
   const [deleteMessageId, setDeleteMessageId] = useState<string | null>(null)
   const [replyToMessage, setReplyToMessage] = useState<Message | null>(null)
   const [showEmojiPicker, setShowEmojiPicker] = useState<string | null>(null)
+  const fetchingRef = useRef(false)
+  const markingReadRef = useRef(false)
 
   const displayName = conversation.otherUser.global_name || conversation.otherUser.username || "Unknown User"
   const avatarUrl = conversation.otherUser.avatar_url || "/placeholder.svg?height=40&width=40"
@@ -91,6 +93,11 @@ export function ChatWindow({
   }, [])
 
   useEffect(() => {
+    if (channelRef.current) {
+      supabase.removeChannel(channelRef.current)
+      channelRef.current = null
+    }
+
     fetchMessages()
     markMessagesAsRead()
 
@@ -174,10 +181,15 @@ export function ChatWindow({
 
     return () => {
       console.log("Cleaning up realtime subscription")
-      supabase.removeChannel(channel)
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current)
+        channelRef.current = null
+      }
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current)
       }
+      fetchingRef.current = false
+      markingReadRef.current = false
     }
   }, [conversation.id])
 
@@ -195,6 +207,9 @@ export function ChatWindow({
   }, [loadingMore, hasMore])
 
   async function fetchMessages() {
+    if (fetchingRef.current) return
+    fetchingRef.current = true
+
     try {
       const { data, error } = await supabase
         .from("messages")
@@ -216,11 +231,12 @@ export function ChatWindow({
       console.error("Error fetching messages:", error)
     } finally {
       setLoading(false)
+      fetchingRef.current = false
     }
   }
 
   async function loadMoreMessages() {
-    if (messages.length === 0) return
+    if (messages.length === 0 || loadingMore) return
 
     setLoadingMore(true)
     try {
@@ -253,6 +269,9 @@ export function ChatWindow({
   }
 
   async function markMessagesAsRead() {
+    if (markingReadRef.current) return
+    markingReadRef.current = true
+
     try {
       await supabase
         .from("messages")
@@ -262,6 +281,8 @@ export function ChatWindow({
         .neq("sender_id", currentUserId)
     } catch (error) {
       console.error("Error marking messages as read:", error)
+    } finally {
+      markingReadRef.current = false
     }
   }
 
@@ -278,7 +299,8 @@ export function ChatWindow({
   }
 
   const handleEditMessage = async (messageId: string) => {
-    if (!editContent.trim()) return
+    if (!editContent.trim() || sending) return
+    setSending(true)
 
     try {
       const { error } = await supabase
@@ -295,10 +317,15 @@ export function ChatWindow({
       setEditContent("")
     } catch (error) {
       console.error("Error editing message:", error)
+    } finally {
+      setSending(false)
     }
   }
 
   const handleDeleteMessage = async (messageId: string) => {
+    if (sending) return
+    setSending(true)
+
     try {
       const { error } = await supabase
         .from("messages")
@@ -313,10 +340,15 @@ export function ChatWindow({
       setDeleteMessageId(null)
     } catch (error) {
       console.error("Error deleting message:", error)
+    } finally {
+      setSending(false)
     }
   }
 
   const handleReaction = async (messageId: string, emoji: string) => {
+    if (sending) return
+    setSending(true)
+
     console.log("Adding reaction:", { messageId, emoji, currentUserId })
     try {
       const message = messages.find((m) => m.id === messageId)
@@ -360,6 +392,8 @@ export function ChatWindow({
     } catch (error) {
       console.error("Error adding reaction:", error)
       alert("Failed to add reaction. Make sure you've run the SQL script 011_add_message_features.sql")
+    } finally {
+      setSending(false)
     }
   }
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { ConversationList } from "@/components/conversation-list"
 import { ChatWindow } from "@/components/chat-window"
@@ -30,11 +30,25 @@ export function MessagesContent({
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(initialConversationId || null)
   const [loading, setLoading] = useState(true)
+  const fetchingRef = useRef(false)
+  const channelsRef = useRef<{ conversations: any; messages: any }>({ conversations: null, messages: null })
 
   useEffect(() => {
-    fetchConversations()
+    if (fetchingRef.current) return
+    fetchingRef.current = true
+
+    fetchConversations().finally(() => {
+      fetchingRef.current = false
+    })
 
     const supabase = createClient()
+
+    if (channelsRef.current.conversations) {
+      supabase.removeChannel(channelsRef.current.conversations)
+    }
+    if (channelsRef.current.messages) {
+      supabase.removeChannel(channelsRef.current.messages)
+    }
 
     // Subscribe to new conversations
     const conversationsChannel = supabase
@@ -60,19 +74,22 @@ export function MessagesContent({
             .eq("discord_id", otherUserId)
             .single()
 
-          setConversations((prev) => [
-            {
-              ...newConvo,
-              otherUser: profile || {
-                discord_id: otherUserId,
-                username: "Unknown User",
-                global_name: null,
-                avatar_url: null,
+          setConversations((prev) => {
+            if (prev.some((c) => c.id === newConvo.id)) return prev
+            return [
+              {
+                ...newConvo,
+                otherUser: profile || {
+                  discord_id: otherUserId,
+                  username: "Unknown User",
+                  global_name: null,
+                  avatar_url: null,
+                },
+                unreadCount: 0,
               },
-              unreadCount: 0,
-            },
-            ...prev,
-          ])
+              ...prev,
+            ]
+          })
         },
       )
       .on(
@@ -140,9 +157,17 @@ export function MessagesContent({
       )
       .subscribe()
 
+    channelsRef.current = { conversations: conversationsChannel, messages: messagesChannel }
+
     return () => {
-      supabase.removeChannel(conversationsChannel)
-      supabase.removeChannel(messagesChannel)
+      if (channelsRef.current.conversations) {
+        supabase.removeChannel(channelsRef.current.conversations)
+      }
+      if (channelsRef.current.messages) {
+        supabase.removeChannel(channelsRef.current.messages)
+      }
+      channelsRef.current = { conversations: null, messages: null }
+      fetchingRef.current = false
     }
   }, [currentUserId, selectedConversationId])
 

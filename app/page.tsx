@@ -12,7 +12,7 @@ function ReferenceHero() {
   return (
     <section
       aria-labelledby="hero-title"
-      className="mx-auto mt-4 grid w-full max-w-6xl grid-cols-1 items-center gap-8 px-4 md:mt-8 md:grid-cols-2"
+      className="mx-auto mt-2 md:mt-4 grid w-full max-w-6xl grid-cols-1 items-center gap-4 md:gap-8 px-4 md:grid-cols-2"
     >
       {/* Left: character render */}
       <div className="relative order-2 mx-auto md:order-1 md:mx-0">
@@ -23,7 +23,7 @@ function ReferenceHero() {
           width={720}
           height={900}
           priority
-          className="relative z-[1] h-auto w-[72%] md:w-[88%] lg:w-[92%] select-none drop-shadow-[0_10px_40px_rgba(0,0,0,0.45)] transition-transform duration-500 hover:scale-[1.02]"
+          className="relative z-[1] h-auto w-[85%] sm:w-[72%] md:w-[88%] lg:w-[92%] select-none drop-shadow-[0_10px_40px_rgba(0,0,0,0.45)] transition-transform duration-500 hover:scale-[1.02]"
         />
       </div>
 
@@ -35,18 +35,21 @@ function ReferenceHero() {
           width={860}
           height={300}
           priority
-          className="mx-auto h-auto w-[92%] max-w-[720px] select-none drop-shadow-[0_4px_0_rgba(255,255,255,0.12)]"
+          className="mx-auto h-auto w-full max-w-[280px] sm:max-w-[400px] md:max-w-[720px] select-none drop-shadow-[0_4px_0_rgba(255,255,255,0.12)]"
         />
-        <p id="hero-title" className="mx-auto mt-3 max-w-xl text-center text-sm text-muted-foreground md:text-left">
+        <p
+          id="hero-title"
+          className="mx-auto mt-2 md:mt-3 max-w-xl text-center text-xs sm:text-sm text-muted-foreground md:text-left px-2 md:px-0"
+        >
           Built by traders, for traders. Get the <span className="font-semibold">most reliable</span> Roblox value
           updates and make <span className="font-semibold">smarter</span> trades.
         </p>
 
         {/* Center hero CTAs on all breakpoints */}
-        <div className="mt-5 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3">
+        <div className="mt-4 md:mt-5 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-2 md:gap-3 px-2 md:px-0">
           <Button
             asChild
-            className="group h-11 w-full sm:w-auto rounded-[14px] border border-white/15 bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.02))] px-5 text-[13px] font-medium text-background shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_10px_30px_rgba(0,0,0,0.35)] backdrop-saturate-150 transition-all duration-200 hover:scale-[1.03] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_14px_40px_rgba(0,0,0,0.45)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04))]"
+            className="group h-10 md:h-11 w-full sm:w-auto rounded-[14px] border border-white/15 bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.02))] px-4 md:px-5 text-xs md:text-[13px] font-medium text-background shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_10px_30px_rgba(0,0,0,0.35)] backdrop-saturate-150 transition-all duration-200 hover:scale-[1.03] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_14px_40px_rgba(0,0,0,0.45)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04))]"
           >
             <a href="/trading" aria-label="Start Trading">
               <span className="flex items-center justify-center gap-2">
@@ -62,7 +65,7 @@ function ReferenceHero() {
           <Button
             asChild
             variant="ghost"
-            className="h-11 w-full sm:w-auto rounded-[14px] border border-white/20 bg-background/60 px-5 text-[13px] font-medium text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] backdrop-blur transition-all duration-200 hover:scale-[1.03] hover:bg-background/75 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]"
+            className="h-10 md:h-11 w-full sm:w-auto rounded-[14px] border border-white/20 bg-background/60 px-4 md:px-5 text-xs md:text-[13px] font-medium text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] backdrop-blur transition-all duration-200 hover:scale-[1.03] hover:bg-background/75 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]"
           >
             <a href="/calculator" aria-label="Open trading calculator">
               <span className="flex items-center justify-center gap-2">
@@ -74,7 +77,7 @@ function ReferenceHero() {
         </div>
 
         {/* Games row */}
-        <div className="pointer-events-none relative mt-6 w-full">
+        <div className="pointer-events-none relative mt-4 md:mt-6 w-full px-2 md:px-0">
           <div className="absolute inset-0 rounded-3xl border border-white/8 shadow-[0_10px_40px_rgba(0,0,0,0.35)]" />
           <div className="rounded-3xl bg-background/40 p-3 backdrop-blur">
             <Image
@@ -95,20 +98,20 @@ function DiscordCTA() {
   return (
     <section
       aria-labelledby="discord-title"
-      className="relative mt-8 overflow-hidden rounded-2xl border border-border bg-secondary/20 transition-all duration-300 hover:border-brand/50 hover:shadow-2xl hover:scale-[1.02]"
+      className="relative mt-6 md:mt-8 overflow-hidden rounded-2xl border border-border bg-secondary/20 transition-all duration-300 hover:border-brand/50 hover:shadow-2xl md:hover:scale-[1.02]"
     >
       <div className="absolute inset-0 opacity-5 [mask-image:radial-gradient(60%_70%_at_50%_0%,black,transparent)]">
         <div className="h-full w-full bg-[linear-gradient(0deg,transparent_0,transparent_92%,rgba(255,255,255,0.5)_92%),linear-gradient(90deg,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[length:100%_40px,40px_100%]" />
       </div>
-      <div className="relative grid grid-cols-1 items-center gap-4 p-5 sm:grid-cols-[1fr_auto]">
+      <div className="relative grid grid-cols-1 items-center gap-3 md:gap-4 p-4 md:p-5 sm:grid-cols-[1fr_auto]">
         <div>
-          <h3 id="discord-title" className="text-sm font-semibold">
+          <h3 id="discord-title" className="text-xs md:text-sm font-semibold">
             Trade Discord Server
           </h3>
-          <p className="mt-1 text-xs text-muted-foreground">Daily updates • Values • Giveaways</p>
+          <p className="mt-1 text-[10px] md:text-xs text-muted-foreground">Daily updates • Values • Giveaways</p>
           <Button
             asChild
-            className="mt-3 h-8 w-full sm:w-auto rounded-md bg-brand px-4 text-[12px] text-brand-foreground hover:bg-brand/90 hover:scale-105 hover:shadow-lg transition-all duration-200"
+            className="mt-2 md:mt-3 h-7 md:h-8 w-full sm:w-auto rounded-md bg-brand px-3 md:px-4 text-[11px] md:text-[12px] text-brand-foreground hover:bg-brand/90 hover:scale-105 hover:shadow-lg transition-all duration-200"
             aria-label="Join Discord on discord.gg/values"
           >
             <a href="https://discord.gg/values" target="_blank" rel="noopener noreferrer">
@@ -126,12 +129,12 @@ function About() {
   return (
     <section
       aria-labelledby="about-title"
-      className="mt-6 rounded-2xl border border-white/5 bg-secondary/10 p-5 transition-all duration-300 hover:border-white/10 hover:bg-secondary/15"
+      className="mt-4 md:mt-6 rounded-2xl border border-white/5 bg-secondary/10 p-4 md:p-5 transition-all duration-300 hover:border-white/10 hover:bg-secondary/15"
     >
-      <h3 id="about-title" className="text-sm font-semibold">
+      <h3 id="about-title" className="text-xs md:text-sm font-semibold">
         About Us
       </h3>
-      <p className="mt-2 text-xs leading-6 text-muted-foreground">
+      <p className="mt-2 text-[11px] md:text-xs leading-5 md:leading-6 text-muted-foreground">
         Trade is a handheld, value-first project focused on giving players reliable, curated trading values for popular
         games including MM2, SAB, GAG, and Adopt Me. We maintain a balanced, data-driven list so you can make smarter
         trades with confidence.

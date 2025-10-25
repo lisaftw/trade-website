@@ -42,6 +42,7 @@ export function CreateTradeDialog({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (loading) return
     setLoading(true)
 
     try {
@@ -68,7 +69,7 @@ export function CreateTradeDialog({
         description: "",
       })
     } catch (error) {
-      console.error("[v0] Error creating trade:", error)
+      console.error("Error creating trade:", error)
     } finally {
       setLoading(false)
     }

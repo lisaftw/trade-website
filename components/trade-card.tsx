@@ -146,34 +146,37 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
 
   return (
     <>
-      <div className="card-neo space-y-4 p-6">
+      <div className="card-neo space-y-3 md:space-y-4 p-4 md:p-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2 md:gap-3">
             {avatarUrl ? (
               <Image
                 src={avatarUrl || "/placeholder.svg"}
                 alt={displayName}
                 width={40}
                 height={40}
-                className="h-10 w-10 rounded-full object-cover"
+                className="h-8 w-8 md:h-10 md:w-10 rounded-full object-cover"
               />
             ) : (
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400" />
+              <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400" />
             )}
             <div>
-              <p className="font-semibold text-foreground">{displayName}</p>
-              <p className="text-sm text-foreground/50">{timeStr}</p>
+              <p className="text-sm md:text-base font-semibold text-foreground">{displayName}</p>
+              <p className="text-xs md:text-sm text-foreground/50">{timeStr}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" className="gap-2">
-              <MessageCircle className="h-4 w-4" />
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Button variant="ghost" size="sm" className="gap-2 flex-1 sm:flex-initial text-xs md:text-sm">
+              <MessageCircle className="h-3.5 md:h-4 w-3.5 md:w-4" />
               Chat
             </Button>
             {!isOwnTrade && (
-              <Button onClick={() => setShowInteractionModal(true)} className="btn-neo gap-2">
-                <ArrowRightLeft className="h-4 w-4" />
+              <Button
+                onClick={() => setShowInteractionModal(true)}
+                className="btn-neo gap-2 flex-1 sm:flex-initial text-xs md:text-sm"
+              >
+                <ArrowRightLeft className="h-3.5 md:h-4 w-3.5 md:w-4" />
                 Trade
               </Button>
             )}
@@ -182,7 +185,7 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm">
-                    <MoreVertical className="h-4 w-4" />
+                    <MoreVertical className="h-3.5 md:h-4 w-3.5 md:w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -201,34 +204,38 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
         </div>
 
         {/* Trade Info */}
-        <div className="flex items-center gap-4 text-sm">
-          <span className="rounded-full bg-purple-500/20 px-3 py-1 text-purple-300">📤 Offering</span>
-          <span className="text-foreground/60">{trade.game}</span>
+        <div className="flex items-center gap-2 md:gap-4 text-xs md:text-sm">
+          <span className="rounded-full bg-purple-500/20 px-2 md:px-3 py-0.5 md:py-1 text-purple-300 text-[10px] md:text-xs">
+            📤 Offering
+          </span>
+          <span className="text-foreground/60 text-xs md:text-sm">{trade.game}</span>
         </div>
 
         {/* Items Grid */}
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-3 md:gap-4 sm:grid-cols-2">
           {/* Offering */}
           <div>
-            <p className="mb-3 text-sm font-semibold text-foreground/70">Offering</p>
-            <div className="flex flex-wrap gap-2">
+            <p className="mb-2 md:mb-3 text-xs md:text-sm font-semibold text-foreground/70">Offering</p>
+            <div className="flex flex-wrap gap-1.5 md:gap-2">
               {loadingItems ? (
-                <p className="text-xs text-foreground/50">Loading items...</p>
+                <p className="text-[10px] md:text-xs text-foreground/50">Loading items...</p>
               ) : (
                 offeringItems.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-2 rounded-lg bg-foreground/5 p-2">
+                  <div key={idx} className="flex items-center gap-1.5 md:gap-2 rounded-lg bg-foreground/5 p-1.5 md:p-2">
                     {item.image_url && (
                       <Image
                         src={item.image_url || "/placeholder.svg"}
                         alt={item.name}
                         width={32}
                         height={32}
-                        className="h-8 w-8 rounded object-cover"
+                        className="h-6 w-6 md:h-8 md:w-8 rounded object-cover"
                       />
                     )}
                     <div className="flex flex-col">
-                      <p className="text-xs font-medium text-foreground">{item.name}</p>
-                      {item.value && <p className="text-[10px] text-foreground/50">{item.value.toLocaleString()}</p>}
+                      <p className="text-[10px] md:text-xs font-medium text-foreground">{item.name}</p>
+                      {item.value && (
+                        <p className="text-[9px] md:text-[10px] text-foreground/50">{item.value.toLocaleString()}</p>
+                      )}
                     </div>
                   </div>
                 ))
@@ -238,25 +245,27 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
 
           {/* Requesting */}
           <div>
-            <p className="mb-3 text-sm font-semibold text-foreground/70">Requesting</p>
-            <div className="flex flex-wrap gap-2">
+            <p className="mb-2 md:mb-3 text-xs md:text-sm font-semibold text-foreground/70">Requesting</p>
+            <div className="flex flex-wrap gap-1.5 md:gap-2">
               {loadingItems ? (
-                <p className="text-xs text-foreground/50">Loading items...</p>
+                <p className="text-[10px] md:text-xs text-foreground/50">Loading items...</p>
               ) : (
                 requestingItems.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-2 rounded-lg bg-foreground/5 p-2">
+                  <div key={idx} className="flex items-center gap-1.5 md:gap-2 rounded-lg bg-foreground/5 p-1.5 md:p-2">
                     {item.image_url && (
                       <Image
                         src={item.image_url || "/placeholder.svg"}
                         alt={item.name}
                         width={32}
                         height={32}
-                        className="h-8 w-8 rounded object-cover"
+                        className="h-6 w-6 md:h-8 md:w-8 rounded object-cover"
                       />
                     )}
                     <div className="flex flex-col">
-                      <p className="text-xs font-medium text-foreground">{item.name}</p>
-                      {item.value && <p className="text-[10px] text-foreground/50">{item.value.toLocaleString()}</p>}
+                      <p className="text-[10px] md:text-xs font-medium text-foreground">{item.name}</p>
+                      {item.value && (
+                        <p className="text-[9px] md:text-[10px] text-foreground/50">{item.value.toLocaleString()}</p>
+                      )}
                     </div>
                   </div>
                 ))
@@ -267,8 +276,8 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
 
         {/* Notes */}
         {trade.notes && (
-          <div className="rounded-lg bg-foreground/5 p-3">
-            <p className="text-xs text-foreground/70">{trade.notes}</p>
+          <div className="rounded-lg bg-foreground/5 p-2 md:p-3">
+            <p className="text-[10px] md:text-xs text-foreground/70">{trade.notes}</p>
           </div>
         )}
       </div>
