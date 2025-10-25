@@ -253,14 +253,7 @@ a[href*="v0.app"][aria-label*="Built"] {
   }
 
   /* Roblox-inspired decorative utilities (studs grid + floating tiles) */
-  /* Subtle studs grid using tokens; masked at edges to keep focus on center */
-  .deco-studs {
-    background-image: radial-gradient(hsl(var(--foreground) / 0.05) 1px, transparent 1px);
-    background-size: 32px 32px;
-    background-position: 0 0;
-    mask-image: radial-gradient(80% 60% at 50% 40%, black 40%, transparent 90%);
-    -webkit-mask-image: radial-gradient(80% 60% at 50% 40%, black 40%, transparent 90%);
-  }
+  /* Removed deco-studs pattern that was causing visual issues */
 
   /* Neo rounded tiles to echo Roblox UI cards */
   .tile-neo {

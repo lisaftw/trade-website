@@ -515,8 +515,8 @@ export function ChatWindow({
   }
 
   return (
-    <div className="flex flex-col h-full bg-background">
-      <div className="px-4 py-3 md:px-6 md:py-4 border-b border-border/50 bg-card/50 backdrop-blur-sm flex items-center gap-3 shadow-sm">
+    <div className="flex flex-col h-full bg-zinc-950">
+      <div className="px-4 py-3 md:px-6 md:py-4 border-b border-border/50 bg-zinc-900/70 backdrop-blur-sm flex items-center gap-3 shadow-sm">
         <Button variant="ghost" size="icon" onClick={onBack} className="md:hidden -ml-2">
           <ArrowLeft className="h-5 w-5" />
         </Button>
@@ -557,11 +557,7 @@ export function ChatWindow({
       <div
         ref={messagesContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto p-3 md:p-6 space-y-3 md:space-y-4"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fillRule='evenodd'%3E%3Cg fill='%23ffffff' fillOpacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          backgroundColor: "hsl(var(--background))",
-        }}
+        className="flex-1 overflow-y-auto p-3 md:p-6 space-y-3 md:space-y-4 bg-zinc-950"
       >
         {loadingMore && (
           <div className="flex justify-center py-2">
@@ -717,7 +713,7 @@ export function ChatWindow({
         <div ref={messagesEndRef} />
       </div>
 
-      <form onSubmit={sendMessage} className="p-3 md:p-4 border-t border-border/50 bg-card/50 backdrop-blur-sm">
+      <form onSubmit={sendMessage} className="p-3 md:p-4 border-t border-border/50 bg-zinc-900/70 backdrop-blur-sm">
         {replyToMessage && (
           <div className="flex items-center gap-2 mb-2 p-2 md:p-3 bg-muted/50 rounded-lg border border-border/50">
             <div className="flex-1 text-sm min-w-0">

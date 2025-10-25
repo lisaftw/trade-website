@@ -256,14 +256,14 @@ export function MessagesContent({
   const selectedConversation = conversations.find((c) => c.id === selectedConversationId)
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-zinc-950">
       <div
         className={cn(
-          "w-full md:w-96 border-r border-border/50 bg-card/30 backdrop-blur-sm flex flex-col",
+          "w-full md:w-96 border-r border-border/50 bg-zinc-900/50 backdrop-blur-sm flex flex-col",
           selectedConversationId && "hidden md:flex",
         )}
       >
-        <div className="p-4 md:p-6 border-b border-border/50 bg-card/50">
+        <div className="p-4 md:p-6 border-b border-border/50 bg-zinc-900/70">
           <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2">
             <div className="p-2 bg-primary/10 rounded-lg">
               <MessageSquare className="h-5 w-5 md:h-6 md:w-6 text-primary" />
@@ -287,7 +287,7 @@ export function MessagesContent({
             onBack={() => setSelectedConversationId(null)}
           />
         ) : (
-          <div className="flex-1 flex items-center justify-center text-muted-foreground bg-background">
+          <div className="flex-1 flex items-center justify-center text-muted-foreground bg-zinc-950">
             <div className="text-center space-y-4">
               <div className="w-20 h-20 mx-auto rounded-full bg-muted/50 flex items-center justify-center">
                 <MessageSquare className="h-10 w-10 opacity-30" />
