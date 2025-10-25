@@ -187,36 +187,9 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
         <h3 className="mt-3 text-center text-sm font-semibold text-white line-clamp-2">{item.name}</h3>
 
-        <div className="mt-2 flex flex-col items-center gap-1.5">
-          {item.demand && (
-            <div className="relative">
-              <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/027_Rectangle_2-Ql0Hy0Ql0Hy0Ql0Hy0Ql0Hy0Ql0Hy0.png"
-                alt=""
-                width={160}
-                height={24}
-                className="h-6 w-auto"
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-[10px] font-medium text-white/70">Demand: {item.demand}</span>
-              </div>
-            </div>
-          )}
-
-          <div className="relative">
-            <Image
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/027_Rectangle_2-Ql0Hy0Ql0Hy0Ql0Hy0Ql0Hy0Ql0Hy0.png"
-              alt=""
-              width={180}
-              height={24}
-              className="h-6 w-auto"
-            />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-[10px] font-medium text-white/70">
-                Last Updated: {getTimeAgo(item.last_updated_at)}
-              </span>
-            </div>
-          </div>
+        <div className="mt-2 flex flex-col items-center gap-1">
+          {item.demand && <div className="text-[11px] text-gray-400">Demand: {item.demand}</div>}
+          <div className="text-[11px] text-gray-400">Last Updated: {getTimeAgo(item.last_updated_at)}</div>
         </div>
 
         <div className="mt-3 text-center text-lg font-bold text-yellow-400">{displayRarity}</div>
@@ -226,20 +199,11 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
             <button
               onClick={handleAddToInventory}
               disabled={isAdding || userLoading}
-              className="relative overflow-hidden transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="relative rounded-full bg-gray-700/80 px-8 py-3 transition-all hover:scale-105 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/029_Rectangle_2_copy-r4C30HJgtLcx1gqDHFUUyCfEaLSXC6.png"
-                alt="Button background"
-                width={240}
-                height={48}
-                className="h-12 w-auto"
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-xs font-bold text-white/80 uppercase tracking-wider">
-                  {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
-                </span>
-              </div>
+              <span className="text-xs font-bold text-white/90 uppercase tracking-wider">
+                {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
+              </span>
             </button>
           </div>
         )}
