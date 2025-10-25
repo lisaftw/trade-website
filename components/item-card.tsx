@@ -199,8 +199,19 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
           <h3 className="mt-3 text-center text-sm font-semibold text-white line-clamp-2">{item.name}</h3>
 
-          <div className="mt-2 flex flex-col items-center gap-0.5">
-            {item.demand && <p className="text-xs text-white/50">Demand: {item.demand}</p>}
+          <div className="mt-2 flex flex-col items-center gap-1">
+            {item.demand && (
+              <div className="flex items-center gap-2">
+                <Image
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/017_Demand-Y4uzjjeAYLX0q8WmJfmT7e1ODBskTB.png"
+                  alt="Demand"
+                  width={60}
+                  height={16}
+                  className="h-4 w-auto"
+                />
+                <span className="text-xs text-white/50">{item.demand}</span>
+              </div>
+            )}
             <p className="text-xs text-white/50">Last Updated: {getTimeAgo(item.last_updated_at)}</p>
           </div>
 
