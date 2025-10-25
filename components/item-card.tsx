@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { ChevronDown, ChevronUp, LogIn } from "lucide-react"
+import { LogIn } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { useUser } from "@/lib/hooks/use-user"
@@ -76,11 +76,13 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
   }, [refetch])
 
   const imageUrl = imageError
-    ? "/placeholder.svg?height=200&width=200"
-    : item.image_url || "/placeholder.svg?height=200&width=200"
+    ? "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/022_Pumpkin_Cat__1_-KgFBfjNe5rCVXH3emJfq2O26eauX5c.png"
+    : item.image_url ||
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/022_Pumpkin_Cat__1_-KgFBfjNe5rCVXH3emJfq2O26eauX5c.png"
 
-  const displayRating = item.rarity || item.rating || 0
-  const sectionLabel = item.section ? item.section.toUpperCase() : "VALUE"
+  const displayRarity = item.rarity || "Common"
+  const sectionLabel = item.section ? item.section.toUpperCase() : item.game?.toUpperCase() || "ITEM"
+  const itemCount = item.exist_count || 0
 
   const handleAddToInventory = async () => {
     // If user is not logged in, show login dialog
@@ -159,82 +161,59 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
   return (
     <>
-      <div className="group relative overflow-hidden rounded-2xl border border-border bg-secondary/10 p-3 md:p-4 transition-all hover:border-border/60 hover:bg-secondary/20">
-        <div className="mb-2 md:mb-3 flex items-center justify-between gap-2 flex-wrap">
-          <div className="rounded-full bg-muted/60 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-muted-foreground">
-            {sectionLabel}: {formatValue(item.rap_value)}
+      <div className="group relative overflow-hidden rounded-2xl bg-black/80 border border-white/10 p-4 transition-all hover:border-white/20 hover:bg-black/90">
+        <div className="mb-3 flex items-start justify-between gap-2">
+          <div className="text-xs font-medium text-white/70">
+            {sectionLabel}: {itemCount}
           </div>
-          {item.rarity && (
-            <div className="rounded-full bg-purple-500/20 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-purple-300">
-              Rarity: {item.rarity}
-            </div>
-          )}
-          {item.pot && (
-            <div className="rounded-full bg-blue-500/20 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-blue-300">
-              Pot: {item.pot}
-            </div>
-          )}
+          <div className="rounded-full bg-purple-600/80 px-3 py-1 text-xs font-medium text-white">
+            Rarity: {displayRarity}
+          </div>
         </div>
 
-        <div className="relative mx-auto aspect-square w-full max-w-[200px] md:max-w-[240px] overflow-hidden rounded-xl border border-border bg-card/60 shadow-lg">
+        <div className="relative mx-auto aspect-square w-full max-w-[180px] overflow-hidden rounded-xl bg-black/60 border border-white/5">
           <Image
             src={imageUrl || "/placeholder.svg"}
             alt={item.name}
             fill
-            className="object-contain p-2"
+            className="object-contain p-3"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             onError={(e) => {
-              console.error("[v0] Image failed to load:", {
-                itemName: item.name,
-                imageUrl: item.image_url,
-                error: e,
-              })
+              console.log("[v0] Image failed to load:", item.name)
               setImageError(true)
-            }}
-            onLoad={() => {
-              console.log("[v0] Image loaded successfully:", item.name)
             }}
           />
         </div>
 
-        <h3 className="mt-2 md:mt-3 text-center text-xs md:text-sm font-semibold line-clamp-2">{item.name}</h3>
+        <h3 className="mt-3 text-center text-sm font-semibold text-white line-clamp-2">{item.name}</h3>
 
-        {item.demand && (
-          <p className="mt-1 text-center text-[10px] md:text-xs text-muted-foreground">Demand: {item.demand}</p>
-        )}
+        {item.demand && <p className="mt-1 text-center text-xs text-white/50">Demand: {item.demand}</p>}
 
-        <p className="mt-1 text-center text-[10px] md:text-xs text-muted-foreground">
-          Last Updated: {getTimeAgo(item.last_updated_at)}
-        </p>
+        <p className="mt-1 text-center text-xs text-white/50">Last Updated: {getTimeAgo(item.last_updated_at)}</p>
 
-        {changePercent !== 0 && (
-          <div className="mt-3 md:mt-4 flex items-center justify-center gap-1">
-            {isPositive ? (
-              <ChevronUp className="h-3 w-3 md:h-4 md:w-4 text-green-500" />
-            ) : (
-              <ChevronDown className="h-3 w-3 md:h-4 md:w-4 text-red-500" />
-            )}
-            <span className={`text-xs md:text-sm font-semibold ${isPositive ? "text-green-500" : "text-red-500"}`}>
-              {Math.abs(changePercent).toFixed(1)}%
-            </span>
-          </div>
-        )}
-
-        {displayRating !== 0 && (
-          <div className="mt-2 text-center text-base md:text-lg font-bold text-yellow-500">
-            {typeof displayRating === "string" ? displayRating : `${toNumber(displayRating).toFixed(1)}/10`}
-          </div>
-        )}
+        <div className="mt-3 text-center text-lg font-bold text-yellow-400">{displayRarity}</div>
 
         {!hideAddButton && (
-          <Button
-            onClick={handleAddToInventory}
-            disabled={isAdding || userLoading}
-            variant="secondary"
-            className="mt-3 md:mt-4 w-full rounded-lg bg-muted/60 text-[10px] md:text-xs font-medium uppercase tracking-wide text-muted-foreground hover:bg-muted/80 disabled:opacity-50"
-          >
-            {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
-          </Button>
+          <div className="mt-4 flex justify-center">
+            <button
+              onClick={handleAddToInventory}
+              disabled={isAdding || userLoading}
+              className="relative overflow-hidden transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Image
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/029_Rectangle_2_copy-r4C30HJgtLcx1gqDHFUUyCfEaLSXC6.png"
+                alt="Button background"
+                width={240}
+                height={48}
+                className="h-12 w-auto"
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-xs font-bold text-white/80 uppercase tracking-wider">
+                  {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
+                </span>
+              </div>
+            </button>
+          </div>
         )}
       </div>
 
