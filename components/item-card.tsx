@@ -187,9 +187,37 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
         <h3 className="mt-3 text-center text-sm font-semibold text-white line-clamp-2">{item.name}</h3>
 
-        {item.demand && <p className="mt-1 text-center text-xs text-white/50">Demand: {item.demand}</p>}
+        <div className="mt-2 flex flex-col items-center gap-1.5">
+          {item.demand && (
+            <div className="relative">
+              <Image
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/027_Rectangle_2-Ql0Hy0Ql0Hy0Ql0Hy0Ql0Hy0Ql0Hy0.png"
+                alt=""
+                width={160}
+                height={24}
+                className="h-6 w-auto"
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-[10px] font-medium text-white/70">Demand: {item.demand}</span>
+              </div>
+            </div>
+          )}
 
-        <p className="mt-1 text-center text-xs text-white/50">Last Updated: {getTimeAgo(item.last_updated_at)}</p>
+          <div className="relative">
+            <Image
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/027_Rectangle_2-Ql0Hy0Ql0Hy0Ql0Hy0Ql0Hy0Ql0Hy0.png"
+              alt=""
+              width={180}
+              height={24}
+              className="h-6 w-auto"
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-[10px] font-medium text-white/70">
+                Last Updated: {getTimeAgo(item.last_updated_at)}
+              </span>
+            </div>
+          </div>
+        </div>
 
         <div className="mt-3 text-center text-lg font-bold text-yellow-400">{displayRarity}</div>
 
