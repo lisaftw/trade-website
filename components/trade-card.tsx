@@ -207,7 +207,7 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
         </div>
 
         {/* Items Grid */}
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-3">
           {/* Offering */}
           <div>
             <p className="mb-3 text-sm font-semibold text-foreground/70">Offering</p>
@@ -216,24 +216,43 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
                 <p className="text-xs text-foreground/50">Loading items...</p>
               ) : (
                 offeringItems.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-2 rounded-lg bg-foreground/5 p-2">
-                    {item.image_url && (
+                  <div
+                    key={idx}
+                    className="relative flex flex-col items-center gap-2 rounded-xl bg-foreground/5 p-3 transition-all hover:scale-105"
+                  >
+                    {item.image_url ? (
                       <Image
                         src={item.image_url || "/placeholder.svg"}
                         alt={item.name}
-                        width={32}
-                        height={32}
-                        className="h-8 w-8 rounded object-cover"
+                        width={80}
+                        height={80}
+                        className="h-20 w-20 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <Image
+                        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/022_Pumpkin_Cat__1_-KgFBfjNe5rCVXH3emJfq2O26eauX5c.png"
+                        alt={item.name}
+                        width={80}
+                        height={80}
+                        className="h-20 w-20 rounded-lg object-cover"
                       />
                     )}
-                    <div className="flex flex-col">
-                      <p className="text-xs font-medium text-foreground">{item.name}</p>
-                      {item.value && <p className="text-[10px] text-foreground/50">{item.value.toLocaleString()}</p>}
-                    </div>
+                    <p className="text-xs font-medium text-center text-foreground">{item.name}</p>
                   </div>
                 ))
               )}
             </div>
+          </div>
+
+          {/* Arrow between offering and requesting sections */}
+          <div className="hidden md:flex items-center justify-center">
+            <Image
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/014_Arrow-QNOuJoAjD1Cvm65ynRJPNwnaA0rU1n.png"
+              alt="Trade arrow"
+              width={24}
+              height={24}
+              className="h-6 w-6 rotate-90"
+            />
           </div>
 
           {/* Requesting */}
@@ -244,26 +263,58 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
                 <p className="text-xs text-foreground/50">Loading items...</p>
               ) : (
                 requestingItems.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-2 rounded-lg bg-foreground/5 p-2">
-                    {item.image_url && (
+                  <div
+                    key={idx}
+                    className="relative flex flex-col items-center gap-2 rounded-xl bg-foreground/5 p-3 transition-all hover:scale-105"
+                  >
+                    {item.image_url ? (
                       <Image
                         src={item.image_url || "/placeholder.svg"}
                         alt={item.name}
-                        width={32}
-                        height={32}
-                        className="h-8 w-8 rounded object-cover"
+                        width={80}
+                        height={80}
+                        className="h-20 w-20 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <Image
+                        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/022_Pumpkin_Cat__1_-KgFBfjNe5rCVXH3emJfq2O26eauX5c.png"
+                        alt={item.name}
+                        width={80}
+                        height={80}
+                        className="h-20 w-20 rounded-lg object-cover"
                       />
                     )}
-                    <div className="flex flex-col">
-                      <p className="text-xs font-medium text-foreground">{item.name}</p>
-                      {item.value && <p className="text-[10px] text-foreground/50">{item.value.toLocaleString()}</p>}
-                    </div>
+                    <p className="text-xs font-medium text-center text-foreground">{item.name}</p>
                   </div>
                 ))
               )}
             </div>
           </div>
         </div>
+
+        {/* ADD TO INVENTORY button */}
+        {!isOwnTrade && (
+          <div className="flex justify-center pt-2">
+            <button className="relative overflow-hidden rounded-2xl transition-all hover:scale-105">
+              <Image
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/029_Rectangle_2_copy-r4C30HJgtLcx1gqDHFUUyCfEaLSXC6.png"
+                alt="Button background"
+                width={300}
+                height={60}
+                className="h-14 w-auto"
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Image
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/021_ADD_TO_INVENTORY-hcrZqnquIFNt4xSATz8Zu8GF0aipsZ.png"
+                  alt="Add to inventory"
+                  width={200}
+                  height={30}
+                  className="h-auto w-48"
+                />
+              </div>
+            </button>
+          </div>
+        )}
 
         {/* Notes */}
         {trade.notes && (
