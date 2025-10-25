@@ -591,6 +591,19 @@ export function ChatWindow({
                 className={cn("flex group", isOwn ? "justify-end" : "justify-start")}
               >
                 <div className="flex flex-col max-w-[85%] md:max-w-[70%]">
+                  {showEmojiPicker === message.id && (
+                    <div className="relative mt-2">
+                      <EmojiPicker
+                        onSelect={(emoji) => {
+                          handleReaction(message.id, emoji)
+                        }}
+                        onClose={() => {
+                          setShowEmojiPicker(null)
+                        }}
+                      />
+                    </div>
+                  )}
+
                   {replyToMsg && (
                     <div
                       className={cn(
@@ -692,19 +705,6 @@ export function ChatWindow({
                       />
                     )}
                   </div>
-
-                  {showEmojiPicker === message.id && (
-                    <div className="relative mt-2">
-                      <EmojiPicker
-                        onSelect={(emoji) => {
-                          handleReaction(message.id, emoji)
-                        }}
-                        onClose={() => {
-                          setShowEmojiPicker(null)
-                        }}
-                      />
-                    </div>
-                  )}
                 </div>
               </div>
             )

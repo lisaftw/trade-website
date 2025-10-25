@@ -3,7 +3,11 @@
 import { useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 
-const COMMON_EMOJIS = ["👍", "❤️", "😂", "😮", "😢", "🙏", "🎉", "🔥", "👏", "✨", "💯", "🤔", "😍", "🥳", "😎"]
+const EMOJI_CATEGORIES = {
+  Reactions: ["👍", "❤️", "😂", "😮", "😢", "🙏"],
+  Celebrations: ["🎉", "🔥", "👏", "✨", "💯", "⭐"],
+  Emotions: ["🤔", "😍", "🥳", "😎", "🤩", "😊"],
+}
 
 type EmojiPickerProps = {
   onSelect: (emoji: string) => void
@@ -33,24 +37,33 @@ export function EmojiPicker({ onSelect, onClose }: EmojiPickerProps) {
   return (
     <div
       ref={pickerRef}
-      className="absolute z-50 bg-popover/95 backdrop-blur-sm border border-border/50 rounded-2xl shadow-2xl p-3 mt-1"
+      className="absolute bottom-full left-0 mb-2 z-50 bg-popover/98 backdrop-blur-md border border-border/60 rounded-2xl shadow-2xl p-3 min-w-[280px] animate-in fade-in-0 zoom-in-95 duration-200"
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="grid grid-cols-5 gap-1.5">
-        {COMMON_EMOJIS.map((emoji) => (
-          <Button
-            key={emoji}
-            variant="ghost"
-            size="sm"
-            className="h-11 w-11 text-2xl hover:scale-125 hover:bg-accent/50 transition-all rounded-xl p-0"
-            onClick={() => {
-              console.log("Emoji button clicked:", emoji)
-              onSelect(emoji)
-              onClose()
-            }}
-          >
-            {emoji}
-          </Button>
+      <div className="space-y-3">
+        {Object.entries(EMOJI_CATEGORIES).map(([category, emojis]) => (
+          <div key={category}>
+            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5 px-1">
+              {category}
+            </p>
+            <div className="grid grid-cols-6 gap-1">
+              {emojis.map((emoji) => (
+                <Button
+                  key={emoji}
+                  variant="ghost"
+                  size="sm"
+                  className="h-10 w-10 text-xl hover:scale-125 hover:bg-accent/60 transition-all duration-200 rounded-xl p-0"
+                  onClick={() => {
+                    console.log("Emoji button clicked:", emoji)
+                    onSelect(emoji)
+                    onClose()
+                  }}
+                >
+                  {emoji}
+                </Button>
+              ))}
+            </div>
+          </div>
         ))}
       </div>
     </div>
