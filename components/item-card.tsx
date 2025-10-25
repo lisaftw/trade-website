@@ -173,7 +173,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
         </div>
 
         {/* Card content */}
-        <div className="relative bg-black/80 p-4 rounded-2xl border border-white/10 transition-all hover:border-white/20 hover:bg-black/90">
+        <div className="relative bg-zinc-900/70 p-4 rounded-2xl border border-white/10 transition-all hover:border-white/20 hover:bg-zinc-900/80">
           <div className="mb-3 flex items-start justify-between gap-2">
             <div className="text-xs font-medium text-white/70">
               {sectionLabel}: {itemCount}
@@ -183,7 +183,8 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
             </div>
           </div>
 
-          <div className="relative mx-auto aspect-square w-full max-w-[180px] overflow-hidden rounded-xl bg-black/60 border border-white/5">
+          {/* Image container */}
+          <div className="relative mx-auto aspect-square w-full max-w-[180px] overflow-hidden rounded-xl bg-zinc-800/50 border border-white/5">
             <Image
               src={imageUrl || "/placeholder.svg"}
               alt={item.name}
