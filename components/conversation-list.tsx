@@ -39,7 +39,12 @@ export function ConversationList({
   if (conversations.length === 0) {
     return (
       <div className="flex-1 flex items-center justify-center p-4 text-center text-muted-foreground">
-        <p>No conversations yet. Start a chat from a trade request!</p>
+        <div className="space-y-2">
+          <div className="w-16 h-16 mx-auto rounded-full bg-muted flex items-center justify-center">
+            <Loader2 className="h-8 w-8 opacity-50" />
+          </div>
+          <p className="text-sm">No conversations yet. Start a chat from a trade request!</p>
+        </div>
       </div>
     )
   }
@@ -55,35 +60,50 @@ export function ConversationList({
             key={conversation.id}
             onClick={() => onSelect(conversation.id)}
             className={cn(
-              "w-full p-4 flex items-center gap-3 hover:bg-accent transition-colors border-b border-border",
-              selectedId === conversation.id && "bg-accent",
+              "w-full p-3 md:p-4 flex items-center gap-3 hover:bg-accent/50 transition-all border-b border-border/50 relative",
+              selectedId === conversation.id && "bg-accent/70 border-l-4 border-l-primary",
             )}
           >
-            <div className="relative">
+            <div className="relative shrink-0">
               <Image
                 src={avatarUrl || "/placeholder.svg"}
                 alt={displayName}
                 width={48}
                 height={48}
-                className="rounded-full object-cover"
+                className="rounded-full object-cover ring-2 ring-border/50"
               />
               {conversation.unreadCount > 0 && (
-                <div className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                  {conversation.unreadCount}
+                <div className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-lg ring-2 ring-background">
+                  {conversation.unreadCount > 9 ? "9+" : conversation.unreadCount}
                 </div>
               )}
+              <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-card" />
             </div>
             <div className="flex-1 text-left min-w-0">
-              <div className="flex items-center justify-between gap-2">
-                <p className="font-semibold truncate">{displayName}</p>
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <p
+                  className={cn(
+                    "font-semibold truncate text-sm md:text-base",
+                    conversation.unreadCount > 0 && "text-foreground",
+                  )}
+                >
+                  {displayName}
+                </p>
                 {conversation.last_message_at && (
-                  <span className="text-xs text-muted-foreground whitespace-nowrap">
+                  <span className="text-[10px] md:text-xs text-muted-foreground whitespace-nowrap">
                     {formatDistanceToNow(new Date(conversation.last_message_at), { addSuffix: true })}
                   </span>
                 )}
               </div>
-              <p className="text-sm text-muted-foreground truncate">
-                {conversation.unreadCount > 0 ? `${conversation.unreadCount} new messages` : "No new messages"}
+              <p
+                className={cn(
+                  "text-xs md:text-sm truncate",
+                  conversation.unreadCount > 0 ? "text-foreground font-medium" : "text-muted-foreground",
+                )}
+              >
+                {conversation.unreadCount > 0
+                  ? `${conversation.unreadCount} new message${conversation.unreadCount > 1 ? "s" : ""}`
+                  : "No new messages"}
               </p>
             </div>
           </button>

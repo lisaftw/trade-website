@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client"
 import { ConversationList } from "@/components/conversation-list"
 import { ChatWindow } from "@/components/chat-window"
 import { MessageSquare } from "lucide-react"
+import { cn } from "@/utils/cn"
 
 type Conversation = {
   id: string
@@ -255,13 +256,19 @@ export function MessagesContent({
   const selectedConversation = conversations.find((c) => c.id === selectedConversationId)
 
   return (
-    <div className="flex h-screen">
-      {/* Conversation List Sidebar */}
-      <div className="w-full md:w-96 border-r border-border bg-card flex flex-col">
-        <div className="p-4 border-b border-border">
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <MessageSquare className="h-6 w-6" />
-            Messages
+    <div className="flex h-screen bg-background">
+      <div
+        className={cn(
+          "w-full md:w-96 border-r border-border/50 bg-card/30 backdrop-blur-sm flex flex-col",
+          selectedConversationId && "hidden md:flex",
+        )}
+      >
+        <div className="p-4 md:p-6 border-b border-border/50 bg-card/50">
+          <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <MessageSquare className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+            </div>
+            <span>Messages</span>
           </h1>
         </div>
         <ConversationList
@@ -272,8 +279,7 @@ export function MessagesContent({
         />
       </div>
 
-      {/* Chat Window */}
-      <div className="flex-1 flex flex-col">
+      <div className={cn("flex-1 flex flex-col", !selectedConversationId && "hidden md:flex")}>
         {selectedConversation ? (
           <ChatWindow
             conversation={selectedConversation}
@@ -281,10 +287,15 @@ export function MessagesContent({
             onBack={() => setSelectedConversationId(null)}
           />
         ) : (
-          <div className="flex-1 flex items-center justify-center text-muted-foreground">
-            <div className="text-center">
-              <MessageSquare className="h-16 w-16 mx-auto mb-4 opacity-20" />
-              <p className="text-lg">Select a conversation to start messaging</p>
+          <div className="flex-1 flex items-center justify-center text-muted-foreground bg-background">
+            <div className="text-center space-y-4">
+              <div className="w-20 h-20 mx-auto rounded-full bg-muted/50 flex items-center justify-center">
+                <MessageSquare className="h-10 w-10 opacity-30" />
+              </div>
+              <div>
+                <p className="text-lg font-medium mb-1">Select a conversation</p>
+                <p className="text-sm text-muted-foreground">Choose a conversation from the list to start messaging</p>
+              </div>
             </div>
           </div>
         )}

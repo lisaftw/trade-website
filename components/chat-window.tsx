@@ -515,23 +515,34 @@ export function ChatWindow({
   }
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Chat Header */}
-      <div className="p-4 border-b border-border bg-card flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={onBack} className="md:hidden">
+    <div className="flex flex-col h-full bg-background">
+      <div className="px-4 py-3 md:px-6 md:py-4 border-b border-border/50 bg-card/50 backdrop-blur-sm flex items-center gap-3 shadow-sm">
+        <Button variant="ghost" size="icon" onClick={onBack} className="md:hidden -ml-2">
           <ArrowLeft className="h-5 w-5" />
         </Button>
-        <Image
-          src={avatarUrl || "/placeholder.svg"}
-          alt={displayName}
-          width={40}
-          height={40}
-          className="rounded-full object-cover"
-        />
-        <div className="flex-1">
-          <h2 className="font-semibold">{displayName}</h2>
-          <p className="text-xs text-muted-foreground">
-            {isTyping ? "typing..." : `@${conversation.otherUser.username || "unknown"}`}
+        <div className="relative">
+          <Image
+            src={avatarUrl || "/placeholder.svg"}
+            alt={displayName}
+            width={44}
+            height={44}
+            className="rounded-full object-cover ring-2 ring-border/50"
+          />
+          <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-card" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h2 className="font-semibold text-base md:text-lg truncate">{displayName}</h2>
+          <p className="text-xs md:text-sm text-muted-foreground truncate">
+            {isTyping ? (
+              <span className="flex items-center gap-1">
+                <span className="inline-block w-1.5 h-1.5 bg-primary rounded-full animate-bounce" />
+                <span className="inline-block w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:0.2s]" />
+                <span className="inline-block w-1.5 h-1.5 bg-primary rounded-full animate-bounce [animation-delay:0.4s]" />
+                <span className="ml-1">typing</span>
+              </span>
+            ) : (
+              `@${conversation.otherUser.username || "unknown"}`
+            )}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -543,13 +554,12 @@ export function ChatWindow({
         </div>
       </div>
 
-      {/* Messages Area */}
       <div
         ref={messagesContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto p-4 space-y-4"
+        className="flex-1 overflow-y-auto p-3 md:p-6 space-y-3 md:space-y-4"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fillRule='evenodd'%3E%3Cg fill='%23000000' fillOpacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fillRule='evenodd'%3E%3Cg fill='%23ffffff' fillOpacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           backgroundColor: "hsl(var(--background))",
         }}
       >
@@ -565,7 +575,12 @@ export function ChatWindow({
           </div>
         ) : messages.length === 0 ? (
           <div className="flex items-center justify-center h-full text-muted-foreground">
-            <p>No messages yet. Start the conversation!</p>
+            <div className="text-center space-y-2">
+              <div className="w-16 h-16 mx-auto rounded-full bg-muted flex items-center justify-center">
+                <Send className="h-8 w-8 opacity-50" />
+              </div>
+              <p className="text-sm md:text-base">No messages yet. Start the conversation!</p>
+            </div>
           </div>
         ) : (
           messages.map((message) => {
@@ -579,25 +594,29 @@ export function ChatWindow({
                 key={message.id || message.tempId}
                 className={cn("flex group", isOwn ? "justify-end" : "justify-start")}
               >
-                <div className="flex flex-col max-w-[70%]">
+                <div className="flex flex-col max-w-[85%] md:max-w-[70%]">
                   {replyToMsg && (
                     <div
                       className={cn(
-                        "text-xs px-3 py-1 mb-1 rounded-t-lg border-l-2",
-                        isOwn ? "bg-primary/10 border-primary" : "bg-muted border-muted-foreground",
+                        "text-xs px-3 py-1.5 mb-1 rounded-t-lg border-l-2 backdrop-blur-sm",
+                        isOwn ? "bg-primary/10 border-primary/50" : "bg-muted/50 border-muted-foreground/30",
                       )}
                     >
-                      <p className="text-muted-foreground truncate">Replying to: {replyToMsg.content}</p>
+                      <p className="text-muted-foreground text-[10px] md:text-xs font-medium mb-0.5">Replying to</p>
+                      <p className="truncate text-xs">{replyToMsg.content}</p>
                     </div>
                   )}
 
                   <div className="flex items-start gap-2">
                     <div
                       className={cn(
-                        "flex-1 rounded-lg px-4 py-2 shadow-sm",
-                        isOwn ? "bg-primary text-primary-foreground" : "bg-card border border-border",
+                        "flex-1 rounded-2xl px-3 py-2 md:px-4 md:py-2.5 shadow-sm transition-all",
+                        isOwn
+                          ? "bg-primary text-primary-foreground rounded-br-md"
+                          : "bg-card border border-border/50 rounded-bl-md",
                         message.status === "failed" && "opacity-50",
                         isDeleted && "italic opacity-60",
+                        !isDeleted && "hover:shadow-md",
                       )}
                     >
                       {isEditing ? (
@@ -619,10 +638,13 @@ export function ChatWindow({
                         </div>
                       ) : (
                         <>
-                          <p className="text-sm break-words">{message.content}</p>
-                          <div className="flex items-center gap-1 mt-1">
+                          <p className="text-sm md:text-base break-words leading-relaxed">{message.content}</p>
+                          <div className="flex items-center gap-1.5 mt-1.5">
                             <p
-                              className={cn("text-xs", isOwn ? "text-primary-foreground/70" : "text-muted-foreground")}
+                              className={cn(
+                                "text-[10px] md:text-xs",
+                                isOwn ? "text-primary-foreground/60" : "text-muted-foreground",
+                              )}
                             >
                               {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
                               {message.edited_at && !isDeleted && " (edited)"}
@@ -630,8 +652,8 @@ export function ChatWindow({
                             {isOwn && (
                               <span
                                 className={cn(
-                                  "text-xs",
-                                  isOwn ? "text-primary-foreground/70" : "text-muted-foreground",
+                                  "text-xs flex items-center",
+                                  isOwn ? "text-primary-foreground/60" : "text-muted-foreground",
                                 )}
                               >
                                 {renderMessageStatus(message)}
@@ -648,14 +670,14 @@ export function ChatWindow({
                               key={reaction.emoji}
                               onClick={() => handleReaction(message.id, reaction.emoji)}
                               className={cn(
-                                "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs",
+                                "inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs transition-all hover:scale-105",
                                 reaction.users.includes(currentUserId)
-                                  ? "bg-primary/20 border border-primary"
-                                  : "bg-muted hover:bg-muted/80",
+                                  ? "bg-primary/20 border border-primary/50 shadow-sm"
+                                  : "bg-muted/50 hover:bg-muted border border-transparent",
                               )}
                             >
-                              <span>{reaction.emoji}</span>
-                              <span className="text-xs">{reaction.users.length}</span>
+                              <span className="text-base">{reaction.emoji}</span>
+                              <span className="text-xs font-medium">{reaction.users.length}</span>
                             </button>
                           ))}
                         </div>
@@ -676,14 +698,12 @@ export function ChatWindow({
                   </div>
 
                   {showEmojiPicker === message.id && (
-                    <div className="relative">
+                    <div className="relative mt-2">
                       <EmojiPicker
                         onSelect={(emoji) => {
-                          console.log("Emoji selected:", emoji)
                           handleReaction(message.id, emoji)
                         }}
                         onClose={() => {
-                          console.log("Emoji picker closed")
                           setShowEmojiPicker(null)
                         }}
                       />
@@ -697,15 +717,20 @@ export function ChatWindow({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Message Input */}
-      <form onSubmit={sendMessage} className="p-4 border-t border-border bg-card">
+      <form onSubmit={sendMessage} className="p-3 md:p-4 border-t border-border/50 bg-card/50 backdrop-blur-sm">
         {replyToMessage && (
-          <div className="flex items-center gap-2 mb-2 p-2 bg-muted rounded-lg">
-            <div className="flex-1 text-sm">
-              <p className="text-muted-foreground text-xs">Replying to:</p>
-              <p className="truncate">{replyToMessage.content}</p>
+          <div className="flex items-center gap-2 mb-2 p-2 md:p-3 bg-muted/50 rounded-lg border border-border/50">
+            <div className="flex-1 text-sm min-w-0">
+              <p className="text-muted-foreground text-xs font-medium mb-0.5">Replying to:</p>
+              <p className="truncate text-sm">{replyToMessage.content}</p>
             </div>
-            <Button type="button" variant="ghost" size="icon" onClick={() => setReplyToMessage(null)}>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => setReplyToMessage(null)}
+              className="shrink-0"
+            >
               <X className="h-4 w-4" />
             </Button>
           </div>
@@ -718,11 +743,20 @@ export function ChatWindow({
               handleTyping()
             }}
             placeholder="Type a message..."
-            className="flex-1"
+            className="flex-1 rounded-full bg-background border-border/50 focus-visible:ring-primary/50 text-sm md:text-base"
             disabled={sending || !isConnected}
           />
-          <Button type="submit" size="icon" disabled={sending || !newMessage.trim() || !isConnected}>
-            {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+          <Button
+            type="submit"
+            size="icon"
+            disabled={sending || !newMessage.trim() || !isConnected}
+            className="rounded-full h-10 w-10 md:h-11 md:w-11 shrink-0"
+          >
+            {sending ? (
+              <Loader2 className="h-4 w-4 md:h-5 md:w-5 animate-spin" />
+            ) : (
+              <Send className="h-4 w-4 md:h-5 md:w-5" />
+            )}
           </Button>
         </div>
       </form>
