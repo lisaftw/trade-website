@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { LogIn } from "lucide-react"
+import { ChevronDown, ChevronUp, LogIn } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { useUser } from "@/lib/hooks/use-user"
@@ -76,13 +76,11 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
   }, [refetch])
 
   const imageUrl = imageError
-    ? "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/022_Pumpkin_Cat__1_-KgFBfjNe5rCVXH3emJfq2O26eauX5c.png"
-    : item.image_url ||
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/022_Pumpkin_Cat__1_-KgFBfjNe5rCVXH3emJfq2O26eauX5c.png"
+    ? "/placeholder.svg?height=200&width=200"
+    : item.image_url || "/placeholder.svg?height=200&width=200"
 
-  const displayRarity = item.rarity || "Common"
-  const sectionLabel = item.section ? item.section.toUpperCase() : item.game?.toUpperCase() || "ITEM"
-  const itemCount = item.exist_count || 0
+  const displayRating = item.rarity || item.rating || 0
+  const sectionLabel = item.section ? item.section.toUpperCase() : "VALUE"
 
   const handleAddToInventory = async () => {
     // If user is not logged in, show login dialog
@@ -161,72 +159,82 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
   return (
     <>
-      <div className="group relative overflow-hidden rounded-2xl bg-zinc-900/70 p-4 border border-zinc-700/50 transition-all hover:border-zinc-600/70 hover:bg-zinc-900/80">
-        <div className="mb-3 flex items-start justify-between gap-2">
-          <div className="text-xs font-medium text-white/70">
-            {sectionLabel}: {itemCount}
+      <div className="group relative overflow-hidden rounded-2xl border border-border bg-secondary/10 p-3 md:p-4 transition-all hover:border-border/60 hover:bg-secondary/20">
+        <div className="mb-2 md:mb-3 flex items-center justify-between gap-2 flex-wrap">
+          <div className="rounded-full bg-muted/60 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-muted-foreground">
+            {sectionLabel}: {formatValue(item.rap_value)}
           </div>
-          <div className="rounded-full bg-purple-600/80 px-3 py-1 text-xs font-medium text-white">
-            Rarity: {displayRarity}
-          </div>
+          {item.rarity && (
+            <div className="rounded-full bg-purple-500/20 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-purple-300">
+              Rarity: {item.rarity}
+            </div>
+          )}
+          {item.pot && (
+            <div className="rounded-full bg-blue-500/20 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-blue-300">
+              Pot: {item.pot}
+            </div>
+          )}
         </div>
 
-        {/* Image container */}
-        <div className="relative mx-auto aspect-square w-full max-w-[180px] overflow-hidden rounded-xl bg-zinc-800/50 border border-white/5">
+        <div className="relative mx-auto aspect-square w-full max-w-[200px] md:max-w-[240px] overflow-hidden rounded-xl border border-border bg-card/60 shadow-lg">
           <Image
             src={imageUrl || "/placeholder.svg"}
             alt={item.name}
             fill
-            className="object-contain p-3"
+            className="object-contain p-2"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             onError={(e) => {
-              console.log("[v0] Image failed to load:", item.name)
+              console.error("[v0] Image failed to load:", {
+                itemName: item.name,
+                imageUrl: item.image_url,
+                error: e,
+              })
               setImageError(true)
+            }}
+            onLoad={() => {
+              console.log("[v0] Image loaded successfully:", item.name)
             }}
           />
         </div>
 
-        <h3 className="mt-3 text-center text-sm font-semibold text-white line-clamp-2">{item.name}</h3>
+        <h3 className="mt-2 md:mt-3 text-center text-xs md:text-sm font-semibold line-clamp-2">{item.name}</h3>
 
-        <div className="mt-2 flex flex-col items-center gap-1">
-          {item.demand && (
-            <div className="flex items-center gap-2">
-              <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/017_Demand-Y4uzjjeAYLX0q8WmJfmT7e1ODBskTB.png"
-                alt="Demand"
-                width={60}
-                height={16}
-                className="h-4 w-auto"
-              />
-              <span className="text-xs text-white/50">{item.demand}</span>
-            </div>
-          )}
-          <p className="text-xs text-white/50">Last Updated: {getTimeAgo(item.last_updated_at)}</p>
-        </div>
+        {item.demand && (
+          <p className="mt-1 text-center text-[10px] md:text-xs text-muted-foreground">Demand: {item.demand}</p>
+        )}
 
-        <div className="mt-3 text-center text-lg font-bold text-yellow-400">{displayRarity}</div>
+        <p className="mt-1 text-center text-[10px] md:text-xs text-muted-foreground">
+          Last Updated: {getTimeAgo(item.last_updated_at)}
+        </p>
+
+        {changePercent !== 0 && (
+          <div className="mt-3 md:mt-4 flex items-center justify-center gap-1">
+            {isPositive ? (
+              <ChevronUp className="h-3 w-3 md:h-4 md:w-4 text-green-500" />
+            ) : (
+              <ChevronDown className="h-3 w-3 md:h-4 md:w-4 text-red-500" />
+            )}
+            <span className={`text-xs md:text-sm font-semibold ${isPositive ? "text-green-500" : "text-red-500"}`}>
+              {Math.abs(changePercent).toFixed(1)}%
+            </span>
+          </div>
+        )}
+
+        {displayRating !== 0 && (
+          <div className="mt-2 text-center text-base md:text-lg font-bold text-yellow-500">
+            {typeof displayRating === "string" ? displayRating : `${toNumber(displayRating).toFixed(1)}/10`}
+          </div>
+        )}
 
         {!hideAddButton && (
-          <div className="mt-4 flex justify-center">
-            <button
-              onClick={handleAddToInventory}
-              disabled={isAdding || userLoading}
-              className="relative overflow-hidden transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/029_Rectangle_2_copy-r4C30HJgtLcx1gqDHFUUyCfEaLSXC6.png"
-                alt="Button background"
-                width={240}
-                height={48}
-                className="h-12 w-auto"
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-xs font-bold text-white/80 uppercase tracking-wider">
-                  {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
-                </span>
-              </div>
-            </button>
-          </div>
+          <Button
+            onClick={handleAddToInventory}
+            disabled={isAdding || userLoading}
+            variant="secondary"
+            className="mt-3 md:mt-4 w-full rounded-lg bg-muted/60 text-[10px] md:text-xs font-medium uppercase tracking-wide text-muted-foreground hover:bg-muted/80 disabled:opacity-50"
+          >
+            {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
+          </Button>
         )}
       </div>
 
