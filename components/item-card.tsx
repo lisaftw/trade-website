@@ -187,9 +187,29 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
         <h3 className="mt-3 text-center text-sm font-semibold text-white line-clamp-2">{item.name}</h3>
 
-        <div className="mt-2 flex flex-col items-center gap-1">
-          {item.demand && <div className="text-[11px] text-gray-400">Demand: {item.demand}</div>}
-          <div className="text-[11px] text-gray-400">Last Updated: {getTimeAgo(item.last_updated_at)}</div>
+        <div className="mt-2 flex flex-col items-center gap-1.5">
+          {item.demand && (
+            <div className="flex items-center gap-1.5">
+              <Image
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/017_Demand-iNjD5hTZXaF8ge3Ne5pyMTHLlWDGqz.png"
+                alt="Demand"
+                width={60}
+                height={12}
+                className="h-3 w-auto"
+              />
+              <span className="text-[11px] text-gray-400">{item.demand}</span>
+            </div>
+          )}
+          <div className="flex items-center gap-1.5">
+            <Image
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/006_Last_Updated__xxx_hours_ago-4z4FDXUfNsN0I4ynEz02KnsvSL1pkH.png"
+              alt="Last Updated"
+              width={180}
+              height={12}
+              className="h-3 w-auto"
+            />
+            <span className="text-[11px] text-gray-400">{getTimeAgo(item.last_updated_at)}</span>
+          </div>
         </div>
 
         <div className="mt-3 text-center text-lg font-bold text-yellow-400">{displayRarity}</div>
