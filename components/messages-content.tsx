@@ -4,8 +4,10 @@ import { useEffect, useState, useRef } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { ConversationList } from "@/components/conversation-list"
 import { ChatWindow } from "@/components/chat-window"
-import { MessageSquare } from "lucide-react"
+import { MessageSquare, Home, ArrowLeft } from "lucide-react"
 import { cn } from "@/utils/cn"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 type Conversation = {
   id: string
@@ -264,6 +266,15 @@ export function MessagesContent({
         )}
       >
         <div className="p-4 md:p-6 border-b border-border/50 bg-zinc-900/70">
+          <div className="flex items-center justify-between mb-4">
+            <Link href="/">
+              <Button variant="ghost" size="sm" className="gap-2 hover:bg-zinc-800">
+                <ArrowLeft className="h-4 w-4" />
+                <span className="hidden sm:inline">Back to Home</span>
+                <Home className="h-4 w-4 sm:hidden" />
+              </Button>
+            </Link>
+          </div>
           <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2">
             <div className="p-2 bg-primary/10 rounded-lg">
               <MessageSquare className="h-5 w-5 md:h-6 md:w-6 text-primary" />
@@ -271,6 +282,7 @@ export function MessagesContent({
             <span>Messages</span>
           </h1>
         </div>
+        {/* End of added navigation header */}
         <ConversationList
           conversations={conversations}
           selectedId={selectedConversationId}
