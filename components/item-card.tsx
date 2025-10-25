@@ -161,61 +161,74 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
   return (
     <>
-      <div className="group relative overflow-hidden rounded-2xl bg-black/80 border border-white/10 p-4 transition-all hover:border-white/20 hover:bg-black/90">
-        <div className="mb-3 flex items-start justify-between gap-2">
-          <div className="text-xs font-medium text-white/70">
-            {sectionLabel}: {itemCount}
-          </div>
-          <div className="rounded-full bg-purple-600/80 px-3 py-1 text-xs font-medium text-white">
-            Rarity: {displayRarity}
-          </div>
-        </div>
-
-        <div className="relative mx-auto aspect-square w-full max-w-[180px] overflow-hidden rounded-xl bg-black/60 border border-white/5">
+      <div className="group relative overflow-hidden rounded-2xl">
+        {/* Rectangle border background */}
+        <div className="absolute inset-0 rounded-2xl overflow-hidden">
           <Image
-            src={imageUrl || "/placeholder.svg"}
-            alt={item.name}
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/027_Rectangle_2-Hy0Yx0Yx0Yx0Yx0Yx0Yx0Yx0Yx0Y.png"
+            alt=""
             fill
-            className="object-contain p-3"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            onError={(e) => {
-              console.log("[v0] Image failed to load:", item.name)
-              setImageError(true)
-            }}
+            className="object-cover opacity-30"
           />
         </div>
 
-        <h3 className="mt-3 text-center text-sm font-semibold text-white line-clamp-2">{item.name}</h3>
-
-        <div className="mt-2 flex flex-col items-center gap-0.5">
-          {item.demand && <p className="text-xs text-white/50">Demand: {item.demand}</p>}
-          <p className="text-xs text-white/50">Last Updated: {getTimeAgo(item.last_updated_at)}</p>
-        </div>
-
-        <div className="mt-3 text-center text-lg font-bold text-yellow-400">{displayRarity}</div>
-
-        {!hideAddButton && (
-          <div className="mt-4 flex justify-center">
-            <button
-              onClick={handleAddToInventory}
-              disabled={isAdding || userLoading}
-              className="relative overflow-hidden transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/029_Rectangle_2_copy-r4C30HJgtLcx1gqDHFUUyCfEaLSXC6.png"
-                alt="Button background"
-                width={240}
-                height={48}
-                className="h-12 w-auto"
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-xs font-bold text-white/80 uppercase tracking-wider">
-                  {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
-                </span>
-              </div>
-            </button>
+        {/* Card content */}
+        <div className="relative bg-black/80 p-4 rounded-2xl border border-white/10 transition-all hover:border-white/20 hover:bg-black/90">
+          <div className="mb-3 flex items-start justify-between gap-2">
+            <div className="text-xs font-medium text-white/70">
+              {sectionLabel}: {itemCount}
+            </div>
+            <div className="rounded-full bg-purple-600/80 px-3 py-1 text-xs font-medium text-white">
+              Rarity: {displayRarity}
+            </div>
           </div>
-        )}
+
+          <div className="relative mx-auto aspect-square w-full max-w-[180px] overflow-hidden rounded-xl bg-black/60 border border-white/5">
+            <Image
+              src={imageUrl || "/placeholder.svg"}
+              alt={item.name}
+              fill
+              className="object-contain p-3"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              onError={(e) => {
+                console.log("[v0] Image failed to load:", item.name)
+                setImageError(true)
+              }}
+            />
+          </div>
+
+          <h3 className="mt-3 text-center text-sm font-semibold text-white line-clamp-2">{item.name}</h3>
+
+          <div className="mt-2 flex flex-col items-center gap-0.5">
+            {item.demand && <p className="text-xs text-white/50">Demand: {item.demand}</p>}
+            <p className="text-xs text-white/50">Last Updated: {getTimeAgo(item.last_updated_at)}</p>
+          </div>
+
+          <div className="mt-3 text-center text-lg font-bold text-yellow-400">{displayRarity}</div>
+
+          {!hideAddButton && (
+            <div className="mt-4 flex justify-center">
+              <button
+                onClick={handleAddToInventory}
+                disabled={isAdding || userLoading}
+                className="relative overflow-hidden transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Image
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/029_Rectangle_2_copy-r4C30HJgtLcx1gqDHFUUyCfEaLSXC6.png"
+                  alt="Button background"
+                  width={240}
+                  height={48}
+                  className="h-12 w-auto"
+                />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-xs font-bold text-white/80 uppercase tracking-wider">
+                    {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
+                  </span>
+                </div>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
