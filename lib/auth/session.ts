@@ -1,7 +1,9 @@
 import { cookies } from "next/headers"
 import { createServiceClient } from "@/lib/supabase/service"
+import { randomBytes } from "crypto"
 
 const SESSION_COOKIE_NAME = "trade_session_id"
+const FINGERPRINT_COOKIE_NAME = "session_fingerprint"
 const SESSION_MAX_AGE = 60 * 60 * 24 * 30 // 30 days
 
 export type UserSession = {
@@ -11,6 +13,7 @@ export type UserSession = {
   globalName: string | null
   avatarUrl: string | null
   email: string | null
+  role: "user" | "admin"
 }
 
 /**
@@ -25,10 +28,10 @@ export async function createSession(
   const supabase = await createServiceClient()
   const expiresAt = new Date(Date.now() + expiresIn * 1000)
 
-  // Delete any existing sessions for this user to prevent session buildup
+  const fingerprint = randomBytes(32).toString("hex")
+
   await supabase.from("sessions").delete().eq("discord_id", discordId)
 
-  // Create new session
   const { data, error } = await supabase
     .from("sessions")
     .insert({
@@ -37,6 +40,7 @@ export async function createSession(
       refresh_token: refreshToken || null,
       token_expires_at: expiresAt.toISOString(),
       last_activity_at: new Date().toISOString(),
+      fingerprint_hash: await hashFingerprint(fingerprint),
     })
     .select("id")
     .single()
@@ -47,12 +51,19 @@ export async function createSession(
 
   const sessionId = data.id
 
-  // Set secure HttpOnly cookie
   const cookieStore = await cookies()
   cookieStore.set(SESSION_COOKIE_NAME, sessionId, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "strict",
+    path: "/",
+    maxAge: SESSION_MAX_AGE,
+  })
+
+  cookieStore.set(FINGERPRINT_COOKIE_NAME, fingerprint, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
     path: "/",
     maxAge: SESSION_MAX_AGE,
   })
@@ -66,15 +77,15 @@ export async function createSession(
 export async function getSession(): Promise<UserSession | null> {
   const cookieStore = await cookies()
   const sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value
+  const fingerprint = cookieStore.get(FINGERPRINT_COOKIE_NAME)?.value
 
-  if (!sessionId) {
+  if (!sessionId || !fingerprint) {
     return null
   }
 
   try {
     const supabase = await createServiceClient()
 
-    // Fetch session with profile data
     const { data: session, error: sessionError } = await supabase
       .from("sessions")
       .select(
@@ -82,7 +93,8 @@ export async function getSession(): Promise<UserSession | null> {
         id,
         discord_id,
         token_expires_at,
-        last_activity_at
+        last_activity_at,
+        fingerprint_hash
       `,
       )
       .eq("id", sessionId)
@@ -93,17 +105,21 @@ export async function getSession(): Promise<UserSession | null> {
       return null
     }
 
-    // Check if token is expired
+    const fingerprintValid = await verifyFingerprint(fingerprint, session.fingerprint_hash)
+    if (!fingerprintValid) {
+      await destroySession()
+      return null
+    }
+
     const expiresAt = new Date(session.token_expires_at)
     if (expiresAt < new Date()) {
       await destroySession()
       return null
     }
 
-    // Fetch profile data
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("discord_id, username, global_name, avatar_url, email")
+      .select("discord_id, username, global_name, avatar_url, email, role")
       .eq("discord_id", session.discord_id)
       .single()
 
@@ -112,7 +128,6 @@ export async function getSession(): Promise<UserSession | null> {
       return null
     }
 
-    // Update last activity timestamp (fire and forget)
     supabase.from("sessions").update({ last_activity_at: new Date().toISOString() }).eq("id", sessionId).then()
 
     return {
@@ -122,9 +137,10 @@ export async function getSession(): Promise<UserSession | null> {
       globalName: profile.global_name,
       avatarUrl: profile.avatar_url,
       email: profile.email,
+      role: profile.role || "user",
     }
   } catch (error) {
-    console.error("[v0] Session fetch error:", error)
+    console.error("Session fetch error:", error)
     await destroySession()
     return null
   }
@@ -146,11 +162,18 @@ export async function destroySession(): Promise<void> {
     }
   }
 
-  // Clear cookie
   cookieStore.set(SESSION_COOKIE_NAME, "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "strict",
+    path: "/",
+    maxAge: 0,
+  })
+
+  cookieStore.set(FINGERPRINT_COOKIE_NAME, "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
     path: "/",
     maxAge: 0,
   })
@@ -200,7 +223,6 @@ export async function refreshDiscordToken(sessionId: string): Promise<boolean> {
     const tokenData = await tokenRes.json()
     const expiresAt = new Date(Date.now() + tokenData.expires_in * 1000)
 
-    // Update session with new tokens
     await supabase
       .from("sessions")
       .update({
@@ -216,4 +238,23 @@ export async function refreshDiscordToken(sessionId: string): Promise<boolean> {
     console.error("[v0] Token refresh error:", error)
     return false
   }
+}
+
+async function hashFingerprint(fingerprint: string): Promise<string> {
+  const crypto = await import("crypto")
+  return crypto.createHash("sha256").update(fingerprint).digest("hex")
+}
+
+async function verifyFingerprint(fingerprint: string, hash: string): Promise<boolean> {
+  const crypto = await import("crypto")
+  const computedHash = crypto.createHash("sha256").update(fingerprint).digest("hex")
+
+  if (computedHash.length !== hash.length) return false
+
+  let result = 0
+  for (let i = 0; i < computedHash.length; i++) {
+    result |= computedHash.charCodeAt(i) ^ hash.charCodeAt(i)
+  }
+
+  return result === 0
 }

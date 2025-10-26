@@ -4,6 +4,7 @@ import { getSession } from "@/lib/auth/session"
 import { profileUpdateSchema, sanitizeHtml } from "@/lib/security/input-validator"
 import { handleApiError } from "@/lib/security/error-handler"
 import { checkRateLimit } from "@/lib/security/rate-limiter"
+import { requireCSRF } from "@/lib/security/csrf"
 
 export async function GET() {
   const session = await getSession()
@@ -27,6 +28,11 @@ export async function GET() {
 
 export async function PATCH(req: NextRequest) {
   try {
+    const csrfValid = await requireCSRF(req)
+    if (!csrfValid) {
+      return new Response(JSON.stringify({ error: "Invalid CSRF token" }), { status: 403 })
+    }
+
     const session = await getSession()
     if (!session) {
       return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401 })

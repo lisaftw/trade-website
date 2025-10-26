@@ -2,18 +2,39 @@ import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 import { type NextRequest, NextResponse } from "next/server"
 import { getSession } from "@/lib/auth/session"
+import { requireCSRF } from "@/lib/security/csrf"
+import { verifySignature } from "@/lib/security/request-signing"
+import { checkRateLimit } from "@/lib/security/rate-limiter"
 
 export const dynamic = "force-dynamic"
 
 export async function POST(request: NextRequest) {
   try {
+    const csrfValid = await requireCSRF(request)
+    if (!csrfValid) {
+      return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 })
+    }
+
     const session = await getSession()
 
-    console.log("[v0] Trade creation - Session:", session?.discordId)
-
     if (!session) {
-      console.error("[v0] Trade creation failed: No authenticated user")
       return NextResponse.json({ error: "You must be logged in to create a trade" }, { status: 401 })
+    }
+
+    const rateLimitResult = await checkRateLimit(request, "write", session.discordId)
+    if (!rateLimitResult.success) {
+      return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 })
+    }
+
+    const signature = request.headers.get("x-request-signature")
+    const timestamp = Number.parseInt(request.headers.get("x-request-timestamp") || "0")
+    const body = await request.json()
+
+    if (signature && timestamp) {
+      const signatureValid = verifySignature(body, timestamp, signature)
+      if (!signatureValid) {
+        return NextResponse.json({ error: "Invalid request signature" }, { status: 403 })
+      }
     }
 
     const cookieStore = await cookies()
@@ -32,23 +53,17 @@ export async function POST(request: NextRequest) {
       },
     )
 
-    const body = await request.json()
     const { game, offering, requesting, notes } = body
 
-    console.log("[v0] Trade creation request:", { game, offering, requesting, notes, userId: session.discordId })
-
     if (!game || typeof game !== "string") {
-      console.error("[v0] Trade creation failed: Invalid game")
       return NextResponse.json({ error: "Please select a valid game" }, { status: 400 })
     }
 
     if (!Array.isArray(offering) || offering.length === 0) {
-      console.error("[v0] Trade creation failed: Invalid offering")
       return NextResponse.json({ error: "Please add at least one item you're offering" }, { status: 400 })
     }
 
     if (!Array.isArray(requesting) || requesting.length === 0) {
-      console.error("[v0] Trade creation failed: Invalid requesting")
       return NextResponse.json({ error: "Please add at least one item you're requesting" }, { status: 400 })
     }
 
@@ -65,14 +80,11 @@ export async function POST(request: NextRequest) {
       .select()
 
     if (error) {
-      console.error("[v0] Supabase insert error:", error)
       return NextResponse.json({ error: `Failed to create trade: ${error.message}` }, { status: 400 })
     }
 
-    console.log("[v0] Trade created successfully:", data[0]?.id)
     return NextResponse.json(data[0])
   } catch (error) {
-    console.error("[v0] Error creating trade:", error)
     return NextResponse.json({ error: "Internal server error. Please try again." }, { status: 500 })
   }
 }
