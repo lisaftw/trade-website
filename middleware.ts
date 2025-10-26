@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
-import { generateCSRFToken } from "@/lib/security/csrf"
 import { addMobileSecurityHeaders, validateMobileSession } from "@/lib/security/mobile-security"
 
 const protectedRoutes = ["/dashboard", "/profile", "/settings"]
@@ -42,8 +41,6 @@ export async function middleware(request: NextRequest) {
       sameSite: "strict",
       maxAge: 60 * 60 * 24, // 24 hours
     })
-
-    await generateCSRFToken()
   }
 
   return response

@@ -1,5 +1,4 @@
 import { cookies } from "next/headers"
-import { randomBytes } from "crypto"
 
 const CSRF_TOKEN_NAME = "csrf_token"
 const CSRF_SECRET = process.env.CSRF_SECRET || "change-this-in-production"
@@ -8,7 +7,11 @@ const CSRF_SECRET = process.env.CSRF_SECRET || "change-this-in-production"
  * Generates a CSRF token and stores it in a cookie
  */
 export async function generateCSRFToken(): Promise<string> {
-  const token = randomBytes(32).toString("hex")
+  // Use Web Crypto API instead of Node.js crypto for Edge Runtime compatibility
+  const array = new Uint8Array(32)
+  crypto.getRandomValues(array)
+  const token = Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("")
+
   const cookieStore = await cookies()
 
   cookieStore.set(CSRF_TOKEN_NAME, token, {
