@@ -10,6 +10,8 @@
     "import:adoptme": "tsx scripts/import-adoptme-excel.ts",
     "import:mm2": "tsx scripts/import-mm2-values.ts",
     "lint": "next lint",
+    "security:audit": "tsx scripts/view-audit-logs.ts",
+    "security:check": "tsx scripts/check-rls-policies.ts",
     "start": "next start"
   },
   "dependencies": {
