@@ -71,3 +71,22 @@ export function getRequestMetadata(request: Request): {
 
   return { ipAddress, userAgent }
 }
+
+export async function auditLog(params: {
+  userId: string
+  action: string
+  resource: string
+  status: "success" | "failure"
+  metadata?: Record<string, unknown>
+}): Promise<void> {
+  const severity = params.status === "failure" ? "medium" : "low"
+
+  await logAuditEvent({
+    type: "data_access",
+    userId: params.userId,
+    resource: params.resource,
+    action: params.action,
+    metadata: params.metadata,
+    severity,
+  })
+}

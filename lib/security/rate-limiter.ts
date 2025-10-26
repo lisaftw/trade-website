@@ -66,3 +66,13 @@ export function getRateLimitIdentifier(request: Request, userId?: string): strin
   const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown"
   return `ip:${ip}`
 }
+
+export async function checkRateLimit(
+  request: Request,
+  operation: keyof typeof RATE_LIMITS,
+  userId?: string,
+): Promise<{ success: boolean; remaining: number }> {
+  const identifier = getRateLimitIdentifier(request, userId)
+  const config = RATE_LIMITS[operation]
+  return rateLimit(identifier, config)
+}
