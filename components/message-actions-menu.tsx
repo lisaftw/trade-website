@@ -12,6 +12,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { secureClipboardWrite } from "@/lib/security/mobile-attack-prevention"
+import { toast } from "@/components/ui/use-toast"
 
 type MessageActionsMenuProps = {
   messageId: string
@@ -34,8 +36,20 @@ export function MessageActionsMenu({
 }: MessageActionsMenuProps) {
   const [open, setOpen] = useState(false)
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(content)
+  const handleCopy = async () => {
+    const success = await secureClipboardWrite(content)
+    if (success) {
+      toast({
+        title: "Copied",
+        description: "Message copied to clipboard",
+      })
+    } else {
+      toast({
+        title: "Failed to copy",
+        description: "Could not copy message to clipboard",
+        variant: "destructive",
+      })
+    }
     setOpen(false)
   }
 

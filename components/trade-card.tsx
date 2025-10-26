@@ -100,7 +100,14 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
     const fetchItemImages = async () => {
       try {
         console.log("[v0] Fetching item images for game:", trade.game)
-        const response = await fetch(`/api/items?game=${trade.game}`)
+        const gameParam = encodeURIComponent(trade.game)
+        if (!/^[a-zA-Z0-9\s-]+$/.test(trade.game)) {
+          console.error("[Security] Invalid game parameter")
+          setLoadingItems(false)
+          return
+        }
+
+        const response = await fetch(`/api/items?game=${gameParam}`)
         if (!response.ok) throw new Error("Failed to fetch items")
 
         const data = await response.json()

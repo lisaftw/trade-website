@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState, useCallback, useRef } from "react"
+import { SecureMobileStorage } from "@/lib/security/mobile-security"
 
 type User = {
   discordId: string
@@ -53,8 +54,11 @@ export function useUser() {
 
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "user_logged_in" && e.storageArea === localStorage) {
-        console.log("User login detected in another window, refetching")
-        fetchUser()
+        const value = SecureMobileStorage.getItem("user_logged_in")
+        if (value) {
+          console.log("User login detected in another window, refetching")
+          fetchUser()
+        }
       }
     }
 
@@ -67,7 +71,7 @@ export function useUser() {
       await fetch("/api/auth/logout", { method: "POST" })
       setUser(null)
       try {
-        localStorage.removeItem("user_logged_in")
+        SecureMobileStorage.removeItem("user_logged_in")
       } catch {}
       window.location.href = "/"
     } catch (err) {

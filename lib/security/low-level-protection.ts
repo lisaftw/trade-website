@@ -197,3 +197,34 @@ export function safeDeepClone<T>(obj: T): T {
 
   return cloned
 }
+
+// Validate integer bounds
+export function validateInteger(
+  value: number,
+  min: number = Number.MIN_SAFE_INTEGER,
+  max: number = Number.MAX_SAFE_INTEGER,
+): number {
+  if (!Number.isInteger(value)) {
+    throw new Error("Value must be an integer")
+  }
+  if (value < min || value > max) {
+    throw new Error(`Value must be between ${min} and ${max}`)
+  }
+  return value
+}
+
+// Sanitize input to prevent various attacks
+export function sanitizeInput(input: string): string {
+  // Normalize Unicode to prevent homograph attacks
+  let sanitized = normalizeUnicode(input)
+
+  // Trim whitespace
+  sanitized = sanitized.trim()
+
+  // Limit length
+  if (sanitized.length > MAX_STRING_LENGTH) {
+    sanitized = sanitized.slice(0, MAX_STRING_LENGTH)
+  }
+
+  return sanitized
+}

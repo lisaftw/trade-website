@@ -4,6 +4,9 @@ export const revalidate = 0
 import { cookies } from "next/headers"
 import { createServiceClient } from "@/lib/supabase/service"
 import { createSession } from "@/lib/auth/session"
+import { checkRateLimit } from "@/lib/security/rate-limiter"
+import { auditLog } from "@/lib/security/audit-logger"
+import { sanitizeInput } from "@/lib/security/low-level-protection"
 
 type TokenResponse = {
   access_token: string
@@ -22,44 +25,80 @@ type DiscordUser = {
 }
 
 export async function GET(req: Request) {
-  const url = new URL(req.url)
-  const code = url.searchParams.get("code")
-  const state = url.searchParams.get("state")
-  const error = url.searchParams.get("error")
-  const cookieStore = await cookies()
-  const storedState = cookieStore.get("discord_oauth_state")?.value
-
-  if (error) {
-    console.error("[v0] Discord OAuth error:", error)
-    return Response.redirect(`${url.origin}/login?error=oauth_denied`, 302)
-  }
-
-  if (!code || !state || !storedState || state !== storedState) {
-    console.error("[v0] Invalid OAuth state")
-    return Response.redirect(`${url.origin}/login?error=invalid_state`, 302)
-  }
-
-  // Clear state cookie
-  cookieStore.set("discord_oauth_state", "", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 0,
-  })
-
-  const origin = `${url.protocol}//${url.host}`
-  const redirectUri = process.env.DISCORD_REDIRECT_URI || `${origin}/api/auth/discord/callback`
-
-  const clientId = process.env.DISCORD_CLIENT_ID
-  const clientSecret = process.env.DISCORD_CLIENT_SECRET
-
-  if (!clientId || !clientSecret) {
-    console.error("[v0] Missing Discord credentials")
-    return Response.redirect(`${url.origin}/login?error=config_error`, 302)
-  }
-
   try {
+    const rateLimitResult = await checkRateLimit(req, "auth")
+    if (!rateLimitResult.allowed) {
+      await auditLog({
+        eventType: "oauth_callback_rate_limited",
+        severity: "warning",
+        request: req,
+      })
+      const url = new URL(req.url)
+      return Response.redirect(`${url.origin}/login?error=rate_limited`, 302)
+    }
+
+    const url = new URL(req.url)
+    const code = url.searchParams.get("code")
+    const state = url.searchParams.get("state")
+    const error = url.searchParams.get("error")
+    const cookieStore = await cookies()
+    const storedState = cookieStore.get("discord_oauth_state")?.value
+
+    if (error) {
+      await auditLog({
+        eventType: "oauth_error",
+        severity: "warning",
+        request: req,
+        metadata: { error },
+      })
+      return Response.redirect(`${url.origin}/login?error=oauth_denied`, 302)
+    }
+
+    if (!code || !state || !storedState) {
+      await auditLog({
+        eventType: "oauth_missing_params",
+        severity: "warning",
+        request: req,
+      })
+      return Response.redirect(`${url.origin}/login?error=invalid_state`, 302)
+    }
+
+    // Constant-time comparison
+    const crypto = await import("crypto")
+    const stateMatch = crypto.timingSafeEqual(Buffer.from(state), Buffer.from(storedState))
+
+    if (!stateMatch) {
+      await auditLog({
+        eventType: "oauth_state_mismatch",
+        severity: "critical",
+        request: req,
+      })
+      return Response.redirect(`${url.origin}/login?error=invalid_state`, 302)
+    }
+
+    cookieStore.set("discord_oauth_state", "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 0,
+    })
+
+    const origin = `${url.protocol}//${url.host}`
+    const redirectUri = process.env.DISCORD_REDIRECT_URI || `${origin}/api/auth/discord/callback`
+
+    const clientId = process.env.DISCORD_CLIENT_ID
+    const clientSecret = process.env.DISCORD_CLIENT_SECRET
+
+    if (!clientId || !clientSecret) {
+      await auditLog({
+        eventType: "oauth_config_error",
+        severity: "critical",
+        request: req,
+      })
+      return Response.redirect(`${url.origin}/login?error=config_error`, 302)
+    }
+
     const body = new URLSearchParams({
       client_id: clientId,
       client_secret: clientSecret,
@@ -76,7 +115,12 @@ export async function GET(req: Request) {
 
     if (!tokenRes.ok) {
       const errText = await tokenRes.text()
-      console.error("[v0] Token exchange failed:", errText)
+      await auditLog({
+        eventType: "oauth_token_exchange_failed",
+        severity: "error",
+        request: req,
+        metadata: { error: errText.substring(0, 200) },
+      })
       return Response.redirect(`${url.origin}/login?error=token_exchange_failed`, 302)
     }
 
@@ -89,11 +133,19 @@ export async function GET(req: Request) {
 
     if (!userRes.ok) {
       const errText = await userRes.text()
-      console.error("[v0] Failed to fetch Discord user:", errText)
+      await auditLog({
+        eventType: "oauth_user_fetch_failed",
+        severity: "error",
+        request: req,
+      })
       return Response.redirect(`${url.origin}/login?error=user_fetch_failed`, 302)
     }
 
     const discordUser = (await userRes.json()) as DiscordUser
+
+    const sanitizedUsername = discordUser.username ? sanitizeInput(discordUser.username) : null
+    const sanitizedGlobalName = discordUser.global_name ? sanitizeInput(discordUser.global_name) : null
+
     const avatarUrl = discordUser.avatar
       ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png?size=256`
       : null
@@ -111,8 +163,8 @@ export async function GET(req: Request) {
     const { error: upsertError } = await supabase.from("profiles").upsert(
       {
         discord_id: discordUser.id,
-        username: discordUser.username ?? null,
-        global_name: discordUser.global_name ?? null,
+        username: sanitizedUsername,
+        global_name: sanitizedGlobalName,
         avatar_url: avatarUrl,
         email: discordUser.email ?? null,
         last_login_at: new Date().toISOString(),
@@ -122,13 +174,25 @@ export async function GET(req: Request) {
     )
 
     if (upsertError) {
-      console.error("[v0] Failed to upsert user:", upsertError)
+      await auditLog({
+        eventType: "oauth_database_error",
+        severity: "error",
+        request: req,
+        userId: discordUser.id,
+      })
       return Response.redirect(`${url.origin}/login?error=database_error`, 302)
     }
 
     await createSession(discordUser.id, tokenJson.access_token, tokenJson.refresh_token, tokenJson.expires_in)
 
-    // Log login activity
+    await auditLog({
+      eventType: "user_login_success",
+      severity: "info",
+      request: req,
+      userId: discordUser.id,
+      metadata: { is_new_user: isNewUser },
+    })
+
     await supabase.from("activities").insert({
       discord_id: discordUser.id,
       type: "login",
@@ -138,7 +202,13 @@ export async function GET(req: Request) {
     const redirectPath = isNewUser ? "/?welcome=true" : "/"
     return Response.redirect(`${url.origin}${redirectPath}`, 302)
   } catch (error: any) {
-    console.error("[v0] OAuth callback error:", error)
+    const url = new URL(req.url)
+    await auditLog({
+      eventType: "oauth_unexpected_error",
+      severity: "critical",
+      request: req,
+      metadata: { error: error.message },
+    })
     return Response.redirect(`${url.origin}/login?error=unexpected_error`, 302)
   }
 }

@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import { toast } from "@/components/ui/use-toast"
 
 import { useEffect, useState, useRef, useCallback } from "react"
 import { createClient } from "@/lib/supabase/client"
@@ -22,6 +23,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { validateMobileInput, rateLimitMobileAction } from "@/lib/security/mobile-attack-prevention"
 
 type Reaction = {
   emoji: string
@@ -409,10 +411,32 @@ export function ChatWindow({
 
   async function sendMessage(e: React.FormEvent) {
     e.preventDefault()
+
     if (!newMessage.trim() || sending) return
 
+    // Rate limit message sending
+    if (!rateLimitMobileAction(`send-message-${currentUserId}`, 20, 60000)) {
+      toast({
+        title: "Slow down",
+        description: "You're sending messages too quickly",
+        variant: "destructive",
+      })
+      return
+    }
+
+    // Validate and sanitize input
+    const sanitizedMessage = validateMobileInput(newMessage.trim())
+    if (sanitizedMessage.length === 0) {
+      toast({
+        title: "Invalid message",
+        description: "Message contains invalid characters",
+        variant: "destructive",
+      })
+      return
+    }
+
     const tempId = `temp-${Date.now()}`
-    const messageContent = newMessage.trim()
+    const messageContent = sanitizedMessage
 
     const optimisticMessage: Message = {
       id: tempId,

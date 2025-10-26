@@ -1,11 +1,18 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { generateCSRFToken } from "@/lib/security/csrf"
+import { addMobileSecurityHeaders, validateMobileSession } from "@/lib/security/mobile-security"
 
 const protectedRoutes = ["/dashboard", "/profile", "/settings"]
 const authRoutes = ["/login"]
 
 export async function middleware(request: NextRequest) {
+  if (!validateMobileSession(request)) {
+    const response = NextResponse.redirect(new URL("/login", request.url))
+    response.cookies.delete("trade_session_id")
+    return response
+  }
+
   const sessionCookie = request.cookies.get("trade_session_id")
   const hasSession = !!sessionCookie?.value
   const { pathname } = request.nextUrl
@@ -23,22 +30,19 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url))
   }
 
-  const response = NextResponse.next()
+  let response = NextResponse.next()
 
-  // Prevent clickjacking
-  response.headers.set("X-Frame-Options", "DENY")
-  response.headers.set("X-Content-Type-Options", "nosniff")
-  response.headers.set("X-XSS-Protection", "1; mode=block")
-  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin")
+  response = addMobileSecurityHeaders(response)
 
-  // Content Security Policy
-  response.headers.set(
-    "Content-Security-Policy",
-    "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co;",
-  )
-
-  // Generate CSRF token for authenticated users
   if (hasSession) {
+    const userAgent = request.headers.get("user-agent") || ""
+    response.cookies.set("session_ua", userAgent, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 60 * 60 * 24, // 24 hours
+    })
+
     await generateCSRFToken()
   }
 
