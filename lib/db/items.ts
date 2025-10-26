@@ -41,12 +41,15 @@ export async function getItems(game?: string): Promise<Item[]> {
 
 export async function searchItems(query: string, game?: string): Promise<Item[]> {
   try {
+    const { sanitizeRegexInput } = await import("@/lib/security/low-level-protection")
+    const sanitizedQuery = sanitizeRegexInput(query)
+
     const client = await clientPromise
     const db = client.db("trading-db")
     const collection = db.collection<Item>("items")
 
     const searchQuery: any = {
-      name: { $regex: query, $options: "i" },
+      name: { $regex: sanitizedQuery, $options: "i" },
     }
 
     if (game) {
@@ -60,7 +63,7 @@ export async function searchItems(query: string, game?: string): Promise<Item[]>
       _id: item._id,
     }))
   } catch (error) {
-    console.error("[v0] Error searching items:", error)
+    console.error("Error searching items:", error)
     return []
   }
 }

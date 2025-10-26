@@ -5,6 +5,12 @@ import { getSession } from "@/lib/auth/session"
 import { requireCSRF } from "@/lib/security/csrf"
 import { verifySignature } from "@/lib/security/request-signing"
 import { checkRateLimit } from "@/lib/security/rate-limiter"
+import {
+  safeJsonParse,
+  validateArrayBounds,
+  normalizeUnicode,
+  getSingleParam,
+} from "@/lib/security/low-level-protection"
 
 export const dynamic = "force-dynamic"
 
@@ -28,6 +34,12 @@ export async function POST(request: NextRequest) {
 
     const signature = request.headers.get("x-request-signature")
     const timestamp = Number.parseInt(request.headers.get("x-request-timestamp") || "0")
+
+    const contentLength = request.headers.get("content-length")
+    if (contentLength && Number.parseInt(contentLength) > 1024 * 1024) {
+      return NextResponse.json({ error: "Request payload too large" }, { status: 413 })
+    }
+
     const body = await request.json()
 
     if (signature && timestamp) {
@@ -55,8 +67,19 @@ export async function POST(request: NextRequest) {
 
     const { game, offering, requesting, notes } = body
 
-    if (!game || typeof game !== "string") {
+    const normalizedGame = normalizeUnicode(game || "")
+    const normalizedNotes = notes ? normalizeUnicode(notes) : null
+
+    if (!normalizedGame || typeof normalizedGame !== "string") {
       return NextResponse.json({ error: "Please select a valid game" }, { status: 400 })
+    }
+
+    if (!validateArrayBounds(offering, 100)) {
+      return NextResponse.json({ error: "Too many items in offering (max 100)" }, { status: 400 })
+    }
+
+    if (!validateArrayBounds(requesting, 100)) {
+      return NextResponse.json({ error: "Too many items in requesting (max 100)" }, { status: 400 })
     }
 
     if (!Array.isArray(offering) || offering.length === 0) {
@@ -71,10 +94,10 @@ export async function POST(request: NextRequest) {
       .from("trades")
       .insert({
         discord_id: session.discordId,
-        game,
+        game: normalizedGame,
         offering: JSON.stringify(offering),
         requesting: JSON.stringify(requesting),
-        notes: notes || null,
+        notes: normalizedNotes,
         status: "active",
       })
       .select()
@@ -108,7 +131,8 @@ export async function GET(request: NextRequest) {
     )
 
     const { searchParams } = new URL(request.url)
-    const game = searchParams.get("game")
+
+    const game = getSingleParam(new URL(request.url), "game")
 
     let query = supabase.from("trades").select("*").eq("status", "active")
 
@@ -119,7 +143,7 @@ export async function GET(request: NextRequest) {
     const { data, error } = await query.order("created_at", { ascending: false })
 
     if (error) {
-      console.error("[v0] Supabase error fetching trades:", error)
+      console.error("Supabase error fetching trades:", error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
@@ -131,10 +155,17 @@ export async function GET(request: NextRequest) {
           .eq("discord_id", trade.discord_id)
           .single()
 
+        const offering = safeJsonParse(
+          typeof trade.offering === "string" ? trade.offering : JSON.stringify(trade.offering),
+        )
+        const requesting = safeJsonParse(
+          typeof trade.requesting === "string" ? trade.requesting : JSON.stringify(trade.requesting),
+        )
+
         return {
           ...trade,
-          offering: typeof trade.offering === "string" ? JSON.parse(trade.offering) : trade.offering,
-          requesting: typeof trade.requesting === "string" ? JSON.parse(trade.requesting) : trade.requesting,
+          offering: offering || [],
+          requesting: requesting || [],
           creator: profile || {
             discord_id: trade.discord_id,
             username: "Unknown User",
@@ -147,7 +178,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(tradesWithCreators)
   } catch (error) {
-    console.error("[v0] Error fetching trades:", error)
+    console.error("Error fetching trades:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
