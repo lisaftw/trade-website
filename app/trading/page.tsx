@@ -15,6 +15,8 @@ import { RobloxDecos } from "@/components/roblox-decos"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 
+export const dynamic = "force-dynamic"
+
 interface Trade {
   id: string
   discord_id: string
@@ -29,7 +31,6 @@ interface Trade {
 export default function TradingPage() {
   const { user } = useUser()
   const router = useRouter()
-  const supabase = createClient()
   const [trades, setTrades] = useState<Trade[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [filterType, setFilterType] = useState<"all" | "offering" | "requesting">("all")
@@ -65,6 +66,8 @@ export default function TradingPage() {
     }
 
     try {
+      const supabase = createClient()
+
       // Check if conversation already exists (either direction)
       const { data: existing1 } = await supabase
         .from("conversations")
