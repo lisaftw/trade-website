@@ -15,6 +15,8 @@ import { RobloxDecos } from "@/components/roblox-decos"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 
+export const dynamic = "force-dynamic"
+
 interface Trade {
   id: string
   discord_id: string
