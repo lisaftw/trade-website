@@ -3,6 +3,32 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 
+function ErrorMessage() {
+  if (typeof window === "undefined") return null
+
+  const params = new URLSearchParams(window.location.search)
+  const error = params.get("error")
+
+  if (!error) return null
+
+  const errorMessages: Record<string, string> = {
+    rate_limited: "Too many login attempts. Please wait a few minutes and try again.",
+    oauth_denied: "Login was cancelled. Please try again.",
+    invalid_state: "Invalid login session. Please try again.",
+    config_error: "Server configuration error. Please contact support.",
+    token_exchange_failed: "Failed to authenticate with Discord. Please try again.",
+    user_fetch_failed: "Failed to fetch user information. Please try again.",
+    database_error: "Database error. Please try again later.",
+    unexpected_error: "An unexpected error occurred. Please try again.",
+  }
+
+  return (
+    <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+      {errorMessages[error] || "An error occurred. Please try again."}
+    </div>
+  )
+}
+
 export default function LoginPage() {
   return (
     <main className="relative min-h-screen bg-background flex items-center justify-center p-4">
@@ -40,6 +66,8 @@ export default function LoginPage() {
           <CardDescription>Sign in with Discord to access your profile and start trading</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          <ErrorMessage />
+
           <Button asChild className="w-full h-12 text-base" size="lg">
             <a href="/api/auth/discord">
               <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24" fill="currentColor">

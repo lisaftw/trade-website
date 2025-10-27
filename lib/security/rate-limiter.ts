@@ -14,7 +14,7 @@ export type RateLimitConfig = {
 
 export const RATE_LIMITS = {
   // Strict limits for authentication endpoints
-  auth: { maxRequests: 5, windowMs: 15 * 60 * 1000 }, // 5 requests per 15 minutes
+  auth: { maxRequests: 10, windowMs: 5 * 60 * 1000 }, // 10 requests per 5 minutes (was 5 per 15 min)
   // Moderate limits for write operations
   write: { maxRequests: 30, windowMs: 60 * 1000 }, // 30 requests per minute
   // Generous limits for read operations

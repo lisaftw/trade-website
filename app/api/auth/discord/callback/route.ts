@@ -27,7 +27,7 @@ type DiscordUser = {
 export async function GET(req: Request) {
   try {
     const rateLimitResult = await checkRateLimit(req, "auth")
-    if (!rateLimitResult.allowed) {
+    if (!rateLimitResult.success) {
       await auditLog({
         eventType: "oauth_callback_rate_limited",
         severity: "warning",
