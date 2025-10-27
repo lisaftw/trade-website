@@ -265,24 +265,26 @@ export function MessagesContent({
           selectedConversationId && "hidden md:flex",
         )}
       >
-        <div className="p-4 md:p-6 border-b border-border/50 bg-zinc-900/70">
-          <div className="flex items-center justify-between mb-4">
-            <Link href="/">
-              <Button variant="ghost" size="sm" className="gap-2 hover:bg-zinc-800">
-                <ArrowLeft className="h-4 w-4" />
-                <span className="hidden sm:inline">Back to Home</span>
-                <Home className="h-4 w-4 sm:hidden" />
-              </Button>
-            </Link>
-          </div>
+        <div className="p-4 md:p-6 border-b border-border/50 bg-zinc-900/70 flex items-center justify-between">
           <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2">
             <div className="p-2 bg-primary/10 rounded-lg">
               <MessageSquare className="h-5 w-5 md:h-6 md:w-6 text-primary" />
             </div>
             <span>Messages</span>
           </h1>
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="h-9 gap-2 rounded-lg hover:bg-zinc-800/80 transition-colors"
+          >
+            <Link href="/">
+              <Home className="h-4 w-4" />
+              <span className="hidden sm:inline">Home</span>
+            </Link>
+          </Button>
         </div>
-        {/* End of added navigation header */}
+        {/* </CHANGE> */}
         <ConversationList
           conversations={conversations}
           selectedId={selectedConversationId}
@@ -308,8 +310,19 @@ export function MessagesContent({
                 <p className="text-lg font-medium mb-1">Select a conversation</p>
                 <p className="text-sm text-muted-foreground">Choose a conversation from the list to start messaging</p>
               </div>
+              <Button
+                asChild
+                variant="outline"
+                className="mt-4 gap-2 rounded-lg hover:bg-zinc-800/80 transition-colors bg-transparent"
+              >
+                <Link href="/">
+                  <ArrowLeft className="h-4 w-4" />
+                  Back to Home
+                </Link>
+              </Button>
             </div>
           </div>
+          // </CHANGE>
         )}
       </div>
     </div>
