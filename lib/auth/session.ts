@@ -79,7 +79,7 @@ export async function getSession(): Promise<UserSession | null> {
   const sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value
   const fingerprint = cookieStore.get(FINGERPRINT_COOKIE_NAME)?.value
 
-  if (!sessionId || !fingerprint) {
+  if (!sessionId) {
     return null
   }
 
@@ -101,18 +101,36 @@ export async function getSession(): Promise<UserSession | null> {
       .single()
 
     if (sessionError || !session) {
+      console.log("[v0] Session not found in database")
       await destroySession()
       return null
     }
 
-    const fingerprintValid = await verifyFingerprint(fingerprint, session.fingerprint_hash)
-    if (!fingerprintValid) {
-      await destroySession()
-      return null
+    if (fingerprint && session.fingerprint_hash) {
+      const fingerprintValid = await verifyFingerprint(fingerprint, session.fingerprint_hash)
+      if (!fingerprintValid) {
+        console.log("[v0] Fingerprint validation failed")
+        await destroySession()
+        return null
+      }
+    } else if (!fingerprint && session.fingerprint_hash) {
+      const newFingerprint = randomBytes(32).toString("hex")
+      const newHash = await hashFingerprint(newFingerprint)
+
+      await supabase.from("sessions").update({ fingerprint_hash: newHash }).eq("id", sessionId)
+
+      cookieStore.set(FINGERPRINT_COOKIE_NAME, newFingerprint, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        path: "/",
+        maxAge: SESSION_MAX_AGE,
+      })
     }
 
     const expiresAt = new Date(session.token_expires_at)
     if (expiresAt < new Date()) {
+      console.log("[v0] Session expired")
       await destroySession()
       return null
     }
@@ -124,6 +142,7 @@ export async function getSession(): Promise<UserSession | null> {
       .single()
 
     if (profileError || !profile) {
+      console.log("[v0] Profile not found")
       await destroySession()
       return null
     }
@@ -140,7 +159,7 @@ export async function getSession(): Promise<UserSession | null> {
       role: profile.role || "user",
     }
   } catch (error) {
-    console.error("Session fetch error:", error)
+    console.error("[v0] Session fetch error:", error)
     await destroySession()
     return null
   }
