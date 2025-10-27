@@ -183,7 +183,22 @@ export async function GET(req: Request) {
       return Response.redirect(`${url.origin}/login?error=database_error`, 302)
     }
 
-    await createSession(discordUser.id, tokenJson.access_token, tokenJson.refresh_token, tokenJson.expires_in)
+    console.log("[v0] Creating session for user:", discordUser.id)
+
+    try {
+      await createSession(discordUser.id, tokenJson.access_token, tokenJson.refresh_token, tokenJson.expires_in)
+      console.log("[v0] Session created successfully")
+    } catch (sessionError: any) {
+      console.error("[v0] Session creation failed:", sessionError.message)
+      await auditLog({
+        eventType: "session_creation_failed",
+        severity: "error",
+        request: req,
+        userId: discordUser.id,
+        metadata: { error: sessionError.message },
+      })
+      return Response.redirect(`${url.origin}/login?error=session_error`, 302)
+    }
 
     await auditLog({
       eventType: "user_login_success",

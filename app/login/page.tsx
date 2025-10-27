@@ -19,6 +19,7 @@ function ErrorMessage() {
     token_exchange_failed: "Failed to authenticate with Discord. Please try again.",
     user_fetch_failed: "Failed to fetch user information. Please try again.",
     database_error: "Database error. Please try again later.",
+    session_error: "Failed to create session. Please try again or contact support if the issue persists.",
     unexpected_error: "An unexpected error occurred. Please try again.",
   }
 

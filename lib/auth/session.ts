@@ -29,23 +29,35 @@ export async function createSession(
   const expiresAt = new Date(Date.now() + expiresIn * 1000)
 
   const fingerprint = randomBytes(32).toString("hex")
+  const fingerprintHash = await hashFingerprint(fingerprint)
 
   await supabase.from("sessions").delete().eq("discord_id", discordId)
 
-  const { data, error } = await supabase
+  const insertData: any = {
+    discord_id: discordId,
+    access_token: accessToken,
+    refresh_token: refreshToken || null,
+    token_expires_at: expiresAt.toISOString(),
+    last_activity_at: new Date().toISOString(),
+  }
+
+  // Try with fingerprint first
+  let { data, error } = await supabase
     .from("sessions")
-    .insert({
-      discord_id: discordId,
-      access_token: accessToken,
-      refresh_token: refreshToken || null,
-      token_expires_at: expiresAt.toISOString(),
-      last_activity_at: new Date().toISOString(),
-      fingerprint_hash: await hashFingerprint(fingerprint),
-    })
+    .insert({ ...insertData, fingerprint_hash: fingerprintHash })
     .select("id")
     .single()
 
+  // If error mentions unknown column, try without fingerprint
+  if (error && error.message.includes("column")) {
+    console.log("[v0] Fingerprint column not found, inserting without it")
+    const result = await supabase.from("sessions").insert(insertData).select("id").single()
+    data = result.data
+    error = result.error
+  }
+
   if (error || !data) {
+    console.error("[v0] Session creation error:", error)
     throw new Error(`Failed to create session: ${error?.message || "unknown error"}`)
   }
 
@@ -60,13 +72,15 @@ export async function createSession(
     maxAge: SESSION_MAX_AGE,
   })
 
-  cookieStore.set(FINGERPRINT_COOKIE_NAME, fingerprint, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    path: "/",
-    maxAge: SESSION_MAX_AGE,
-  })
+  if (!error) {
+    cookieStore.set(FINGERPRINT_COOKIE_NAME, fingerprint, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      maxAge: SESSION_MAX_AGE,
+    })
+  }
 
   return sessionId
 }
