@@ -30,12 +30,21 @@ export async function GET(req: Request) {
   const storedState = cookieStore.get("discord_oauth_state")?.value
 
   if (error) {
-    console.error("[v0] Discord OAuth error:", error)
+    console.error("Discord OAuth error:", error)
     return Response.redirect(`${url.origin}/login?error=oauth_denied`, 302)
   }
 
   if (!code || !state || !storedState || state !== storedState) {
-    console.error("[v0] Invalid OAuth state")
+    console.error(
+      "Invalid OAuth state - code:",
+      !!code,
+      "state:",
+      !!state,
+      "storedState:",
+      !!storedState,
+      "match:",
+      state === storedState,
+    )
     return Response.redirect(`${url.origin}/login?error=invalid_state`, 302)
   }
 
@@ -55,7 +64,7 @@ export async function GET(req: Request) {
   const clientSecret = process.env.DISCORD_CLIENT_SECRET
 
   if (!clientId || !clientSecret) {
-    console.error("[v0] Missing Discord credentials")
+    console.error("Missing Discord credentials - clientId:", !!clientId, "clientSecret:", !!clientSecret)
     return Response.redirect(`${url.origin}/login?error=config_error`, 302)
   }
 
@@ -76,7 +85,7 @@ export async function GET(req: Request) {
 
     if (!tokenRes.ok) {
       const errText = await tokenRes.text()
-      console.error("[v0] Token exchange failed:", errText)
+      console.error("Token exchange failed - status:", tokenRes.status, "response:", errText)
       return Response.redirect(`${url.origin}/login?error=token_exchange_failed`, 302)
     }
 
@@ -89,7 +98,7 @@ export async function GET(req: Request) {
 
     if (!userRes.ok) {
       const errText = await userRes.text()
-      console.error("[v0] Failed to fetch Discord user:", errText)
+      console.error("Failed to fetch Discord user - status:", userRes.status, "response:", errText)
       return Response.redirect(`${url.origin}/login?error=user_fetch_failed`, 302)
     }
 
@@ -98,8 +107,11 @@ export async function GET(req: Request) {
       ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png?size=256`
       : null
 
+    console.log("Creating Supabase service client...")
     const supabase = await createServiceClient()
+    console.log("Supabase client created successfully")
 
+    console.log("Checking for existing profile for discord_id:", discordUser.id)
     const { data: existingProfile } = await supabase
       .from("profiles")
       .select("discord_id")
@@ -107,7 +119,9 @@ export async function GET(req: Request) {
       .single()
 
     const isNewUser = !existingProfile
+    console.log("User status - isNewUser:", isNewUser)
 
+    console.log("Upserting profile...")
     const { error: upsertError } = await supabase.from("profiles").upsert(
       {
         discord_id: discordUser.id,
@@ -122,23 +136,29 @@ export async function GET(req: Request) {
     )
 
     if (upsertError) {
-      console.error("[v0] Failed to upsert user:", upsertError)
+      console.error("Failed to upsert user - error:", upsertError.message, "details:", upsertError)
       return Response.redirect(`${url.origin}/login?error=database_error`, 302)
     }
+    console.log("Profile upserted successfully")
 
+    console.log("Creating session...")
     await createSession(discordUser.id, tokenJson.access_token, tokenJson.refresh_token, tokenJson.expires_in)
+    console.log("Session created successfully")
 
     // Log login activity
+    console.log("Logging activity...")
     await supabase.from("activities").insert({
       discord_id: discordUser.id,
       type: "login",
       meta: { via: "discord" },
     })
+    console.log("Activity logged successfully")
 
     const redirectPath = isNewUser ? "/?welcome=true" : "/"
+    console.log("Login successful, redirecting to:", redirectPath)
     return Response.redirect(`${url.origin}${redirectPath}`, 302)
   } catch (error: any) {
-    console.error("[v0] OAuth callback error:", error)
+    console.error("OAuth callback error - message:", error.message, "stack:", error.stack, "full error:", error)
     return Response.redirect(`${url.origin}/login?error=unexpected_error`, 302)
   }
 }

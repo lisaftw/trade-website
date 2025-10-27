@@ -1,9 +1,27 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, AlertCircle } from "lucide-react"
 
-export default function LoginPage() {
+const errorMessages: Record<string, string> = {
+  oauth_denied: "You denied the Discord authorization request.",
+  invalid_state: "Invalid authentication state. Please try again.",
+  config_error: "Server configuration error. Please contact support.",
+  token_exchange_failed: "Failed to exchange authorization code. Please try again.",
+  user_fetch_failed: "Failed to fetch your Discord profile. Please try again.",
+  database_error: "Database error occurred. Please try again later.",
+  unexpected_error: "An unexpected error occurred. Please try again or contact support.",
+}
+
+export default function LoginPage({
+  searchParams,
+}: {
+  searchParams: { error?: string }
+}) {
+  const error = searchParams.error
+  const errorMessage = error ? errorMessages[error] || "An unknown error occurred." : null
+
   return (
     <main className="relative min-h-screen bg-background flex items-center justify-center p-4">
       <div className="absolute inset-0 overflow-hidden">
@@ -40,6 +58,13 @@ export default function LoginPage() {
           <CardDescription>Sign in with Discord to access your profile and start trading</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {errorMessage && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{errorMessage}</AlertDescription>
+            </Alert>
+          )}
+
           <Button asChild className="w-full h-12 text-base" size="lg">
             <a href="/api/auth/discord">
               <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
