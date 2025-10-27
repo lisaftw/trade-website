@@ -1,9 +1,7 @@
 import { cookies } from "next/headers"
 import { createServiceClient } from "@/lib/supabase/service"
-import { randomBytes } from "crypto"
 
 const SESSION_COOKIE_NAME = "trade_session_id"
-const FINGERPRINT_COOKIE_NAME = "session_fingerprint"
 const SESSION_MAX_AGE = 60 * 60 * 24 * 30 // 30 days
 
 export type UserSession = {
@@ -13,7 +11,6 @@ export type UserSession = {
   globalName: string | null
   avatarUrl: string | null
   email: string | null
-  role: "user" | "admin"
 }
 
 /**
@@ -28,59 +25,37 @@ export async function createSession(
   const supabase = await createServiceClient()
   const expiresAt = new Date(Date.now() + expiresIn * 1000)
 
-  const fingerprint = randomBytes(32).toString("hex")
-  const fingerprintHash = await hashFingerprint(fingerprint)
-
+  // Delete any existing sessions for this user to prevent session buildup
   await supabase.from("sessions").delete().eq("discord_id", discordId)
 
-  const insertData: any = {
-    discord_id: discordId,
-    access_token: accessToken,
-    refresh_token: refreshToken || null,
-    token_expires_at: expiresAt.toISOString(),
-    last_activity_at: new Date().toISOString(),
-  }
-
-  // Try with fingerprint first
-  let { data, error } = await supabase
+  // Create new session
+  const { data, error } = await supabase
     .from("sessions")
-    .insert({ ...insertData, fingerprint_hash: fingerprintHash })
+    .insert({
+      discord_id: discordId,
+      access_token: accessToken,
+      refresh_token: refreshToken || null,
+      token_expires_at: expiresAt.toISOString(),
+      last_activity_at: new Date().toISOString(),
+    })
     .select("id")
     .single()
 
-  // If error mentions unknown column, try without fingerprint
-  if (error && error.message.includes("column")) {
-    console.log("[v0] Fingerprint column not found, inserting without it")
-    const result = await supabase.from("sessions").insert(insertData).select("id").single()
-    data = result.data
-    error = result.error
-  }
-
   if (error || !data) {
-    console.error("[v0] Session creation error:", error)
     throw new Error(`Failed to create session: ${error?.message || "unknown error"}`)
   }
 
   const sessionId = data.id
 
+  // Set secure HttpOnly cookie
   const cookieStore = await cookies()
   cookieStore.set(SESSION_COOKIE_NAME, sessionId, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "lax",
     path: "/",
     maxAge: SESSION_MAX_AGE,
   })
-
-  if (!error) {
-    cookieStore.set(FINGERPRINT_COOKIE_NAME, fingerprint, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      path: "/",
-      maxAge: SESSION_MAX_AGE,
-    })
-  }
 
   return sessionId
 }
@@ -91,7 +66,6 @@ export async function createSession(
 export async function getSession(): Promise<UserSession | null> {
   const cookieStore = await cookies()
   const sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value
-  const fingerprint = cookieStore.get(FINGERPRINT_COOKIE_NAME)?.value
 
   if (!sessionId) {
     return null
@@ -100,6 +74,7 @@ export async function getSession(): Promise<UserSession | null> {
   try {
     const supabase = await createServiceClient()
 
+    // Fetch session with profile data
     const { data: session, error: sessionError } = await supabase
       .from("sessions")
       .select(
@@ -107,60 +82,37 @@ export async function getSession(): Promise<UserSession | null> {
         id,
         discord_id,
         token_expires_at,
-        last_activity_at,
-        fingerprint_hash
+        last_activity_at
       `,
       )
       .eq("id", sessionId)
       .single()
 
     if (sessionError || !session) {
-      console.log("[v0] Session not found in database")
       await destroySession()
       return null
     }
 
-    if (fingerprint && session.fingerprint_hash) {
-      const fingerprintValid = await verifyFingerprint(fingerprint, session.fingerprint_hash)
-      if (!fingerprintValid) {
-        console.log("[v0] Fingerprint validation failed")
-        await destroySession()
-        return null
-      }
-    } else if (!fingerprint && session.fingerprint_hash) {
-      const newFingerprint = randomBytes(32).toString("hex")
-      const newHash = await hashFingerprint(newFingerprint)
-
-      await supabase.from("sessions").update({ fingerprint_hash: newHash }).eq("id", sessionId)
-
-      cookieStore.set(FINGERPRINT_COOKIE_NAME, newFingerprint, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        path: "/",
-        maxAge: SESSION_MAX_AGE,
-      })
-    }
-
+    // Check if token is expired
     const expiresAt = new Date(session.token_expires_at)
     if (expiresAt < new Date()) {
-      console.log("[v0] Session expired")
       await destroySession()
       return null
     }
 
+    // Fetch profile data
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("discord_id, username, global_name, avatar_url, email, role")
+      .select("discord_id, username, global_name, avatar_url, email")
       .eq("discord_id", session.discord_id)
       .single()
 
     if (profileError || !profile) {
-      console.log("[v0] Profile not found")
       await destroySession()
       return null
     }
 
+    // Update last activity timestamp (fire and forget)
     supabase.from("sessions").update({ last_activity_at: new Date().toISOString() }).eq("id", sessionId).then()
 
     return {
@@ -170,7 +122,6 @@ export async function getSession(): Promise<UserSession | null> {
       globalName: profile.global_name,
       avatarUrl: profile.avatar_url,
       email: profile.email,
-      role: profile.role || "user",
     }
   } catch (error) {
     console.error("[v0] Session fetch error:", error)
@@ -195,18 +146,11 @@ export async function destroySession(): Promise<void> {
     }
   }
 
+  // Clear cookie
   cookieStore.set(SESSION_COOKIE_NAME, "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    path: "/",
-    maxAge: 0,
-  })
-
-  cookieStore.set(FINGERPRINT_COOKIE_NAME, "", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "lax",
     path: "/",
     maxAge: 0,
   })
@@ -256,6 +200,7 @@ export async function refreshDiscordToken(sessionId: string): Promise<boolean> {
     const tokenData = await tokenRes.json()
     const expiresAt = new Date(Date.now() + tokenData.expires_in * 1000)
 
+    // Update session with new tokens
     await supabase
       .from("sessions")
       .update({
@@ -271,23 +216,4 @@ export async function refreshDiscordToken(sessionId: string): Promise<boolean> {
     console.error("[v0] Token refresh error:", error)
     return false
   }
-}
-
-async function hashFingerprint(fingerprint: string): Promise<string> {
-  const crypto = await import("crypto")
-  return crypto.createHash("sha256").update(fingerprint).digest("hex")
-}
-
-async function verifyFingerprint(fingerprint: string, hash: string): Promise<boolean> {
-  const crypto = await import("crypto")
-  const computedHash = crypto.createHash("sha256").update(fingerprint).digest("hex")
-
-  if (computedHash.length !== hash.length) return false
-
-  let result = 0
-  for (let i = 0; i < computedHash.length; i++) {
-    result |= computedHash.charCodeAt(i) ^ hash.charCodeAt(i)
-  }
-
-  return result === 0
 }

@@ -1,18 +1,11 @@
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 import { type NextRequest, NextResponse } from "next/server"
-import { tradeInteractionSchema, sanitizeHtml, isValidUUID } from "@/lib/security/input-validator"
-import { handleApiError, AppError } from "@/lib/security/error-handler"
-import { checkRateLimit } from "@/lib/security/rate-limiter"
 
 export const dynamic = "force-dynamic"
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    if (!isValidUUID(params.id)) {
-      throw new AppError(400, "Invalid trade ID format")
-    }
-
     const cookieStore = await cookies()
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -33,28 +26,22 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       data: { user },
     } = await supabase.auth.getUser()
 
-    if (!user) {
-      throw new AppError(401, "Unauthorized")
-    }
+    console.log("Trade request - User:", user?.id)
 
-    const rateLimitResult = await checkRateLimit(request, "write", user.id)
-    if (!rateLimitResult.success) {
-      throw new AppError(429, "Too many requests")
+    if (!user) {
+      console.log("Trade request - No user found, returning 401")
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const body = await request.json()
+    const { message } = body
 
-    const validationResult = tradeInteractionSchema.safeParse(body)
-    if (!validationResult.success) {
-      throw new AppError(400, "Invalid message format")
-    }
-
-    const sanitizedMessage = sanitizeHtml(validationResult.data.message)
-
+    // Verify trade exists
     const { data: trade, error: tradeError } = await supabase.from("trades").select("id").eq("id", params.id).single()
 
     if (tradeError || !trade) {
-      throw new AppError(404, "Trade not found")
+      console.log("Trade not found:", params.id)
+      return NextResponse.json({ error: "Trade not found" }, { status: 404 })
     }
 
     const { data, error } = await supabase
@@ -62,27 +49,26 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       .insert({
         initiator_id: user.id,
         trade_id: params.id,
-        message: sanitizedMessage,
+        message,
         status: "pending",
       })
       .select()
 
     if (error) {
-      throw new AppError(400, error.message)
+      console.error("Error creating interaction:", error)
+      return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
+    console.log("Trade request created successfully")
     return NextResponse.json(data[0])
   } catch (error) {
-    return handleApiError(error)
+    console.error("Error creating interaction:", error)
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    if (!isValidUUID(params.id)) {
-      throw new AppError(400, "Invalid trade ID format")
-    }
-
     const cookieStore = await cookies()
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -98,34 +84,6 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         },
       },
     )
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) {
-      throw new AppError(401, "Unauthorized")
-    }
-
-    const { data: trade } = await supabase.from("trades").select("discord_id").eq("id", params.id).single()
-
-    if (!trade) {
-      throw new AppError(404, "Trade not found")
-    }
-
-    // Check if user is the trade owner or has interacted with this trade
-    const { data: userInteraction } = await supabase
-      .from("trade_interactions")
-      .select("id")
-      .eq("trade_id", params.id)
-      .eq("initiator_id", user.id)
-      .limit(1)
-
-    const isAuthorized = trade.discord_id === user.id || userInteraction
-
-    if (!isAuthorized) {
-      throw new AppError(403, "Forbidden - You don't have access to these interactions")
-    }
 
     const { data, error } = await supabase
       .from("trade_interactions")
@@ -134,11 +92,12 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       .order("created_at", { ascending: false })
 
     if (error) {
-      throw new AppError(400, error.message)
+      return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
     return NextResponse.json(data || [])
   } catch (error) {
-    return handleApiError(error)
+    console.error("Error fetching interactions:", error)
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

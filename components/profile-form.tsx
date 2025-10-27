@@ -14,7 +14,6 @@ import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
 import { User, Mail, Eye, EyeOff, Activity, Save, RotateCcw } from "lucide-react"
-import { secureStorage, secureDOMOperation } from "@/lib/security/desktop-protection"
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
@@ -38,37 +37,26 @@ export function ProfileForm() {
       setIsPublic(Boolean(p.is_public))
       setShowEmail(Boolean(p.show_email))
       setShowActivity(Boolean(p.show_activity))
-
       try {
-        secureDOMOperation(() => {
-          if (nextTheme === "dark") document.documentElement.classList.add("dark")
-          else if (nextTheme === "light") document.documentElement.classList.remove("dark")
-          else {
-            const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
-            document.documentElement.classList.toggle("dark", prefersDark)
-          }
-        })
-        secureStorage.setItem("theme", nextTheme)
-      } catch (error) {
-        console.error("[Security] Theme application failed:", error)
-      }
-    }
-  }, [p])
-
-  const applyTheme = (t: "light" | "dark" | "system") => {
-    try {
-      secureDOMOperation(() => {
-        if (t === "dark") document.documentElement.classList.add("dark")
-        else if (t === "light") document.documentElement.classList.remove("dark")
+        if (nextTheme === "dark") document.documentElement.classList.add("dark")
+        else if (nextTheme === "light") document.documentElement.classList.remove("dark")
         else {
           const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
           document.documentElement.classList.toggle("dark", prefersDark)
         }
-      })
-      secureStorage.setItem("theme", t)
-    } catch (error) {
-      console.error("[Security] Theme change failed:", error)
+        localStorage.setItem("theme", nextTheme)
+      } catch {}
     }
+  }, [p])
+
+  const applyTheme = (t: "light" | "dark" | "system") => {
+    if (t === "dark") document.documentElement.classList.add("dark")
+    else if (t === "light") document.documentElement.classList.remove("dark")
+    else {
+      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+      document.documentElement.classList.toggle("dark", prefersDark)
+    }
+    localStorage.setItem("theme", t)
   }
 
   async function onSave() {

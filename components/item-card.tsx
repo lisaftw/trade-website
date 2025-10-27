@@ -7,7 +7,6 @@ import { useState, useEffect } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { useUser } from "@/lib/hooks/use-user"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { validateURLParams } from "@/lib/security/desktop-protection"
 
 interface ItemCardProps {
   item: {
@@ -68,16 +67,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
   useEffect(() => {
     const checkLoginStatus = () => {
-      if (typeof window === "undefined") return
-
       const urlParams = new URLSearchParams(window.location.search)
-
-      // Validate URL parameters before using them
-      if (!validateURLParams(urlParams)) {
-        console.warn("[Security] Invalid URL parameters detected")
-        return
-      }
-
       if (urlParams.get("welcome") === "true" || document.referrer.includes("/api/auth/discord")) {
         refetch()
       }

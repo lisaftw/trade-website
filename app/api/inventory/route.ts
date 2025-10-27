@@ -1,24 +1,10 @@
 import type { NextRequest } from "next/server"
 import { createServiceClient } from "@/lib/supabase/service"
 import { getSession } from "@/lib/auth/session"
-import { checkRateLimit } from "@/lib/security/rate-limiter"
-import { auditLog } from "@/lib/security/audit-logger"
-import { validateInteger } from "@/lib/security/low-level-protection"
-import { handleSecureError } from "@/lib/security/error-handler"
-import { z } from "zod"
 
-const addInventorySchema = z.object({
-  itemId: z.string().uuid(),
-  quantity: z.number().int().min(1).max(1000),
-})
-
-export async function GET(req: NextRequest) {
+// GET - List user's inventory
+export async function GET() {
   try {
-    const rateLimitResult = await checkRateLimit(req, "read")
-    if (!rateLimitResult.allowed) {
-      return Response.json({ error: "Too many requests" }, { status: 429 })
-    }
-
     const session = await getSession()
     if (!session) {
       return Response.json({ error: "Unauthorized" }, { status: 401 })
@@ -39,45 +25,28 @@ export async function GET(req: NextRequest) {
 
     return Response.json({ inventory: data })
   } catch (error) {
-    return handleSecureError(error, req)
+    console.error("[v0] Unexpected error in GET /api/inventory:", error)
+    return Response.json({ error: "Internal server error" }, { status: 500 })
   }
 }
 
+// POST - Add item to inventory
 export async function POST(req: NextRequest) {
   try {
-    const rateLimitResult = await checkRateLimit(req, "write")
-    if (!rateLimitResult.allowed) {
-      return Response.json({ error: "Too many requests" }, { status: 429 })
-    }
-
     const session = await getSession()
     if (!session) {
-      await auditLog({
-        eventType: "inventory_add_unauthorized",
-        severity: "warning",
-        request: req,
-      })
+      console.log("[v0] Inventory add failed: No session")
       return Response.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const body = await req.json()
+    const { itemId, quantity = 1 } = body
 
-    const validation = addInventorySchema.safeParse({
-      itemId: body.itemId,
-      quantity: body.quantity ?? 1,
-    })
+    console.log("[v0] Adding to inventory:", { discordId: session.discordId, itemId, quantity })
 
-    if (!validation.success) {
-      await auditLog({
-        eventType: "inventory_add_invalid_input",
-        severity: "warning",
-        request: req,
-        userId: session.discordId,
-      })
-      return Response.json({ error: "Invalid input", details: validation.error.errors }, { status: 400 })
+    if (!itemId) {
+      return Response.json({ error: "Item ID is required" }, { status: 400 })
     }
-
-    const { itemId, quantity } = validation.data
 
     const supabase = await createServiceClient()
 
@@ -89,21 +58,22 @@ export async function POST(req: NextRequest) {
       .single()
 
     if (existing) {
-      const newQuantity = validateInteger(existing.quantity + quantity, 1, 999999)
-
+      console.log("[v0] Updating existing inventory item:", existing.id)
       const { error } = await supabase
         .from("user_inventories")
         .update({
-          quantity: newQuantity,
+          quantity: existing.quantity + quantity,
           updated_at: new Date().toISOString(),
         })
         .eq("id", existing.id)
 
       if (error) {
         console.error("[v0] Error updating inventory:", error)
-        return Response.json({ error: "Failed to update inventory" }, { status: 500 })
+        console.error("[v0] Error details:", JSON.stringify(error, null, 2))
+        return Response.json({ error: "Failed to update inventory", details: error.message }, { status: 500 })
       }
     } else {
+      console.log("[v0] Creating new inventory item")
       const { error } = await supabase.from("user_inventories").insert({
         discord_id: session.discordId,
         item_id: itemId,
@@ -112,26 +82,31 @@ export async function POST(req: NextRequest) {
 
       if (error) {
         console.error("[v0] Error adding to inventory:", error)
-        return Response.json({ error: "Failed to add to inventory" }, { status: 500 })
+        console.error("[v0] Error details:", JSON.stringify(error, null, 2))
+        return Response.json({ error: "Failed to add to inventory", details: error.message }, { status: 500 })
       }
     }
 
-    await auditLog({
-      eventType: "inventory_add_success",
-      severity: "info",
-      request: req,
-      userId: session.discordId,
-      metadata: { item_id: itemId, quantity },
-    })
-
-    await supabase.from("activities").insert({
+    const { error: activityError } = await supabase.from("activities").insert({
       discord_id: session.discordId,
       type: "add_inventory",
       meta: { item_id: itemId, quantity },
     })
 
+    if (activityError) {
+      console.error("[v0] Activity log failed:", activityError)
+    }
+
+    console.log("[v0] Successfully added to inventory")
     return Response.json({ success: true })
   } catch (error) {
-    return handleSecureError(error, req)
+    console.error("[v0] Unexpected error in POST /api/inventory:", error)
+    return Response.json(
+      {
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 },
+    )
   }
 }
