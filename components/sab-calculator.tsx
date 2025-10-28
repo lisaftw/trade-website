@@ -90,20 +90,20 @@ export function SABCalculator() {
   useEffect(() => {
     const fetchPets = async () => {
       try {
+        console.log("[v0] Fetching SAB pets from database")
         const response = await fetch("/api/items?game=SAB")
         const data = await response.json()
-
+        console.log("[v0] Received SAB pets:", data.items?.length || 0)
         const mappedPets = (data.items || []).map((item: any) => ({
           id: item.id,
           name: item.name,
           game: item.game,
           rapValue: toNumber(item.rapValue || item.rap_value),
-          imageUrl: item.image_url,
+          imageUrl: item.imageUrl || item.image_url,
         }))
-
         setPets(mappedPets)
       } catch (error) {
-        console.error("Error fetching SAB pets:", error)
+        console.error("[v0] Error fetching SAB pets:", error)
       } finally {
         setLoading(false)
       }
@@ -171,21 +171,12 @@ export function SABCalculator() {
         ) : (
           <div className="flex items-center justify-between rounded-lg border-2 border-brand/50 bg-brand/10 p-3">
             <div className="flex items-center gap-2.5">
-              {selectedPet.imageUrl ? (
+              {selectedPet.imageUrl && (
                 <img
                   src={selectedPet.imageUrl || "/placeholder.svg"}
                   alt={selectedPet.name}
-                  crossOrigin="anonymous"
-                  referrerPolicy="no-referrer"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none"
-                  }}
-                  className="h-12 w-12 rounded object-cover bg-muted"
+                  className="h-12 w-12 rounded object-cover"
                 />
-              ) : (
-                <div className="h-12 w-12 rounded bg-muted flex items-center justify-center text-xs text-muted-foreground">
-                  No img
-                </div>
               )}
               <div>
                 <p className="text-sm font-semibold">{selectedPet.name}</p>
@@ -310,21 +301,12 @@ export function SABCalculator() {
                     }}
                     className="w-full flex items-center gap-2.5 rounded-lg p-2.5 hover:bg-accent transition-colors text-left"
                   >
-                    {pet.imageUrl ? (
+                    {pet.imageUrl && (
                       <img
                         src={pet.imageUrl || "/placeholder.svg"}
                         alt={pet.name}
-                        crossOrigin="anonymous"
-                        referrerPolicy="no-referrer"
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none"
-                        }}
-                        className="h-8 w-8 rounded object-cover bg-muted"
+                        className="h-8 w-8 rounded object-cover"
                       />
-                    ) : (
-                      <div className="h-8 w-8 rounded bg-muted flex items-center justify-center text-[10px] text-muted-foreground">
-                        ?
-                      </div>
                     )}
                     <div className="flex-1">
                       <p className="text-sm font-medium">{pet.name}</p>
