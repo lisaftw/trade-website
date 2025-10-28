@@ -184,13 +184,15 @@ export function SABCalculator() {
         ) : (
           <div className="flex items-center justify-between rounded-lg border-2 border-brand/50 bg-brand/10 p-3">
             <div className="flex items-center gap-2.5">
-              {selectedPet.imageUrl && (
-                <img
-                  src={selectedPet.imageUrl || "/placeholder.svg"}
-                  alt={selectedPet.name}
-                  className="h-12 w-12 rounded object-cover bg-muted"
-                />
-              )}
+              <img
+                src={selectedPet.imageUrl || "/placeholder.svg"}
+                alt={selectedPet.name}
+                onError={(e) => {
+                  console.error("[v0] Failed to load image:", selectedPet.imageUrl)
+                  e.currentTarget.src = "/placeholder.svg"
+                }}
+                className="h-12 w-12 rounded object-cover bg-muted"
+              />
               <div>
                 <p className="text-sm font-semibold">{selectedPet.name}</p>
                 <p className="text-xs text-muted-foreground">Base: {formatNumber(selectedPet.rapValue)}</p>
@@ -314,13 +316,15 @@ export function SABCalculator() {
                     }}
                     className="w-full flex items-center gap-2.5 rounded-lg p-2.5 hover:bg-accent transition-colors text-left"
                   >
-                    {pet.imageUrl && (
-                      <img
-                        src={pet.imageUrl || "/placeholder.svg"}
-                        alt={pet.name}
-                        className="h-8 w-8 rounded object-cover bg-muted"
-                      />
-                    )}
+                    <img
+                      src={pet.imageUrl || "/placeholder.svg"}
+                      alt={pet.name}
+                      onError={(e) => {
+                        console.error("[v0] Failed to load image:", pet.imageUrl)
+                        e.currentTarget.src = "/placeholder.svg"
+                      }}
+                      className="h-8 w-8 rounded object-cover bg-muted"
+                    />
                     <div className="flex-1">
                       <p className="text-sm font-medium">{pet.name}</p>
                       <p className="text-xs text-muted-foreground">RAP: {formatNumber(pet.rapValue)}</p>
