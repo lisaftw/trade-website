@@ -90,19 +90,10 @@ export function SABCalculator() {
   useEffect(() => {
     const fetchPets = async () => {
       try {
-        console.log("[v0] Fetching SAB pets from database")
         const response = await fetch("/api/items?game=SAB")
         const data = await response.json()
-        console.log("[v0] Received SAB pets:", data.items?.length || 0)
-
-        if (data.items && data.items.length > 0) {
-          console.log("[v0] Sample API response item:", data.items[0])
-          console.log("[v0] Sample image_url from API:", data.items[0].image_url)
-        }
 
         const mappedPets = (data.items || []).map((item: any) => {
-          console.log("[v0] Mapping item:", item.name, "image_url:", item.image_url)
-
           let imageUrl = item.image_url
           if (imageUrl && imageUrl.startsWith("https://cdn.discordapp.com/")) {
             imageUrl = `/api/image-proxy?url=${encodeURIComponent(imageUrl)}`
@@ -117,11 +108,9 @@ export function SABCalculator() {
           }
         })
 
-        console.log("[v0] Mapped pets sample:", mappedPets[0])
-
         setPets(mappedPets)
       } catch (error) {
-        console.error("[v0] Error fetching SAB pets:", error)
+        console.error("Error fetching SAB pets:", error)
       } finally {
         setLoading(false)
       }
@@ -195,7 +184,6 @@ export function SABCalculator() {
                 crossOrigin="anonymous"
                 referrerPolicy="no-referrer"
                 onError={(e) => {
-                  console.error("[v0] Failed to load image:", selectedPet.imageUrl)
                   e.currentTarget.src = "/placeholder.svg"
                 }}
                 className="h-12 w-12 rounded object-cover bg-muted"

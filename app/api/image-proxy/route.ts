@@ -4,8 +4,8 @@ export const dynamic = "force-dynamic"
 
 export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams
-    const imageUrl = searchParams.get("url")
+    const url = new URL(request.url)
+    const imageUrl = url.searchParams.get("url")
 
     console.log("[Image Proxy] Request received")
     console.log("[Image Proxy] URL parameter:", imageUrl)
