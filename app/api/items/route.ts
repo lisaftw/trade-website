@@ -36,7 +36,12 @@ export async function GET(request: NextRequest) {
       // Determine if this is old schema (has rap_value) or new schema (has value)
       const isNewSchema = item.value !== undefined || item.section !== undefined
 
-      console.log("[v0] Item:", item.name, "Schema:", isNewSchema ? "NEW" : "OLD", "Image:", imageUrl)
+      console.log("[v0] Item:", item.name)
+      console.log("[v0]   - MongoDB image_url:", item.image_url)
+      console.log("[v0]   - MongoDB image:", item.image)
+      console.log("[v0]   - MongoDB imageUrl:", item.imageUrl)
+      console.log("[v0]   - Final imageUrl:", imageUrl)
+      console.log("[v0]   - Schema:", isNewSchema ? "NEW" : "OLD")
 
       return {
         id: item._id.toString(),

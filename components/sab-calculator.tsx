@@ -94,18 +94,26 @@ export function SABCalculator() {
         const response = await fetch("/api/items?game=SAB")
         const data = await response.json()
         console.log("[v0] Received SAB pets:", data.items?.length || 0)
+
+        if (data.items && data.items.length > 0) {
+          console.log("[v0] Sample API response item:", data.items[0])
+          console.log("[v0] Sample image_url from API:", data.items[0].image_url)
+        }
+
         const mappedPets = (data.items || []).map((item: any) => {
-          const imageUrl = item.image_url
-          const isValidUrl = imageUrl && (imageUrl.startsWith("http://") || imageUrl.startsWith("https://"))
+          console.log("[v0] Mapping item:", item.name, "image_url:", item.image_url)
 
           return {
             id: item.id,
             name: item.name,
             game: item.game,
             rapValue: toNumber(item.rapValue || item.rap_value),
-            imageUrl: isValidUrl ? imageUrl : undefined, // Only set if valid URL
+            imageUrl: item.image_url, // Use image URL directly without validation
           }
         })
+
+        console.log("[v0] Mapped pets sample:", mappedPets[0])
+
         setPets(mappedPets)
       } catch (error) {
         console.error("[v0] Error fetching SAB pets:", error)
