@@ -103,12 +103,17 @@ export function SABCalculator() {
         const mappedPets = (data.items || []).map((item: any) => {
           console.log("[v0] Mapping item:", item.name, "image_url:", item.image_url)
 
+          let imageUrl = item.image_url
+          if (imageUrl && imageUrl.startsWith("https://cdn.discordapp.com/")) {
+            imageUrl = `/api/image-proxy?url=${encodeURIComponent(imageUrl)}`
+          }
+
           return {
             id: item.id,
             name: item.name,
             game: item.game,
             rapValue: toNumber(item.rapValue || item.rap_value),
-            imageUrl: item.image_url, // Use image URL directly without validation
+            imageUrl: imageUrl || "/placeholder.svg",
           }
         })
 
@@ -320,7 +325,6 @@ export function SABCalculator() {
                       src={pet.imageUrl || "/placeholder.svg"}
                       alt={pet.name}
                       onError={(e) => {
-                        console.error("[v0] Failed to load image:", pet.imageUrl)
                         e.currentTarget.src = "/placeholder.svg"
                       }}
                       className="h-8 w-8 rounded object-cover bg-muted"
