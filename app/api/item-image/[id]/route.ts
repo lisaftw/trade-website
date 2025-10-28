@@ -1,35 +1,47 @@
 import { type NextRequest, NextResponse } from "next/server"
+import clientPromise from "@/lib/mongodb"
+import { ObjectId } from "mongodb"
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const size = request.nextUrl.searchParams.get("size") || "150"
-
-  console.log("[v0] Fetching image for ID:", id, "size:", size)
 
   try {
-    // Fetch the image from the external source
-    const imageUrl = `https://images.ro.shopping/asset-thumbnail/${id}?size=${size}`
-    console.log("[v0] Fetching from:", imageUrl)
+    const client = await clientPromise
+    const db = client.db("trading-db")
+    const collection = db.collection("items")
 
-    const response = await fetch(imageUrl)
+    const item = await collection.findOne({ _id: new ObjectId(id) })
+
+    if (!item || !item.image_url) {
+      // Return placeholder if item not found or no image
+      return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
+    }
+
+    const imageUrl = item.image_url
+    const response = await fetch(imageUrl, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (compatible; ImageProxy/1.0)",
+      },
+    })
 
     if (!response.ok) {
-      console.error("[v0] Image fetch failed:", response.status, response.statusText)
-      return new NextResponse("Image not found", { status: 404 })
+      // If Discord URL expired or failed, return placeholder
+      return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
     }
 
     const imageBuffer = await response.arrayBuffer()
-    console.log("[v0] Image fetched successfully, size:", imageBuffer.byteLength)
+    const contentType = response.headers.get("Content-Type") || "image/png"
 
-    // Return the image with proper headers
     return new NextResponse(imageBuffer, {
       headers: {
-        "Content-Type": response.headers.get("Content-Type") || "image/png",
-        "Cache-Control": "public, max-age=31536000, immutable",
+        "Content-Type": contentType,
+        "Cache-Control": "public, max-age=2592000, s-maxage=2592000, stale-while-revalidate=86400",
+        "CDN-Cache-Control": "public, max-age=2592000",
       },
     })
   } catch (error) {
-    console.error("[v0] Error fetching image:", error)
-    return new NextResponse("Error fetching image", { status: 500 })
+    console.error("Error proxying image:", error)
+    // Return placeholder on any error
+    return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
   }
 }

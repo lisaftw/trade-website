@@ -5,8 +5,6 @@ import clientPromise from "@/lib/mongodb"
 
 export async function GET(request: NextRequest) {
   try {
-    console.log("[v0] Fetching items from MongoDB...")
-
     const { searchParams } = new URL(request.url)
     const game = searchParams.get("game")
     const q = searchParams.get("q")?.toLowerCase() || ""
@@ -23,20 +21,13 @@ export async function GET(request: NextRequest) {
       filter.name = { $regex: q, $options: "i" }
     }
 
-    console.log("[v0] MongoDB query filter:", filter)
-
     const items = await collection.find(filter).sort({ createdAt: -1 }).toArray()
-
-    console.log("[v0] Found items count:", items.length)
-    console.log("[v0] Sample item fields:", items[0] ? Object.keys(items[0]) : "No items")
 
     const transformedItems = items.map((item: any) => {
       const imageUrl = item.image_url || item.image || item.imageUrl || "/placeholder.svg?height=200&width=200"
 
       // Determine if this is old schema (has rap_value) or new schema (has value)
       const isNewSchema = item.value !== undefined || item.section !== undefined
-
-      console.log("[v0] Item:", item.name, "Schema:", isNewSchema ? "NEW" : "OLD", "Image:", imageUrl)
 
       return {
         id: item._id.toString(),
@@ -62,11 +53,9 @@ export async function GET(request: NextRequest) {
       }
     })
 
-    console.log("[v0] Transformed items sample:", transformedItems[0])
-
     return NextResponse.json({ items: transformedItems })
   } catch (error) {
-    console.error("[v0] Error fetching items from MongoDB:", error)
+    console.error("Error fetching items from MongoDB:", error)
     return NextResponse.json({ error: "Failed to fetch items" }, { status: 500 })
   }
 }

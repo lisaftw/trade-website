@@ -7,6 +7,7 @@ import { useState, useEffect } from "react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { TradeInteractionModal } from "@/components/trade-interaction-modal"
 import Image from "next/image"
+import { getProxiedImageUrl } from "@/lib/utils/image-proxy"
 
 interface Trade {
   id: string
@@ -26,6 +27,7 @@ interface Trade {
 }
 
 interface ItemWithImage {
+  id?: string
   name: string
   image_url?: string
   value?: number
@@ -99,18 +101,16 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
   useEffect(() => {
     const fetchItemImages = async () => {
       try {
-        console.log("[v0] Fetching item images for game:", trade.game)
         const response = await fetch(`/api/items?game=${trade.game}`)
         if (!response.ok) throw new Error("Failed to fetch items")
 
         const data = await response.json()
         const allItems: ItemWithImage[] = data.items || data
-        console.log("[v0] Fetched items count:", allItems.length)
 
         const offeringWithImages = trade.offering.map((itemName) => {
           const item = allItems.find((i) => i.name === itemName)
-          console.log("[v0] Offering item:", itemName, "Found:", !!item, "Image:", item?.image_url)
           return {
+            id: item?.id,
             name: itemName,
             image_url: item?.image_url,
             value: item?.value || item?.rap_value,
@@ -119,8 +119,8 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
 
         const requestingWithImages = trade.requesting.map((itemName) => {
           const item = allItems.find((i) => i.name === itemName)
-          console.log("[v0] Requesting item:", itemName, "Found:", !!item, "Image:", item?.image_url)
           return {
+            id: item?.id,
             name: itemName,
             image_url: item?.image_url,
             value: item?.value || item?.rap_value,
@@ -130,7 +130,7 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
         setOfferingItems(offeringWithImages)
         setRequestingItems(requestingWithImages)
       } catch (error) {
-        console.error("[v0] Error fetching item images:", error)
+        console.error("Error fetching item images:", error)
         setOfferingItems(trade.offering.map((name) => ({ name })))
         setRequestingItems(trade.requesting.map((name) => ({ name })))
       } finally {
@@ -222,9 +222,9 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
               ) : (
                 offeringItems.map((item, idx) => (
                   <div key={idx} className="flex items-center gap-1.5 md:gap-2 rounded-lg bg-foreground/5 p-1.5 md:p-2">
-                    {item.image_url && (
+                    {item.id && (
                       <Image
-                        src={item.image_url || "/placeholder.svg"}
+                        src={getProxiedImageUrl(item.id) || "/placeholder.svg"}
                         alt={item.name}
                         width={32}
                         height={32}
@@ -252,9 +252,9 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
               ) : (
                 requestingItems.map((item, idx) => (
                   <div key={idx} className="flex items-center gap-1.5 md:gap-2 rounded-lg bg-foreground/5 p-1.5 md:p-2">
-                    {item.image_url && (
+                    {item.id && (
                       <Image
-                        src={item.image_url || "/placeholder.svg"}
+                        src={getProxiedImageUrl(item.id) || "/placeholder.svg"}
                         alt={item.name}
                         width={32}
                         height={32}

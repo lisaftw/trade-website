@@ -7,6 +7,7 @@ import { useState, useEffect } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { useUser } from "@/lib/hooks/use-user"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { getProxiedImageUrl } from "@/lib/utils/image-proxy"
 
 interface ItemCardProps {
   item: {
@@ -75,9 +76,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
     checkLoginStatus()
   }, [refetch])
 
-  const imageUrl = imageError
-    ? "/placeholder.svg?height=200&width=200"
-    : item.image_url || "/placeholder.svg?height=200&width=200"
+  const imageUrl = imageError ? "/placeholder.svg?height=200&width=200" : getProxiedImageUrl(item.id)
 
   const displayRating = item.rarity || item.rating || 0
   const sectionLabel = item.section ? item.section.toUpperCase() : "VALUE"
@@ -184,15 +183,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
             className="object-contain p-2"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             onError={(e) => {
-              console.error("[v0] Image failed to load:", {
-                itemName: item.name,
-                imageUrl: item.image_url,
-                error: e,
-              })
               setImageError(true)
-            }}
-            onLoad={() => {
-              console.log("[v0] Image loaded successfully:", item.name)
             }}
           />
         </div>
