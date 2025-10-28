@@ -99,7 +99,7 @@ export function SABCalculator() {
           name: item.name,
           game: item.game,
           rapValue: toNumber(item.rapValue || item.rap_value),
-          imageUrl: item.imageUrl || item.image_url,
+          imageUrl: item.image_url, // Use image_url directly from API
         }))
         setPets(mappedPets)
       } catch (error) {
@@ -175,7 +175,7 @@ export function SABCalculator() {
                 <img
                   src={selectedPet.imageUrl || "/placeholder.svg"}
                   alt={selectedPet.name}
-                  className="h-12 w-12 rounded object-cover"
+                  className="h-12 w-12 rounded object-cover bg-muted"
                 />
               )}
               <div>
@@ -305,7 +305,7 @@ export function SABCalculator() {
                       <img
                         src={pet.imageUrl || "/placeholder.svg"}
                         alt={pet.name}
-                        className="h-8 w-8 rounded object-cover"
+                        className="h-8 w-8 rounded object-cover bg-muted"
                       />
                     )}
                     <div className="flex-1">
