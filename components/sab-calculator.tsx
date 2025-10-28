@@ -192,6 +192,8 @@ export function SABCalculator() {
               <img
                 src={selectedPet.imageUrl || "/placeholder.svg"}
                 alt={selectedPet.name}
+                crossOrigin="anonymous"
+                referrerPolicy="no-referrer"
                 onError={(e) => {
                   console.error("[v0] Failed to load image:", selectedPet.imageUrl)
                   e.currentTarget.src = "/placeholder.svg"
@@ -324,6 +326,8 @@ export function SABCalculator() {
                     <img
                       src={pet.imageUrl || "/placeholder.svg"}
                       alt={pet.name}
+                      crossOrigin="anonymous"
+                      referrerPolicy="no-referrer"
                       onError={(e) => {
                         e.currentTarget.src = "/placeholder.svg"
                       }}
