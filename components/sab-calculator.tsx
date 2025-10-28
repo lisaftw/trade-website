@@ -93,20 +93,13 @@ export function SABCalculator() {
         const response = await fetch("/api/items?game=SAB")
         const data = await response.json()
 
-        const mappedPets = (data.items || []).map((item: any) => {
-          let imageUrl = item.image_url
-          if (imageUrl && imageUrl.startsWith("https://cdn.discordapp.com/")) {
-            imageUrl = `/api/image-proxy?url=${encodeURIComponent(imageUrl)}`
-          }
-
-          return {
-            id: item.id,
-            name: item.name,
-            game: item.game,
-            rapValue: toNumber(item.rapValue || item.rap_value),
-            imageUrl: imageUrl || "/placeholder.svg",
-          }
-        })
+        const mappedPets = (data.items || []).map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          game: item.game,
+          rapValue: toNumber(item.rapValue || item.rap_value),
+          imageUrl: item.image_url,
+        }))
 
         setPets(mappedPets)
       } catch (error) {
@@ -178,16 +171,22 @@ export function SABCalculator() {
         ) : (
           <div className="flex items-center justify-between rounded-lg border-2 border-brand/50 bg-brand/10 p-3">
             <div className="flex items-center gap-2.5">
-              <img
-                src={selectedPet.imageUrl || "/placeholder.svg"}
-                alt={selectedPet.name}
-                crossOrigin="anonymous"
-                referrerPolicy="no-referrer"
-                onError={(e) => {
-                  e.currentTarget.src = "/placeholder.svg"
-                }}
-                className="h-12 w-12 rounded object-cover bg-muted"
-              />
+              {selectedPet.imageUrl ? (
+                <img
+                  src={selectedPet.imageUrl || "/placeholder.svg"}
+                  alt={selectedPet.name}
+                  crossOrigin="anonymous"
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none"
+                  }}
+                  className="h-12 w-12 rounded object-cover bg-muted"
+                />
+              ) : (
+                <div className="h-12 w-12 rounded bg-muted flex items-center justify-center text-xs text-muted-foreground">
+                  No img
+                </div>
+              )}
               <div>
                 <p className="text-sm font-semibold">{selectedPet.name}</p>
                 <p className="text-xs text-muted-foreground">Base: {formatNumber(selectedPet.rapValue)}</p>
@@ -311,16 +310,22 @@ export function SABCalculator() {
                     }}
                     className="w-full flex items-center gap-2.5 rounded-lg p-2.5 hover:bg-accent transition-colors text-left"
                   >
-                    <img
-                      src={pet.imageUrl || "/placeholder.svg"}
-                      alt={pet.name}
-                      crossOrigin="anonymous"
-                      referrerPolicy="no-referrer"
-                      onError={(e) => {
-                        e.currentTarget.src = "/placeholder.svg"
-                      }}
-                      className="h-8 w-8 rounded object-cover bg-muted"
-                    />
+                    {pet.imageUrl ? (
+                      <img
+                        src={pet.imageUrl || "/placeholder.svg"}
+                        alt={pet.name}
+                        crossOrigin="anonymous"
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none"
+                        }}
+                        className="h-8 w-8 rounded object-cover bg-muted"
+                      />
+                    ) : (
+                      <div className="h-8 w-8 rounded bg-muted flex items-center justify-center text-[10px] text-muted-foreground">
+                        ?
+                      </div>
+                    )}
                     <div className="flex-1">
                       <p className="text-sm font-medium">{pet.name}</p>
                       <p className="text-xs text-muted-foreground">RAP: {formatNumber(pet.rapValue)}</p>
