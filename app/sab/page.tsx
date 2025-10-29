@@ -11,6 +11,8 @@ export const metadata = {
     "Real-time trading values for Steal a Brainrot (SAB) brainrots. View all brainrot values, rarities, and demand.",
 }
 
+export const revalidate = 3600
+
 export default function SABPage() {
   return (
     <main className="relative min-h-dvh bg-background">

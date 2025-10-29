@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic"
+export const revalidate = 300
 
 import { type NextRequest, NextResponse } from "next/server"
 import { searchItems } from "@/lib/db/items"
@@ -9,15 +9,11 @@ export async function GET(request: NextRequest) {
     const query = searchParams.get("q") || ""
     const game = searchParams.get("game") || undefined
 
-    console.log("[v0] Search query:", query, "game:", game)
-
     if (!query || query.length < 2) {
       return NextResponse.json({ items: [] })
     }
 
     const items = await searchItems(query, game)
-
-    console.log("[v0] Search found items:", items.length)
 
     const transformedItems = items.map((item: any) => ({
       id: item._id.toString(),
@@ -31,9 +27,16 @@ export async function GET(request: NextRequest) {
       last_updated_at: item.updatedAt || item.lastUpdated || new Date().toISOString(),
     }))
 
-    return NextResponse.json({ items: transformedItems })
+    return NextResponse.json(
+      { items: transformedItems },
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+        },
+      },
+    )
   } catch (error) {
-    console.error("[v0] Search items error:", error)
+    console.error("Search items error:", error)
     return NextResponse.json({ error: "Failed to search items" }, { status: 500 })
   }
 }

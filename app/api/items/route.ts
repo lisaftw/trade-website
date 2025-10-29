@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic"
+export const revalidate = 3600 // Cache for 1 hour
 
 import { type NextRequest, NextResponse } from "next/server"
 import clientPromise from "@/lib/mongodb"
@@ -53,7 +53,14 @@ export async function GET(request: NextRequest) {
       }
     })
 
-    return NextResponse.json({ items: transformedItems })
+    return NextResponse.json(
+      { items: transformedItems },
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=7200",
+        },
+      },
+    )
   } catch (error) {
     console.error("Error fetching items from MongoDB:", error)
     return NextResponse.json({ error: "Failed to fetch items" }, { status: 500 })

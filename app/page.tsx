@@ -6,6 +6,8 @@ import { PageBackground } from "@/components/page-background"
 import { ScrollParallax } from "@/components/scroll-parallax"
 import { ArrowRight, CableIcon as CalcIcon } from "lucide-react"
 
+export const revalidate = 3600
+
 const games = ["MM2", "SAB", "GAG", "Adopt Me"]
 
 function ReferenceHero() {

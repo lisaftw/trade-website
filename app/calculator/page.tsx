@@ -6,6 +6,8 @@ import { CalculatorSelection } from "@/components/calculator-selection"
 import { RobloxDecos } from "@/components/roblox-decos"
 import { BackButton } from "@/components/back-button"
 
+export const revalidate = 3600
+
 export default function CalculatorPage() {
   return (
     <main className="relative min-h-dvh bg-background">
