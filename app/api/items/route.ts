@@ -1,0 +1,63 @@
+export const revalidate = 3600 
+
+import { type NextRequest, NextResponse } from "next/server"
+import { getItems, searchItems } from "@/lib/db/queries/items"
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const game = searchParams.get("game") || undefined
+    const q = searchParams.get("q")?.toLowerCase() || ""
+    const limit = Number.parseInt(searchParams.get("limit") || "1000")
+    const offset = Number.parseInt(searchParams.get("offset") || "0")
+
+    const items = q ? await searchItems(q, game) : await getItems(game)
+
+    const paginatedItems = items.slice(offset, offset + limit)
+    const totalCount = items.length
+
+    const transformedItems = paginatedItems.map((item: any) => {
+      const imageUrl = item.image_url || "/placeholder.svg?height=200&width=200"
+
+      return {
+        id: item.id,
+        game: item.game,
+        name: item.name,
+        image_url: imageUrl,
+        rap_value: item.value || item.rap_value || 0,
+        neon_value: item.neon_value || 0,
+        mega_value: item.mega_value || 0,
+        fly_bonus: item.fly_bonus || 50,
+        ride_bonus: item.ride_bonus || 50,
+        exist_count: item.exist_count || 0,
+        rating: item.section || item.rating || item.rarity || 0,
+        change_percent: item.change_percent || 0,
+        last_updated_at: item.updated_at || item.created_at || new Date().toISOString(),
+        section: item.section,
+        rarity: item.rarity,
+        demand: item.demand,
+        pot: item.pot,
+      }
+    })
+
+    return NextResponse.json(
+      {
+        items: transformedItems,
+        pagination: {
+          total: totalCount,
+          limit,
+          offset,
+          hasMore: offset + limit < totalCount,
+        },
+      },
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=7200",
+        },
+      },
+    )
+  } catch (error) {
+    console.error("Error fetching items:", error)
+    return NextResponse.json({ error: "Failed to fetch items" }, { status: 500 })
+  }
+}

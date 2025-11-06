@@ -1,0 +1,78 @@
+-- Create dedicated Adopt Me pets collection structure
+-- This is a reference schema for MongoDB collection
+
+-- MongoDB Collection: adoptme_pets
+-- {
+--   _id: ObjectId,
+--   name: String (required),
+--   game: "Adopt Me" (required),
+--   section: String (required) - Category: Legendary, Ultra-Rare, etc.
+--   
+--   // Core values - all manually set
+--   baseValue: Number (required),
+--   neonValue: Number (required),
+--   megaValue: Number (required),
+--   
+--   // Potion bonuses (optional overrides)
+--   flyBonus: Number (default: 50),
+--   rideBonus: Number (default: 50),
+--   
+--   // Display metadata
+--   image_url: String,
+--   rarity: String,
+--   demand: String,
+--   
+--   // Value tracking
+--   lastValueUpdate: Date,
+--   valueNotes: String,
+--   
+--   // Audit trail
+--   valueHistory: [{
+--     variant: String ("base" | "neon" | "mega"),
+--     oldValue: Number,
+--     newValue: Number,
+--     changedAt: Date,
+--     changedBy: String,
+--     reason: String
+--   }],
+--   
+--   createdAt: Date,
+--   updatedAt: Date
+-- }
+
+-- Example document:
+-- {
+--   "_id": ObjectId("..."),
+--   "name": "Frost Dragon",
+--   "game": "Adopt Me",
+--   "section": "Legendary",
+--   "baseValue": 1000,
+--   "neonValue": 2200,
+--   "megaValue": 8500,
+--   "flyBonus": 50,
+--   "rideBonus": 50,
+--   "image_url": "https://example.com/frost-dragon.png",
+--   "rarity": "Legendary",
+--   "demand": "High",
+--   "lastValueUpdate": ISODate("2025-01-15T10:30:00Z"),
+--   "valueNotes": "Value increased due to high demand",
+--   "valueHistory": [
+--     {
+--       "variant": "neon",
+--       "oldValue": 2000,
+--       "newValue": 2200,
+--       "changedAt": ISODate("2025-01-15T10:30:00Z"),
+--       "changedBy": "admin",
+--       "reason": "Market adjustment"
+--     }
+--   ],
+--   "createdAt": ISODate("2025-01-01T00:00:00Z"),
+--   "updatedAt": ISODate("2025-01-15T10:30:00Z")
+-- }
+
+-- Create indexes for better query performance
+-- db.adoptme_pets.createIndex({ "game": 1 })
+-- db.adoptme_pets.createIndex({ "name": 1 })
+-- db.adoptme_pets.createIndex({ "section": 1 })
+-- db.adoptme_pets.createIndex({ "baseValue": -1 })
+-- db.adoptme_pets.createIndex({ "lastValueUpdate": -1 })

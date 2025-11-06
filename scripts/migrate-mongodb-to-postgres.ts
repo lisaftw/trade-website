@@ -1,0 +1,262 @@
+
+
+import { config } from "dotenv"
+import { resolve } from "path"
+import { MongoClient } from "mongodb"
+import { Pool } from "pg"
+
+config({ path: resolve(process.cwd(), ".env.local") })
+
+const MONGODB_URI = process.env.MONGODB_URI!
+const MONGODB_DB = "trading-db"
+
+const POSTGRES_URL = process.env.DATABASE_URL!
+
+if (!MONGODB_URI) {
+  console.error("❌ MONGODB_URI is not set in .env.local")
+  process.exit(1)
+}
+
+if (!POSTGRES_URL) {
+  console.error("❌ DATABASE_URL is not set in .env.local")
+  process.exit(1)
+}
+
+interface MongoItem {
+  _id: any
+  name: string
+  value: number
+  game: string
+  section: string
+  image_url?: string
+  rarity?: string
+  demand?: string
+  pot?: string
+  createdAt?: Date
+  updatedAt?: Date
+}
+
+interface MongoAdoptMePet {
+  _id: any
+  name: string
+  game: string
+  section: string
+  baseValue: number
+  neonValue: number
+  megaValue: number
+  flyBonus?: number
+  rideBonus?: number
+  image_url?: string
+  rarity?: string
+  demand?: string
+  lastValueUpdate?: Date
+  valueNotes?: string
+  createdAt?: Date
+  updatedAt?: Date
+}
+
+async function migrate() {
+  console.log("🚀 Starting MongoDB to PostgreSQL migration...\n")
+
+  console.log("📦 Connecting to MongoDB...")
+  const mongoClient = new MongoClient(MONGODB_URI)
+  await mongoClient.connect()
+  const mongodb = mongoClient.db(MONGODB_DB)
+  console.log("✅ Connected to MongoDB\n")
+
+  console.log("🐘 Connecting to PostgreSQL...")
+  const pgPool = new Pool({ connectionString: POSTGRES_URL })
+  await pgPool.query("SELECT NOW()")
+  console.log("✅ Connected to PostgreSQL\n")
+
+  try {
+
+    console.log("📋 Step 1: Migrating items collection...")
+    const itemsCollection = mongodb.collection<MongoItem>("items")
+    const items = await itemsCollection.find({}).toArray()
+    console.log(`   Found ${items.length} items in MongoDB`)
+
+    if (items.length > 0) {
+      const validItems = items.filter((item) => {
+        const hasValidName = item.name && typeof item.name === "string" && item.name.trim() !== ""
+        const hasValidGame = item.game && typeof item.game === "string" && item.game.trim() !== ""
+        return hasValidName && hasValidGame
+      })
+
+      const invalidCount = items.length - validItems.length
+      if (invalidCount > 0) {
+        console.log(`   ⚠️  Skipped ${invalidCount} items with missing name or game`)
+      }
+
+      const itemMap = new Map<string, MongoItem>()
+
+      validItems.forEach((item) => {
+        const key = `${item.game}:${item.name}`
+        const existing = itemMap.get(key)
+
+        if (
+          !existing ||
+          (item.updatedAt && existing.updatedAt && item.updatedAt > existing.updatedAt) ||
+          (item.updatedAt && !existing.updatedAt)
+        ) {
+          itemMap.set(key, item)
+        }
+      })
+
+      const uniqueItems = Array.from(itemMap.values())
+      console.log(`   Deduplicated to ${uniqueItems.length} unique items`)
+
+      await pgPool.query(`
+        CREATE TEMP TABLE temp_items (
+          name TEXT,
+          game TEXT,
+          image_url TEXT,
+          rap_value NUMERIC(15, 2),
+          section TEXT,
+          rarity TEXT,
+          demand TEXT,
+          created_at TIMESTAMPTZ,
+          updated_at TIMESTAMPTZ
+        )
+      `)
+
+      const values: any[] = []
+      const placeholders: string[] = []
+
+      uniqueItems.forEach((item, index) => {
+        const offset = index * 9
+        placeholders.push(
+          `($${offset + 1}, $${offset + 2}, $${offset + 3}, $${offset + 4}, $${offset + 5}, $${offset + 6}, $${offset + 7}, $${offset + 8}, $${offset + 9})`,
+        )
+        values.push(
+          item.name,
+          item.game,
+          item.image_url || "",
+          item.value || 0,
+          item.section || "Unknown",
+          item.rarity || null,
+          item.demand || null,
+          item.createdAt || new Date(),
+          item.updatedAt || new Date(),
+        )
+      })
+
+      await pgPool.query(
+        `INSERT INTO temp_items (name, game, image_url, rap_value, section, rarity, demand, created_at, updated_at)
+         VALUES ${placeholders.join(", ")}`,
+        values,
+      )
+
+      const result = await pgPool.query(`
+        INSERT INTO public.items (name, game, image_url, rap_value, created_at, updated_at)
+        SELECT name, game, image_url, rap_value, created_at, updated_at
+        FROM temp_items
+        ON CONFLICT (name, game) DO UPDATE SET
+          image_url = EXCLUDED.image_url,
+          rap_value = EXCLUDED.rap_value,
+          updated_at = EXCLUDED.updated_at
+        RETURNING id
+      `)
+
+      console.log(`   ✅ Migrated ${result.rowCount} items to PostgreSQL\n`)
+    } else {
+      console.log("   ⚠️  No items found to migrate\n")
+    }
+
+    console.log("📋 Step 2: Migrating adoptme_pets collection...")
+    const petsCollection = mongodb.collection<MongoAdoptMePet>("adoptme_pets")
+    const pets = await petsCollection.find({}).toArray()
+    console.log(`   Found ${pets.length} Adopt Me pets in MongoDB`)
+
+    if (pets.length > 0) {
+      const petMap = new Map<string, MongoAdoptMePet>()
+
+      pets.forEach((pet) => {
+        const existing = petMap.get(pet.name)
+
+        if (
+          !existing ||
+          (pet.updatedAt && existing.updatedAt && pet.updatedAt > existing.updatedAt) ||
+          (pet.updatedAt && !existing.updatedAt)
+        ) {
+          petMap.set(pet.name, pet)
+        }
+      })
+
+      const uniquePets = Array.from(petMap.values())
+      console.log(`   Deduplicated to ${uniquePets.length} unique pets`)
+
+      const petItems: any[] = []
+
+      uniquePets.forEach((pet) => {
+        
+        petItems.push({
+          name: pet.name,
+          game: "Adopt Me",
+          image_url: pet.image_url || "",
+          rap_value: pet.baseValue || 0,
+          section: pet.section || "Unknown",
+          variant: "base",
+          created_at: pet.createdAt || new Date(),
+          updated_at: pet.updatedAt || new Date(),
+        })
+
+        petItems.push({
+          name: `Neon ${pet.name}`,
+          game: "Adopt Me",
+          image_url: pet.image_url || "",
+          rap_value: pet.neonValue || 0,
+          section: pet.section || "Unknown",
+          variant: "neon",
+          created_at: pet.createdAt || new Date(),
+          updated_at: pet.updatedAt || new Date(),
+        })
+
+        petItems.push({
+          name: `Mega ${pet.name}`,
+          game: "Adopt Me",
+          image_url: pet.image_url || "",
+          rap_value: pet.megaValue || 0,
+          section: pet.section || "Unknown",
+          variant: "mega",
+          created_at: pet.createdAt || new Date(),
+          updated_at: pet.updatedAt || new Date(),
+        })
+      })
+
+      for (const petItem of petItems) {
+        await pgPool.query(
+          `INSERT INTO public.items (name, game, image_url, rap_value, created_at, updated_at)
+           VALUES ($1, $2, $3, $4, $5, $6)
+           ON CONFLICT (name, game) DO UPDATE SET
+             image_url = EXCLUDED.image_url,
+             rap_value = EXCLUDED.rap_value,
+             updated_at = EXCLUDED.updated_at`,
+          [petItem.name, petItem.game, petItem.image_url, petItem.rap_value, petItem.created_at, petItem.updated_at],
+        )
+      }
+
+      console.log(`   ✅ Migrated ${petItems.length} Adopt Me pet variants to PostgreSQL\n`)
+    } else {
+      console.log("   ⚠️  No Adopt Me pets found to migrate\n")
+    }
+
+    console.log("📊 Migration Summary:")
+    const itemCount = await pgPool.query("SELECT COUNT(*) FROM public.items")
+    console.log(`   Total items in PostgreSQL: ${itemCount.rows[0].count}`)
+
+    console.log("\n✅ Migration completed successfully!")
+    console.log("\n💡 Next steps:")
+    console.log("   1. Verify data in PostgreSQL")
+    console.log("   2. Update your app to use PostgreSQL instead of MongoDB")
+    console.log("   3. Keep MongoDB as backup until you confirm everything works")
+  } catch (error) {
+    console.error("❌ Migration failed:", error)
+    throw error
+  } finally {
+    await mongoClient.close()
+    await pgPool.end()
+  }
+}
+
+migrate().catch(console.error)
