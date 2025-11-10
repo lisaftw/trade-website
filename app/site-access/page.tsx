@@ -19,15 +19,21 @@ export default function SiteAccessPage() {
     setLoading(true)
 
     try {
+      console.log("[v0] Submitting password")
       const response = await fetch("/api/site-access", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),
       })
 
+      console.log("[v0] Response status:", response.status)
       const data = await response.json()
+      console.log("[v0] Response data:", data)
 
       if (data.success) {
+        console.log("[v0] Login successful, waiting for cookie to commit...")
+        await new Promise((resolve) => setTimeout(resolve, 500))
+        console.log("[v0] Redirecting to home page...")
         // Force a full page reload to ensure cookies are properly read
         window.location.href = "/"
       } else {
