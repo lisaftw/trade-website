@@ -1,10 +1,11 @@
 "use server"
 
 import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
 
 export async function verifySitePassword(formData: FormData) {
-  const password = formData.get("password") as string
-  const correctPassword = process.env.SITE_PASSWORD || "qsxcvbhjio987654"
+  const password = (formData.get("password") as string)?.trim()
+  const correctPassword = process.env.ADMIN_PASSWORD || "qsxcvbhjio987654"
 
   console.log("[v0] Server Action: Password verification attempt")
   console.log("[v0] Server Action: Password received:", password)
@@ -16,15 +17,15 @@ export async function verifySitePassword(formData: FormData) {
 
     cookieStore.set("site-access", "granted", {
       httpOnly: true,
-      secure: true, // Always use secure in production
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 60 * 60 * 24 * 30, // 30 days
       path: "/",
     })
 
-    console.log("[v0] Server Action: Cookie set successfully")
+    console.log("[v0] Server Action: Cookie set, redirecting to home")
 
-    return { success: true }
+    redirect("/")
   }
 
   console.log("[v0] Server Action: Password incorrect")
