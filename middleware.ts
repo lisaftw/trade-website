@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import type { NextRequest } from "next/router"
+import type { NextRequest } from "next/server"
 
 const protectedRoutes = ["/dashboard", "/profile", "/settings"]
 const authRoutes = ["/login"]
@@ -14,11 +14,20 @@ export async function middleware(request: NextRequest) {
   const sitePasswordCookie = request.cookies.get("site-access")
   const hasSiteAccess = sitePasswordCookie?.value === "granted"
 
+  console.log("[v0] Middleware check:", {
+    pathname,
+    cookieExists: !!sitePasswordCookie,
+    cookieValue: sitePasswordCookie?.value,
+    hasSiteAccess,
+  })
+
   if (!hasSiteAccess && pathname !== "/site-access") {
+    console.log("[v0] No site access, redirecting to /site-access")
     return NextResponse.redirect(new URL("/site-access", request.url))
   }
 
   if (pathname === "/site-access" && hasSiteAccess) {
+    console.log("[v0] Has site access on /site-access, redirecting to home")
     return NextResponse.redirect(new URL("/", request.url))
   }
 
