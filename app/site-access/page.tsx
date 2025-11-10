@@ -3,7 +3,6 @@
 import type React from "react"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -13,14 +12,11 @@ export default function SiteAccessPage() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
     setLoading(true)
-
-    console.log("[v0] Submitting password")
 
     try {
       const response = await fetch("/api/site-access", {
@@ -29,23 +25,19 @@ export default function SiteAccessPage() {
         body: JSON.stringify({ password }),
       })
 
-      console.log("[v0] Response status:", response.status)
       const data = await response.json()
-      console.log("[v0] Response data:", data)
 
       if (data.success) {
-        console.log("[v0] Success! Redirecting to home...")
-        router.push("/")
-        router.refresh()
+        // Force a full page reload to ensure cookies are properly read
+        window.location.href = "/"
       } else {
-        console.log("[v0] Authentication failed")
         setError("Invalid password")
         setPassword("")
+        setLoading(false)
       }
     } catch (err) {
       console.error("[v0] Error during authentication:", err)
       setError("An error occurred. Please try again.")
-    } finally {
       setLoading(false)
     }
   }
