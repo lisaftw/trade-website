@@ -6,13 +6,10 @@
     "bot": "tsx bot/index.ts",
     "bot:deploy": "tsx bot/deploy-commands.ts",
     "build": "next build",
-    "cleanup": "npx tsx scripts/cleanup-ai-references.ts",
     "dev": "next dev",
     "import:adoptme": "tsx scripts/import-adoptme-excel.ts",
     "import:mm2": "tsx scripts/import-mm2-values.ts",
     "lint": "next lint",
-    "migrate:mongo-to-postgres": "tsx scripts/migrate-mongodb-to-postgres.ts",
-    "migrate:prepare-db": "tsx scripts/prepare-postgres-for-migration.ts",
     "start": "next start"
   },
   "dependencies": {

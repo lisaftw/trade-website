@@ -1,130 +1,110 @@
-import clientPromise from "@/lib/mongodb"
-import type { ObjectId } from "mongodb"
+import { query } from "./postgres"
 
 export interface Item {
-  _id?: ObjectId
+  id: string
   name: string
-  value: number
+  rap_value: number
   game: string
-  section: string
+  section?: string
   image_url?: string
-
-  // MM2, SAB, GAG specific fields
   rarity?: string
   demand?: string
-
-  // Adopt Me specific fields
-  pot?: string
-
-  createdAt?: Date
-  updatedAt?: Date
+  exist_count?: number
+  rating?: number
+  change_percent?: number
+  created_at?: Date
+  updated_at?: Date
 }
 
 export async function getItems(game?: string): Promise<Item[]> {
   try {
-    const client = await clientPromise
-    const db = client.db("trading-db")
-    const collection = db.collection<Item>("items")
+    const sql = game
+      ? `SELECT * FROM items WHERE game = $1 ORDER BY rap_value DESC`
+      : `SELECT * FROM items ORDER BY rap_value DESC`
 
-    const query = game ? { game } : {}
-    const items = await collection.find(query).sort({ value: -1 }).toArray()
+    const params = game ? [game] : []
+    const result = await query<Item>(sql, params)
 
-    return items.map((item) => ({
-      ...item,
-      _id: item._id,
-    }))
+    return result.rows
   } catch (error) {
-    console.error("[v0] Error fetching items:", error)
+    console.error("Error fetching items:", error)
     return []
   }
 }
 
-export async function searchItems(query: string, game?: string): Promise<Item[]> {
+export async function searchItems(searchQuery: string, game?: string): Promise<Item[]> {
   try {
-    const client = await clientPromise
-    const db = client.db("trading-db")
-    const collection = db.collection<Item>("items")
+    const sql = game
+      ? `SELECT * FROM items 
+         WHERE name ILIKE $1 AND game = $2 
+         ORDER BY rap_value DESC 
+         LIMIT 20`
+      : `SELECT * FROM items 
+         WHERE name ILIKE $1 
+         ORDER BY rap_value DESC 
+         LIMIT 20`
 
-    const searchQuery: any = {
-      name: { $regex: query, $options: "i" },
-    }
+    const params = game ? [`%${searchQuery}%`, game] : [`%${searchQuery}%`]
+    const result = await query<Item>(sql, params)
 
-    if (game) {
-      searchQuery.game = game
-    }
-
-    const items = await collection.find(searchQuery).limit(20).sort({ value: -1 }).toArray()
-
-    return items.map((item) => ({
-      ...item,
-      _id: item._id,
-    }))
+    return result.rows
   } catch (error) {
-    console.error("[v0] Error searching items:", error)
+    console.error("Error searching items:", error)
     return []
   }
 }
 
-export async function createItem(item: Omit<Item, "_id" | "createdAt" | "updatedAt">): Promise<Item | null> {
+export async function getItemById(id: string): Promise<Item | null> {
   try {
-    const client = await clientPromise
-    const db = client.db("trading-db")
-    const collection = db.collection<Item>("items")
-
-    const newItem = {
-      ...item,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }
-
-    const result = await collection.insertOne(newItem)
-
-    return {
-      ...newItem,
-      _id: result.insertedId,
-    }
+    const result = await query<Item>(`SELECT * FROM items WHERE id = $1`, [id])
+    return result.rows[0] || null
   } catch (error) {
-    console.error("[v0] Error creating item:", error)
+    console.error("Error fetching item by ID:", error)
+    return null
+  }
+}
+
+export async function createItem(item: Omit<Item, "id" | "created_at" | "updated_at">): Promise<Item | null> {
+  try {
+    const result = await query<Item>(
+      `INSERT INTO items (
+        name, rap_value, game, section, image_url,
+        rarity, demand
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING *`,
+      [item.name, item.rap_value, item.game, item.section || "Unknown", item.image_url || "", item.rarity, item.demand],
+    )
+
+    return result.rows[0]
+  } catch (error) {
+    console.error("Error creating item:", error)
     return null
   }
 }
 
 export async function updateItem(id: string, updates: Partial<Item>): Promise<boolean> {
   try {
-    const client = await clientPromise
-    const db = client.db("trading-db")
-    const collection = db.collection<Item>("items")
-    const { ObjectId } = await import("mongodb")
+    const fields = Object.keys(updates)
+      .map((key, index) => `${key} = $${index + 2}`)
+      .join(", ")
 
-    const result = await collection.updateOne(
-      { _id: new ObjectId(id) },
-      {
-        $set: {
-          ...updates,
-          updatedAt: new Date(),
-        },
-      },
-    )
+    const values = Object.values(updates)
 
-    return result.modifiedCount > 0
+    await query(`UPDATE items SET ${fields}, updated_at = NOW() WHERE id = $1`, [id, ...values])
+
+    return true
   } catch (error) {
-    console.error("[v0] Error updating item:", error)
+    console.error("Error updating item:", error)
     return false
   }
 }
 
 export async function deleteItem(id: string): Promise<boolean> {
   try {
-    const client = await clientPromise
-    const db = client.db("trading-db")
-    const collection = db.collection<Item>("items")
-    const { ObjectId } = await import("mongodb")
-
-    const result = await collection.deleteOne({ _id: new ObjectId(id) })
-
-    return result.deletedCount > 0
+    await query(`DELETE FROM items WHERE id = $1`, [id])
+    return true
   } catch (error) {
-    console.error("[v0] Error deleting item:", error)
+    console.error("Error deleting item:", error)
     return false
   }
 }
