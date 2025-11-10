@@ -6,8 +6,11 @@ export async function POST(request: Request) {
     const correctPassword = process.env.ADMIN_PASSWORD
 
     console.log("[v0] API: Password verification")
+    console.log("[v0] API: Received password:", password)
     console.log("[v0] API: Received length:", password?.length)
+    console.log("[v0] API: Expected password:", correctPassword)
     console.log("[v0] API: Expected length:", correctPassword?.length)
+    console.log("[v0] API: Match:", password === correctPassword)
 
     if (!correctPassword) {
       console.error("[v0] API: ADMIN_PASSWORD not set")
@@ -15,11 +18,12 @@ export async function POST(request: Request) {
     }
 
     const trimmedPassword = password?.trim()
+    console.log("[v0] API: Trimmed password:", trimmedPassword)
+    console.log("[v0] API: Trimmed match:", trimmedPassword === correctPassword)
 
     if (trimmedPassword === correctPassword) {
       const response = NextResponse.json({ success: true })
 
-      // Set cookie directly in response headers
       response.cookies.set("site-access", "granted", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
