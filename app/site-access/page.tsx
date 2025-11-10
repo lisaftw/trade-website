@@ -1,15 +1,46 @@
+"use client"
+
+import type React from "react"
+
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Lock } from "lucide-react"
-import { verifySitePassword } from "./actions"
 
-export default async function SiteAccessPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>
-}) {
-  const params = await searchParams
+export default function SiteAccessPage() {
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError("")
+
+    try {
+      const response = await fetch("/api/site-access", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password: password.trim() }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        window.location.href = "/"
+      } else {
+        setError("Incorrect password")
+        setLoading(false)
+      }
+    } catch (err) {
+      console.error("[v0] Error:", err)
+      setError("An error occurred. Please try again.")
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4">
@@ -26,13 +57,21 @@ export default async function SiteAccessPage({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={verifySitePassword} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Input type="password" name="password" placeholder="Enter password" autoFocus required />
-              {params.error && <p className="text-sm text-red-500">{params.error}</p>}
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter password"
+                autoFocus
+                required
+                disabled={loading}
+              />
+              {error && <p className="text-sm text-red-500">{error}</p>}
             </div>
-            <Button type="submit" className="w-full">
-              Access Site
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Verifying..." : "Access Site"}
             </Button>
           </form>
         </CardContent>

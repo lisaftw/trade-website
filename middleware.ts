@@ -14,20 +14,20 @@ export async function middleware(request: NextRequest) {
   const sitePasswordCookie = request.cookies.get("site-access")
   const hasSiteAccess = sitePasswordCookie?.value === "granted"
 
-  console.log("[v0] Middleware check:", {
+  console.log("[v0] Middleware:", {
     pathname,
-    cookieExists: !!sitePasswordCookie,
+    hasCookie: !!sitePasswordCookie,
     cookieValue: sitePasswordCookie?.value,
-    hasSiteAccess,
+    hasAccess: hasSiteAccess,
   })
 
   if (!hasSiteAccess && pathname !== "/site-access") {
-    console.log("[v0] No site access, redirecting to /site-access")
+    console.log("[v0] Middleware: Redirecting to /site-access")
     return NextResponse.redirect(new URL("/site-access", request.url))
   }
 
   if (pathname === "/site-access" && hasSiteAccess) {
-    console.log("[v0] Has site access on /site-access, redirecting to home")
+    console.log("[v0] Middleware: Has access, redirecting to home")
     return NextResponse.redirect(new URL("/", request.url))
   }
 
