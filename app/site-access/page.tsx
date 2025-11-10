@@ -18,25 +18,33 @@ export default function SiteAccessPage() {
     setLoading(true)
     setError("")
 
+    const trimmedPassword = password.trim()
+    console.log("[v0] Client: Submitting password, length:", trimmedPassword.length)
+
     try {
       const response = await fetch("/api/site-access", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ password: password.trim() }),
+        body: JSON.stringify({ password: trimmedPassword }),
+        credentials: "include", // Ensure cookies are included
       })
 
       const data = await response.json()
+      console.log("[v0] Client: Response received:", data)
 
       if (data.success) {
-        window.location.href = "/"
+        console.log("[v0] Client: Password correct, reloading in 500ms...")
+        setTimeout(() => {
+          window.location.href = "/"
+        }, 500)
       } else {
         setError("Incorrect password")
         setLoading(false)
       }
     } catch (err) {
-      console.error("[v0] Error:", err)
+      console.error("[v0] Client: Error:", err)
       setError("An error occurred. Please try again.")
       setLoading(false)
     }
@@ -62,11 +70,17 @@ export default function SiteAccessPage() {
               <Input
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  const newValue = e.target.value
+                  console.log("[v0] Client: Input changed, length:", newValue.length)
+                  setPassword(newValue)
+                }}
                 placeholder="Enter password"
                 autoFocus
+                autoComplete="off"
                 required
                 disabled={loading}
+                className="font-mono"
               />
               {error && <p className="text-sm text-red-500">{error}</p>}
             </div>

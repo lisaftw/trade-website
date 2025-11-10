@@ -7,8 +7,8 @@ export async function POST(request: Request) {
     const correctPassword = process.env.ADMIN_PASSWORD
 
     console.log("[v0] API: Password verification attempt")
-    console.log("[v0] API: Password received length:", password?.length)
-    console.log("[v0] API: Expected password length:", correctPassword?.length)
+    console.log("[v0] API: Password received:", password) // Log full password for debugging
+    console.log("[v0] API: Expected password:", correctPassword) // Log expected password
 
     if (!correctPassword) {
       console.error("[v0] API: ADMIN_PASSWORD environment variable not set")
@@ -31,7 +31,10 @@ export async function POST(request: Request) {
         path: "/",
       })
 
-      console.log("[v0] API: Cookie set successfully, access granted")
+      console.log("[v0] API: Cookie set successfully")
+
+      const setCookie = cookieStore.get("site-access")
+      console.log("[v0] API: Cookie verification:", setCookie)
 
       return NextResponse.json({ success: true })
     }
