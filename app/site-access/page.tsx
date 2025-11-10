@@ -1,7 +1,9 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,56 +13,32 @@ export default function SiteAccessPage() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    const checkExistingToken = async () => {
-      const token = localStorage.getItem("site-access-token")
-      if (token) {
-        try {
-          const response = await fetch(`/api/site-access?token=${token}`)
-          const data = await response.json()
-          if (data.valid) {
-            window.location.href = "/"
-          } else {
-            localStorage.removeItem("site-access-token")
-          }
-        } catch (err) {
-          localStorage.removeItem("site-access-token")
-        }
-      }
-    }
-    checkExistingToken()
-  }, [])
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
     setError("")
+    setLoading(true)
 
     try {
       const response = await fetch("/api/site-access", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password: password.trim() }),
+        body: JSON.stringify({ password }),
       })
 
       const data = await response.json()
 
-      if (data.success && data.token) {
-        localStorage.setItem("site-access-token", data.token)
-        document.cookie = `site-access-token=${data.token}; path=/; max-age=${30 * 24 * 60 * 60}`
-
-        // Small delay to ensure cookie is set
-        setTimeout(() => {
-          window.location.href = "/"
-        }, 100)
+      if (data.success) {
+        router.push("/")
+        router.refresh()
       } else {
-        setError("Incorrect password")
-        setLoading(false)
+        setError("Invalid password")
+        setPassword("")
       }
     } catch (err) {
-      console.error("[v0] Client: Error:", err)
       setError("An error occurred. Please try again.")
+    } finally {
       setLoading(false)
     }
   }
@@ -84,17 +62,15 @@ export default function SiteAccessPage() {
             <div className="space-y-2">
               <Input
                 type="password"
+                placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter password"
-                autoFocus
-                autoComplete="off"
-                required
                 disabled={loading}
+                autoFocus
               />
-              {error && <p className="text-sm text-red-500">{error}</p>}
+              {error && <p className="text-sm text-destructive">{error}</p>}
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full" disabled={loading || !password}>
               {loading ? "Verifying..." : "Access Site"}
             </Button>
           </form>

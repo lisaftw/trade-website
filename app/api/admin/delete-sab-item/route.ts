@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { query } from "@/lib/db/postgres"
+import clientPromise from "@/lib/mongodb-client"
 
 export async function POST(request: Request) {
   try {
@@ -9,37 +9,40 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Item name is required" }, { status: 400 })
     }
 
-    console.log(`[v0] Connecting to PostgreSQL...`)
+    console.log(`[v0] Connecting to MongoDB...`)
+    const client = await clientPromise
+    const db = client.db("trading-db")
+    const collection = db.collection("items")
 
     // Find the corrupt item
-    const findResult = await query(`SELECT id, name, value, section FROM items WHERE game = $1 AND name = $2`, [
-      "SAB",
-      itemName,
-    ])
+    const corruptItem = await collection.findOne({
+      game: "SAB",
+      name: itemName,
+    })
 
-    if (findResult.rows.length === 0) {
+    if (!corruptItem) {
       return NextResponse.json({ error: `No item named '${itemName}' found in SAB game` }, { status: 404 })
     }
 
-    const corruptItem = findResult.rows[0]
-
     console.log(`[v0] Found item:`, {
-      id: corruptItem.id,
+      id: corruptItem._id.toString(),
       name: corruptItem.name,
       value: corruptItem.value,
       section: corruptItem.section,
     })
 
     // Delete the item
-    const deleteResult = await query(`DELETE FROM items WHERE id = $1 RETURNING *`, [corruptItem.id])
+    const result = await collection.deleteOne({
+      _id: corruptItem._id,
+    })
 
-    if (deleteResult.rowCount && deleteResult.rowCount > 0) {
+    if (result.deletedCount > 0) {
       console.log(`[v0] Successfully deleted item!`)
       return NextResponse.json({
         success: true,
         message: `Successfully deleted '${itemName}' from SAB game`,
         deletedItem: {
-          id: corruptItem.id,
+          id: corruptItem._id.toString(),
           name: corruptItem.name,
           value: corruptItem.value,
         },

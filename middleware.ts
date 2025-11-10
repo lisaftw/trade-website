@@ -7,23 +7,17 @@ const authRoutes = ["/login"]
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  if (pathname.startsWith("/api/") || pathname.startsWith("/_next/") || pathname === "/site-access") {
-    return NextResponse.next()
+  const sitePasswordCookie = request.cookies.get("site_access")
+  const hasSiteAccess = sitePasswordCookie?.value === "granted"
+
+  if (!hasSiteAccess && pathname !== "/site-access") {
+    return NextResponse.redirect(new URL("/site-access", request.url))
   }
 
-  const siteAccessToken = request.cookies.get("site-access-token")?.value
-
-  if (!siteAccessToken) {
-    // Try to validate from query param (for initial redirect after login)
-    const url = new URL(request.url)
-    const tokenFromQuery = url.searchParams.get("token")
-
-    if (!tokenFromQuery) {
-      return NextResponse.redirect(new URL("/site-access", request.url))
-    }
+  if (pathname === "/site-access" && hasSiteAccess) {
+    return NextResponse.redirect(new URL("/", request.url))
   }
 
-  // Session-based auth for protected routes (separate from site access)
   const sessionCookie = request.cookies.get("trade_session_id")
   const hasSession = !!sessionCookie?.value
 
