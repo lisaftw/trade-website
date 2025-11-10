@@ -6,7 +6,7 @@ export function ScrollParallax() {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    
+    // Respect user preference for reduced motion
     const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
     if (reduceMotion) return
 
@@ -39,7 +39,7 @@ export function ScrollParallax() {
     }
 
     window.addEventListener("scroll", onScroll, { passive: true })
-    updateParallax() 
+    updateParallax() // Initial position
 
     return () => {
       window.removeEventListener("scroll", onScroll)

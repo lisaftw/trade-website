@@ -1,15 +1,25 @@
-
+/**
+ * MongoDB to PostgreSQL Migration Script
+ *
+ * This script migrates data from MongoDB to PostgreSQL on the VPS.
+ * Run this ONCE after setting up the VPS database.
+ *
+ * Usage: npx tsx scripts/migrate-mongodb-to-postgres.ts
+ */
 
 import { config } from "dotenv"
 import { resolve } from "path"
 import { MongoClient } from "mongodb"
 import { Pool } from "pg"
 
+// Load .env.local file
 config({ path: resolve(process.cwd(), ".env.local") })
 
+// MongoDB connection (your existing cloud MongoDB)
 const MONGODB_URI = process.env.MONGODB_URI!
 const MONGODB_DB = "trading-db"
 
+// PostgreSQL connection (your VPS)
 const POSTGRES_URL = process.env.DATABASE_URL!
 
 if (!MONGODB_URI) {
@@ -58,19 +68,23 @@ interface MongoAdoptMePet {
 async function migrate() {
   console.log("🚀 Starting MongoDB to PostgreSQL migration...\n")
 
+  // Connect to MongoDB
   console.log("📦 Connecting to MongoDB...")
   const mongoClient = new MongoClient(MONGODB_URI)
   await mongoClient.connect()
   const mongodb = mongoClient.db(MONGODB_DB)
   console.log("✅ Connected to MongoDB\n")
 
+  // Connect to PostgreSQL
   console.log("🐘 Connecting to PostgreSQL...")
   const pgPool = new Pool({ connectionString: POSTGRES_URL })
   await pgPool.query("SELECT NOW()")
   console.log("✅ Connected to PostgreSQL\n")
 
   try {
-
+    // ========================================
+    // STEP 1: Migrate Items Collection
+    // ========================================
     console.log("📋 Step 1: Migrating items collection...")
     const itemsCollection = mongodb.collection<MongoItem>("items")
     const items = await itemsCollection.find({}).toArray()
@@ -94,6 +108,7 @@ async function migrate() {
         const key = `${item.game}:${item.name}`
         const existing = itemMap.get(key)
 
+        // Keep the item with the most recent updatedAt, or the first one if no updatedAt
         if (
           !existing ||
           (item.updatedAt && existing.updatedAt && item.updatedAt > existing.updatedAt) ||
@@ -106,6 +121,7 @@ async function migrate() {
       const uniqueItems = Array.from(itemMap.values())
       console.log(`   Deduplicated to ${uniqueItems.length} unique items`)
 
+      // Create a temporary table for bulk insert
       await pgPool.query(`
         CREATE TEMP TABLE temp_items (
           name TEXT,
@@ -120,6 +136,7 @@ async function migrate() {
         )
       `)
 
+      // Prepare values for bulk insert
       const values: any[] = []
       const placeholders: string[] = []
 
@@ -141,12 +158,14 @@ async function migrate() {
         )
       })
 
+      // Bulk insert into temp table
       await pgPool.query(
         `INSERT INTO temp_items (name, game, image_url, rap_value, section, rarity, demand, created_at, updated_at)
          VALUES ${placeholders.join(", ")}`,
         values,
       )
 
+      // Merge into main items table (upsert based on name + game)
       const result = await pgPool.query(`
         INSERT INTO public.items (name, game, image_url, rap_value, created_at, updated_at)
         SELECT name, game, image_url, rap_value, created_at, updated_at
@@ -163,6 +182,9 @@ async function migrate() {
       console.log("   ⚠️  No items found to migrate\n")
     }
 
+    // ========================================
+    // STEP 2: Migrate Adopt Me Pets Collection
+    // ========================================
     console.log("📋 Step 2: Migrating adoptme_pets collection...")
     const petsCollection = mongodb.collection<MongoAdoptMePet>("adoptme_pets")
     const pets = await petsCollection.find({}).toArray()
@@ -186,10 +208,13 @@ async function migrate() {
       const uniquePets = Array.from(petMap.values())
       console.log(`   Deduplicated to ${uniquePets.length} unique pets`)
 
+      // For Adopt Me pets, we'll store them as items with special metadata
+      // We'll create 3 items per pet: base, neon, mega
+
       const petItems: any[] = []
 
       uniquePets.forEach((pet) => {
-        
+        // Base variant
         petItems.push({
           name: pet.name,
           game: "Adopt Me",
@@ -201,6 +226,7 @@ async function migrate() {
           updated_at: pet.updatedAt || new Date(),
         })
 
+        // Neon variant
         petItems.push({
           name: `Neon ${pet.name}`,
           game: "Adopt Me",
@@ -212,6 +238,7 @@ async function migrate() {
           updated_at: pet.updatedAt || new Date(),
         })
 
+        // Mega variant
         petItems.push({
           name: `Mega ${pet.name}`,
           game: "Adopt Me",
@@ -224,6 +251,7 @@ async function migrate() {
         })
       })
 
+      // Bulk insert pet items
       for (const petItem of petItems) {
         await pgPool.query(
           `INSERT INTO public.items (name, game, image_url, rap_value, created_at, updated_at)
@@ -241,6 +269,9 @@ async function migrate() {
       console.log("   ⚠️  No Adopt Me pets found to migrate\n")
     }
 
+    // ========================================
+    // STEP 3: Summary
+    // ========================================
     console.log("📊 Migration Summary:")
     const itemCount = await pgPool.query("SELECT COUNT(*) FROM public.items")
     console.log(`   Total items in PostgreSQL: ${itemCount.rows[0].count}`)
@@ -259,4 +290,5 @@ async function migrate() {
   }
 }
 
+// Run migration
 migrate().catch(console.error)

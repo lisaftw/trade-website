@@ -69,7 +69,7 @@ export function AdminContent() {
       }
 
       setMessage({ type: "success", text: "Item created successfully!" })
-      
+      // Reset form
       setName("")
       setImageUrl("")
       setRapValue("")
@@ -77,7 +77,7 @@ export function AdminContent() {
       setChangePercent("")
       setRating("5.0")
     } catch (error) {
-      console.error(" Create error:", error)
+      console.error("[v0] Create error:", error)
       setMessage({ type: "error", text: "Failed to create item. Please try again." })
     } finally {
       setSaving(false)
@@ -107,7 +107,7 @@ export function AdminContent() {
       setDeleteMessage({ type: "success", text: data.message })
       setDeleteItemName("")
     } catch (error) {
-      console.error(" Delete error:", error)
+      console.error("[v0] Delete error:", error)
       setDeleteMessage({
         type: "error",
         text: error instanceof Error ? error.message : "Failed to delete item. Please try again.",
@@ -119,7 +119,7 @@ export function AdminContent() {
 
   return (
     <div className="space-y-6">
-      {}
+      {/* Bulk Image Migration Tool */}
       <div className="rounded-lg border border-blue-500/50 bg-blue-500/10 p-6">
         <h2 className="mb-2 text-lg font-semibold text-blue-600 dark:text-blue-400">Bulk Image Migration</h2>
         <p className="mb-4 text-sm text-muted-foreground">Upload new images for items with expired Discord CDN URLs</p>
@@ -131,7 +131,7 @@ export function AdminContent() {
         </Button>
       </div>
 
-      {}
+      {/* Delete SAB Item section */}
       <div className="rounded-lg border border-destructive/50 bg-card p-6 shadow-sm">
         <h2 className="mb-6 text-xl font-semibold text-destructive">Delete SAB Item</h2>
 
@@ -169,7 +169,7 @@ export function AdminContent() {
         </form>
       </div>
 
-      {}
+      {/* Existing Add Item section */}
       <div className="rounded-lg border bg-card p-6 shadow-sm">
         <h2 className="mb-6 text-xl font-semibold">Add New Item</h2>
 

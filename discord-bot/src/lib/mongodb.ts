@@ -4,7 +4,7 @@ dotenv.config()
 import { MongoClient, ServerApiVersion } from "mongodb"
 
 declare global {
-  
+  // eslint-disable-next-line no-var
   var _mongoClientPromise: Promise<MongoClient> | undefined
 }
 
@@ -28,6 +28,7 @@ const options = {
 let client: MongoClient
 let clientPromise: Promise<MongoClient>
 
+// Create a singleton MongoDB client
 if (!global._mongoClientPromise) {
   client = new MongoClient(uri, options)
   global._mongoClientPromise = client.connect()
@@ -37,11 +38,13 @@ clientPromise = global._mongoClientPromise
 
 export default clientPromise
 
+// Helper function to get database
 export async function getDatabase() {
   const client = await clientPromise
   return client.db("trading-db")
 }
 
+// Helper function to get items collection
 export async function getItemsCollection() {
   const db = await getDatabase()
   return db.collection("items")

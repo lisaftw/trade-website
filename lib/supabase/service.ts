@@ -19,7 +19,7 @@ export async function createServiceClient() {
         try {
           cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
         } catch {
-          
+          // Safe to ignore when called from a Server Component without mutable cookies
         }
       },
     },

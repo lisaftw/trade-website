@@ -117,9 +117,9 @@ export function ChatWindow({
           console.log("Received new message via realtime:", payload.new)
           const newMsg = payload.new as Message
           setMessages((prev) => {
-            
+            // Remove optimistic message if it exists
             const filtered = prev.filter((m) => m.tempId !== newMsg.id)
-            
+            // Prevent duplicates
             if (filtered.some((m) => m.id === newMsg.id)) return filtered
             return [...filtered, { ...newMsg, status: "delivered" }]
           })
@@ -363,18 +363,18 @@ export function ChatWindow({
       let updatedReactions: Reaction[]
       if (existingReaction) {
         if (existingReaction.users.includes(currentUserId)) {
-          
+          // Remove reaction
           updatedReactions = reactions
             .map((r) => (r.emoji === emoji ? { ...r, users: r.users.filter((u) => u !== currentUserId) } : r))
             .filter((r) => r.users.length > 0)
         } else {
-          
+          // Add user to reaction
           updatedReactions = reactions.map((r) =>
             r.emoji === emoji ? { ...r, users: [...r.users, currentUserId] } : r,
           )
         }
       } else {
-        
+        // New reaction
         updatedReactions = [...reactions, { emoji, users: [currentUserId] }]
       }
 

@@ -57,7 +57,7 @@ export function AdoptMeCalculator() {
         }))
         setPets(mappedPets)
       } catch (error) {
-        console.error(" Error fetching Adopt Me pets:", error)
+        console.error("[v0] Error fetching Adopt Me pets:", error)
       } finally {
         setLoading(false)
       }
@@ -134,13 +134,13 @@ export function AdoptMeCalculator() {
 
   return (
     <div className="space-y-4">
-      {}
+      {/* Header */}
       <div className="text-center">
         <h1 className="text-2xl md:text-3xl font-bold text-balance">Adopt Me Value Calculator</h1>
         <p className="mt-1 text-xs md:text-sm text-muted-foreground">Calculate pet values with potions and variants</p>
       </div>
 
-      {}
+      {/* Pet Selection */}
       <Card className="p-3 md:p-4">
         {!selectedPet ? (
           <button
@@ -184,14 +184,14 @@ export function AdoptMeCalculator() {
 
       {selectedPet && (
         <>
-          {}
+          {/* Calculated Value */}
           <div className="rounded-lg border-2 border-brand/50 bg-brand/10 p-4 text-center">
             <p className="text-xs text-muted-foreground">Calculated Value</p>
             <p className="mt-1 text-3xl md:text-4xl font-bold text-brand">{formatNumber(calculatedValue)}</p>
             <p className="mt-1 text-xs text-muted-foreground">{getDisplayName()}</p>
           </div>
 
-          {}
+          {/* Potions */}
           <Card className="p-3 md:p-4">
             <h3 className="mb-3 text-sm font-semibold">Potions</h3>
             <div className="grid grid-cols-2 gap-2">
@@ -225,7 +225,7 @@ export function AdoptMeCalculator() {
             </div>
           </Card>
 
-          {}
+          {/* Variants */}
           <Card className="p-3 md:p-4">
             <h3 className="mb-3 text-sm font-semibold">Variant</h3>
             <div className="grid grid-cols-3 gap-2">
@@ -271,7 +271,7 @@ export function AdoptMeCalculator() {
             </div>
           </Card>
 
-          {}
+          {/* Information Cards */}
           {variant === "neon" && selectedPet.neonValue === 0 && (
             <Card className="p-3 bg-blue-500/10 border-blue-500/20">
               <div className="flex gap-2">
@@ -300,7 +300,7 @@ export function AdoptMeCalculator() {
         </>
       )}
 
-      {}
+      {/* Search Modal */}
       {isSearchOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
           <div className="w-full max-w-2xl rounded-xl border-2 border-gray-700 bg-gray-900 p-4 shadow-2xl">

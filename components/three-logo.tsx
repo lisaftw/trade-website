@@ -13,7 +13,7 @@ function LogoMesh() {
   })
   return (
     <mesh ref={ref}>
-      {}
+      {/* Torus knot gives a sleek “trading ring” feel */}
       <torusKnotGeometry args={[0.5, 0.18, 90, 12]} />
       <meshStandardMaterial color="#16a34a" metalness={0.45} roughness={0.2} />
     </mesh>

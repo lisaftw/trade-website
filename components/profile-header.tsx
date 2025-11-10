@@ -32,7 +32,7 @@ export function ProfileHeader() {
           Theme: <span className="font-medium">{theme}</span>
         </p>
       </div>
-      {}
+      {/* theme is displayed here; no toggle per requirements */}
     </div>
   )
 }

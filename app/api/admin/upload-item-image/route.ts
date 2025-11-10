@@ -19,23 +19,27 @@ export async function POST(request: NextRequest) {
     const pool = getPool()
     let localPath: string
 
+    // If file is provided, save it
     if (file) {
       const bytes = await file.arrayBuffer()
       const buffer = Buffer.from(bytes)
 
+      // Create images directory if it doesn't exist
       const imagesDir = join(process.cwd(), "public", "images", "items")
       if (!existsSync(imagesDir)) {
         await mkdir(imagesDir, { recursive: true })
       }
 
+      // Generate filename
       const extension = file.name.split(".").pop() || "png"
       const filename = `${game.toLowerCase()}-${itemId}.${extension}`
       const filepath = join(imagesDir, filename)
 
+      // Save file
       await writeFile(filepath, buffer)
       localPath = `/images/items/${filename}`
     }
-    
+    // If imageUrl is provided, download it
     else if (imageUrl) {
       const response = await fetch(imageUrl, {
         headers: {
@@ -51,21 +55,25 @@ export async function POST(request: NextRequest) {
       const arrayBuffer = await response.arrayBuffer()
       const buffer = Buffer.from(arrayBuffer)
 
+      // Create images directory
       const imagesDir = join(process.cwd(), "public", "images", "items")
       if (!existsSync(imagesDir)) {
         await mkdir(imagesDir, { recursive: true })
       }
 
+      // Generate filename
       const extension = imageUrl.match(/\.(png|jpg|jpeg|gif|webp)/i)?.[1] || "png"
       const filename = `${game.toLowerCase()}-${itemId}.${extension}`
       const filepath = join(imagesDir, filename)
 
+      // Save file
       await writeFile(filepath, buffer)
       localPath = `/images/items/${filename}`
     } else {
       return NextResponse.json({ error: "No file or imageUrl provided" }, { status: 400 })
     }
 
+    // Update database
     await pool.query("UPDATE items SET image_url = $1 WHERE id = $2", [localPath, itemId])
 
     return NextResponse.json({
@@ -73,7 +81,7 @@ export async function POST(request: NextRequest) {
       path: localPath,
     })
   } catch (error) {
-    console.error(" Error uploading image:", error)
+    console.error("[v0] Error uploading image:", error)
     return NextResponse.json({ error: "Failed to upload image" }, { status: 500 })
   }
 }

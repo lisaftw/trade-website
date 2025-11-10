@@ -5,27 +5,30 @@ import clientPromise from "@/lib/mongodb"
 
 export async function GET() {
   try {
-    console.log(" Testing MongoDB connection...")
-    console.log(" MONGODB_URI exists:", !!process.env.MONGODB_URI)
+    console.log("[v0] Testing MongoDB connection...")
+    console.log("[v0] MONGODB_URI exists:", !!process.env.MONGODB_URI)
 
     const client = await clientPromise
     const db = client.db("trading-db")
 
+    // List all collections
     const collections = await db.listCollections().toArray()
     console.log(
-      " Available collections:",
+      "[v0] Available collections:",
       collections.map((c) => c.name),
     )
 
+    // Try to fetch from items collection
     const itemsCollection = db.collection("items")
     const itemCount = await itemsCollection.countDocuments()
-    console.log(" Items count:", itemCount)
+    console.log("[v0] Items count:", itemCount)
 
+    // Get sample items with full details
     const sampleItems = await itemsCollection.find({}).limit(10).toArray()
-    console.log(" Sample items:", sampleItems)
+    console.log("[v0] Sample items:", sampleItems)
 
     const noobiniItem = await itemsCollection.findOne({ name: "Noobini Pizzanini" })
-    console.log(" Noobini Pizzanini item:", noobiniItem)
+    console.log("[v0] Noobini Pizzanini item:", noobiniItem)
 
     return NextResponse.json({
       success: true,
@@ -54,7 +57,7 @@ export async function GET() {
         : null,
     })
   } catch (error: any) {
-    console.error(" MongoDB debug error:", error)
+    console.error("[v0] MongoDB debug error:", error)
     return NextResponse.json(
       {
         success: false,

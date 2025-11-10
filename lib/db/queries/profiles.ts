@@ -11,6 +11,9 @@ export type Profile = {
   updated_at: string
 }
 
+/**
+ * Get profile by Discord ID (cached)
+ */
 export async function getProfile(discordId: string): Promise<Profile | null> {
   return cachedQuery(
     `profile:${discordId}`,
@@ -18,10 +21,13 @@ export async function getProfile(discordId: string): Promise<Profile | null> {
       const result = await query<Profile>("SELECT * FROM profiles WHERE discord_id = $1", [discordId])
       return result.rows[0] || null
     },
-    300, 
+    300, // Cache for 5 minutes
   )
 }
 
+/**
+ * Upsert profile
+ */
 export async function upsertProfile(profile: Partial<Profile> & { discord_id: string }): Promise<Profile> {
   const result = await query<Profile>(
     `INSERT INTO profiles (discord_id, username, global_name, avatar_url, email)
@@ -43,11 +49,15 @@ export async function upsertProfile(profile: Partial<Profile> & { discord_id: st
     ],
   )
 
+  // Invalidate cache
   cache.delete(`profile:${profile.discord_id}`)
 
   return result.rows[0]
 }
 
+/**
+ * Update profile
+ */
 export async function updateProfile(
   discordId: string,
   updates: Partial<Omit<Profile, "discord_id" | "created_at" | "updated_at">>,
@@ -76,6 +86,7 @@ export async function updateProfile(
     values,
   )
 
+  // Invalidate cache
   cache.delete(`profile:${discordId}`)
 
   return result.rows[0] || null

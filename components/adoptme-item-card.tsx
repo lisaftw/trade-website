@@ -36,7 +36,7 @@ export function AdoptMeItemCard({
         const key = `${text}-${position}`
 
         if (seen.has(key) && el.parentElement) {
-          
+          // Remove duplicate
           el.parentElement.remove()
         } else {
           seen.add(key)
@@ -47,7 +47,7 @@ export function AdoptMeItemCard({
 
   return (
     <div ref={cardRef} className="relative w-[240px] h-[340px] select-none">
-      {}
+      {/* Background layer */}
       <div className="absolute inset-0" style={{ zIndex: 0 }}>
         <Image
           src="/adoptme-card/backgroundofeachcard.png"
@@ -60,9 +60,9 @@ export function AdoptMeItemCard({
         />
       </div>
 
-      {}
+      {/* Content layer */}
       <div className="relative h-full flex flex-col items-center px-3 py-5" style={{ zIndex: 1, isolation: "isolate" }}>
-        {}
+        {/* Item holder with image */}
         <div className="relative w-[170px] h-[170px] mt-1" style={{ isolation: "isolate" }}>
           <Image
             src="/adoptme-card/itemholder.png"
@@ -94,7 +94,7 @@ export function AdoptMeItemCard({
             </span>
           </div>
 
-          {}
+          {/* Item image */}
           <div className="absolute inset-0 flex items-center justify-center p-7" style={{ zIndex: 10 }}>
             <div className="relative w-full h-full">
               <Image
@@ -108,7 +108,7 @@ export function AdoptMeItemCard({
           </div>
         </div>
 
-        {}
+        {/* Item name holder */}
         <div className="relative w-[200px] h-[32px] mt-3" style={{ isolation: "isolate" }}>
           <Image
             src="/adoptme-card/itemnameholder.png"
@@ -133,7 +133,7 @@ export function AdoptMeItemCard({
           </div>
         </div>
 
-        {}
+        {/* Stats holder */}
         <div className="relative w-[200px] h-[70px] mt-4" style={{ isolation: "isolate" }}>
           <Image
             src="/adoptme-card/raritydemandvalueholder.png"
@@ -146,7 +146,7 @@ export function AdoptMeItemCard({
           />
 
           <div className="absolute inset-0" style={{ zIndex: 10 }}>
-            {}
+            {/* Rarity value */}
             <div
               className="absolute"
               style={{
@@ -166,7 +166,7 @@ export function AdoptMeItemCard({
               </span>
             </div>
 
-            {}
+            {/* Demand value */}
             <div
               className="absolute"
               style={{
@@ -186,7 +186,7 @@ export function AdoptMeItemCard({
               </span>
             </div>
 
-            {}
+            {/* Value number */}
             <div
               className="absolute"
               style={{
@@ -208,7 +208,7 @@ export function AdoptMeItemCard({
           </div>
         </div>
 
-        {}
+        {/* Add to Inventory button */}
         <button
           onClick={onAddToInventory}
           onMouseEnter={() => setIsHovered(true)}

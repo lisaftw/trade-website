@@ -49,7 +49,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       }
     }
   } else if (interaction.isStringSelectMenu()) {
-    
+    // Handle select menu interactions for edit/remove commands
     const command = commands.get(interaction.customId.split("_")[0])
 
     if (command && command.handleSelectMenu) {
@@ -61,7 +61,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       }
     }
   } else if (interaction.isModalSubmit()) {
-    
+    // Handle modal submissions for edit command
     const command = commands.get(interaction.customId.split("_")[0])
 
     if (command && command.handleModal) {
@@ -81,7 +81,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       }
     }
   } else if (interaction.isButton()) {
-    
+    // Handle button interactions for remove confirmation
     const command = commands.get(interaction.customId.split("_")[0])
 
     if (command && command.handleButton) {

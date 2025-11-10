@@ -11,7 +11,7 @@ export default function AboutPage() {
       <PageBackground />
       <ScrollParallax />
 
-      {}
+      {/* ensure content layers above parallax for readability */}
       <div className="relative z-[2] mx-auto w-full max-w-5xl px-4 py-12 md:py-16">
         <SiteHeader />
 

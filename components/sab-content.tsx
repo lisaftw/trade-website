@@ -44,10 +44,10 @@ export function SABContent() {
       const offset = loadMore ? items.length : 0
       const limit = 50
 
-      console.log(" Fetching SAB brainrots from database")
+      console.log("[v0] Fetching SAB brainrots from database")
       const response = await fetch(`/api/items?game=SAB&limit=${limit}&offset=${offset}`)
       const data = await response.json()
-      console.log(" Received SAB brainrots:", data.items?.length || 0)
+      console.log("[v0] Received SAB brainrots:", data.items?.length || 0)
 
       if (data.items && data.items.length > 0) {
         setItems((prev) => (loadMore ? [...prev, ...data.items] : data.items))
@@ -55,9 +55,9 @@ export function SABContent() {
         setTotalCount(data.pagination?.total || data.items.length)
 
         const sections = [...new Set(data.items.map((item: SABItem) => item.section))]
-        console.log(" Unique section values in database:", sections)
+        console.log("[v0] Unique section values in database:", sections)
         console.log(
-          " First 5 items with sections:",
+          "[v0] First 5 items with sections:",
           data.items.slice(0, 5).map((item: SABItem) => ({
             name: item.name,
             section: item.section,
@@ -66,7 +66,7 @@ export function SABContent() {
         )
       }
     } catch (error) {
-      console.error(" Error fetching SAB brainrots:", error)
+      console.error("[v0] Error fetching SAB brainrots:", error)
     } finally {
       setLoading(false)
       setLoadingMore(false)
@@ -96,12 +96,12 @@ export function SABContent() {
   const getGroupedAndSortedItems = () => {
     let filtered = [...items]
 
-    console.log(" Total items before filtering:", filtered.length)
-    console.log(" Selected rarity filter:", selectedRarity)
+    console.log("[v0] Total items before filtering:", filtered.length)
+    console.log("[v0] Selected rarity filter:", selectedRarity)
 
     if (searchQuery) {
       filtered = filtered.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
-      console.log(" Items after search filter:", filtered.length)
+      console.log("[v0] Items after search filter:", filtered.length)
     }
 
     if (selectedRarity !== "All") {
@@ -111,7 +111,7 @@ export function SABContent() {
         const matches = itemSection === selectedRarity
         if (!matches && beforeFilter < 10) {
           console.log(
-            " Item filtered out:",
+            "[v0] Item filtered out:",
             item.name,
             "section:",
             item.section,
@@ -123,7 +123,7 @@ export function SABContent() {
         }
         return matches
       })
-      console.log(" Items after rarity filter:", filtered.length)
+      console.log("[v0] Items after rarity filter:", filtered.length)
     }
 
     const grouped: Record<string, SABItem[]> = {}

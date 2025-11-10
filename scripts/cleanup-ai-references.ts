@@ -20,7 +20,7 @@ function cleanFile(filePath: string): boolean {
     content = content.replace(/console\.(log|error|warn)\s*$$\s*'\[v0\][^']*'[^)]*$$/g, "")
 
     content = content.replace(/\/\/\s*.*$/gm, "")
-    content = content.replace(/\/\*[\s\S]*?\*\
+    content = content.replace(/\/\*[\s\S]*?\*\//g, "")
 
     content = content.replace(/\[v0\]/g, "")
 

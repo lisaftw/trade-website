@@ -3,22 +3,23 @@ import { join } from "path"
 import { existsSync } from "fs"
 
 export async function downloadAndSaveImage(imageUrl: string, itemId: number, game: string): Promise<string> {
-  
+  // Create images directory if it doesn't exist
   const imagesDir = join(process.cwd(), "..", "public", "images", "items")
   if (!existsSync(imagesDir)) {
     await mkdir(imagesDir, { recursive: true })
   }
 
+  // Download image with proper headers for Discord CDN
   const isDiscordCDN = imageUrl.includes("cdn.discordapp.com")
 
   const response = await fetch(imageUrl, {
     headers: {
       "User-Agent":
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-      Accept: "image/avif,image/webp,image/apng,image/svg+xml,image*;q=0.8",
+      Accept: "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
       "Accept-Language": "en-US,en;q=0.9",
       "Accept-Encoding": "gzip, deflate, br",
-      Referer: isDiscordCDN ? "https:
+      Referer: isDiscordCDN ? "https://discord.com/" : imageUrl,
       "Sec-Fetch-Dest": "image",
       "Sec-Fetch-Mode": "no-cors",
       "Sec-Fetch-Site": "cross-site",
@@ -34,12 +35,14 @@ export async function downloadAndSaveImage(imageUrl: string, itemId: number, gam
   const arrayBuffer = await response.arrayBuffer()
   const imageBuffer = Buffer.from(arrayBuffer)
 
+  // Generate filename and save
   const extension = getImageExtension(imageUrl)
   const filename = `${game.toLowerCase()}-${itemId}.${extension}`
   const filepath = join(imagesDir, filename)
 
   await writeFile(filepath, imageBuffer)
 
+  // Return the local path for database storage
   return `/images/items/${filename}`
 }
 

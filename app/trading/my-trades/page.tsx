@@ -65,7 +65,7 @@ export default function MyTradesPage() {
           <div className="relative">
             <RobloxDecos />
             <div className="relative z-[1] space-y-8">
-              {}
+              {/* Header Section */}
               <div className="flex items-center gap-4">
                 <Button variant="ghost" size="sm" onClick={() => router.back()}>
                   <ArrowLeft className="h-5 w-5" />
@@ -76,7 +76,7 @@ export default function MyTradesPage() {
                 </div>
               </div>
 
-              {}
+              {/* Trade Listings */}
               <div className="space-y-4">
                 {error && <div className="text-center text-red-500">{error}</div>}
                 {loading ? (

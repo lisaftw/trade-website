@@ -1,4 +1,7 @@
-
+/**
+ * In-memory cache for database queries
+ * Reduces database load for frequently accessed data
+ */
 
 type CacheEntry<T> = {
   data: T
@@ -10,12 +13,15 @@ class MemoryCache {
   private cleanupInterval: NodeJS.Timeout | null = null
 
   constructor() {
-    
+    // Clean up expired entries every 60 seconds
     this.cleanupInterval = setInterval(() => {
       this.cleanup()
     }, 60000)
   }
 
+  /**
+   * Get cached data
+   */
   get<T>(key: string): T | null {
     const entry = this.cache.get(key)
 
@@ -23,6 +29,7 @@ class MemoryCache {
       return null
     }
 
+    // Check if expired
     if (Date.now() > entry.expiresAt) {
       this.cache.delete(key)
       return null
@@ -31,15 +38,24 @@ class MemoryCache {
     return entry.data as T
   }
 
+  /**
+   * Set cached data with TTL in seconds
+   */
   set<T>(key: string, data: T, ttlSeconds = 300): void {
     const expiresAt = Date.now() + ttlSeconds * 1000
     this.cache.set(key, { data, expiresAt })
   }
 
+  /**
+   * Delete cached data
+   */
   delete(key: string): void {
     this.cache.delete(key)
   }
 
+  /**
+   * Delete all keys matching a pattern
+   */
   deletePattern(pattern: string): void {
     const regex = new RegExp(pattern)
     for (const key of this.cache.keys()) {
@@ -49,10 +65,16 @@ class MemoryCache {
     }
   }
 
+  /**
+   * Clear all cached data
+   */
   clear(): void {
     this.cache.clear()
   }
 
+  /**
+   * Remove expired entries
+   */
   private cleanup(): void {
     const now = Date.now()
     for (const [key, entry] of this.cache.entries()) {
@@ -62,6 +84,9 @@ class MemoryCache {
     }
   }
 
+  /**
+   * Get cache stats
+   */
   getStats() {
     return {
       size: this.cache.size,
@@ -69,6 +94,9 @@ class MemoryCache {
     }
   }
 
+  /**
+   * Cleanup on shutdown
+   */
   destroy(): void {
     if (this.cleanupInterval) {
       clearInterval(this.cleanupInterval)
@@ -78,8 +106,10 @@ class MemoryCache {
   }
 }
 
+// Singleton cache instance
 export const cache = new MemoryCache()
 
+// Graceful shutdown
 if (typeof process !== "undefined") {
   process.on("SIGTERM", () => {
     cache.destroy()
@@ -90,13 +120,17 @@ if (typeof process !== "undefined") {
   })
 }
 
+/**
+ * Helper function to cache database queries
+ */
 export async function cachedQuery<T>(key: string, queryFn: () => Promise<T>, ttlSeconds = 300): Promise<T> {
-  
+  // Try to get from cache first
   const cached = cache.get<T>(key)
   if (cached !== null) {
     return cached
   }
 
+  // Execute query and cache result
   const result = await queryFn()
   cache.set(key, result, ttlSeconds)
   return result

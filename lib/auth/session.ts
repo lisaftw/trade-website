@@ -2,8 +2,9 @@ import { cookies } from "next/headers"
 import { query } from "@/lib/db/postgres"
 
 const SESSION_COOKIE_NAME = "trade_session_id"
-const SESSION_MAX_AGE = 60 * 60 * 24 * 30 
+const SESSION_MAX_AGE = 60 * 60 * 24 * 30 // 30 days
 
+// This allows HTTP deployments (like IP addresses) to work properly
 const USE_SECURE_COOKIES = process.env.FORCE_SECURE_COOKIES === "true"
 
 export type UserSession = {
@@ -15,6 +16,9 @@ export type UserSession = {
   email: string | null
 }
 
+/**
+ * Creates a new session in the database and sets a secure cookie
+ */
 export async function createSession(
   discordId: string,
   accessToken: string,
@@ -47,24 +51,27 @@ export async function createSession(
     maxAge: SESSION_MAX_AGE,
   })
 
-  console.log(" Session created with ID:", sessionId, "secure:", USE_SECURE_COOKIES)
+  console.log("[v0] Session created with ID:", sessionId, "secure:", USE_SECURE_COOKIES)
   return sessionId
 }
 
+/**
+ * Gets the current user session from cookie and database
+ */
 export async function getSession(): Promise<UserSession | null> {
   const cookieStore = await cookies()
   const sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value
 
-  console.log(" getSession - Looking for cookie:", SESSION_COOKIE_NAME)
-  console.log(" getSession - Cookie value:", sessionId ? `${sessionId.substring(0, 8)}...` : "null")
+  console.log("[v0] getSession - Looking for cookie:", SESSION_COOKIE_NAME)
+  console.log("[v0] getSession - Cookie value:", sessionId ? `${sessionId.substring(0, 8)}...` : "null")
 
   if (!sessionId) {
-    console.log(" No session cookie found")
+    console.log("[v0] No session cookie found")
     return null
   }
 
   try {
-    console.log(" getSession - Querying database for session:", sessionId.substring(0, 8))
+    console.log("[v0] getSession - Querying database for session:", sessionId.substring(0, 8))
     const result = await query(
       `SELECT 
         s.id,
@@ -81,28 +88,29 @@ export async function getSession(): Promise<UserSession | null> {
       [sessionId],
     )
 
-    console.log(" getSession - Query returned", result.rows.length, "rows")
+    console.log("[v0] getSession - Query returned", result.rows.length, "rows")
 
     if (!result.rows || result.rows.length === 0) {
-      console.log(" Session not found in database")
+      console.log("[v0] Session not found in database")
       await destroySession()
       return null
     }
 
     const session = result.rows[0]
 
+    // Check if token is expired
     const expiresAt = new Date(session.token_expires_at)
     if (expiresAt < new Date()) {
-      console.log(" Session expired")
+      console.log("[v0] Session expired")
       await destroySession()
       return null
     }
 
     query("UPDATE sessions SET last_activity_at = $1 WHERE id = $2", [new Date().toISOString(), sessionId]).catch(
-      (err) => console.error(" Failed to update last activity:", err),
+      (err) => console.error("[v0] Failed to update last activity:", err),
     )
 
-    console.log(" Session retrieved successfully for user:", session.discord_id)
+    console.log("[v0] Session retrieved successfully for user:", session.discord_id)
 
     return {
       sessionId: session.id,
@@ -113,12 +121,15 @@ export async function getSession(): Promise<UserSession | null> {
       email: session.email,
     }
   } catch (error) {
-    console.error(" Session fetch error:", error)
+    console.error("[v0] Session fetch error:", error)
     await destroySession()
     return null
   }
 }
 
+/**
+ * Destroys the current session
+ */
 export async function destroySession(): Promise<void> {
   const cookieStore = await cookies()
   const sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value
@@ -126,9 +137,9 @@ export async function destroySession(): Promise<void> {
   if (sessionId) {
     try {
       await query("DELETE FROM sessions WHERE id = $1", [sessionId])
-      console.log(" Session destroyed:", sessionId)
+      console.log("[v0] Session destroyed:", sessionId)
     } catch (error) {
-      console.error(" Session deletion error:", error)
+      console.error("[v0] Session deletion error:", error)
     }
   }
 
@@ -141,6 +152,9 @@ export async function destroySession(): Promise<void> {
   })
 }
 
+/**
+ * Refreshes a Discord access token using the refresh token
+ */
 export async function refreshDiscordToken(sessionId: string): Promise<boolean> {
   try {
     const result = await query("SELECT refresh_token, discord_id FROM sessions WHERE id = $1", [sessionId])
@@ -164,7 +178,7 @@ export async function refreshDiscordToken(sessionId: string): Promise<boolean> {
       refresh_token: session.refresh_token,
     })
 
-    const tokenRes = await fetch("https:
+    const tokenRes = await fetch("https://discord.com/api/oauth2/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body,
@@ -193,10 +207,10 @@ export async function refreshDiscordToken(sessionId: string): Promise<boolean> {
       ],
     )
 
-    console.log(" Token refreshed successfully")
+    console.log("[v0] Token refreshed successfully")
     return true
   } catch (error) {
-    console.error(" Token refresh error:", error)
+    console.error("[v0] Token refresh error:", error)
     return false
   }
 }

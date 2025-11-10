@@ -68,6 +68,7 @@ export default function TradingPage() {
     try {
       const supabase = createClient()
 
+      // Check if conversation already exists (either direction)
       const { data: existing1 } = await supabase
         .from("conversations")
         .select("id")
@@ -92,6 +93,7 @@ export default function TradingPage() {
         return
       }
 
+      // Create new conversation
       const { data: newConvo, error } = await supabase
         .from("conversations")
         .insert({
@@ -131,7 +133,7 @@ export default function TradingPage() {
           <div className="relative">
             <RobloxDecos />
             <div className="relative z-[1] space-y-4 md:space-y-8">
-              {}
+              {/* Header Section */}
               <div className="flex flex-col md:flex-row items-start md:items-start justify-between gap-3 md:gap-4">
                 <div>
                   <h1 className="text-2xl md:text-4xl font-bold text-foreground">Trade Ads</h1>
@@ -147,9 +149,9 @@ export default function TradingPage() {
                 </Link>
               </div>
 
-              {}
+              {/* Search and Filter Section */}
               <div className="card-neo space-y-3 md:space-y-4 p-4 md:p-6">
-                {}
+                {/* Search Bar */}
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 h-4 md:h-5 w-4 md:w-5 -translate-y-1/2 text-foreground/40" />
                   <Input
@@ -160,7 +162,7 @@ export default function TradingPage() {
                   />
                 </div>
 
-                {}
+                {/* Filter Tabs */}
                 <div className="flex gap-2 overflow-x-auto pb-1">
                   <button
                     onClick={() => setFilterType("all")}
@@ -194,7 +196,7 @@ export default function TradingPage() {
                   </button>
                 </div>
 
-                {}
+                {/* My Trades Button */}
                 <Link href="/trading/my-trades" className="block">
                   <Button variant="outline" className="w-full bg-transparent text-sm">
                     View My Trades
@@ -202,7 +204,7 @@ export default function TradingPage() {
                 </Link>
               </div>
 
-              {}
+              {/* Trade Listings */}
               <div className="space-y-3 md:space-y-4">
                 {error && <div className="text-center text-red-500">{error}</div>}
                 {loading ? (

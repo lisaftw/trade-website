@@ -32,7 +32,7 @@ export function useTrades(game?: string) {
         const data = await response.json()
         setTrades(Array.isArray(data) ? data : [])
       } catch (err) {
-        console.error(" Error fetching trades:", err)
+        console.error("[v0] Error fetching trades:", err)
         setError(err instanceof Error ? err.message : "Failed to load trades")
         setTrades([])
       } finally {

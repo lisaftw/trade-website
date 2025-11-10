@@ -1,4 +1,4 @@
-export const revalidate = 3600 
+export const revalidate = 3600 // Cache for 1 hour
 
 import { type NextRequest, NextResponse } from "next/server"
 import { getAdoptMePets } from "@/lib/db/adoptme-items"

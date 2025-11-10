@@ -9,30 +9,30 @@ export async function POST(request: NextRequest) {
   try {
     const session = await getSession()
 
-    console.log(" Trade creation - Session:", session?.discordId)
+    console.log("[v0] Trade creation - Session:", session?.discordId)
 
     if (!session) {
-      console.error(" Trade creation failed: No authenticated user")
+      console.error("[v0] Trade creation failed: No authenticated user")
       return NextResponse.json({ error: "You must be logged in to create a trade" }, { status: 401 })
     }
 
     const body = await request.json()
     const { game, offering, requesting, notes } = body
 
-    console.log(" Trade creation request:", { game, offering, requesting, notes, userId: session.discordId })
+    console.log("[v0] Trade creation request:", { game, offering, requesting, notes, userId: session.discordId })
 
     if (!game || typeof game !== "string") {
-      console.error(" Trade creation failed: Invalid game")
+      console.error("[v0] Trade creation failed: Invalid game")
       return NextResponse.json({ error: "Please select a valid game" }, { status: 400 })
     }
 
     if (!Array.isArray(offering) || offering.length === 0) {
-      console.error(" Trade creation failed: Invalid offering")
+      console.error("[v0] Trade creation failed: Invalid offering")
       return NextResponse.json({ error: "Please add at least one item you're offering" }, { status: 400 })
     }
 
     if (!Array.isArray(requesting) || requesting.length === 0) {
-      console.error(" Trade creation failed: Invalid requesting")
+      console.error("[v0] Trade creation failed: Invalid requesting")
       return NextResponse.json({ error: "Please add at least one item you're requesting" }, { status: 400 })
     }
 
@@ -44,10 +44,10 @@ export async function POST(request: NextRequest) {
       notes,
     })
 
-    console.log(" Trade created successfully:", trade.id)
+    console.log("[v0] Trade created successfully:", trade.id)
     return NextResponse.json(trade)
   } catch (error) {
-    console.error(" Error creating trade:", error)
+    console.error("[v0] Error creating trade:", error)
     return NextResponse.json({ error: "Internal server error. Please try again." }, { status: 500 })
   }
 }
@@ -59,6 +59,7 @@ export async function GET(request: NextRequest) {
 
     const trades = await getActiveTrades(game || undefined)
 
+    // Fetch creator profiles for each trade
     const tradesWithCreators = await Promise.all(
       trades.map(async (trade) => {
         const profile = await getProfile(trade.discord_id)
@@ -79,7 +80,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(tradesWithCreators)
   } catch (error) {
-    console.error(" Error fetching trades:", error)
+    console.error("[v0] Error fetching trades:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

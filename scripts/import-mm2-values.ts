@@ -28,19 +28,19 @@ function calculateDemand(value: number, rarity: string): string {
 
 async function importMM2Values() {
   try {
-    console.log(" Starting MM2 values import...")
+    console.log("[v0] Starting MM2 values import...")
 
     const jsonPath = path.join(process.cwd(), "data", "mm2-values.json")
     const jsonData = JSON.parse(fs.readFileSync(jsonPath, "utf-8")) as MM2ValuesJSON
 
-    console.log(` Found ${Object.keys(jsonData).length} items in JSON file`)
+    console.log(`[v0] Found ${Object.keys(jsonData).length} items in JSON file`)
 
     const client = await clientPromise
     const db = client.db("trading-db")
     const collection = db.collection<Item>("items")
 
     const deleteResult = await collection.deleteMany({ game: "MM2" })
-    console.log(` Deleted ${deleteResult.deletedCount} existing MM2 items`)
+    console.log(`[v0] Deleted ${deleteResult.deletedCount} existing MM2 items`)
 
     const items: Omit<Item, "_id">[] = []
 
@@ -51,7 +51,7 @@ async function importMM2Values() {
         name: itemName,
         value: data.value,
         game: "MM2",
-        section: data.item_type, 
+        section: data.item_type, // Gun, Knife, or Pet
         image_url: getThumbnailUrl(data.thumbnail),
         rarity: data.rarity,
         demand: calculateDemand(data.value, data.rarity),
@@ -67,10 +67,10 @@ async function importMM2Values() {
       const batch = items.slice(i, i + batchSize)
       const result = await collection.insertMany(batch)
       insertedCount += result.insertedCount
-      console.log(` Inserted batch ${Math.floor(i / batchSize) + 1}: ${result.insertedCount} items`)
+      console.log(`[v0] Inserted batch ${Math.floor(i / batchSize) + 1}: ${result.insertedCount} items`)
     }
 
-    console.log(` ✅ Successfully imported ${insertedCount} MM2 items!`)
+    console.log(`[v0] ✅ Successfully imported ${insertedCount} MM2 items!`)
 
     const stats = {
       total: insertedCount,
@@ -91,9 +91,10 @@ async function importMM2Values() {
 
     process.exit(0)
   } catch (error) {
-    console.error(" Error importing MM2 values:", error)
+    console.error("[v0] Error importing MM2 values:", error)
     process.exit(1)
   }
 }
 
+// Run the import
 importMM2Values()

@@ -3,6 +3,30 @@ import clientPromise from "../lib/mongodb"
 import * as fs from "fs"
 import * as path from "path"
 
+/**
+ * Script to import Adopt Me pets from Excel file (adm.xlsx)
+ *
+ * Expected Excel columns (in this exact order):
+ * 1. Pet Name
+ * 2. Image URL
+ * 3. Rarity
+ * 4. Demand
+ * 5. Base Value (No Pot) - Base value without potions
+ * 6. FR - Fly Ride value
+ * 7. F - Fly only value
+ * 8. R - Ride only value
+ * 9. NFR - Neon Fly Ride value
+ * 10. NF - Neon Fly value
+ * 11. NR - Neon Ride value
+ * 12. N - Neon (no potion) value
+ * 13. MFR - Mega Fly Ride value
+ * 14. MF - Mega Fly value
+ * 15. MR - Mega Ride value
+ * 16. M - Mega (no potion) value
+ *
+ * Usage: npm run import:adoptme
+ */
+
 interface ExcelRow {
   "Pet Name"?: string
   "Image URL"?: string
@@ -30,21 +54,25 @@ interface AdoptMePetDocument {
   rarity: string
   demand: string
 
+  // Base values (no potion)
   baseValue: number
 
-  baseValueFR: number 
-  baseValueF: number 
-  baseValueR: number 
+  // Base with potions
+  baseValueFR: number // Fly Ride
+  baseValueF: number // Fly only
+  baseValueR: number // Ride only
 
-  neonValue: number 
-  neonValueFR: number 
-  neonValueF: number 
-  neonValueR: number 
+  // Neon values
+  neonValue: number // No potion
+  neonValueFR: number // Fly Ride
+  neonValueF: number // Fly only
+  neonValueR: number // Ride only
 
-  megaValue: number 
-  megaValueFR: number 
-  megaValueF: number 
-  megaValueR: number 
+  // Mega values
+  megaValue: number // No potion
+  megaValueFR: number // Fly Ride
+  megaValueF: number // Fly only
+  megaValueR: number // Ride only
 
   lastValueUpdate: Date
   createdAt: Date
@@ -53,7 +81,7 @@ interface AdoptMePetDocument {
 
 async function importAdoptMePets() {
   try {
-    
+    // Read the Excel file
     const filePath = path.join(process.cwd(), "adm.xlsx")
 
     if (!fs.existsSync(filePath)) {
@@ -71,25 +99,30 @@ async function importAdoptMePets() {
 
     console.log(`✅ Found ${data.length} pets in Excel file\n`)
 
+    // Connect to MongoDB
     const client = await clientPromise
     const db = client.db("trading-db")
     const collection = db.collection<AdoptMePetDocument>("adoptme_pets")
 
+    // Clear existing Adopt Me pets
     console.log("🗑️  Clearing existing Adopt Me pets...")
     const deleteResult = await collection.deleteMany({ game: "Adopt Me" })
     console.log(`   Deleted ${deleteResult.deletedCount} existing pets\n`)
 
+    // Transform and validate pets
     const pets: AdoptMePetDocument[] = []
     const errors: string[] = []
 
     data.forEach((row, index) => {
-      const rowNum = index + 2 
+      const rowNum = index + 2 // +2 because Excel is 1-indexed and has header row
 
+      // Validate required fields
       if (!row["Pet Name"]) {
         errors.push(`Row ${rowNum}: Missing Pet Name`)
         return
       }
 
+      // Determine section from rarity
       const rarity = row.Rarity || "Unknown"
       let section = "Unknown"
       if (rarity.toLowerCase().includes("legendary")) section = "Legendary"
@@ -106,16 +139,19 @@ async function importAdoptMePets() {
         rarity: rarity,
         demand: row.Demand || "Medium",
 
+        // Base values
         baseValue: Number(row["Base Value (No Pot)"]) || 0,
         baseValueFR: Number(row.FR) || 0,
         baseValueF: Number(row.F) || 0,
         baseValueR: Number(row.R) || 0,
 
+        // Neon values
         neonValue: Number(row.N) || 0,
         neonValueFR: Number(row.NFR) || 0,
         neonValueF: Number(row.NF) || 0,
         neonValueR: Number(row.NR) || 0,
 
+        // Mega values
         megaValue: Number(row.M) || 0,
         megaValueFR: Number(row.MFR) || 0,
         megaValueF: Number(row.MF) || 0,
@@ -127,6 +163,7 @@ async function importAdoptMePets() {
       })
     })
 
+    // Show errors if any
     if (errors.length > 0) {
       console.log("⚠️  Validation Errors:")
       errors.forEach((error) => console.log(`   ${error}`))
@@ -138,11 +175,13 @@ async function importAdoptMePets() {
       process.exit(1)
     }
 
+    // Import to MongoDB
     console.log(`💾 Importing ${pets.length} pets to MongoDB...`)
     const result = await collection.insertMany(pets)
 
     console.log(`\n✅ Successfully imported ${result.insertedCount} Adopt Me pets!\n`)
 
+    // Show summary by section
     const sections = pets.reduce(
       (acc, pet) => {
         acc[pet.section] = (acc[pet.section] || 0) + 1
@@ -172,4 +211,5 @@ async function importAdoptMePets() {
   }
 }
 
+// Run the import
 importAdoptMePets()

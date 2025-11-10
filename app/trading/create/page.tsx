@@ -49,7 +49,7 @@ export default function CreateTradePage() {
 
     setIsSubmitting(true)
     try {
-      console.log(" Publishing trade:", {
+      console.log("[v0] Publishing trade:", {
         game: selectedGame,
         offering: offering.map((item) => item.name),
         requesting: requesting.map((item) => item.name),
@@ -68,15 +68,15 @@ export default function CreateTradePage() {
       })
 
       if (response.ok) {
-        console.log(" Trade published successfully")
+        console.log("[v0] Trade published successfully")
         router.push("/trading")
       } else {
         const errorData = await response.json()
-        console.error(" Failed to publish trade:", errorData)
+        console.error("[v0] Failed to publish trade:", errorData)
         alert(errorData.error || "Failed to publish trade")
       }
     } catch (error) {
-      console.error(" Error publishing trade:", error)
+      console.error("[v0] Error publishing trade:", error)
       alert("Error publishing trade. Please check your connection and try again.")
     } finally {
       setIsSubmitting(false)
@@ -94,7 +94,7 @@ export default function CreateTradePage() {
             <div className="relative z-[1]">
               <CalculatorSkin>
                 <div className="space-y-6">
-                  {}
+                  {/* Header */}
                   <div className="text-center">
                     <h1 className="text-3xl font-bold tracking-wide md:text-4xl">Create Trade Ad</h1>
                     <p className="mt-2 text-sm text-muted-foreground">
@@ -102,7 +102,7 @@ export default function CreateTradePage() {
                     </p>
                   </div>
 
-                  {}
+                  {/* Game Selection */}
                   <Card className="card-neo p-6">
                     <label className="block text-sm font-semibold mb-3">Select Game</label>
                     <div className="relative">
@@ -141,9 +141,9 @@ export default function CreateTradePage() {
                     </div>
                   </Card>
 
-                  {}
+                  {/* Two Column Layout */}
                   <div className="grid gap-6 md:grid-cols-2">
-                    {}
+                    {/* I Have */}
                     <TradeColumn
                       title="I Have"
                       items={offering}
@@ -153,7 +153,7 @@ export default function CreateTradePage() {
                       columnType="offering"
                     />
 
-                    {}
+                    {/* I Want */}
                     <TradeColumn
                       title="I Want"
                       items={requesting}
@@ -164,7 +164,7 @@ export default function CreateTradePage() {
                     />
                   </div>
 
-                  {}
+                  {/* Trade Summary */}
                   <Card className="card-neo p-6">
                     <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
                       <div className="text-center md:text-left">
@@ -186,7 +186,7 @@ export default function CreateTradePage() {
                     </div>
                   </Card>
 
-                  {}
+                  {/* Notes */}
                   <Card className="card-neo p-6">
                     <label className="block text-sm font-semibold mb-3">
                       Trade Notes <span className="text-muted-foreground">({notes.length}/100)</span>
@@ -199,7 +199,7 @@ export default function CreateTradePage() {
                     />
                   </Card>
 
-                  {}
+                  {/* Publish Button */}
                   <Button
                     onClick={handlePublish}
                     disabled={isSubmitting || !selectedGame || offering.length === 0 || requesting.length === 0}
@@ -259,7 +259,7 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
           })),
         )
       } catch (error) {
-        console.error(" Failed to fetch items:", error)
+        console.error("[v0] Failed to fetch items:", error)
         setSearchResults([])
       } finally {
         setIsSearching(false)
@@ -286,7 +286,7 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
         </Button>
       </div>
 
-      {}
+      {/* Item Search Modal */}
       {showSearch && (
         <div className="mb-4 space-y-3 rounded-lg border border-border bg-secondary/20 p-3 backdrop-blur-glass">
           <div className="flex items-center gap-2">
@@ -341,7 +341,7 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
         </div>
       )}
 
-      {}
+      {/* Items List */}
       <div className="space-y-2">
         {items.length === 0 ? (
           <div className="py-12 text-center text-sm text-muted-foreground">

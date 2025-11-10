@@ -33,7 +33,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
       message: `${variant} value updated successfully`,
     })
   } catch (error) {
-    console.error(" Error updating pet value:", error)
+    console.error("[v0] Error updating pet value:", error)
     return NextResponse.json({ error: "Failed to update pet value" }, { status: 500 })
   }
 }

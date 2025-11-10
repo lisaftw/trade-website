@@ -1,8 +1,12 @@
-
+/**
+ * Prepare PostgreSQL database for migration
+ * This script adds the necessary constraints and indexes
+ */
 
 import { config } from "dotenv"
 import { resolve } from "path"
 
+// Load .env.local file
 config({ path: resolve(process.cwd(), ".env.local") })
 
 import { Pool } from "pg"
@@ -20,7 +24,7 @@ async function prepare() {
   const pool = new Pool({ connectionString: POSTGRES_URL })
 
   try {
-    
+    // Add unique constraint to items table
     console.log("📋 Adding unique constraint to items table...")
     await pool.query(`
       -- Drop existing constraint if it exists

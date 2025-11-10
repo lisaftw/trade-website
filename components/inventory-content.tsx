@@ -59,6 +59,7 @@ export function InventoryContent() {
       const data = await response.json()
       setInventory(data.inventory || [])
 
+      // Fetch item details for each inventory item
       if (data.inventory && data.inventory.length > 0) {
         const itemIds = data.inventory.map((inv: InventoryItem) => inv.item_id)
         const itemsResponse = await fetch(`/api/items?ids=${itemIds.join(",")}`)
@@ -69,7 +70,7 @@ export function InventoryContent() {
         }
       }
     } catch (error) {
-      console.error(" Error fetching inventory:", error)
+      console.error("[v0] Error fetching inventory:", error)
       toast({
         title: "Error",
         description: "Failed to load inventory. Please try again.",
@@ -97,7 +98,7 @@ export function InventoryContent() {
         description: `${itemName} has been removed from your inventory.`,
       })
     } catch (error) {
-      console.error(" Error removing item:", error)
+      console.error("[v0] Error removing item:", error)
       toast({
         title: "Error",
         description: "Failed to remove item. Please try again.",

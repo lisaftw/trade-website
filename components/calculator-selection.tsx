@@ -14,7 +14,7 @@ export function CalculatorSelection() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {}
+        {/* Trade Calculator Card */}
         <Card className="group relative overflow-hidden border-2 border-gray-700/50 bg-gradient-to-b from-gray-900/40 to-black/60 p-8 transition-all hover:border-brand/50 hover:shadow-lg hover:shadow-brand/20">
           <div className="relative z-10 flex flex-col items-center text-center">
             <div className="mb-4 rounded-full bg-brand/10 p-4">
@@ -28,7 +28,7 @@ export function CalculatorSelection() {
               <Link href="/calculator/trade">Start Trade Calculator</Link>
             </Button>
           </div>
-          {}
+          {/* Decorative gradient */}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
         </Card>
 
@@ -45,7 +45,7 @@ export function CalculatorSelection() {
               <Link href="/calculator/ingame">Start In-game Calculator</Link>
             </Button>
           </div>
-          {}
+          {/* Decorative gradient */}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-gray-500/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
         </Card>
       </div>

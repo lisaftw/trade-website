@@ -36,6 +36,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const body = await request.json()
     const { message } = body
 
+    // Verify trade exists
     const { data: trade, error: tradeError } = await supabase.from("trades").select("id").eq("id", params.id).single()
 
     if (tradeError || !trade) {

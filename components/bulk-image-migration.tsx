@@ -43,7 +43,7 @@ export function BulkImageMigration() {
         setItems(data.items || [])
         setFilteredItems(data.items || [])
       } catch (error) {
-        console.error(" Error fetching items:", error)
+        console.error("[v0] Error fetching items:", error)
       } finally {
         setLoading(false)
       }
@@ -69,7 +69,7 @@ export function BulkImageMigration() {
       const newMatches: UploadMatch[] = []
 
       Array.from(files).forEach((file) => {
-        
+        // Try to auto-match based on filename
         const filename = file.name.toLowerCase().replace(/\.(png|jpg|jpeg|gif|webp)$/i, "")
         const matchedItem = items.find(
           (item) => item.name.toLowerCase().includes(filename) || filename.includes(item.name.toLowerCase()),
@@ -86,7 +86,7 @@ export function BulkImageMigration() {
             preview,
           })
         } else {
-          
+          // Add unmatched file
           newMatches.push({
             file,
             itemId: "",
@@ -161,15 +161,17 @@ export function BulkImageMigration() {
         text: `Successfully uploaded ${data.updated} image(s)${data.errors > 0 ? ` (${data.errors} failed)` : ""}`,
       })
 
+      // Clear matches and refresh items
       matches.forEach((m) => URL.revokeObjectURL(m.preview))
       setMatches([])
 
+      // Refresh items list
       const itemsRes = await fetch("/api/admin/items-needing-images")
       const itemsData = await itemsRes.json()
       setItems(itemsData.items || [])
       setFilteredItems(itemsData.items || [])
     } catch (error) {
-      console.error(" Upload error:", error)
+      console.error("[v0] Upload error:", error)
       setMessage({ type: "error", text: "Failed to upload images" })
     } finally {
       setUploading(false)
@@ -194,7 +196,7 @@ export function BulkImageMigration() {
 
   return (
     <div className="space-y-6">
-      {}
+      {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="rounded-lg border bg-card p-4">
           <p className="text-sm text-muted-foreground">Items Needing Images</p>
@@ -210,7 +212,7 @@ export function BulkImageMigration() {
         </div>
       </div>
 
-      {}
+      {/* Upload Zone */}
       <div className="rounded-lg border bg-card p-6">
         <h2 className="mb-4 text-xl font-semibold">Upload Images</h2>
         <div
@@ -224,7 +226,14 @@ export function BulkImageMigration() {
           <Input
             type="file"
             multiple
-            accept="image}
+            accept="image/*"
+            onChange={(e) => handleFileSelect(e.target.files)}
+            className="mx-auto max-w-xs"
+          />
+        </div>
+      </div>
+
+      {/* Matches */}
       {matches.length > 0 && (
         <div className="rounded-lg border bg-card p-6">
           <h2 className="mb-4 text-xl font-semibold">Match Images to Items</h2>
@@ -288,7 +297,7 @@ export function BulkImageMigration() {
         </div>
       )}
 
-      {}
+      {/* Items List */}
       <div className="rounded-lg border bg-card p-6">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-semibold">Items Needing Images ({filteredItems.length})</h2>

@@ -23,6 +23,7 @@ export const removeItemCommand: BotCommand = {
     try {
       const collection = await getItemsCollection()
 
+      // Get all games that have items
       const games = await collection.distinct("game")
 
       if (games.length === 0) {
@@ -30,6 +31,7 @@ export const removeItemCommand: BotCommand = {
         return
       }
 
+      // Create game selection dropdown
       const selectMenu = new StringSelectMenuBuilder()
         .setCustomId("removeitem_game")
         .setPlaceholder("Select a game")
@@ -56,7 +58,7 @@ export const removeItemCommand: BotCommand = {
     const [command, action] = interaction.customId.split("_")
 
     if (action === "game") {
-      
+      // User selected a game, now show items from that game
       await interaction.deferUpdate()
 
       const selectedGame = interaction.values[0]
@@ -145,6 +147,7 @@ export const removeItemCommand: BotCommand = {
       return
     }
 
+    // Handle confirm/cancel buttons
     if (action === "confirm") {
       await interaction.deferUpdate()
 
@@ -186,6 +189,7 @@ async function showItemsPage(interaction: StringSelectMenuInteraction | ButtonIn
   const collection = await getItemsCollection()
   const ITEMS_PER_PAGE = 25
 
+  // Get total count
   const totalItems = await collection.countDocuments({ game })
 
   if (totalItems === 0) {
@@ -196,6 +200,7 @@ async function showItemsPage(interaction: StringSelectMenuInteraction | ButtonIn
     return
   }
 
+  // Get items for current page
   const items = await collection
     .find({ game })
     .sort({ rarity: 1, name: 1 })
@@ -220,6 +225,7 @@ async function showItemsPage(interaction: StringSelectMenuInteraction | ButtonIn
     new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu),
   ]
 
+  // Add pagination buttons if there are multiple pages
   if (totalPages > 1) {
     const prevButton = new ButtonBuilder()
       .setCustomId(`removeitem_page_${page - 1}`)

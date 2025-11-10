@@ -77,7 +77,7 @@ export function ProfileForm() {
       await mutate()
       toast.success("Profile updated successfully!")
     } catch (e) {
-      console.error(" Save error", e)
+      console.error("[v0] Save error", e)
       toast.error("Failed to save profile changes")
     } finally {
       setSaving(false)
@@ -132,7 +132,7 @@ export function ProfileForm() {
 
   return (
     <div className="space-y-6">
-      {}
+      {/* Profile Header Card */}
       <Card className="border-2">
         <CardHeader>
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
@@ -172,14 +172,14 @@ export function ProfileForm() {
         </CardHeader>
       </Card>
 
-      {}
+      {/* Settings Card */}
       <Card className="border-2">
         <CardHeader>
           <CardTitle>Profile Settings</CardTitle>
           <CardDescription>Customize your profile and privacy preferences</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {}
+          {/* Bio Section */}
           <div className="space-y-2">
             <Label htmlFor="bio">Bio</Label>
             <Textarea
@@ -195,7 +195,7 @@ export function ProfileForm() {
 
           <Separator />
 
-          {}
+          {/* Theme Selection */}
           <div className="space-y-2">
             <Label htmlFor="theme">Theme Preference</Label>
             <Select
@@ -203,7 +203,7 @@ export function ProfileForm() {
               onValueChange={(v) => {
                 const t = v as "light" | "dark" | "system"
                 setTheme(t)
-                
+                // apply right away to reflect change
                 applyTheme(t)
               }}
             >
@@ -221,7 +221,7 @@ export function ProfileForm() {
 
           <Separator />
 
-          {}
+          {/* Privacy Settings */}
           <div className="space-y-4">
             <Label>Privacy Settings</Label>
 
@@ -261,7 +261,7 @@ export function ProfileForm() {
 
           <Separator />
 
-          {}
+          {/* Action Buttons */}
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button onClick={onSave} disabled={saving || !hasChanges} className="gap-2 hover:opacity-90">
               <Save className="h-4 w-4" />
@@ -280,7 +280,7 @@ export function ProfileForm() {
         </CardContent>
       </Card>
 
-      {}
+      {/* Activity Card */}
       {showActivity && (
         <Card className="border-2">
           <CardHeader>

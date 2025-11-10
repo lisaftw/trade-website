@@ -5,22 +5,27 @@ export interface AdoptMePetValue {
   _id?: ObjectId
   name: string
   game: "Adopt Me"
-  section: string 
+  section: string // Category: Legendary, Ultra-Rare, Rare, etc.
 
+  // Core values - all manually set
   baseValue: number
   neonValue: number
   megaValue: number
 
-  flyBonus?: number 
-  rideBonus?: number 
+  // Potion bonuses (optional overrides, defaults used if not set)
+  flyBonus?: number // Default: 50
+  rideBonus?: number // Default: 50
 
+  // Display metadata
   image_url?: string
   rarity?: string
   demand?: string
 
+  // Value tracking
   lastValueUpdate: Date
-  valueNotes?: string 
+  valueNotes?: string // Admin notes about value changes
 
+  // Audit trail
   valueHistory?: Array<{
     variant: "base" | "neon" | "mega"
     oldValue: number
@@ -45,7 +50,7 @@ export async function getAdoptMePets(): Promise<AdoptMePetValue[]> {
     return pets.map((pet) => ({
       ...pet,
       _id: pet._id,
-      
+      // Ensure all required fields exist
       baseValue: pet.baseValue || 0,
       neonValue: pet.neonValue || 0,
       megaValue: pet.megaValue || 0,
@@ -53,7 +58,7 @@ export async function getAdoptMePets(): Promise<AdoptMePetValue[]> {
       rideBonus: pet.rideBonus || 50,
     }))
   } catch (error) {
-    console.error(" Error fetching Adopt Me pets:", error)
+    console.error("[v0] Error fetching Adopt Me pets:", error)
     return []
   }
 }
@@ -71,12 +76,14 @@ export async function updatePetValue(
     const collection = db.collection<AdoptMePetValue>("adoptme_pets")
     const { ObjectId } = await import("mongodb")
 
+    // Get current pet to track old value
     const currentPet = await collection.findOne({ _id: new ObjectId(id) })
     if (!currentPet) return false
 
     const fieldName = variant === "base" ? "baseValue" : variant === "neon" ? "neonValue" : "megaValue"
     const oldValue = currentPet[fieldName] || 0
 
+    // Create history entry
     const historyEntry = {
       variant,
       oldValue,
@@ -102,7 +109,7 @@ export async function updatePetValue(
 
     return result.modifiedCount > 0
   } catch (error) {
-    console.error(" Error updating pet value:", error)
+    console.error("[v0] Error updating pet value:", error)
     return false
   }
 }
@@ -131,7 +138,7 @@ export async function createAdoptMePet(
       _id: result.insertedId,
     }
   } catch (error) {
-    console.error(" Error creating Adopt Me pet:", error)
+    console.error("[v0] Error creating Adopt Me pet:", error)
     return null
   }
 }

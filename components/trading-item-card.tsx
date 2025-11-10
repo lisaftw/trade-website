@@ -21,7 +21,7 @@ export function TradingItemCard({ name, rarity, demand, value, image, lastUpdate
 
   return (
     <div className="relative w-full max-w-[320px] mx-auto">
-      {}
+      {/* Main card background */}
       <div className="relative w-full aspect-[3/4] rounded-[20px] overflow-hidden border-[3px] border-white/20 shadow-2xl">
         <Image
           src="/adoptme-card/backgroundofeachcard.png"
@@ -31,14 +31,14 @@ export function TradingItemCard({ name, rarity, demand, value, image, lastUpdate
           priority
         />
 
-        {}
+        {/* Content overlay */}
         <div className="relative z-10 flex flex-col items-center justify-between h-full p-4 md:p-6">
-          {}
+          {/* Item holder with image */}
           <div className="relative w-full max-w-[240px] aspect-[4/3] mt-2">
-            {}
+            {/* Black bordered frame */}
             <div className="absolute inset-0 rounded-[16px] border-[4px] border-black/80 bg-black/40 shadow-inner" />
 
-            {}
+            {/* Item image */}
             <div className="relative w-full h-full p-4 flex items-center justify-center">
               <div className="relative w-full h-full">
                 <Image
@@ -51,7 +51,7 @@ export function TradingItemCard({ name, rarity, demand, value, image, lastUpdate
               </div>
             </div>
 
-            {}
+            {/* Last Updated overlay */}
             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-black/80 border-2 border-white/30 backdrop-blur-sm">
               <p className="text-white text-[11px] md:text-xs font-bold whitespace-nowrap">
                 Last Updated: {lastUpdated}
@@ -59,7 +59,7 @@ export function TradingItemCard({ name, rarity, demand, value, image, lastUpdate
             </div>
           </div>
 
-          {}
+          {/* Item name holder */}
           <div className="relative w-full mt-4">
             <div className="relative rounded-[12px] bg-gradient-to-b from-gray-600 to-gray-700 border-[3px] border-white/25 shadow-lg px-4 py-2">
               <h2
@@ -75,7 +75,7 @@ export function TradingItemCard({ name, rarity, demand, value, image, lastUpdate
             </div>
           </div>
 
-          {}
+          {/* Rarity, Demand, Value holder */}
           <div className="relative w-full mt-3">
             <div className="relative rounded-[12px] bg-gradient-to-b from-gray-500 to-gray-600 border-[3px] border-white/25 shadow-lg px-4 py-3">
               <div className="space-y-1.5">
@@ -149,7 +149,7 @@ export function TradingItemCard({ name, rarity, demand, value, image, lastUpdate
             </div>
           </div>
 
-          {}
+          {/* Add to Inventory button */}
           <button
             onClick={handleAddToInventory}
             onMouseEnter={() => setIsHovering(true)}

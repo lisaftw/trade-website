@@ -8,8 +8,8 @@ export async function GET(request: NextRequest) {
     const result = await pool.query(
       `SELECT id, name, game, image_url, rap_value, exist_count 
        FROM items 
-       WHERE image_url LIKE 'https:
-          OR image_url LIKE 'https:
+       WHERE image_url LIKE 'https://cdn.discordapp.com%' 
+          OR image_url LIKE 'https://static.wikia.nocookie.net%'
           OR image_url LIKE 'http%'
        ORDER BY game, name`,
     )
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
       count: result.rows.length,
     })
   } catch (error) {
-    console.error(" Error fetching items:", error)
+    console.error("[v0] Error fetching items:", error)
     return NextResponse.json({ error: "Failed to fetch items" }, { status: 500 })
   }
 }

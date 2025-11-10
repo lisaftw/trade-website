@@ -26,6 +26,7 @@ export async function PATCH(req: NextRequest) {
 
   const body = await req.json()
 
+  // Minimal validation
   const updates: Record<string, any> = {}
   if (typeof body.bio === "string") updates.bio = body.bio.slice(0, 512)
   if (["light", "dark", "system"].includes(body.theme_preference)) updates.theme_preference = body.theme_preference
@@ -39,6 +40,7 @@ export async function PATCH(req: NextRequest) {
     return new Response(JSON.stringify({ error: "profile_update_failed" }), { status: 500 })
   }
 
+  // Log activity
   await logActivity(session.discordId, "update_profile", { fields: Object.keys(updates) })
 
   return new Response(JSON.stringify({ ok: true }), { status: 200 })

@@ -32,7 +32,7 @@ export async function GET(req: Request) {
   const cookieStore = await cookies()
   const storedState = cookieStore.get("discord_oauth_state")?.value
 
-  console.log(" OAuth callback - code:", !!code, "state:", !!state, "storedState:", !!storedState)
+  console.log("[v0] OAuth callback - code:", !!code, "state:", !!state, "storedState:", !!storedState)
 
   if (error) {
     console.error("Discord OAuth error:", error)
@@ -61,7 +61,7 @@ export async function GET(req: Request) {
     maxAge: 0,
   })
 
-  const origin = `${url.protocol}
+  const origin = `${url.protocol}//${url.host}`
   const redirectUri = process.env.DISCORD_REDIRECT_URI || `${origin}/api/auth/discord/callback`
 
   const clientId = process.env.DISCORD_CLIENT_ID
@@ -81,7 +81,7 @@ export async function GET(req: Request) {
       redirect_uri: redirectUri,
     })
 
-    const tokenRes = await fetch("https:
+    const tokenRes = await fetch("https://discord.com/api/oauth2/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body,
@@ -95,7 +95,7 @@ export async function GET(req: Request) {
 
     const tokenJson = (await tokenRes.json()) as TokenResponse
 
-    const userRes = await fetch("https:
+    const userRes = await fetch("https://discord.com/api/users/@me", {
       headers: { Authorization: `Bearer ${tokenJson.access_token}` },
       cache: "no-store",
     })
@@ -108,7 +108,7 @@ export async function GET(req: Request) {
 
     const discordUser = (await userRes.json()) as DiscordUser
     const avatarUrl = discordUser.avatar
-      ? `https:
+      ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png?size=256`
       : null
 
     console.log("Checking for existing profile for discord_id:", discordUser.id)
@@ -149,7 +149,7 @@ export async function GET(req: Request) {
       secure: USE_SECURE_COOKIES,
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * 60 * 24 * 30, 
+      maxAge: 60 * 60 * 24 * 30, // 30 days
     })
 
     console.log("Logging activity...")
@@ -162,7 +162,7 @@ export async function GET(req: Request) {
       console.log("Activity logged successfully")
     } catch (error) {
       console.error("Failed to log activity:", error)
-      
+      // Non-critical, continue anyway
     }
 
     const redirectPath = isNewUser ? "/?welcome=true" : "/"

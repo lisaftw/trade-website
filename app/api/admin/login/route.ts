@@ -9,6 +9,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "Invalid password" }, { status: 401 })
   }
 
+  // set signed admin cookie (simple)
   cookies().set({
     name: "admin_session",
     value: "true",
@@ -16,14 +17,15 @@ export async function POST(req: Request) {
     sameSite: "lax",
     secure: true,
     path: "/",
-    maxAge: 60 * 60 * 24, 
+    maxAge: 60 * 60 * 24, // 1 day
   })
 
+  // log activity (best-effort)
   try {
     const supa = getServiceClient()
     await supa.from("activities").insert({ type: "admin_login" })
   } catch (e) {
-    
+    // swallow errors
   }
 
   return NextResponse.json({ ok: true })

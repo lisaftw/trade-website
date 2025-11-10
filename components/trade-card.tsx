@@ -147,7 +147,7 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
   return (
     <>
       <div className="card-neo space-y-3 md:space-y-4 p-4 md:p-6">
-        {}
+        {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 md:gap-3">
             {avatarUrl ? (
@@ -203,7 +203,7 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
           </div>
         </div>
 
-        {}
+        {/* Trade Info */}
         <div className="flex items-center gap-2 md:gap-4 text-xs md:text-sm">
           <span className="rounded-full bg-purple-500/20 px-2 md:px-3 py-0.5 md:py-1 text-purple-300 text-[10px] md:text-xs">
             📤 Offering
@@ -211,9 +211,9 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
           <span className="text-foreground/60 text-xs md:text-sm">{trade.game}</span>
         </div>
 
-        {}
+        {/* Items Grid */}
         <div className="grid gap-3 md:gap-4 sm:grid-cols-2">
-          {}
+          {/* Offering */}
           <div>
             <p className="mb-2 md:mb-3 text-xs md:text-sm font-semibold text-foreground/70">Offering</p>
             <div className="flex flex-wrap gap-1.5 md:gap-2">
@@ -243,7 +243,7 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
             </div>
           </div>
 
-          {}
+          {/* Requesting */}
           <div>
             <p className="mb-2 md:mb-3 text-xs md:text-sm font-semibold text-foreground/70">Requesting</p>
             <div className="flex flex-wrap gap-1.5 md:gap-2">
@@ -274,7 +274,7 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
           </div>
         </div>
 
-        {}
+        {/* Notes */}
         {trade.notes && (
           <div className="rounded-lg bg-foreground/5 p-2 md:p-3">
             <p className="text-[10px] md:text-xs text-foreground/70">{trade.notes}</p>

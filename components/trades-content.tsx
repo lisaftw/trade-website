@@ -55,6 +55,7 @@ export function TradesContent({ currentUser }: { currentUser: UserSession | null
 
       if (error) throw error
 
+      // Fetch creator profiles
       const tradesWithCreators = await Promise.all(
         (tradesData || []).map(async (trade) => {
           const { data: profile } = await supabase
@@ -93,7 +94,7 @@ export function TradesContent({ currentUser }: { currentUser: UserSession | null
     setMessagingUserId(traderId)
 
     try {
-      
+      // Check if conversation already exists (either direction)
       const { data: existing1 } = await supabase
         .from("conversations")
         .select("id")
@@ -118,6 +119,7 @@ export function TradesContent({ currentUser }: { currentUser: UserSession | null
         return
       }
 
+      // Create new conversation
       const { data: newConvo, error } = await supabase
         .from("conversations")
         .insert({

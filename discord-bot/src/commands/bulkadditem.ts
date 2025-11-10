@@ -26,6 +26,7 @@ export const bulkAddItemCommand: BotCommand = {
 
     const modal = new ModalBuilder().setCustomId(`bulkadd_${game}`).setTitle(`Bulk Add ${game} Items`)
 
+    // Build placeholder based on game
     let placeholder = ""
     if (game === "Adopt Me") {
       placeholder = "Name | section | value | url | demand | pot"
@@ -60,17 +61,18 @@ export const bulkAddItemCommand: BotCommand = {
       const itemsToAdd: any[] = []
       const errors: string[] = []
 
-      console.log(` Bulk adding ${lines.length} items to ${game}`)
+      console.log(`[v0] Bulk adding ${lines.length} items to ${game}`)
 
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim()
         const parts = line.split("|").map((p: string) => p.trim())
 
+        // Validate based on game
         let requiredFields = 0
         if (game === "MM2" || game === "SAB" || game === "GAG") {
-          requiredFields = 6 
+          requiredFields = 6 // name, section, value, image_url, rarity, demand
         } else if (game === "Adopt Me") {
-          requiredFields = 6 
+          requiredFields = 6 // name, section, value, image_url, demand, pot
         }
 
         if (parts.length < requiredFields) {
@@ -91,6 +93,7 @@ export const bulkAddItemCommand: BotCommand = {
           continue
         }
 
+        // Validate image URL
         if (!image_url || image_url.trim() === "") {
           errors.push(`Line ${i + 1}: Image URL is required`)
           continue
@@ -103,6 +106,7 @@ export const bulkAddItemCommand: BotCommand = {
           continue
         }
 
+        // Build item object - EXACT SAME SCHEMA as additem command
         const item: any = {
           name: name.trim(),
           section: section.trim(),
@@ -113,6 +117,7 @@ export const bulkAddItemCommand: BotCommand = {
           updatedAt: new Date(),
         }
 
+        // Add game-specific fields
         if (game === "MM2" || game === "SAB" || game === "GAG") {
           item.rarity = field1.trim()
           item.demand = field2.trim()
@@ -124,17 +129,19 @@ export const bulkAddItemCommand: BotCommand = {
         itemsToAdd.push(item)
       }
 
+      // Insert all valid items
       let successCount = 0
       if (itemsToAdd.length > 0) {
-        console.log(` Inserting ${itemsToAdd.length} valid items to MongoDB`)
-        console.log(` Sample item:`, JSON.stringify(itemsToAdd[0], null, 2))
+        console.log(`[v0] Inserting ${itemsToAdd.length} valid items to MongoDB`)
+        console.log(`[v0] Sample item:`, JSON.stringify(itemsToAdd[0], null, 2))
 
         const result = await collection.insertMany(itemsToAdd)
         successCount = result.insertedCount
 
-        console.log(` Successfully inserted ${successCount} items`)
+        console.log(`[v0] Successfully inserted ${successCount} items`)
       }
 
+      // Build response
       let response = `✅ Successfully added **${successCount}** items to ${game}!`
 
       if (errors.length > 0) {
@@ -150,7 +157,7 @@ export const bulkAddItemCommand: BotCommand = {
 
       await interaction.editReply(response)
     } catch (error) {
-      console.error(" Error bulk adding items:", error)
+      console.error("[v0] Error bulk adding items:", error)
       await interaction.editReply("❌ Failed to add items. Please check your format and try again.")
     }
   },

@@ -27,6 +27,7 @@ export const editItemCommand: BotCommand = {
     try {
       const collection = await getItemsCollection()
 
+      // Get all games that have items
       const games = await collection.distinct("game")
 
       if (games.length === 0) {
@@ -34,6 +35,7 @@ export const editItemCommand: BotCommand = {
         return
       }
 
+      // Create game selection dropdown
       const selectMenu = new StringSelectMenuBuilder()
         .setCustomId("edititem_game")
         .setPlaceholder("Select a game")
@@ -60,7 +62,7 @@ export const editItemCommand: BotCommand = {
     const [command, action] = interaction.customId.split("_")
 
     if (action === "game") {
-      
+      // User selected a game, now show items from that game
       await interaction.deferUpdate()
 
       const selectedGame = interaction.values[0]
@@ -77,7 +79,7 @@ export const editItemCommand: BotCommand = {
         })
       }
     } else if (action === "item") {
-      
+      // User selected an item, show edit modal
       const itemId = interaction.values[0]
 
       try {
@@ -87,11 +89,12 @@ export const editItemCommand: BotCommand = {
         if (!item) {
           await interaction.reply({
             content: "❌ Item not found!",
-            flags: 64, 
+            flags: 64, // EPHEMERAL flag
           })
           return
         }
 
+        // Create modal with current values
         const modal = new ModalBuilder()
           .setCustomId(`edititem_modal_${itemId}`)
           .setTitle(`Edit: ${item.name || "Item"}`)
@@ -158,7 +161,7 @@ export const editItemCommand: BotCommand = {
         console.error("Error showing edit modal:", error)
         await interaction.reply({
           content: "❌ Failed to load item details. Please try again.",
-          flags: 64, 
+          flags: 64, // EPHEMERAL flag
         })
       }
     }
@@ -183,6 +186,7 @@ export const editItemCommand: BotCommand = {
         return
       }
 
+      // Parse extra field based on game
       const [field1, field2] = extra.split("|").map((s) => s.trim())
 
       const updateData: any = {
@@ -245,6 +249,7 @@ async function showItemsPage(interaction: StringSelectMenuInteraction | ButtonIn
   const collection = await getItemsCollection()
   const ITEMS_PER_PAGE = 25
 
+  // Get total count
   const totalItems = await collection.countDocuments({ game })
 
   if (totalItems === 0) {
@@ -255,6 +260,7 @@ async function showItemsPage(interaction: StringSelectMenuInteraction | ButtonIn
     return
   }
 
+  // Get items for current page
   const items = await collection
     .find({ game })
     .sort({ rarity: 1, name: 1 })
@@ -279,6 +285,7 @@ async function showItemsPage(interaction: StringSelectMenuInteraction | ButtonIn
     new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu),
   ]
 
+  // Add pagination buttons if there are multiple pages
   if (totalPages > 1) {
     const prevButton = new ButtonBuilder()
       .setCustomId(`edititem_page_${page - 1}`)

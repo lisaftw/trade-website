@@ -8,6 +8,9 @@ export type Activity = {
   created_at: string
 }
 
+/**
+ * Log an activity
+ */
 export async function logActivity(discordId: string, type: string, meta?: any): Promise<void> {
   await query("INSERT INTO activities (discord_id, type, meta) VALUES ($1, $2, $3)", [
     discordId,
@@ -16,6 +19,9 @@ export async function logActivity(discordId: string, type: string, meta?: any): 
   ])
 }
 
+/**
+ * Get user activities
+ */
 export async function getUserActivities(discordId: string, limit = 50): Promise<Activity[]> {
   const result = await query<Activity>(
     `SELECT * FROM activities 

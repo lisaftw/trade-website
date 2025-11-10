@@ -62,6 +62,7 @@ export function useTradesRealtime(userId?: string) {
       return
     }
 
+    // Subscribe to real-time updates
     const channel = supabase
       .channel("trades-realtime")
       .on(

@@ -20,11 +20,11 @@ export function BackButton({
   const router = useRouter()
 
   const handleBack = () => {
-    
+    // Check if there's history to go back to
     if (window.history.length > 1) {
       router.back()
     } else {
-      
+      // Fallback to specified route if no history
       router.push(fallbackHref)
     }
   }

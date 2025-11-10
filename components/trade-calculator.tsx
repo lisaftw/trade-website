@@ -176,7 +176,7 @@ function TradeGrid({
     const fetchAllItems = async () => {
       setIsLoading(true)
       setError(null)
-      console.log(" Loading all items for game:", selectedGame)
+      console.log("[v0] Loading all items for game:", selectedGame)
 
       try {
         const params = new URLSearchParams({ game: selectedGame })
@@ -187,7 +187,7 @@ function TradeGrid({
         }
 
         const data = await response.json()
-        console.log(" Loaded items count:", data.items?.length || 0)
+        console.log("[v0] Loaded items count:", data.items?.length || 0)
 
         const transformedItems = (data.items || []).map((item: any) => ({
           id: item._id || item.id || item.name,
@@ -199,7 +199,7 @@ function TradeGrid({
 
         setAllItems(transformedItems)
       } catch (err) {
-        console.error(" Failed to fetch items:", err)
+        console.error("[v0] Failed to fetch items:", err)
         setError("Failed to load items. Please try again.")
         setAllItems([])
       } finally {

@@ -22,6 +22,9 @@ export type TradeWithCreator = Trade & {
   }
 }
 
+/**
+ * Create a new trade
+ */
 export async function createTrade(data: {
   discordId: string
   game: string
@@ -36,11 +39,15 @@ export async function createTrade(data: {
     [data.discordId, data.game, JSON.stringify(data.offering), JSON.stringify(data.requesting), data.notes || null],
   )
 
+  // Invalidate trades cache
   cache.deletePattern("trades:*")
 
   return result.rows[0]
 }
 
+/**
+ * Get active trades with optional game filter (cached)
+ */
 export async function getActiveTrades(game?: string): Promise<Trade[]> {
   const cacheKey = game ? `trades:active:${game}` : "trades:active:all"
   const cached = cache.get<Trade[]>(cacheKey)
@@ -61,10 +68,13 @@ export async function getActiveTrades(game?: string): Promise<Trade[]> {
 
   const result = await query<Trade>(sql, params)
 
-  cache.set(cacheKey, result.rows, 30) 
+  cache.set(cacheKey, result.rows, 30) // Cache for 30 seconds
   return result.rows
 }
 
+/**
+ * Get trades by user
+ */
 export async function getUserTrades(discordId: string): Promise<Trade[]> {
   const result = await query<Trade>(
     `SELECT * FROM trades 
@@ -76,20 +86,30 @@ export async function getUserTrades(discordId: string): Promise<Trade[]> {
   return result.rows
 }
 
+/**
+ * Get trade by ID
+ */
 export async function getTradeById(tradeId: string): Promise<Trade | null> {
   const result = await query<Trade>("SELECT * FROM trades WHERE id = $1", [tradeId])
 
   return result.rows[0] || null
 }
 
+/**
+ * Delete trade
+ */
 export async function deleteTrade(tradeId: string, discordId: string): Promise<boolean> {
   const result = await query("DELETE FROM trades WHERE id = $1 AND discord_id = $2", [tradeId, discordId])
 
+  // Invalidate cache
   cache.deletePattern("trades:*")
 
   return (result.rowCount || 0) > 0
 }
 
+/**
+ * Update trade
+ */
 export async function updateTrade(
   tradeId: string,
   discordId: string,
@@ -137,6 +157,7 @@ export async function updateTrade(
     values,
   )
 
+  // Invalidate cache
   cache.deletePattern("trades:*")
 
   return result.rows[0] || null

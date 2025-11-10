@@ -22,12 +22,14 @@ async function migrateItems() {
     const db = mongoClient.db("trading-db")
     const collection = db.collection("items")
 
+    // Get all items from MongoDB
     const items = await collection.find({}).toArray()
     console.log(`Found ${items.length} items in MongoDB`)
 
     let successCount = 0
     let errorCount = 0
 
+    // Insert items into PostgreSQL
     for (const item of items) {
       try {
         await query(

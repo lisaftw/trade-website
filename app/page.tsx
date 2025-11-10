@@ -16,7 +16,7 @@ function ReferenceHero() {
       aria-labelledby="hero-title"
       className="mx-auto mt-2 md:mt-4 grid w-full max-w-6xl grid-cols-1 items-center gap-4 md:gap-8 px-4 md:grid-cols-2"
     >
-      {}
+      {/* Left: character render */}
       <div className="relative order-2 mx-auto md:order-1 md:mx-0">
         <div className="absolute -inset-6 rounded-[32px] bg-gradient-to-b from-white/10 to-transparent blur-2xl opacity-60" />
         <Image
@@ -29,7 +29,7 @@ function ReferenceHero() {
         />
       </div>
 
-      {}
+      {/* Right: logo, copy, CTAs */}
       <div className="relative order-1 md:order-2">
         <Image
           src="/home/logo-trader.png"
@@ -47,7 +47,7 @@ function ReferenceHero() {
           updates and make <span className="font-semibold">smarter</span> trades.
         </p>
 
-        {}
+        {/* Center hero CTAs on all breakpoints */}
         <div className="mt-4 md:mt-5 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-2 md:gap-3 px-2 md:px-0">
           <Button
             asChild
@@ -78,7 +78,7 @@ function ReferenceHero() {
           </Button>
         </div>
 
-        {}
+        {/* Games row */}
         <div className="pointer-events-none relative mt-4 md:mt-6 w-full px-2 md:px-0">
           <div className="absolute inset-0 rounded-3xl border border-white/8 shadow-[0_10px_40px_rgba(0,0,0,0.35)]" />
           <div className="rounded-3xl bg-background/40 p-3 backdrop-blur">
@@ -116,7 +116,7 @@ function DiscordCTA() {
             className="mt-2 md:mt-3 h-7 md:h-8 w-full sm:w-auto rounded-md bg-brand px-3 md:px-4 text-[11px] md:text-[12px] text-brand-foreground hover:bg-brand/90 hover:scale-105 hover:shadow-lg transition-all duration-200"
             aria-label="Join Discord on discord.gg/values"
           >
-            <a href="https:
+            <a href="https://discord.gg/values" target="_blank" rel="noopener noreferrer">
               Join Now
             </a>
           </Button>
@@ -150,14 +150,14 @@ export default function HomePage() {
     <main className="relative min-h-dvh bg-background">
       <PageBackground />
       <ScrollParallax />
-      {}
+      {/* ensure content layers above parallax for readability */}
       <div className="relative z-[2] mx-auto w-full max-w-6xl px-4 py-10 md:py-16">
         <SiteHeader />
 
-        {}
+        {/* Replace previous hero with the new reference-driven hero */}
         <ReferenceHero />
 
-        {}
+        {/* Keep existing DiscordCTA and About for depth */}
         <DiscordCTA />
         <About />
 

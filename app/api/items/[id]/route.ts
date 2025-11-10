@@ -24,7 +24,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error(" API error:", error)
+    console.error("[v0] API error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
@@ -50,7 +50,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error(" API error:", error)
+    console.error("[v0] API error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

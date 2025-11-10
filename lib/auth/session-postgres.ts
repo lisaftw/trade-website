@@ -9,7 +9,7 @@ import {
 import { getProfile } from "@/lib/db/queries/profiles"
 
 const SESSION_COOKIE_NAME = "trade_session_id"
-const SESSION_MAX_AGE = 60 * 60 * 24 * 30 
+const SESSION_MAX_AGE = 60 * 60 * 24 * 30 // 30 days
 
 export type UserSession = {
   sessionId: string
@@ -20,6 +20,9 @@ export type UserSession = {
   email: string | null
 }
 
+/**
+ * Creates a new session in the database and sets a secure cookie
+ */
 export async function createSession(
   discordId: string,
   accessToken: string,
@@ -35,6 +38,7 @@ export async function createSession(
     tokenExpiresAt: expiresAt,
   })
 
+  // Set secure HttpOnly cookie
   const cookieStore = await cookies()
   cookieStore.set(SESSION_COOKIE_NAME, sessionId, {
     httpOnly: true,
@@ -47,6 +51,9 @@ export async function createSession(
   return sessionId
 }
 
+/**
+ * Gets the current user session from cookie and database
+ */
 export async function getSession(): Promise<UserSession | null> {
   const cookieStore = await cookies()
   const sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value
@@ -56,7 +63,7 @@ export async function getSession(): Promise<UserSession | null> {
   }
 
   try {
-    
+    // Fetch session
     const session = await getSessionById(sessionId)
 
     if (!session) {
@@ -64,12 +71,14 @@ export async function getSession(): Promise<UserSession | null> {
       return null
     }
 
+    // Check if token is expired
     const expiresAt = new Date(session.token_expires_at)
     if (expiresAt < new Date()) {
       await destroySession()
       return null
     }
 
+    // Fetch profile data (cached)
     const profile = await getProfile(session.discord_id)
 
     if (!profile) {
@@ -77,6 +86,7 @@ export async function getSession(): Promise<UserSession | null> {
       return null
     }
 
+    // Update last activity timestamp (fire and forget)
     updateSessionActivity(sessionId).catch(console.error)
 
     return {
@@ -88,12 +98,15 @@ export async function getSession(): Promise<UserSession | null> {
       email: profile.email,
     }
   } catch (error) {
-    console.error(" Session fetch error:", error)
+    console.error("[v0] Session fetch error:", error)
     await destroySession()
     return null
   }
 }
 
+/**
+ * Destroys the current session
+ */
 export async function destroySession(): Promise<void> {
   const cookieStore = await cookies()
   const sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value
@@ -102,10 +115,11 @@ export async function destroySession(): Promise<void> {
     try {
       await deleteSession(sessionId)
     } catch (error) {
-      console.error(" Session deletion error:", error)
+      console.error("[v0] Session deletion error:", error)
     }
   }
 
+  // Clear cookie
   cookieStore.set(SESSION_COOKIE_NAME, "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -115,6 +129,9 @@ export async function destroySession(): Promise<void> {
   })
 }
 
+/**
+ * Refreshes a Discord access token using the refresh token
+ */
 export async function refreshDiscordToken(sessionId: string): Promise<boolean> {
   try {
     const session = await getSessionById(sessionId)
@@ -137,7 +154,7 @@ export async function refreshDiscordToken(sessionId: string): Promise<boolean> {
       refresh_token: session.refresh_token,
     })
 
-    const tokenRes = await fetch("https:
+    const tokenRes = await fetch("https://discord.com/api/oauth2/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body,
@@ -150,6 +167,7 @@ export async function refreshDiscordToken(sessionId: string): Promise<boolean> {
     const tokenData = await tokenRes.json()
     const expiresAt = new Date(Date.now() + tokenData.expires_in * 1000)
 
+    // Update session with new tokens
     await updateSessionTokens(
       sessionId,
       tokenData.access_token,
@@ -159,7 +177,7 @@ export async function refreshDiscordToken(sessionId: string): Promise<boolean> {
 
     return true
   } catch (error) {
-    console.error(" Token refresh error:", error)
+    console.error("[v0] Token refresh error:", error)
     return false
   }
 }

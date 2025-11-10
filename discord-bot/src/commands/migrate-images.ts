@@ -13,15 +13,15 @@ const mongoClient = new MongoClient(process.env.MONGODB_URI!)
 
 async function downloadImageFromDiscord(url: string, itemName: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    
+    // Clean the URL
     const cleanUrl = url.trim().replace(/&$/, "")
 
-    console.log(` Downloading via Discord API: ${cleanUrl}`)
+    console.log(`[v0] Downloading via Discord API: ${cleanUrl}`)
 
     https
       .get(cleanUrl, (response) => {
         if (response.statusCode === 301 || response.statusCode === 302) {
-          
+          // Follow redirect
           const redirectUrl = response.headers.location
           if (redirectUrl) {
             https
@@ -52,18 +52,21 @@ async function downloadImageFromDiscord(url: string, itemName: string): Promise<
       response.on("end", () => {
         const buffer = Buffer.concat(chunks)
 
+        // Determine file extension from content-type or URL
         const contentType = response.headers["content-type"] || ""
         let ext = ".png"
         if (contentType.includes("jpeg") || contentType.includes("jpg")) ext = ".jpg"
         else if (contentType.includes("gif")) ext = ".gif"
         else if (contentType.includes("webp")) ext = ".webp"
 
+        // Create safe filename
         const safeFilename = itemName
           .toLowerCase()
           .replace(/[^a-z0-9]+/g, "-")
           .replace(/^-+|-+$/g, "")
         const filename = `${safeFilename}-${Date.now()}${ext}`
 
+        // Save to public/images/items/
         const publicDir = path.join(__dirname, "../../../public/images/items")
         if (!fs.existsSync(publicDir)) {
           fs.mkdirSync(publicDir, { recursive: true })
@@ -73,7 +76,7 @@ async function downloadImageFromDiscord(url: string, itemName: string): Promise<
         fs.writeFileSync(filepath, buffer)
 
         const localPath = `/images/items/${filename}`
-        console.log(` Saved to: ${localPath}`)
+        console.log(`[v0] Saved to: ${localPath}`)
         resolve(localPath)
       })
     }
@@ -84,7 +87,7 @@ export const migrateImagesCommand: BotCommand = {
   data: new SlashCommandBuilder()
     .setName("migrate-images")
     .setDescription("Migrate all external image URLs to local storage")
-    .setDefaultMemberPermissions(0), 
+    .setDefaultMemberPermissions(0), // Admin only
 
   async execute(interaction: ChatInputCommandInteraction) {
     await interaction.deferReply({ ephemeral: true })
@@ -94,6 +97,7 @@ export const migrateImagesCommand: BotCommand = {
       const db = mongoClient.db("trading-db")
       const itemsCollection = db.collection("items")
 
+      // Fetch all items with external URLs
       const items = await itemsCollection
         .find({
           $or: [{ imageUrl: { $regex: "discord" } }, { imageUrl: { $regex: "http" } }],
@@ -112,22 +116,25 @@ export const migrateImagesCommand: BotCommand = {
 
       for (const item of items) {
         try {
-          console.log(` Processing: ${item.name}`)
+          console.log(`[v0] Processing: ${item.name}`)
 
+          // Skip if already local
           if (item.imageUrl.startsWith("/images/")) {
-            console.log(` Already local, skipping`)
+            console.log(`[v0] Already local, skipping`)
             continue
           }
 
+          // Download image
           const localPath = await downloadImageFromDiscord(item.imageUrl, item.name)
 
+          // Update database
           await itemsCollection.updateOne({ _id: item._id }, { $set: { imageUrl: localPath } })
 
           successCount++
-          console.log(` ✅ Migrated: ${item.name}`)
+          console.log(`[v0] ✅ Migrated: ${item.name}`)
         } catch (error) {
           failCount++
-          console.error(` ❌ Failed to migrate ${item.name}:`, error)
+          console.error(`[v0] ❌ Failed to migrate ${item.name}:`, error)
         }
       }
 

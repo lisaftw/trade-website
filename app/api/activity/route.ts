@@ -20,13 +20,13 @@ export async function GET() {
       .limit(20)
 
     if (error) {
-      console.error(" Activity fetch error:", error)
+      console.error("[v0] Activity fetch error:", error)
       return NextResponse.json({ error: "Failed to fetch activities" }, { status: 500 })
     }
 
     return NextResponse.json({ activities: data || [] })
   } catch (error) {
-    console.error(" API error:", error)
+    console.error("[v0] API error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

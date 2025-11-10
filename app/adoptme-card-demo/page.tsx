@@ -18,7 +18,7 @@ export default function AdoptMeCardDemoPage() {
           </p>
 
           <div className="flex flex-wrap gap-8 justify-center items-start">
-            {}
+            {/* Original design */}
             <div className="flex flex-col items-center">
               <h2 className="text-lg font-semibold mb-4">Example 1: Turky</h2>
               <AdoptMeItemCard
@@ -32,7 +32,7 @@ export default function AdoptMeCardDemoPage() {
               />
             </div>
 
-            {}
+            {/* Another example */}
             <div className="flex flex-col items-center">
               <h2 className="text-lg font-semibold mb-4">Example 2: Dragon</h2>
               <AdoptMeItemCard
@@ -46,7 +46,7 @@ export default function AdoptMeCardDemoPage() {
               />
             </div>
 
-            {}
+            {/* Third example */}
             <div className="flex flex-col items-center">
               <h2 className="text-lg font-semibold mb-4">Example 3: Unicorn</h2>
               <AdoptMeItemCard
@@ -73,7 +73,7 @@ export default function AdoptMeCardDemoPage() {
   image="/turkey.png"
   lastUpdated="99 Hours Ago"
   onAddToInventory={() => {
-    
+    // Custom handler
   }}
 />`}</code>
               </pre>

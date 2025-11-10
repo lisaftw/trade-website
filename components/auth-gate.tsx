@@ -57,6 +57,7 @@ export function AuthGate({
     )
   }
 
+  // Authenticated: render the protected UI
   return <>{children}</>
 }
 

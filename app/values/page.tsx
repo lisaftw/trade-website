@@ -6,7 +6,7 @@ import { ValuesContent } from "@/components/values-content"
 import { AuthGate } from "@/components/auth-gate"
 import { BackButton } from "@/components/back-button"
 
-export const revalidate = 3600 
+export const revalidate = 3600 // Revalidate every hour
 
 export default function ValuesPage() {
   return (

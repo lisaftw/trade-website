@@ -5,13 +5,13 @@ export default function MyTradesLoading() {
     <main className="relative min-h-dvh bg-background">
       <div className="mx-auto w-full max-w-7xl px-4 py-8 md:py-12">
         <div className="space-y-8">
-          {}
+          {/* Header Skeleton */}
           <div className="space-y-2">
             <div className="h-10 w-48 animate-pulse rounded-lg bg-foreground/10" />
             <div className="h-4 w-96 animate-pulse rounded-lg bg-foreground/10" />
           </div>
 
-          {}
+          {/* Trade Cards Skeleton */}
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
               <Card key={i} className="card-neo space-y-4 p-6">

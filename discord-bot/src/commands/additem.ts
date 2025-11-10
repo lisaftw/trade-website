@@ -48,11 +48,12 @@ export const addItemCommand: BotCommand = {
       new URL(image)
     } catch {
       await interaction.editReply(
-        "❌ Invalid image URL format! Please provide a valid URL (e.g., https:
+        "❌ Invalid image URL format! Please provide a valid URL (e.g., https://example.com/image.png)",
       )
       return
     }
 
+    // Validate game-specific fields
     if ((game === "MM2" || game === "SAB" || game === "GAG") && !rarity) {
       await interaction.editReply("❌ Rarity is required for this game!")
       return
@@ -71,16 +72,18 @@ export const addItemCommand: BotCommand = {
     try {
       const collection = await getItemsCollection()
 
+      // Build item object based on game
       const item: any = {
         name,
         section,
         value,
-        image_url: image.trim(), 
+        image_url: image.trim(), // Trim whitespace from image URL
         game,
         createdAt: new Date(),
         updatedAt: new Date(),
       }
 
+      // Add game-specific fields
       if (game === "MM2" || game === "SAB" || game === "GAG") {
         item.rarity = rarity
         item.demand = demand
@@ -89,7 +92,7 @@ export const addItemCommand: BotCommand = {
         item.pot = pot
       }
 
-      console.log(" Saving item to MongoDB:", JSON.stringify(item, null, 2))
+      console.log("[v0] Saving item to MongoDB:", JSON.stringify(item, null, 2))
 
       const result = await collection.insertOne(item)
 
@@ -102,7 +105,7 @@ export const addItemCommand: BotCommand = {
         `✅ Successfully added **${name}** to ${game}!\n${fieldsSummary}\n🆔 ID: ${result.insertedId}`,
       )
     } catch (error) {
-      console.error(" Error adding item:", error)
+      console.error("[v0] Error adding item:", error)
       await interaction.editReply("❌ Failed to add item to database. Please try again.")
     }
   },

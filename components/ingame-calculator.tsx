@@ -57,7 +57,7 @@ export function IngameCalculator() {
 
         setAllItems(transformedItems)
       } catch (error) {
-        console.error(" Failed to fetch items:", error)
+        console.error("[v0] Failed to fetch items:", error)
       } finally {
         setIsLoading(false)
       }
@@ -152,9 +152,9 @@ export function IngameCalculator() {
             <p className="text-sm text-gray-400">Add items to calculate total value</p>
           </div>
 
-          {}
+          {/* Items Grid */}
           <div className="mb-6 grid grid-cols-3 gap-3 md:grid-cols-4">
-            {}
+            {/* Add Item Button */}
             <div
               className={cn(
                 "relative aspect-square rounded-2xl border-2 transition-all",
@@ -170,7 +170,7 @@ export function IngameCalculator() {
               </button>
             </div>
 
-            {}
+            {/* Selected Items */}
             {selectedItems.map((item) => (
               <div
                 key={item.id}
@@ -201,7 +201,7 @@ export function IngameCalculator() {
             ))}
           </div>
 
-          {}
+          {/* Total Value Display */}
           <div className="rounded-xl border-2 border-brand/50 bg-brand/10 p-6 text-center">
             <p className="text-sm text-gray-400">Total Value</p>
             <p className="mt-2 text-4xl font-bold text-brand">{totalValue.toLocaleString()}</p>
@@ -224,7 +224,7 @@ export function IngameCalculator() {
         </div>
       </div>
 
-      {}
+      {/* Search Modal */}
       {isSearchOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
           <div className="w-full max-w-2xl rounded-2xl border-2 border-gray-700 bg-gray-900 p-6 shadow-2xl">

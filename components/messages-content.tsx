@@ -53,6 +53,7 @@ export function MessagesContent({
       supabase.removeChannel(channelsRef.current.messages)
     }
 
+    // Subscribe to new conversations
     const conversationsChannel = supabase
       .channel("user-conversations")
       .on(
@@ -65,7 +66,7 @@ export function MessagesContent({
         },
         async (payload) => {
           console.log("New conversation created:", payload)
-          
+          // Fetch the new conversation with user details
           const newConvo = payload.new as any
           const otherUserId =
             newConvo.participant_1_id === currentUserId ? newConvo.participant_2_id : newConvo.participant_1_id
@@ -104,12 +105,12 @@ export function MessagesContent({
         },
         (payload) => {
           console.log("Conversation updated:", payload)
-          
+          // Update last_message_at to re-sort conversations
           setConversations((prev) => {
             const updated = prev.map((c) =>
               c.id === payload.new.id ? { ...c, last_message_at: (payload.new as any).last_message_at } : c,
             )
-            
+            // Re-sort by last_message_at
             return updated.sort((a, b) => {
               const aTime = a.last_message_at ? new Date(a.last_message_at).getTime() : 0
               const bTime = b.last_message_at ? new Date(b.last_message_at).getTime() : 0
@@ -120,6 +121,7 @@ export function MessagesContent({
       )
       .subscribe()
 
+    // Subscribe to new messages to update unread counts
     const messagesChannel = supabase
       .channel("user-messages")
       .on(
@@ -133,6 +135,7 @@ export function MessagesContent({
           const message = payload.new as any
           console.log("New message received in conversation:", message.conversation_id)
 
+          // Update unread count if message is not from current user and not in selected conversation
           if (message.sender_id !== currentUserId && message.conversation_id !== selectedConversationId) {
             setConversations((prev) =>
               prev.map((c) => (c.id === message.conversation_id ? { ...c, unreadCount: c.unreadCount + 1 } : c)),
@@ -149,7 +152,7 @@ export function MessagesContent({
         },
         async (payload) => {
           const message = payload.new as any
-          
+          // If message was marked as read, update unread count
           if (message.is_read) {
             await updateUnreadCount(message.conversation_id)
           }
@@ -179,7 +182,7 @@ export function MessagesContent({
 
   useEffect(() => {
     if (selectedConversationId) {
-      
+      // Reset unread count for selected conversation
       setConversations((prev) => prev.map((c) => (c.id === selectedConversationId ? { ...c, unreadCount: 0 } : c)))
     }
   }, [selectedConversationId])
@@ -188,16 +191,20 @@ export function MessagesContent({
     try {
       const supabase = createClient()
 
+      // Fetch conversations where user is participant_1
       const { data: convos1 } = await supabase.from("conversations").select("*").eq("participant_1_id", currentUserId)
 
+      // Fetch conversations where user is participant_2
       const { data: convos2 } = await supabase.from("conversations").select("*").eq("participant_2_id", currentUserId)
 
+      // Merge and sort by last_message_at
       const allConvos = [...(convos1 || []), ...(convos2 || [])].sort((a, b) => {
         const aTime = a.last_message_at ? new Date(a.last_message_at).getTime() : 0
         const bTime = b.last_message_at ? new Date(b.last_message_at).getTime() : 0
         return bTime - aTime
       })
 
+      // Fetch other user profiles and unread counts
       const conversationsWithUsers = await Promise.all(
         allConvos.map(async (convo) => {
           const otherUserId = convo.participant_1_id === currentUserId ? convo.participant_2_id : convo.participant_1_id
@@ -277,7 +284,7 @@ export function MessagesContent({
             </Link>
           </Button>
         </div>
-        {}
+        {/* </CHANGE> */}
         <ConversationList
           conversations={conversations}
           selectedId={selectedConversationId}
@@ -315,7 +322,7 @@ export function MessagesContent({
               </Button>
             </div>
           </div>
-          
+          // </CHANGE>
         )}
       </div>
     </div>

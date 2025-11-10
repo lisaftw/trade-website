@@ -15,7 +15,7 @@ export function DiscordMemberCount() {
 
         if (!response.ok) {
           console.error("Discord API returned non-OK status:", response.status)
-          setMemberCount(10000) 
+          setMemberCount(10000) // Fallback
           setIsLoading(false)
           return
         }
@@ -26,7 +26,7 @@ export function DiscordMemberCount() {
         setMemberCount(data.memberCount)
       } catch (error) {
         console.error("Error fetching member count:", error)
-        setMemberCount(10000) 
+        setMemberCount(10000) // Fallback
       } finally {
         setIsLoading(false)
       }
@@ -34,6 +34,7 @@ export function DiscordMemberCount() {
 
     fetchMemberCount()
 
+    // Refresh every 5 minutes
     const interval = setInterval(fetchMemberCount, 5 * 60 * 1000)
 
     return () => clearInterval(interval)
@@ -48,7 +49,7 @@ export function DiscordMemberCount() {
 
   return (
     <a
-      href="https:
+      href="https://discord.gg/j44ZNCWVkW"
       target="_blank"
       rel="noopener noreferrer"
       className="group relative block rounded-2xl border border-border bg-secondary/20 p-4 transition-all hover:border-brand/50 hover:bg-secondary/30 hover:shadow-lg hover:shadow-brand/10"

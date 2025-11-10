@@ -30,16 +30,18 @@ export async function POST(request: NextRequest) {
           const bytes = await file.arrayBuffer()
           const buffer = Buffer.from(bytes)
 
+          // Generate filename
           const extension = file.name.split(".").pop() || "png"
           const filename = `${game.toLowerCase()}-${itemId}.${extension}`
           const filepath = join(imagesDir, filename)
 
+          // Save file
           await writeFile(filepath, buffer)
           const localPath = `/images/items/${filename}`
 
           updates.push({ itemId, path: localPath })
         } catch (error) {
-          console.error(` Error processing ${file.name}:`, error)
+          console.error(`[v0] Error processing ${file.name}:`, error)
           errors.push({ filename: file.name, error: "Failed to save file" })
         }
       }
@@ -57,7 +59,7 @@ export async function POST(request: NextRequest) {
       details: { updates, errors },
     })
   } catch (error) {
-    console.error(" Error in bulk upload:", error)
+    console.error("[v0] Error in bulk upload:", error)
     return NextResponse.json({ error: "Failed to process uploads" }, { status: 500 })
   }
 }

@@ -9,9 +9,11 @@ export interface Item {
   section: string
   image_url?: string
 
+  // MM2, SAB, GAG specific fields
   rarity?: string
   demand?: string
 
+  // Adopt Me specific fields
   pot?: string
 
   createdAt?: Date
@@ -32,7 +34,7 @@ export async function getItems(game?: string): Promise<Item[]> {
       _id: item._id,
     }))
   } catch (error) {
-    console.error(" Error fetching items:", error)
+    console.error("[v0] Error fetching items:", error)
     return []
   }
 }
@@ -58,7 +60,7 @@ export async function searchItems(query: string, game?: string): Promise<Item[]>
       _id: item._id,
     }))
   } catch (error) {
-    console.error(" Error searching items:", error)
+    console.error("[v0] Error searching items:", error)
     return []
   }
 }
@@ -82,7 +84,7 @@ export async function createItem(item: Omit<Item, "_id" | "createdAt" | "updated
       _id: result.insertedId,
     }
   } catch (error) {
-    console.error(" Error creating item:", error)
+    console.error("[v0] Error creating item:", error)
     return null
   }
 }
@@ -106,7 +108,7 @@ export async function updateItem(id: string, updates: Partial<Item>): Promise<bo
 
     return result.modifiedCount > 0
   } catch (error) {
-    console.error(" Error updating item:", error)
+    console.error("[v0] Error updating item:", error)
     return false
   }
 }
@@ -122,7 +124,7 @@ export async function deleteItem(id: string): Promise<boolean> {
 
     return result.deletedCount > 0
   } catch (error) {
-    console.error(" Error deleting item:", error)
+    console.error("[v0] Error deleting item:", error)
     return false
   }
 }

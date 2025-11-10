@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { X, Search } from "lucide-react"
 
+// Mutations data with multipliers
 const MUTATIONS = [
   { id: "normal", name: "Normal", multiplier: 1.0, color: "bg-gray-500" },
   { id: "gold", name: "Gold", multiplier: 1.25, color: "bg-gradient-to-r from-yellow-400 to-yellow-600" },
@@ -23,6 +24,7 @@ const MUTATIONS = [
   { id: "yinyang", name: "YinYang", multiplier: 7.0, color: "bg-gradient-to-r from-gray-300 to-gray-600" },
 ]
 
+// Traits data with multipliers
 const TRAITS = [
   { id: "sleepy", name: "Sleepy", multiplier: 0.5, color: "bg-gradient-to-r from-blue-900 to-blue-950" },
   { id: "rain", name: "Rain", multiplier: 1.5, color: "bg-gradient-to-r from-blue-300 to-blue-400" },
@@ -88,10 +90,10 @@ export function SABCalculator() {
   useEffect(() => {
     const fetchPets = async () => {
       try {
-        console.log(" Fetching SAB pets from database")
+        console.log("[v0] Fetching SAB pets from database")
         const response = await fetch("/api/items?game=SAB")
         const data = await response.json()
-        console.log(" Received SAB pets:", data.items?.length || 0)
+        console.log("[v0] Received SAB pets:", data.items?.length || 0)
         const mappedPets = (data.items || []).map((item: any) => ({
           id: item.id,
           name: item.name,
@@ -101,7 +103,7 @@ export function SABCalculator() {
         }))
         setPets(mappedPets)
       } catch (error) {
-        console.error(" Error fetching SAB pets:", error)
+        console.error("[v0] Error fetching SAB pets:", error)
       } finally {
         setLoading(false)
       }
@@ -150,13 +152,13 @@ export function SABCalculator() {
 
   return (
     <div className="space-y-4">
-      {}
+      {/* Header */}
       <div className="text-center">
         <h1 className="text-2xl md:text-3xl font-bold text-balance">SAB Value Calculator</h1>
         <p className="mt-1 text-xs md:text-sm text-muted-foreground">Calculate pet values with mutations and traits</p>
       </div>
 
-      {}
+      {/* Pet Selection */}
       <Card className="p-3 md:p-4">
         {!selectedPet ? (
           <button
@@ -199,13 +201,13 @@ export function SABCalculator() {
 
       {selectedPet && (
         <>
-          {}
+          {/* Calculated Value */}
           <div className="rounded-lg border-2 border-brand/50 bg-brand/10 p-4 text-center">
             <p className="text-xs text-muted-foreground">Calculated Value</p>
             <p className="mt-1 text-3xl md:text-4xl font-bold text-brand">{formatNumber(calculatedValue)}</p>
           </div>
 
-          {}
+          {/* Mutations */}
           <Card className="p-3 md:p-4">
             <h3 className="mb-3 text-sm font-semibold">Mutation</h3>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -228,7 +230,7 @@ export function SABCalculator() {
             </div>
           </Card>
 
-          {}
+          {/* Traits */}
           <Card className="p-3 md:p-4">
             <h3 className="mb-3 text-sm font-semibold">Traits (Multiple Selection)</h3>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -255,7 +257,7 @@ export function SABCalculator() {
         </>
       )}
 
-      {}
+      {/* Search Modal */}
       {isSearchOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
           <div className="w-full max-w-2xl rounded-xl border-2 border-gray-700 bg-gray-900 p-4 shadow-2xl">

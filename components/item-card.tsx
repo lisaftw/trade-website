@@ -82,7 +82,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
   const sectionLabel = item.section ? item.section.toUpperCase() : "VALUE"
 
   const handleAddToInventory = async () => {
-    
+    // If user is not logged in, show login dialog
     if (!user) {
       setShowLoginDialog(true)
       return
@@ -109,7 +109,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500">
               <svg
-                xmlns="http:
+                xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"

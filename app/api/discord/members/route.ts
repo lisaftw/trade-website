@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 
 export const dynamic = "force-dynamic"
-export const revalidate = 300 
+export const revalidate = 300 // Cache for 5 minutes
 
 const FALLBACK_DATA = {
   memberCount: 10000,
@@ -14,7 +14,7 @@ export async function GET() {
 
     console.log("Fetching Discord member count for invite:", inviteCode)
 
-    const response = await fetch(`https:
+    const response = await fetch(`https://discord.com/api/v10/invites/${inviteCode}?with_counts=true`, {
       headers: {
         "Content-Type": "application/json",
       },

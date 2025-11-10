@@ -1,6 +1,7 @@
 import { createServiceClient } from "@/lib/supabase/service"
 import { getSession } from "@/lib/auth/session"
 
+// DELETE - Remove item from inventory
 export async function DELETE(req: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params
   const session = await getSession()
@@ -14,7 +15,7 @@ export async function DELETE(req: Request, props: { params: Promise<{ id: string
   const { error } = await supabase.from("user_inventories").delete().eq("id", id).eq("discord_id", session.discordId)
 
   if (error) {
-    console.error(" Error removing from inventory:", error)
+    console.error("[v0] Error removing from inventory:", error)
     return Response.json({ error: "Failed to remove from inventory" }, { status: 500 })
   }
 
