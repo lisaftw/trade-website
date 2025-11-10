@@ -1,45 +1,50 @@
 import { NextResponse } from "next/server"
+import { createClient } from "@supabase/supabase-js"
+import { createSession, validateSession } from "@/lib/session-store"
+
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
 
 export async function POST(request: Request) {
   try {
     const { password } = await request.json()
     const correctPassword = process.env.ADMIN_PASSWORD
 
-    console.log("[v0] API: Password verification")
-    console.log("[v0] API: Received password:", password)
-    console.log("[v0] API: Received length:", password?.length)
-    console.log("[v0] API: Expected password:", correctPassword)
-    console.log("[v0] API: Expected length:", correctPassword?.length)
-    console.log("[v0] API: Match:", password === correctPassword)
+    console.log("[v0] Password check - Received length:", password?.trim().length)
+    console.log("[v0] Expected password:", correctPassword)
+    console.log("[v0] Expected length:", correctPassword?.length)
 
     if (!correctPassword) {
-      console.error("[v0] API: ADMIN_PASSWORD not set")
       return NextResponse.json({ success: false, error: "Server configuration error" }, { status: 500 })
     }
 
-    const trimmedPassword = password?.trim()
-    console.log("[v0] API: Trimmed password:", trimmedPassword)
-    console.log("[v0] API: Trimmed match:", trimmedPassword === correctPassword)
+    if (password?.trim() === correctPassword) {
+      const token = createSession()
+      console.log("[v0] Password correct! Token created:", token)
 
-    if (trimmedPassword === correctPassword) {
-      const response = NextResponse.json({ success: true })
-
-      response.cookies.set("site-access", "granted", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 30, // 30 days
-        path: "/",
-      })
-
-      console.log("[v0] API: Password correct, cookie set in response")
-      return response
+      return NextResponse.json({ success: true, token })
     }
 
-    console.log("[v0] API: Password incorrect")
+    console.log("[v0] Password incorrect")
     return NextResponse.json({ success: false, error: "Invalid password" }, { status: 401 })
   } catch (error) {
-    console.error("[v0] API: Error:", error)
+    console.error("[v0] API Error:", error)
     return NextResponse.json({ success: false, error: "Server error" }, { status: 500 })
+  }
+}
+
+export async function GET(request: Request) {
+  try {
+    const url = new URL(request.url)
+    const token = url.searchParams.get("token")
+
+    if (!token) {
+      return NextResponse.json({ valid: false }, { status: 401 })
+    }
+
+    const isValid = validateSession(token)
+    return NextResponse.json({ valid: isValid }, { status: isValid ? 200 : 401 })
+  } catch (error) {
+    console.error("[v0] Validation error:", error)
+    return NextResponse.json({ valid: false }, { status: 500 })
   }
 }

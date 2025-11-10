@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,6 +11,26 @@ export default function SiteAccessPage() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    const checkExistingToken = async () => {
+      const token = localStorage.getItem("site-access-token")
+      if (token) {
+        try {
+          const response = await fetch(`/api/site-access?token=${token}`)
+          const data = await response.json()
+          if (data.valid) {
+            window.location.href = "/"
+          } else {
+            localStorage.removeItem("site-access-token")
+          }
+        } catch (err) {
+          localStorage.removeItem("site-access-token")
+        }
+      }
+    }
+    checkExistingToken()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -22,13 +42,18 @@ export default function SiteAccessPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password: password.trim() }),
-        credentials: "include",
       })
 
       const data = await response.json()
 
-      if (data.success) {
-        window.location.replace("/")
+      if (data.success && data.token) {
+        localStorage.setItem("site-access-token", data.token)
+        document.cookie = `site-access-token=${data.token}; path=/; max-age=${30 * 24 * 60 * 60}`
+
+        // Small delay to ensure cookie is set
+        setTimeout(() => {
+          window.location.href = "/"
+        }, 100)
       } else {
         setError("Incorrect password")
         setLoading(false)

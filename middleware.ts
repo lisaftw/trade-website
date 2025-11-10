@@ -7,32 +7,23 @@ const authRoutes = ["/login"]
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  if (pathname.startsWith("/api/") || pathname.startsWith("/_next/")) {
+  if (pathname.startsWith("/api/") || pathname.startsWith("/_next/") || pathname === "/site-access") {
     return NextResponse.next()
   }
 
-  const sitePasswordCookie = request.cookies.get("site-access")
-  const hasSiteAccess = sitePasswordCookie?.value === "granted"
+  const siteAccessToken = request.cookies.get("site-access-token")?.value
 
-  console.log("[v0] Middleware:", {
-    pathname,
-    hasCookie: !!sitePasswordCookie,
-    cookieValue: sitePasswordCookie?.value,
-    hasAccess: hasSiteAccess,
-  })
+  if (!siteAccessToken) {
+    // Try to validate from query param (for initial redirect after login)
+    const url = new URL(request.url)
+    const tokenFromQuery = url.searchParams.get("token")
 
-  // Redirect to password page if no access
-  if (!hasSiteAccess && pathname !== "/site-access") {
-    console.log("[v0] Middleware: Redirecting to /site-access")
-    return NextResponse.redirect(new URL("/site-access", request.url))
+    if (!tokenFromQuery) {
+      return NextResponse.redirect(new URL("/site-access", request.url))
+    }
   }
 
-  // Redirect to home if already has access and trying to visit password page
-  if (pathname === "/site-access" && hasSiteAccess) {
-    console.log("[v0] Middleware: Has access, redirecting to home")
-    return NextResponse.redirect(new URL("/", request.url))
-  }
-
+  // Session-based auth for protected routes (separate from site access)
   const sessionCookie = request.cookies.get("trade_session_id")
   const hasSession = !!sessionCookie?.value
 

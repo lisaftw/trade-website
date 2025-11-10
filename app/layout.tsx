@@ -4,6 +4,7 @@ import { Inter, Roboto_Mono } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
+import { SiteAccessProvider } from "@/components/site-access-provider"
 
 const geistSans = Inter({
   variable: "--font-geist-sans",
@@ -38,7 +39,7 @@ export default function RootLayout({
           }}
         />
         <ThemeProvider attribute="class" forcedTheme="dark" disableTransitionOnChange>
-          {children}
+          <SiteAccessProvider>{children}</SiteAccessProvider>
           <Toaster />
         </ThemeProvider>
       </body>
