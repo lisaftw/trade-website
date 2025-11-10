@@ -11,7 +11,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  const sitePasswordCookie = request.cookies.get("site_access")
+  const sitePasswordCookie = request.cookies.get("site-access")
   const hasSiteAccess = sitePasswordCookie?.value === "granted"
 
   if (!hasSiteAccess && pathname !== "/site-access") {
