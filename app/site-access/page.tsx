@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,27 +17,18 @@ export default function SiteAccessPage() {
     setLoading(true)
     setError("")
 
-    const trimmedPassword = password.trim()
-    console.log("[v0] Client: Submitting password, length:", trimmedPassword.length)
-
     try {
       const response = await fetch("/api/site-access", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ password: trimmedPassword }),
-        credentials: "include", // Ensure cookies are included
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: password.trim() }),
+        credentials: "include",
       })
 
       const data = await response.json()
-      console.log("[v0] Client: Response received:", data)
 
       if (data.success) {
-        console.log("[v0] Client: Password correct, reloading in 500ms...")
-        setTimeout(() => {
-          window.location.href = "/"
-        }, 500)
+        window.location.replace("/")
       } else {
         setError("Incorrect password")
         setLoading(false)
@@ -70,17 +60,12 @@ export default function SiteAccessPage() {
               <Input
                 type="password"
                 value={password}
-                onChange={(e) => {
-                  const newValue = e.target.value
-                  console.log("[v0] Client: Input changed, length:", newValue.length)
-                  setPassword(newValue)
-                }}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter password"
                 autoFocus
                 autoComplete="off"
                 required
                 disabled={loading}
-                className="font-mono"
               />
               {error && <p className="text-sm text-red-500">{error}</p>}
             </div>

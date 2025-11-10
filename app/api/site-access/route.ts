@@ -1,29 +1,26 @@
 import { NextResponse } from "next/server"
-import { cookies } from "next/headers"
 
 export async function POST(request: Request) {
   try {
     const { password } = await request.json()
     const correctPassword = process.env.ADMIN_PASSWORD
 
-    console.log("[v0] API: Password verification attempt")
-    console.log("[v0] API: Password received:", password) // Log full password for debugging
-    console.log("[v0] API: Expected password:", correctPassword) // Log expected password
+    console.log("[v0] API: Password verification")
+    console.log("[v0] API: Received length:", password?.length)
+    console.log("[v0] API: Expected length:", correctPassword?.length)
 
     if (!correctPassword) {
-      console.error("[v0] API: ADMIN_PASSWORD environment variable not set")
+      console.error("[v0] API: ADMIN_PASSWORD not set")
       return NextResponse.json({ success: false, error: "Server configuration error" }, { status: 500 })
     }
 
     const trimmedPassword = password?.trim()
-    const passwordMatch = trimmedPassword === correctPassword
 
-    console.log("[v0] API: Passwords match:", passwordMatch)
+    if (trimmedPassword === correctPassword) {
+      const response = NextResponse.json({ success: true })
 
-    if (passwordMatch) {
-      const cookieStore = await cookies()
-
-      cookieStore.set("site-access", "granted", {
+      // Set cookie directly in response headers
+      response.cookies.set("site-access", "granted", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
@@ -31,18 +28,14 @@ export async function POST(request: Request) {
         path: "/",
       })
 
-      console.log("[v0] API: Cookie set successfully")
-
-      const setCookie = cookieStore.get("site-access")
-      console.log("[v0] API: Cookie verification:", setCookie)
-
-      return NextResponse.json({ success: true })
+      console.log("[v0] API: Password correct, cookie set in response")
+      return response
     }
 
     console.log("[v0] API: Password incorrect")
     return NextResponse.json({ success: false, error: "Invalid password" }, { status: 401 })
   } catch (error) {
-    console.error("[v0] API: Error in site-access route:", error)
+    console.error("[v0] API: Error:", error)
     return NextResponse.json({ success: false, error: "Server error" }, { status: 500 })
   }
 }

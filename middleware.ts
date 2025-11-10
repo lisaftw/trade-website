@@ -7,7 +7,7 @@ const authRoutes = ["/login"]
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  if (pathname.startsWith("/api/")) {
+  if (pathname.startsWith("/api/") || pathname.startsWith("/_next/")) {
     return NextResponse.next()
   }
 
@@ -21,11 +21,13 @@ export async function middleware(request: NextRequest) {
     hasAccess: hasSiteAccess,
   })
 
+  // Redirect to password page if no access
   if (!hasSiteAccess && pathname !== "/site-access") {
     console.log("[v0] Middleware: Redirecting to /site-access")
     return NextResponse.redirect(new URL("/site-access", request.url))
   }
 
+  // Redirect to home if already has access and trying to visit password page
   if (pathname === "/site-access" && hasSiteAccess) {
     console.log("[v0] Middleware: Has access, redirecting to home")
     return NextResponse.redirect(new URL("/", request.url))
