@@ -20,6 +20,8 @@ export default function SiteAccessPage() {
     setError("")
     setLoading(true)
 
+    console.log("[v0] Submitting password")
+
     try {
       const response = await fetch("/api/site-access", {
         method: "POST",
@@ -27,16 +29,21 @@ export default function SiteAccessPage() {
         body: JSON.stringify({ password }),
       })
 
+      console.log("[v0] Response status:", response.status)
       const data = await response.json()
+      console.log("[v0] Response data:", data)
 
       if (data.success) {
+        console.log("[v0] Success! Redirecting to home...")
         router.push("/")
         router.refresh()
       } else {
+        console.log("[v0] Authentication failed")
         setError("Invalid password")
         setPassword("")
       }
     } catch (err) {
+      console.error("[v0] Error during authentication:", err)
       setError("An error occurred. Please try again.")
     } finally {
       setLoading(false)

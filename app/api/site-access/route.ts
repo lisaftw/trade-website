@@ -17,7 +17,7 @@ export async function POST(request: Request) {
 
     if (password === correctPassword) {
       const cookieStore = await cookies()
-      cookieStore.set("site_access", "granted", {
+      cookieStore.set("site-access", "granted", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
