@@ -8,10 +8,12 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const { password } = await request.json()
-
     const correctPassword = process.env.SITE_PASSWORD || "qsxcvbhjio987654"
 
     console.log("[v0] Password verification attempt")
+    console.log("[v0] Password received:", password)
+    console.log("[v0] Expected password:", correctPassword)
+    console.log("[v0] Match result:", password === correctPassword)
 
     if (password === correctPassword) {
       const cookieStore = await cookies()
