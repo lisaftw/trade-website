@@ -1,53 +1,10 @@
-"use client"
-
-import type React from "react"
-
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Lock } from "lucide-react"
+import { verifySitePassword } from "./actions"
 
 export default function SiteAccessPage() {
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    setLoading(true)
-
-    try {
-      console.log("[v0] Submitting password")
-      const response = await fetch("/api/site-access", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
-      })
-
-      console.log("[v0] Response status:", response.status)
-      const data = await response.json()
-      console.log("[v0] Response data:", data)
-
-      if (data.success) {
-        console.log("[v0] Login successful, waiting for cookie to commit...")
-        await new Promise((resolve) => setTimeout(resolve, 500))
-        console.log("[v0] Redirecting to home page...")
-        // Force a full page reload to ensure cookies are properly read
-        window.location.href = "/"
-      } else {
-        setError("Invalid password")
-        setPassword("")
-        setLoading(false)
-      }
-    } catch (err) {
-      console.error("[v0] Error during authentication:", err)
-      setError("An error occurred. Please try again.")
-      setLoading(false)
-    }
-  }
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4">
       <Card className="w-full max-w-md">
@@ -63,20 +20,12 @@ export default function SiteAccessPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form action={verifySitePassword} className="space-y-4">
             <div className="space-y-2">
-              <Input
-                type="password"
-                placeholder="Enter password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={loading}
-                autoFocus
-              />
-              {error && <p className="text-sm text-destructive">{error}</p>}
+              <Input type="password" name="password" placeholder="Enter password" autoFocus required />
             </div>
-            <Button type="submit" className="w-full" disabled={loading || !password}>
-              {loading ? "Verifying..." : "Access Site"}
+            <Button type="submit" className="w-full">
+              Access Site
             </Button>
           </form>
         </CardContent>
