@@ -1,4 +1,8 @@
+import { config } from "dotenv"
+import { resolve } from "path"
 import { neon } from "@neondatabase/serverless"
+
+config({ path: resolve(process.cwd(), ".env.local") })
 
 async function fixPlaceholderImages() {
   const sql = neon(process.env.POSTGRES_URL!)
