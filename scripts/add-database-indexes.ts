@@ -2,7 +2,7 @@ import { config } from "dotenv"
 import { resolve } from "path"
 import { neon } from "@neondatabase/serverless"
 
-config({ path: resolve(process.cwd(), ".env.local") })
+config({ path: resolve(process.cwd(), ".env.local"), override: true })
 
 if (!process.env.POSTGRES_URL) {
   console.error("❌ Error: POSTGRES_URL not found in environment variables")
@@ -11,6 +11,8 @@ if (!process.env.POSTGRES_URL) {
 }
 
 const sql = neon(process.env.POSTGRES_URL!)
+
+console.log(`[v0] Using database: ${process.env.POSTGRES_URL.split("@")[1]?.split("/")[0]}`)
 
 async function addIndexes() {
   try {
