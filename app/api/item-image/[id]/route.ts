@@ -61,11 +61,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     const item = await getItemById(id)
 
-    if (!item) {
-      return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
-    }
-
-    if (!item.image_url || item.image_url.includes("/placeholder.svg")) {
+    if (!item || !item.image_url || item.image_url.includes("/placeholder.svg") || item.image_url === "null") {
       return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
     }
 
@@ -126,6 +122,10 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
       const imageBuffer = await response.arrayBuffer()
       const contentType = response.headers.get("Content-Type") || "image/png"
+
+      if (!contentType.startsWith("image/")) {
+        return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
+      }
 
       imageCache.set(id, { buffer: imageBuffer, contentType, timestamp: Date.now() })
 

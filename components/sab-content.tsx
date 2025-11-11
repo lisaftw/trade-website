@@ -44,36 +44,23 @@ export function SABContent() {
       const offset = loadMore ? items.length : 0
       const limit = 50
 
-      console.log("[v0] Fetching SAB brainrots from database")
       const response = await fetch(`/api/items?game=SAB&limit=${limit}&offset=${offset}`)
       const data = await response.json()
-      console.log("[v0] Received SAB brainrots:", data.items?.length || 0)
 
       if (data.items && data.items.length > 0) {
         setItems((prev) => (loadMore ? [...prev, ...data.items] : data.items))
         setHasMore(data.pagination?.hasMore || false)
         setTotalCount(data.pagination?.total || data.items.length)
-
-        const sections = [...new Set(data.items.map((item: SABItem) => item.section))]
-        console.log("[v0] Unique section values in database:", sections)
-        console.log(
-          "[v0] First 5 items with sections:",
-          data.items.slice(0, 5).map((item: SABItem) => ({
-            name: item.name,
-            section: item.section,
-            normalized: normalizeSection(item.section),
-          })),
-        )
       }
     } catch (error) {
-      console.error("[v0] Error fetching SAB brainrots:", error)
+      console.error("Error fetching SAB brainrots:", error)
     } finally {
       setLoading(false)
       setLoadingMore(false)
     }
   }
 
-  const normalizeSection = (section: string): string => {
+  const normalizeSection = (section: string | null | undefined): string => {
     if (!section) return "Common"
 
     const normalized = section.trim().toLowerCase()
@@ -85,6 +72,7 @@ export function SABContent() {
       legendary: "Legendary",
       mythic: "Mythic",
       "brainrot god": "Brainrot God",
+      brainrotgod: "Brainrot God",
       secret: "Secret",
       og: "OG",
       admin: "Admin",
@@ -118,7 +106,7 @@ export function SABContent() {
     })
 
     Object.keys(grouped).forEach((section) => {
-      grouped[section].sort((a, b) => (a.rap_value || 0) - (b.rap_value || 0))
+      grouped[section].sort((a, b) => (b.rap_value || 0) - (a.rap_value || 0))
     })
 
     return grouped
