@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, type ChatInputCommandInteraction } from "discord.js"
-import { getItemsCollection } from "../lib/mongodb.js"
+import { sql } from "../lib/database.js"
 import { GAME_CHOICES, type BotCommand } from "../lib/types.js"
 
 export const addItemCommand: BotCommand = {
@@ -70,31 +70,37 @@ export const addItemCommand: BotCommand = {
     }
 
     try {
-      const collection = await getItemsCollection()
+      const now = new Date().toISOString()
 
-      // Build item object based on game
-      const item: any = {
-        name,
-        section,
-        value,
-        image_url: image.trim(), // Trim whitespace from image URL
-        game,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }
-
-      // Add game-specific fields
-      if (game === "MM2" || game === "SAB" || game === "GAG") {
-        item.rarity = rarity
-        item.demand = demand
-      } else if (game === "Adopt Me") {
-        item.demand = demand
-        item.pot = pot
-      }
-
-      console.log("[v0] Saving item to MongoDB:", JSON.stringify(item, null, 2))
-
-      const result = await collection.insertOne(item)
+      const result = await sql`
+        INSERT INTO items (
+          name, 
+          section, 
+          rap_value, 
+          image_url, 
+          game, 
+          rarity, 
+          demand, 
+          pot,
+          created_at,
+          updated_at,
+          last_updated_at
+        )
+        VALUES (
+          ${name},
+          ${section},
+          ${value},
+          ${image.trim()},
+          ${game},
+          ${rarity || null},
+          ${demand || null},
+          ${pot || null},
+          ${now},
+          ${now},
+          ${now}
+        )
+        RETURNING id
+      `
 
       let fieldsSummary = `📊 Value: ${value}\n📁 Section: ${section}\n🖼️ Image: ${image.substring(0, 50)}...`
       if (rarity) fieldsSummary += `\n✨ Rarity: ${rarity}`
@@ -102,7 +108,7 @@ export const addItemCommand: BotCommand = {
       if (pot) fieldsSummary += `\n🧪 Pot: ${pot}`
 
       await interaction.editReply(
-        `✅ Successfully added **${name}** to ${game}!\n${fieldsSummary}\n🆔 ID: ${result.insertedId}`,
+        `✅ Successfully added **${name}** to ${game}!\n${fieldsSummary}\n🆔 ID: ${result[0].id}`,
       )
     } catch (error) {
       console.error("[v0] Error adding item:", error)

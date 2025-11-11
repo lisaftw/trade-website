@@ -8,8 +8,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
 } from "discord.js"
-import { ObjectId } from "mongodb"
-import { getItemsCollection } from "../lib/mongodb.js"
+import { sql } from "../lib/database.js"
 import { GAME_CHOICES, type BotCommand } from "../lib/types.js"
 
 const paginationState = new Map<string, { game: string; page: number; totalItems: number }>()
@@ -21,10 +20,7 @@ export const removeItemCommand: BotCommand = {
     await interaction.deferReply({ flags: 64 })
 
     try {
-      const collection = await getItemsCollection()
-
-      // Get all games that have items
-      const games = await collection.distinct("game")
+      const games = await sql`SELECT DISTINCT game FROM items ORDER BY game`
 
       if (games.length === 0) {
         await interaction.editReply("❌ No items found in the database!")
@@ -36,9 +32,9 @@ export const removeItemCommand: BotCommand = {
         .setCustomId("removeitem_game")
         .setPlaceholder("Select a game")
         .addOptions(
-          games.map((game) => ({
-            label: GAME_CHOICES.find((g) => g.value === game)?.name || game,
-            value: game,
+          games.map((row: any) => ({
+            label: GAME_CHOICES.find((g) => g.value === row.game)?.name || row.game,
+            value: row.game,
           })),
         )
 
@@ -80,16 +76,17 @@ export const removeItemCommand: BotCommand = {
       const itemId = interaction.values[0]
 
       try {
-        const collection = await getItemsCollection()
-        const item = await collection.findOne({ _id: new ObjectId(itemId) })
+        const items = await sql`SELECT * FROM items WHERE id = ${itemId} LIMIT 1`
 
-        if (!item) {
+        if (items.length === 0) {
           await interaction.editReply({
             content: "❌ Item not found!",
             components: [],
           })
           return
         }
+
+        const item = items[0]
 
         const confirmButton = new ButtonBuilder()
           .setCustomId(`removeitem_confirm_${itemId}`)
@@ -152,10 +149,9 @@ export const removeItemCommand: BotCommand = {
       await interaction.deferUpdate()
 
       try {
-        const collection = await getItemsCollection()
-        const item = await collection.findOne({ _id: new ObjectId(param) })
+        const items = await sql`SELECT * FROM items WHERE id = ${param} LIMIT 1`
 
-        if (!item) {
+        if (items.length === 0) {
           await interaction.editReply({
             content: "❌ Item not found!",
             components: [],
@@ -163,7 +159,9 @@ export const removeItemCommand: BotCommand = {
           return
         }
 
-        await collection.deleteOne({ _id: new ObjectId(param) })
+        const item = items[0]
+
+        await sql`DELETE FROM items WHERE id = ${param}`
 
         await interaction.editReply({
           content: `✅ Successfully deleted **${item.name}** from ${item.game}!`,
@@ -186,11 +184,10 @@ export const removeItemCommand: BotCommand = {
 }
 
 async function showItemsPage(interaction: StringSelectMenuInteraction | ButtonInteraction, game: string, page: number) {
-  const collection = await getItemsCollection()
   const ITEMS_PER_PAGE = 25
 
-  // Get total count
-  const totalItems = await collection.countDocuments({ game })
+  const [countResult] = await sql`SELECT COUNT(*)::int as count FROM items WHERE game = ${game}`
+  const totalItems = countResult.count
 
   if (totalItems === 0) {
     await interaction.editReply({
@@ -201,12 +198,13 @@ async function showItemsPage(interaction: StringSelectMenuInteraction | ButtonIn
   }
 
   // Get items for current page
-  const items = await collection
-    .find({ game })
-    .sort({ rarity: 1, name: 1 })
-    .skip(page * ITEMS_PER_PAGE)
-    .limit(ITEMS_PER_PAGE)
-    .toArray()
+  const items = await sql`
+    SELECT * FROM items 
+    WHERE game = ${game}
+    ORDER BY section, name
+    LIMIT ${ITEMS_PER_PAGE}
+    OFFSET ${page * ITEMS_PER_PAGE}
+  `
 
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE)
 
@@ -214,10 +212,10 @@ async function showItemsPage(interaction: StringSelectMenuInteraction | ButtonIn
     .setCustomId("removeitem_item")
     .setPlaceholder("Select an item to remove")
     .addOptions(
-      items.map((item) => ({
+      items.map((item: any) => ({
         label: `${item.name} (${item.section})`,
-        description: `Value: ${item.value}`,
-        value: item._id.toString(),
+        description: `Value: ${item.rap_value || 0}`,
+        value: item.id.toString(),
       })),
     )
 

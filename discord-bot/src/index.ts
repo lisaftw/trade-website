@@ -1,6 +1,7 @@
 import { Client, GatewayIntentBits, Events, Collection } from "discord.js"
 import dotenv from "dotenv"
 import type { BotCommand } from "./lib/types.js"
+import { testConnection } from "./lib/database.js"
 
 dotenv.config()
 
@@ -21,10 +22,12 @@ commands.set(removeItemCommand.data.name, removeItemCommand)
 commands.set(bulkAddItemCommand.data.name, bulkAddItemCommand)
 commands.set(migrateImagesCommand.data.name, migrateImagesCommand)
 
-client.once(Events.ClientReady, (readyClient) => {
+client.once(Events.ClientReady, async (readyClient) => {
   console.log(`✅ Discord bot ready! Logged in as ${readyClient.user.tag}`)
   console.log(`📊 Serving ${commands.size} commands`)
   console.log(`🎮 Managing items for: MM2, Adopt Me, SAB, GAG`)
+  console.log("🔗 Testing database connection...")
+  await testConnection()
 })
 
 client.on(Events.InteractionCreate, async (interaction) => {

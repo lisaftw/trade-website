@@ -12,8 +12,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
 } from "discord.js"
-import { ObjectId } from "mongodb"
-import { getItemsCollection } from "../lib/mongodb.js"
+import { sql } from "../lib/database.js"
 import { GAME_CHOICES, type BotCommand } from "../lib/types.js"
 
 const paginationState = new Map<string, { game: string; page: number; totalItems: number }>()
@@ -25,10 +24,7 @@ export const editItemCommand: BotCommand = {
     await interaction.deferReply({ ephemeral: true })
 
     try {
-      const collection = await getItemsCollection()
-
-      // Get all games that have items
-      const games = await collection.distinct("game")
+      const games = await sql`SELECT DISTINCT game FROM items ORDER BY game`
 
       if (games.length === 0) {
         await interaction.editReply("❌ No items found in the database!")
@@ -40,9 +36,9 @@ export const editItemCommand: BotCommand = {
         .setCustomId("edititem_game")
         .setPlaceholder("Select a game")
         .addOptions(
-          games.map((game) => ({
-            label: GAME_CHOICES.find((g) => g.value === game)?.name || game,
-            value: game,
+          games.map((row: any) => ({
+            label: GAME_CHOICES.find((g) => g.value === row.game)?.name || row.game,
+            value: row.game,
           })),
         )
 
@@ -83,16 +79,17 @@ export const editItemCommand: BotCommand = {
       const itemId = interaction.values[0]
 
       try {
-        const collection = await getItemsCollection()
-        const item = await collection.findOne({ _id: new ObjectId(itemId) })
+        const items = await sql`SELECT * FROM items WHERE id = ${itemId} LIMIT 1`
 
-        if (!item) {
+        if (items.length === 0) {
           await interaction.reply({
             content: "❌ Item not found!",
-            flags: 64, // EPHEMERAL flag
+            flags: 64,
           })
           return
         }
+
+        const item = items[0]
 
         // Create modal with current values
         const modal = new ModalBuilder()
@@ -117,7 +114,7 @@ export const editItemCommand: BotCommand = {
           .setCustomId("value")
           .setLabel("Value")
           .setStyle(TextInputStyle.Short)
-          .setValue(item.value?.toString() || "0")
+          .setValue(item.rap_value?.toString() || "0")
           .setRequired(true)
 
         const imageInput = new TextInputBuilder()
@@ -161,7 +158,7 @@ export const editItemCommand: BotCommand = {
         console.error("Error showing edit modal:", error)
         await interaction.reply({
           content: "❌ Failed to load item details. Please try again.",
-          flags: 64, // EPHEMERAL flag
+          flags: 64,
         })
       }
     }
@@ -178,34 +175,47 @@ export const editItemCommand: BotCommand = {
     const extra = interaction.fields.getTextInputValue("extra")
 
     try {
-      const collection = await getItemsCollection()
-      const item = await collection.findOne({ _id: new ObjectId(itemId) })
+      const items = await sql`SELECT * FROM items WHERE id = ${itemId} LIMIT 1`
 
-      if (!item) {
+      if (items.length === 0) {
         await interaction.editReply("❌ Item not found!")
         return
       }
 
+      const item = items[0]
+
       // Parse extra field based on game
       const [field1, field2] = extra.split("|").map((s) => s.trim())
 
-      const updateData: any = {
-        name,
-        section,
-        value,
-        image_url: image,
-        updatedAt: new Date(),
-      }
+      const now = new Date().toISOString()
 
       if (item.game === "Adopt Me") {
-        updateData.pot = field1
-        updateData.demand = field2
+        await sql`
+          UPDATE items 
+          SET name = ${name},
+              section = ${section},
+              rap_value = ${value},
+              image_url = ${image},
+              pot = ${field1 || null},
+              demand = ${field2 || null},
+              updated_at = ${now},
+              last_updated_at = ${now}
+          WHERE id = ${itemId}
+        `
       } else {
-        updateData.rarity = field1
-        updateData.demand = field2
+        await sql`
+          UPDATE items 
+          SET name = ${name},
+              section = ${section},
+              rap_value = ${value},
+              image_url = ${image},
+              rarity = ${field1 || null},
+              demand = ${field2 || null},
+              updated_at = ${now},
+              last_updated_at = ${now}
+          WHERE id = ${itemId}
+        `
       }
-
-      await collection.updateOne({ _id: new ObjectId(itemId) }, { $set: updateData })
 
       await interaction.editReply(`✅ Successfully updated **${name}** in ${item.game}!`)
     } catch (error) {
@@ -246,11 +256,10 @@ export const editItemCommand: BotCommand = {
 }
 
 async function showItemsPage(interaction: StringSelectMenuInteraction | ButtonInteraction, game: string, page: number) {
-  const collection = await getItemsCollection()
   const ITEMS_PER_PAGE = 25
 
-  // Get total count
-  const totalItems = await collection.countDocuments({ game })
+  const [countResult] = await sql`SELECT COUNT(*)::int as count FROM items WHERE game = ${game}`
+  const totalItems = countResult.count
 
   if (totalItems === 0) {
     await interaction.editReply({
@@ -261,12 +270,13 @@ async function showItemsPage(interaction: StringSelectMenuInteraction | ButtonIn
   }
 
   // Get items for current page
-  const items = await collection
-    .find({ game })
-    .sort({ rarity: 1, name: 1 })
-    .skip(page * ITEMS_PER_PAGE)
-    .limit(ITEMS_PER_PAGE)
-    .toArray()
+  const items = await sql`
+    SELECT * FROM items 
+    WHERE game = ${game}
+    ORDER BY section, name
+    LIMIT ${ITEMS_PER_PAGE}
+    OFFSET ${page * ITEMS_PER_PAGE}
+  `
 
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE)
 
@@ -274,10 +284,10 @@ async function showItemsPage(interaction: StringSelectMenuInteraction | ButtonIn
     .setCustomId("edititem_item")
     .setPlaceholder("Select an item to edit")
     .addOptions(
-      items.map((item) => ({
+      items.map((item: any) => ({
         label: `${item.name} (${item.section})`,
-        description: `Value: ${item.value}`,
-        value: item._id.toString(),
+        description: `Value: ${item.rap_value || 0}`,
+        value: item.id.toString(),
       })),
     )
 
