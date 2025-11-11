@@ -10,17 +10,17 @@
 import { config } from "dotenv"
 import { resolve } from "path"
 import { MongoClient } from "mongodb"
-import { Pool } from "pg"
+import postgres from "postgres"
 
-// Load .env.local file
-config({ path: resolve(process.cwd(), ".env.local") })
+// Load .env.local file with override
+config({ path: resolve(process.cwd(), ".env.local"), override: true })
 
 // MongoDB connection (your existing cloud MongoDB)
 const MONGODB_URI = process.env.MONGODB_URI!
 const MONGODB_DB = "trading-db"
 
 // PostgreSQL connection (your VPS)
-const POSTGRES_URL = process.env.DATABASE_URL!
+const POSTGRES_URL = process.env.POSTGRES_URL || process.env.DATABASE_URL!
 
 if (!MONGODB_URI) {
   console.error("❌ MONGODB_URI is not set in .env.local")
@@ -28,9 +28,11 @@ if (!MONGODB_URI) {
 }
 
 if (!POSTGRES_URL) {
-  console.error("❌ DATABASE_URL is not set in .env.local")
+  console.error("❌ POSTGRES_URL or DATABASE_URL is not set in .env.local")
   process.exit(1)
 }
+
+console.log(`[v0] Using database: ${POSTGRES_URL.split("@")[1]?.split("/")[0]}\n`)
 
 interface MongoItem {
   _id: any
@@ -77,8 +79,8 @@ async function migrate() {
 
   // Connect to PostgreSQL
   console.log("🐘 Connecting to PostgreSQL...")
-  const pgPool = new Pool({ connectionString: POSTGRES_URL })
-  await pgPool.query("SELECT NOW()")
+  const sql = postgres(POSTGRES_URL, { ssl: false })
+  await sql`SELECT NOW()`
   console.log("✅ Connected to PostgreSQL\n")
 
   try {
@@ -121,25 +123,24 @@ async function migrate() {
       const uniqueItems = Array.from(itemMap.values())
       console.log(`   Deduplicated to ${uniqueItems.length} unique items`)
 
-      await pgPool.query("DELETE FROM public.items")
+      await sql`DELETE FROM public.items`
       console.log("   Cleared existing items from PostgreSQL")
 
       let insertedCount = 0
       for (const item of uniqueItems) {
         try {
-          await pgPool.query(
-            `INSERT INTO public.items (name, game, section, image_url, rap_value, created_at, updated_at)
-             VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-            [
-              item.name,
-              item.game,
-              item.section || null, // Include section field
-              item.image_url || null,
-              item.value || 0,
-              item.createdAt || new Date(),
-              item.updatedAt || new Date(),
-            ],
-          )
+          await sql`
+            INSERT INTO public.items (name, game, section, image_url, rap_value, created_at, updated_at)
+            VALUES (
+              ${item.name},
+              ${item.game},
+              ${item.section || null},
+              ${item.image_url || null},
+              ${item.value || 0},
+              ${item.createdAt || new Date()},
+              ${item.updatedAt || new Date()}
+            )
+          `
           insertedCount++
         } catch (error: any) {
           console.log(`   ⚠️  Skipped duplicate item: ${item.name} (${item.game})`)
@@ -217,19 +218,18 @@ async function migrate() {
       let insertedPets = 0
       for (const petItem of petItems) {
         try {
-          await pgPool.query(
-            `INSERT INTO public.items (name, game, section, image_url, rap_value, created_at, updated_at)
-             VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-            [
-              petItem.name,
-              petItem.game,
-              petItem.section,
-              petItem.image_url,
-              petItem.rap_value,
-              petItem.created_at,
-              petItem.updated_at,
-            ],
-          )
+          await sql`
+            INSERT INTO public.items (name, game, section, image_url, rap_value, created_at, updated_at)
+            VALUES (
+              ${petItem.name},
+              ${petItem.game},
+              ${petItem.section},
+              ${petItem.image_url},
+              ${petItem.rap_value},
+              ${petItem.created_at},
+              ${petItem.updated_at}
+            )
+          `
           insertedPets++
         } catch (error: any) {
           console.log(`   ⚠️  Skipped duplicate pet: ${petItem.name}`)
@@ -245,8 +245,8 @@ async function migrate() {
     // STEP 3: Summary
     // ========================================
     console.log("📊 Migration Summary:")
-    const itemCount = await pgPool.query("SELECT COUNT(*) FROM public.items")
-    console.log(`   Total items in PostgreSQL: ${itemCount.rows[0].count}`)
+    const itemCount = await sql`SELECT COUNT(*) FROM public.items`
+    console.log(`   Total items in PostgreSQL: ${itemCount[0].count}`)
 
     console.log("\n✅ Migration completed successfully!")
     console.log("\n💡 Next steps:")
@@ -258,7 +258,7 @@ async function migrate() {
     throw error
   } finally {
     await mongoClient.close()
-    await pgPool.end()
+    await sql.end()
   }
 }
 
