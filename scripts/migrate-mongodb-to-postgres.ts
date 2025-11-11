@@ -128,12 +128,13 @@ async function migrate() {
       for (const item of uniqueItems) {
         try {
           await pgPool.query(
-            `INSERT INTO public.items (name, game, image_url, rap_value, created_at, updated_at)
-             VALUES ($1, $2, $3, $4, $5, $6)`,
+            `INSERT INTO public.items (name, game, section, image_url, rap_value, created_at, updated_at)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)`,
             [
               item.name,
               item.game,
-              item.image_url || "",
+              item.section || null, // Include section field
+              item.image_url || null,
               item.value || 0,
               item.createdAt || new Date(),
               item.updatedAt || new Date(),
@@ -217,9 +218,17 @@ async function migrate() {
       for (const petItem of petItems) {
         try {
           await pgPool.query(
-            `INSERT INTO public.items (name, game, image_url, rap_value, created_at, updated_at)
-             VALUES ($1, $2, $3, $4, $5, $6)`,
-            [petItem.name, petItem.game, petItem.image_url, petItem.rap_value, petItem.created_at, petItem.updated_at],
+            `INSERT INTO public.items (name, game, section, image_url, rap_value, created_at, updated_at)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+            [
+              petItem.name,
+              petItem.game,
+              petItem.section,
+              petItem.image_url,
+              petItem.rap_value,
+              petItem.created_at,
+              petItem.updated_at,
+            ],
           )
           insertedPets++
         } catch (error: any) {
