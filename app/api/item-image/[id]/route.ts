@@ -43,10 +43,13 @@ function getImageFetchHeaders(url: string): HeadersInit {
   return headers
 }
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params
   const { id } = params
 
   try {
+    console.log("[v0] Fetching image for item ID:", id)
+
     const items = await sql`
       SELECT image_url 
       FROM items 
@@ -54,15 +57,22 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       LIMIT 1
     `
 
+    console.log("[v0] Database query result:", items.length > 0 ? "found" : "not found")
+
     if (items.length === 0 || !items[0].image_url) {
+      console.log("[v0] No image URL found, returning placeholder")
       return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
     }
 
     const rawImageUrl = items[0].image_url
+    console.log("[v0] Raw image URL:", rawImageUrl)
+
     const imageUrl = getRobloxImageUrl(rawImageUrl) || rawImageUrl
+    console.log("[v0] Processed image URL:", imageUrl)
 
     const cached = imageCache.get(id)
     if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+      console.log("[v0] Returning cached image")
       return new NextResponse(cached.buffer, {
         headers: {
           "Content-Type": cached.contentType,
@@ -71,11 +81,15 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       })
     }
 
+    console.log("[v0] Fetching image from:", imageUrl)
     const imageResponse = await fetch(imageUrl, {
       headers: getImageFetchHeaders(imageUrl),
     })
 
+    console.log("[v0] Image fetch response status:", imageResponse.status)
+
     if (!imageResponse.ok) {
+      console.log("[v0] Image fetch failed, returning placeholder")
       return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
     }
 
@@ -88,6 +102,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       timestamp: Date.now(),
     })
 
+    console.log("[v0] Successfully returning image")
     return new NextResponse(imageBuffer, {
       headers: {
         "Content-Type": contentType,
