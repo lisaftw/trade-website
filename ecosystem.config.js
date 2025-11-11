@@ -1,3 +1,28 @@
+const fs = require("fs")
+const path = require("path")
+
+function loadEnvFile() {
+  const envPath = path.join(__dirname, ".env.local")
+  const env = {}
+
+  if (fs.existsSync(envPath)) {
+    const envContent = fs.readFileSync(envPath, "utf8")
+    envContent.split("\n").forEach((line) => {
+      const trimmed = line.trim()
+      if (trimmed && !trimmed.startsWith("#")) {
+        const [key, ...valueParts] = trimmed.split("=")
+        if (key) {
+          env[key.trim()] = valueParts.join("=").trim()
+        }
+      }
+    })
+  }
+
+  return env
+}
+
+const envVars = loadEnvFile()
+
 module.exports = {
   apps: [
     {
@@ -10,6 +35,7 @@ module.exports = {
       env: {
         NODE_ENV: "production",
         PORT: 3000,
+        ...envVars, // Include all environment variables from .env.local
       },
       max_memory_restart: "1G",
       error_file: "/home/deploy/logs/website-error.log",
@@ -30,6 +56,7 @@ module.exports = {
       exec_mode: "fork",
       env: {
         NODE_ENV: "production",
+        ...envVars, // Include all environment variables from .env.local
       },
       max_memory_restart: "500M",
       error_file: "/home/deploy/logs/bot-error.log",

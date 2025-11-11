@@ -1,16 +1,12 @@
 import { Client, GatewayIntentBits, Events, Collection } from "discord.js"
-import dotenv from "dotenv"
 import { addItemCommand } from "./commands/additem"
 import { editItemCommand } from "./commands/edititem"
 import { removeItemCommand } from "./commands/removeitem"
-
-dotenv.config({ path: ".env.local" })
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
 })
 
-// Store commands in a collection
 const commands = new Collection()
 commands.set(addItemCommand.data.name, addItemCommand)
 commands.set(editItemCommand.data.name, editItemCommand)
@@ -43,7 +39,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
       }
     }
   } else if (interaction.isStringSelectMenu()) {
-    // Handle select menu interactions for edit/remove commands
     const command = commands.get(interaction.customId.split("_")[0])
 
     if (command && command.handleSelectMenu) {
@@ -55,7 +50,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
       }
     }
   } else if (interaction.isModalSubmit()) {
-    // Handle modal submissions for edit command
     const command = commands.get(interaction.customId.split("_")[0])
 
     if (command && command.handleModal) {
@@ -67,7 +61,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
       }
     }
   } else if (interaction.isButton()) {
-    // Handle button interactions for remove confirmation
     const command = commands.get(interaction.customId.split("_")[0])
 
     if (command && command.handleButton) {
@@ -85,6 +78,10 @@ const token = process.env.DISCORD_BOT_TOKEN
 
 if (!token) {
   console.error("❌ DISCORD_BOT_TOKEN is not set in environment variables!")
+  console.error(
+    "Available env vars:",
+    Object.keys(process.env).filter((k) => k.includes("DISCORD")),
+  )
   process.exit(1)
 }
 
