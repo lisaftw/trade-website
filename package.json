@@ -6,10 +6,15 @@
     "bot": "tsx bot/index.ts",
     "bot:deploy": "tsx bot/deploy-commands.ts",
     "build": "next build",
+    "cleanup": "npx tsx scripts/cleanup-ai-references.ts",
     "dev": "next dev",
     "import:adoptme": "tsx scripts/import-adoptme-excel.ts",
     "import:mm2": "tsx scripts/import-mm2-values.ts",
     "lint": "next lint",
+    "migrate:images": "tsx scripts/migrate-images-with-browser.ts",
+    "migrate:images:curl": "tsx scripts/migrate-images-with-curl.ts",
+    "migrate:mongo-to-postgres": "tsx scripts/migrate-mongodb-to-postgres.ts",
+    "migrate:prepare-db": "tsx scripts/prepare-postgres-for-migration.ts",
     "start": "next start"
   },
   "dependencies": {
@@ -98,6 +103,7 @@
     "zod": "3.25.67"
   },
   "devDependencies": {
+    "@supabase/supabase-js": "latest",
     "@tailwindcss/postcss": "^4.1.9",
     "@types/node": "^22",
     "@types/react": "^18",
