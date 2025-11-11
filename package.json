@@ -7,7 +7,7 @@
     "bot:deploy": "tsx bot/deploy-commands.ts",
     "build": "next build",
     "cleanup": "npx tsx scripts/cleanup-ai-references.ts",
-    "db:add-indexes": "psql $POSTGRES_URL -f scripts/add-database-indexes.sql",
+    "db:add-indexes": "tsx scripts/add-database-indexes.ts",
     "db:check": "tsx scripts/check-database-items.ts",
     "db:fix-images": "tsx scripts/fix-placeholder-images.ts",
     "dev": "next dev",
