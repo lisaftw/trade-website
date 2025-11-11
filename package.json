@@ -53,7 +53,6 @@
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
     "@vercel/analytics": "1.3.1",
-    "autoprefixer": "^10.4.20",
     "child_process": "latest",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -71,7 +70,6 @@
     "geist": "^1.3.1",
     "http": "latest",
     "https": "latest",
-    "input-otp": "1.4.1",
     "ioredis": "latest",
     "kerberos": "latest",
     "lucide-react": "^0.454.0",
@@ -84,12 +82,11 @@
     "pg-native": "latest",
     "puppeteer": "latest",
     "react": "^18",
-    "react-day-picker": "9.8.0",
     "react-dom": "^18",
     "react-hook-form": "^7.60.0",
     "react-native": "latest",
-    "react-resizable-panels": "^2.1.7",
     "recharts": "2.15.4",
+    "sharp": "^0.33.5",
     "snappy": "latest",
     "socks": "latest",
     "sonner": "latest",
@@ -97,14 +94,13 @@
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "three": "latest",
+    "tw-animate-css": "latest",
     "url": "latest",
     "util": "latest",
-    "vaul": "^0.9.9",
     "xlsx": "latest",
     "zod": "3.25.67"
   },
   "devDependencies": {
-    "@supabase/supabase-js": "latest",
     "@tailwindcss/postcss": "^4.1.9",
     "@types/node": "^22",
     "@types/react": "^18",
@@ -112,7 +108,6 @@
     "postcss": "^8.5",
     "tailwindcss": "^4.1.9",
     "tsx": "^4.19.2",
-    "tw-animate-css": "1.3.3",
     "typescript": "^5"
   }
 }

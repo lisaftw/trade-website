@@ -5,7 +5,7 @@ import { join } from "path"
 import { existsSync } from "fs"
 
 const imageCache = new Map<string, { buffer: ArrayBuffer; contentType: string; timestamp: number }>()
-const CACHE_DURATION = 10 * 60 * 1000 // 10 minutes in memory
+const CACHE_DURATION = 10 * 60 * 1000
 
 function getRobloxImageUrl(assetIdOrUrl: string): string | null {
   if (assetIdOrUrl.startsWith("http://") || assetIdOrUrl.startsWith("https://")) {
@@ -44,8 +44,8 @@ function getImageFetchHeaders(url: string): HeadersInit {
   return headers
 }
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params
 
   try {
     const cached = imageCache.get(id)
@@ -65,7 +65,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
     }
 
-    if (!item.image_url) {
+    if (!item.image_url || item.image_url.includes("/placeholder.svg")) {
       return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
     }
 
