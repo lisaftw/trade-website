@@ -10,6 +10,7 @@
     "db:add-indexes": "tsx scripts/add-database-indexes.ts",
     "db:add-section": "tsx scripts/run-add-section-column.ts",
     "db:check": "tsx scripts/check-database-items.ts",
+    "db:check-images": "tsx scripts/check-image-urls.ts",
     "db:fix-images": "tsx scripts/fix-placeholder-images.ts",
     "db:migrate": "tsx scripts/migrate-mongodb-to-postgres.ts",
     "dev": "next dev",
