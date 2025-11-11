@@ -32,12 +32,14 @@ export async function GET(req: Request) {
   const cookieStore = await cookies()
   const storedState = cookieStore.get("discord_oauth_state")?.value
 
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${url.protocol}//${url.host}`
+
   if (error) {
-    return Response.redirect(`${url.origin}/login?error=oauth_denied`, 302)
+    return Response.redirect(`${baseUrl}/login?error=oauth_denied`, 302)
   }
 
   if (!code || !state || !storedState || state !== storedState) {
-    return Response.redirect(`${url.origin}/login?error=invalid_state`, 302)
+    return Response.redirect(`${baseUrl}/login?error=invalid_state`, 302)
   }
 
   cookieStore.set("discord_oauth_state", "", {
@@ -55,7 +57,7 @@ export async function GET(req: Request) {
   const clientSecret = process.env.DISCORD_CLIENT_SECRET
 
   if (!clientId || !clientSecret) {
-    return Response.redirect(`${url.origin}/login?error=config_error`, 302)
+    return Response.redirect(`${baseUrl}/login?error=config_error`, 302)
   }
 
   try {
@@ -76,7 +78,7 @@ export async function GET(req: Request) {
     if (!tokenRes.ok) {
       const errText = await tokenRes.text()
       console.error("Discord OAuth token exchange failed:", tokenRes.status, errText)
-      return Response.redirect(`${url.origin}/login?error=token_exchange_failed`, 302)
+      return Response.redirect(`${baseUrl}/login?error=token_exchange_failed`, 302)
     }
 
     const tokenJson = (await tokenRes.json()) as TokenResponse
@@ -89,7 +91,7 @@ export async function GET(req: Request) {
     if (!userRes.ok) {
       const errText = await userRes.text()
       console.error("Failed to fetch Discord user:", userRes.status, errText)
-      return Response.redirect(`${url.origin}/login?error=user_fetch_failed`, 302)
+      return Response.redirect(`${baseUrl}/login?error=user_fetch_failed`, 302)
     }
 
     const discordUser = (await userRes.json()) as DiscordUser
@@ -113,7 +115,7 @@ export async function GET(req: Request) {
       })
     } catch (error: any) {
       console.error("Failed to upsert user profile:", error.message)
-      return Response.redirect(`${url.origin}/login?error=database_error`, 302)
+      return Response.redirect(`${baseUrl}/login?error=database_error`, 302)
     }
 
     const expiresAt = new Date(Date.now() + tokenJson.expires_in * 1000)
@@ -143,9 +145,9 @@ export async function GET(req: Request) {
     }
 
     const redirectPath = isNewUser ? "/?welcome=true" : "/"
-    return Response.redirect(`${url.origin}${redirectPath}`, 302)
+    return Response.redirect(`${baseUrl}${redirectPath}`, 302)
   } catch (error: any) {
     console.error("OAuth callback error:", error.message)
-    return Response.redirect(`${url.origin}/login?error=unexpected_error`, 302)
+    return Response.redirect(`${baseUrl}/login?error=unexpected_error`, 302)
   }
 }
