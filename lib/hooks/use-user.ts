@@ -1,6 +1,7 @@
 "use client"
 
-import { useEffect, useState, useCallback, useRef } from "react"
+import useSWR from "swr"
+import { useCallback } from "react"
 
 type User = {
   discordId: string
@@ -10,62 +11,31 @@ type User = {
   email: string | null
 } | null
 
+const fetcher = async (url: string) => {
+  const res = await fetch(url)
+  if (!res.ok) {
+    if (res.status === 401) {
+      return { user: null }
+    }
+    throw new Error("Failed to fetch user")
+  }
+  return res.json()
+}
+
 export function useUser() {
-  const [user, setUser] = useState<User>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const fetchingRef = useRef(false)
+  const { data, error, isLoading, mutate } = useSWR("/api/user/me", fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    dedupingInterval: 60000,
+    focusThrottleInterval: 60000,
+  })
 
-  const fetchUser = useCallback(async () => {
-    if (fetchingRef.current) {
-      console.log("Skipping duplicate user fetch request")
-      return
-    }
+  const user = data?.user ?? null
 
-    try {
-      fetchingRef.current = true
-      setLoading(true)
-      const res = await fetch("/api/user/me", {
-        cache: "no-store",
-        headers: {
-          "Cache-Control": "no-cache",
-        },
-      })
-      const data = await res.json()
-
-      if (res.ok) {
-        setUser(data.user)
-      } else {
-        setUser(null)
-      }
-    } catch (err) {
-      console.error("Failed to fetch user:", err)
-      setError("Failed to load user")
-      setUser(null)
-    } finally {
-      setLoading(false)
-      fetchingRef.current = false
-    }
-  }, [])
-
-  useEffect(() => {
-    fetchUser()
-
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "user_logged_in" && e.storageArea === localStorage) {
-        console.log("User login detected in another window, refetching")
-        fetchUser()
-      }
-    }
-
-    window.addEventListener("storage", handleStorageChange)
-    return () => window.removeEventListener("storage", handleStorageChange)
-  }, [fetchUser])
-
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST" })
-      setUser(null)
+      mutate({ user: null }, false)
       try {
         localStorage.removeItem("user_logged_in")
       } catch {}
@@ -73,7 +43,17 @@ export function useUser() {
     } catch (err) {
       console.error("Logout failed:", err)
     }
-  }
+  }, [mutate])
 
-  return { user, loading, error, refetch: fetchUser, logout }
+  const refetch = useCallback(() => {
+    mutate()
+  }, [mutate])
+
+  return {
+    user,
+    loading: isLoading,
+    error: error?.message ?? null,
+    refetch,
+    logout,
+  }
 }

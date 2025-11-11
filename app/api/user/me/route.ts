@@ -31,13 +31,12 @@ export async function GET() {
       },
       {
         headers: {
-          // Browser shows cached data immediately, fetches fresh data in background
           "Cache-Control": "private, max-age=300, stale-while-revalidate=60",
         },
       },
     )
   } catch (error) {
-    console.error("[v0] User fetch error:", error)
+    console.error("User fetch error:", error)
     return Response.json({ error: "Failed to fetch user" }, { status: 500 })
   }
 }
