@@ -28,21 +28,12 @@ export function getPool(): Pool {
       allowExitOnIdle: false, // Keep pool alive
 
       // SSL configuration for production
-      ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
+      ssl: { rejectUnauthorized: false }, // Always disable SSL certificate verification for Supabase
     })
 
     // Handle pool errors
     pool.on("error", (err) => {
-      console.error("[v0] Unexpected database pool error:", err)
-    })
-
-    // Log pool stats for monitoring
-    pool.on("connect", () => {
-      console.log("[v0] New database client connected")
-    })
-
-    pool.on("remove", () => {
-      console.log("[v0] Database client removed from pool")
+      console.error("Unexpected database pool error:", err)
     })
   }
 
@@ -62,12 +53,12 @@ export async function query<T = any>(text: string, params?: any[]): Promise<Quer
 
     // Log slow queries (>100ms)
     if (duration > 100) {
-      console.warn(`[v0] Slow query (${duration}ms):`, text.substring(0, 100))
+      console.warn(`Slow query (${duration}ms):`, text.substring(0, 100))
     }
 
     return result
   } catch (error) {
-    console.error("[v0] Database query error:", error)
+    console.error("Database query error:", error)
     throw error
   }
 }
@@ -106,7 +97,7 @@ export async function closePool(): Promise<void> {
   if (pool) {
     await pool.end()
     pool = null
-    console.log("[v0] Database pool closed")
+    console.log("Database pool closed")
   }
 }
 
