@@ -30,14 +30,14 @@ module.exports = {
       script: "npm",
       args: "start",
       cwd: "/home/deploy/trading-website",
-      instances: 2,
-      exec_mode: "cluster",
+      instances: 5,
+      exec_mode: "fork",
       env: {
         NODE_ENV: "production",
-        PORT: 3000,
-        ...envVars, // Include all environment variables from .env.local
+        PORT: 3000 + Number.parseInt(process.env.pm_id || 0),
+        ...envVars,
       },
-      max_memory_restart: "1G",
+      max_memory_restart: "4G",
       error_file: "/home/deploy/logs/website-error.log",
       out_file: "/home/deploy/logs/website-out.log",
       log_date_format: "YYYY-MM-DD HH:mm:ss Z",
@@ -56,7 +56,7 @@ module.exports = {
       exec_mode: "fork",
       env: {
         NODE_ENV: "production",
-        ...envVars, // Include all environment variables from .env.local
+        ...envVars,
       },
       max_memory_restart: "500M",
       error_file: "/home/deploy/logs/bot-error.log",
