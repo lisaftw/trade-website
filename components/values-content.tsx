@@ -33,17 +33,13 @@ export function ValuesContent() {
     async function fetchItems() {
       setLoading(true)
       try {
-        console.log("[v0] Fetching items for game:", selectedGame)
         const res = await fetch(`/api/items?game=${encodeURIComponent(selectedGame)}`)
         if (res.ok) {
           const data = await res.json()
-          console.log("[v0] Received items:", data.items?.length || 0)
           setItems(data.items || [])
-        } else {
-          console.error("[v0] Failed to fetch items:", res.status, res.statusText)
         }
       } catch (error) {
-        console.error("[v0] Failed to fetch items:", error)
+        console.error("Failed to fetch items:", error)
       } finally {
         setLoading(false)
       }
@@ -88,7 +84,6 @@ export function ValuesContent() {
         })}
       </div>
 
-      {/* Search */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input

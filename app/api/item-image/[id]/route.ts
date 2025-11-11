@@ -8,19 +8,16 @@ const imageCache = new Map<string, { buffer: ArrayBuffer; contentType: string; t
 const CACHE_DURATION = 10 * 60 * 1000 // 10 minutes in memory
 
 function getRobloxImageUrl(assetIdOrUrl: string): string | null {
-  // If it's already a full URL, return it
   if (assetIdOrUrl.startsWith("http://") || assetIdOrUrl.startsWith("https://")) {
     return assetIdOrUrl
   }
 
-  // If it's a proxy URL like /api/item-image/12345, extract the asset ID
   const proxyMatch = assetIdOrUrl.match(/\/api\/item-image\/(\d+)/)
   if (proxyMatch) {
     const assetId = proxyMatch[1]
     return `https://assetdelivery.roblox.com/v1/asset/?id=${assetId}`
   }
 
-  // If it's just a number, treat it as an asset ID
   if (/^\d+$/.test(assetIdOrUrl)) {
     return `https://assetdelivery.roblox.com/v1/asset/?id=${assetIdOrUrl}`
   }
@@ -34,13 +31,11 @@ function getImageFetchHeaders(url: string): HeadersInit {
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
   }
 
-  // Discord CDN needs specific headers
   if (url.includes("cdn.discordapp.com")) {
     headers["Accept"] = "image/webp,image/apng,image/*,*/*;q=0.8"
     headers["Referer"] = "https://discord.com/"
   }
 
-  // Wikia/Fandom needs specific headers
   if (url.includes("wikia.nocookie.net") || url.includes("fandom.com")) {
     headers["Accept"] = "image/webp,image/apng,image/*,*/*;q=0.8"
     headers["Referer"] = "https://www.fandom.com/"
@@ -64,16 +59,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       })
     }
 
-    console.log("[v0] Fetching image for item ID:", id)
     const item = await getItemById(id)
 
     if (!item) {
-      console.log("[v0] Item not found:", id)
       return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
     }
 
     if (!item.image_url) {
-      console.log("[v0] Item has no image_url:", id, item.name)
       return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
     }
 
@@ -93,7 +85,6 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             webp: "image/webp",
           }[extension || "png"] || "image/png"
 
-        // Cache in memory
         imageCache.set(id, {
           buffer: imageBuffer.buffer,
           contentType,
@@ -108,7 +99,6 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           },
         })
       } else {
-        console.log(`[v0] Local image not found: ${filepath}`)
         return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
       }
     }
@@ -116,11 +106,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const imageUrl = getRobloxImageUrl(item.image_url)
 
     if (!imageUrl) {
-      console.error("[v0] Invalid image URL for item", item.name, ":", item.image_url)
       return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
     }
-
-    console.log("[v0] Fetching image from URL:", imageUrl)
 
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 10000)
@@ -134,11 +121,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       clearTimeout(timeoutId)
 
       if (!response.ok) {
-        console.log("[v0] Image fetch failed:", response.status, response.statusText, "for", item.name)
         return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
       }
 
-      console.log("[v0] Image fetched successfully for:", item.name)
       const imageBuffer = await response.arrayBuffer()
       const contentType = response.headers.get("Content-Type") || "image/png"
 
@@ -154,15 +139,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       })
     } catch (fetchError) {
       clearTimeout(timeoutId)
-      if (fetchError instanceof Error && fetchError.name === "AbortError") {
-        console.error("[v0] Image fetch timeout for", item.name, ":", imageUrl)
-      } else {
-        console.error("[v0] Image fetch error for", item.name, ":", fetchError)
-      }
       return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
     }
   } catch (error) {
-    console.error("[v0] Error proxying image for item", id, ":", error)
+    console.error("Error proxying image for item", id, ":", error)
     return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
   }
 }

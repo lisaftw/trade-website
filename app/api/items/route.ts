@@ -1,4 +1,4 @@
-export const revalidate = 3600 // Cache for 1 hour
+export const revalidate = 3600
 
 import { type NextRequest, NextResponse } from "next/server"
 import { getItems, searchItems } from "@/lib/db/queries/items"
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
         game: item.game,
         name: item.name,
         image_url: imageUrl,
-        rap_value: item.value || item.rap_value || 0,
+        rap_value: item.rap_value || 0,
         neon_value: item.neon_value || 0,
         mega_value: item.mega_value || 0,
         fly_bonus: item.fly_bonus || 50,
