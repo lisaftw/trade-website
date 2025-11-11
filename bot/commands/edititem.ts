@@ -9,9 +9,7 @@ import {
   TextInputBuilder,
   TextInputStyle,
 } from "discord.js"
-import { MongoClient, ObjectId } from "mongodb"
-
-const MONGODB_URI = process.env.MONGODB_URI!
+import { sql } from "@vercel/postgres"
 
 export const editItemCommand = {
   data: new SlashCommandBuilder().setName("edititem").setDescription("Edit an existing item in the database"),
@@ -20,16 +18,7 @@ export const editItemCommand = {
     await interaction.deferReply({ ephemeral: true })
 
     try {
-      const client = new MongoClient(MONGODB_URI)
-      await client.connect()
-
-      const db = client.db("trading-db")
-      const collection = db.collection("items")
-
-      // Get all games
-      const games = await collection.distinct("game")
-
-      await client.close()
+      const games = ["mm2", "sab", "adoptme"]
 
       if (games.length === 0) {
         await interaction.editReply("❌ No games found in the database!")
@@ -40,12 +29,11 @@ export const editItemCommand = {
       const selectMenu = new StringSelectMenuBuilder()
         .setCustomId("edititem_game")
         .setPlaceholder("Select a game")
-        .addOptions(
-          games.map((game) => ({
-            label: game,
-            value: game,
-          })),
-        )
+        .addOptions([
+          { label: "Murder Mystery 2", value: "mm2" },
+          { label: "Steal a Brain Rot", value: "sab" },
+          { label: "Adopt Me", value: "adoptme" },
+        ])
 
       const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu)
 
@@ -69,17 +57,16 @@ export const editItemCommand = {
       const selectedGame = interaction.values[0]
 
       try {
-        const client = new MongoClient(MONGODB_URI)
-        await client.connect()
+        let items
+        if (selectedGame === "mm2") {
+          items = await sql`SELECT id, name, section, value FROM mm2_items ORDER BY name LIMIT 25`
+        } else if (selectedGame === "sab") {
+          items = await sql`SELECT id, name, section, value FROM sab_items ORDER BY name LIMIT 25`
+        } else if (selectedGame === "adoptme") {
+          items = await sql`SELECT id, name, section, value FROM adoptme_items ORDER BY name LIMIT 25`
+        }
 
-        const db = client.db("trading-db")
-        const collection = db.collection("items")
-
-        const items = await collection.find({ game: selectedGame }).limit(25).toArray()
-
-        await client.close()
-
-        if (items.length === 0) {
+        if (!items || items.rows.length === 0) {
           await interaction.editReply({
             content: `❌ No items found for ${selectedGame}!`,
             components: [],
@@ -88,12 +75,12 @@ export const editItemCommand = {
         }
 
         const selectMenu = new StringSelectMenuBuilder()
-          .setCustomId("edititem_item")
+          .setCustomId(`edititem_item_${selectedGame}`)
           .setPlaceholder("Select an item to edit")
           .addOptions(
-            items.map((item) => ({
+            items.rows.map((item: any) => ({
               label: item.name.substring(0, 100),
-              value: item._id.toString(),
+              value: item.id,
               description: `Value: ${item.value} | Section: ${item.section || "N/A"}`,
             })),
           )
@@ -101,7 +88,7 @@ export const editItemCommand = {
         const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu)
 
         await interaction.editReply({
-          content: `📋 Select an item from **${selectedGame}** to edit:`,
+          content: `📋 Select an item from **${selectedGame.toUpperCase()}** to edit:`,
           components: [row],
         })
       } catch (error) {
@@ -114,52 +101,56 @@ export const editItemCommand = {
     } else if (type === "item") {
       // User selected an item, show edit modal
       const itemId = interaction.values[0]
+      const selectedGame = interaction.customId.split("_")[2]
 
       try {
-        const client = new MongoClient(MONGODB_URI)
-        await client.connect()
+        let item
+        if (selectedGame === "mm2") {
+          item = await sql`SELECT * FROM mm2_items WHERE id = ${itemId}`
+        } else if (selectedGame === "sab") {
+          item = await sql`SELECT * FROM sab_items WHERE id = ${itemId}`
+        } else if (selectedGame === "adoptme") {
+          item = await sql`SELECT * FROM adoptme_items WHERE id = ${itemId}`
+        }
 
-        const db = client.db("trading-db")
-        const collection = db.collection("items")
-
-        const item = await collection.findOne({ _id: new ObjectId(itemId) })
-
-        await client.close()
-
-        if (!item) {
+        if (!item || item.rows.length === 0) {
           await interaction.reply({ content: "❌ Item not found!", ephemeral: true })
           return
         }
 
+        const itemData = item.rows[0]
+
         // Create modal with current values
-        const modal = new ModalBuilder().setCustomId(`edititem_modal_${itemId}`).setTitle(`Edit: ${item.name}`)
+        const modal = new ModalBuilder()
+          .setCustomId(`edititem_modal_${selectedGame}_${itemId}`)
+          .setTitle(`Edit: ${itemData.name}`)
 
         const nameInput = new TextInputBuilder()
           .setCustomId("name")
           .setLabel("Name")
           .setStyle(TextInputStyle.Short)
-          .setValue(item.name)
+          .setValue(itemData.name)
           .setRequired(true)
 
         const sectionInput = new TextInputBuilder()
           .setCustomId("section")
           .setLabel("Section")
           .setStyle(TextInputStyle.Short)
-          .setValue(item.section || "")
+          .setValue(itemData.section || "")
           .setRequired(true)
 
         const valueInput = new TextInputBuilder()
           .setCustomId("value")
           .setLabel("Value")
           .setStyle(TextInputStyle.Short)
-          .setValue(item.value.toString())
+          .setValue(itemData.value.toString())
           .setRequired(true)
 
         const imageInput = new TextInputBuilder()
           .setCustomId("image")
           .setLabel("Image URL")
           .setStyle(TextInputStyle.Short)
-          .setValue(item.image_url || "")
+          .setValue(itemData.image_url || "")
           .setRequired(false)
 
         const extraInput = new TextInputBuilder()
@@ -168,9 +159,9 @@ export const editItemCommand = {
           .setStyle(TextInputStyle.Short)
           .setValue(
             [
-              item.rarity ? `rarity:${item.rarity}` : "",
-              item.demand ? `demand:${item.demand}` : "",
-              item.pot ? `pot:${item.pot}` : "",
+              itemData.rarity ? `rarity:${itemData.rarity}` : "",
+              itemData.demand ? `demand:${itemData.demand}` : "",
+              itemData.pot ? `pot:${itemData.pot}` : "",
             ]
               .filter(Boolean)
               .join(","),
@@ -196,7 +187,7 @@ export const editItemCommand = {
   async handleModal(interaction: ModalSubmitInteraction) {
     await interaction.deferReply({ ephemeral: true })
 
-    const itemId = interaction.customId.split("_")[2]
+    const [command, modal, selectedGame, itemId] = interaction.customId.split("_")
     const name = interaction.fields.getTextInputValue("name")
     const section = interaction.fields.getTextInputValue("section")
     const value = Number.parseFloat(interaction.fields.getTextInputValue("value"))
@@ -209,24 +200,8 @@ export const editItemCommand = {
     }
 
     try {
-      const client = new MongoClient(MONGODB_URI)
-      await client.connect()
-
-      const db = client.db("trading-db")
-      const collection = db.collection("items")
-
-      const updates: any = {
-        name,
-        section,
-        value,
-        updatedAt: new Date(),
-      }
-
-      if (image) {
-        updates.image_url = image
-      }
-
       // Parse extra fields
+      const updates: any = { rarity: null, demand: null, pot: null }
       if (extraFields) {
         const pairs = extraFields.split(",")
         pairs.forEach((pair) => {
@@ -237,18 +212,55 @@ export const editItemCommand = {
         })
       }
 
-      const result = await collection.updateOne({ _id: new ObjectId(itemId) }, { $set: updates })
+      let result
+      if (selectedGame === "mm2") {
+        result = await sql`
+          UPDATE mm2_items 
+          SET name = ${name}, 
+              section = ${section}, 
+              value = ${value}, 
+              image_url = ${image || null},
+              rarity = ${updates.rarity || "Common"},
+              demand = ${updates.demand || "Unknown"},
+              updated_at = NOW()
+          WHERE id = ${itemId}
+        `
+      } else if (selectedGame === "sab") {
+        result = await sql`
+          UPDATE sab_items 
+          SET name = ${name}, 
+              section = ${section}, 
+              value = ${value}, 
+              image_url = ${image || null},
+              rarity = ${updates.rarity || "Common"},
+              demand = ${updates.demand || "Unknown"},
+              updated_at = NOW()
+          WHERE id = ${itemId}
+        `
+      } else if (selectedGame === "adoptme") {
+        result = await sql`
+          UPDATE adoptme_items 
+          SET name = ${name}, 
+              section = ${section}, 
+              value = ${value}, 
+              image_url = ${image || null},
+              pot = ${updates.pot || "Normal"},
+              demand = ${updates.demand || "Unknown"},
+              updated_at = NOW()
+          WHERE id = ${itemId}
+        `
+      }
 
-      await client.close()
-
-      if (result.modifiedCount > 0) {
+      if (result && result.rowCount > 0) {
         await interaction.editReply(`✅ Successfully updated **${name}**!`)
       } else {
         await interaction.editReply("⚠️ No changes were made.")
       }
     } catch (error) {
       console.error("Error updating item:", error)
-      await interaction.editReply("❌ Failed to update item. Please try again.")
+      await interaction.editReply(
+        `❌ Failed to update item: ${error instanceof Error ? error.message : "Unknown error"}`,
+      )
     }
   },
 }

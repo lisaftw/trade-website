@@ -1,7 +1,5 @@
 import { SlashCommandBuilder, type ChatInputCommandInteraction } from "discord.js"
-import { MongoClient } from "mongodb"
-
-const MONGODB_URI = process.env.MONGODB_URI!
+import { sql } from "@vercel/postgres"
 
 export const addItemCommand = {
   data: new SlashCommandBuilder()
@@ -13,10 +11,9 @@ export const addItemCommand = {
         .setDescription("Select the game")
         .setRequired(true)
         .addChoices(
-          { name: "Murder Mystery 2", value: "MM2" },
-          { name: "Adopt Me", value: "Adopt Me" },
-          { name: "Steal a Brain Rot", value: "SAB" },
-          { name: "Grow a Garden", value: "GAG" },
+          { name: "Murder Mystery 2", value: "mm2" },
+          { name: "Adopt Me", value: "adoptme" },
+          { name: "Steal a Brain Rot", value: "sab" },
         ),
     )
     .addStringOption((option) => option.setName("name").setDescription("Item name").setRequired(true))
@@ -24,10 +21,10 @@ export const addItemCommand = {
     .addNumberOption((option) => option.setName("value").setDescription("Item value").setRequired(true))
     .addStringOption((option) => option.setName("image").setDescription("Image URL").setRequired(true))
     .addStringOption((option) =>
-      option.setName("rarity").setDescription("Item rarity (for MM2, SAB, GAG)").setRequired(false),
+      option.setName("rarity").setDescription("Item rarity (for MM2, SAB)").setRequired(false),
     )
     .addStringOption((option) =>
-      option.setName("demand").setDescription("Item demand (for MM2, SAB, GAG, Adopt Me)").setRequired(false),
+      option.setName("demand").setDescription("Item demand (for MM2, SAB, Adopt Me)").setRequired(false),
     )
     .addStringOption((option) =>
       option.setName("pot").setDescription("Potion type (for Adopt Me only)").setRequired(false),
@@ -46,56 +43,50 @@ export const addItemCommand = {
     const pot = interaction.options.getString("pot")
 
     // Validate game-specific fields
-    if ((game === "MM2" || game === "SAB" || game === "GAG") && !rarity) {
+    if ((game === "mm2" || game === "sab") && !rarity) {
       await interaction.editReply("❌ Rarity is required for this game!")
       return
     }
 
-    if (game === "Adopt Me" && !pot) {
+    if (game === "adoptme" && !pot) {
       await interaction.editReply("❌ Pot (potion type) is required for Adopt Me!")
       return
     }
 
     try {
-      const client = new MongoClient(MONGODB_URI)
-      await client.connect()
+      let result
 
-      const db = client.db("trading-db")
-      const collection = db.collection("items")
-
-      // Build item object based on game
-      const item: any = {
-        name,
-        section,
-        value,
-        image_url: image,
-        game,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+      if (game === "mm2") {
+        result = await sql`
+          INSERT INTO mm2_items (name, section, value, image_url, rarity, demand, created_at, updated_at)
+          VALUES (${name}, ${section}, ${value}, ${image}, ${rarity || "Common"}, ${demand || "Unknown"}, NOW(), NOW())
+          RETURNING id, name
+        `
+      } else if (game === "sab") {
+        result = await sql`
+          INSERT INTO sab_items (name, section, value, image_url, rarity, demand, created_at, updated_at)
+          VALUES (${name}, ${section}, ${value}, ${image}, ${rarity || "Common"}, ${demand || "Unknown"}, NOW(), NOW())
+          RETURNING id, name
+        `
+      } else if (game === "adoptme") {
+        result = await sql`
+          INSERT INTO adoptme_items (name, section, value, image_url, pot, demand, created_at, updated_at)
+          VALUES (${name}, ${section}, ${value}, ${image}, ${pot || "Normal"}, ${demand || "Unknown"}, NOW(), NOW())
+          RETURNING id, name
+        `
       }
-
-      // Add game-specific fields
-      if (game === "MM2" || game === "SAB" || game === "GAG") {
-        item.rarity = rarity
-        item.demand = demand || "Unknown"
-      } else if (game === "Adopt Me") {
-        item.demand = demand || "Unknown"
-        item.pot = pot
-      }
-
-      const result = await collection.insertOne(item)
-
-      await client.close()
 
       await interaction.editReply(
-        `✅ Successfully added **${name}** to ${game}!\n` +
+        `✅ Successfully added **${name}** to ${game.toUpperCase()}!\n` +
           `📊 Value: ${value}\n` +
           `📁 Section: ${section}\n` +
-          `🆔 ID: ${result.insertedId}`,
+          `🆔 ID: ${result?.rows[0]?.id}`,
       )
     } catch (error) {
       console.error("Error adding item:", error)
-      await interaction.editReply("❌ Failed to add item to database. Please try again.")
+      await interaction.editReply(
+        `❌ Failed to add item to database: ${error instanceof Error ? error.message : "Unknown error"}`,
+      )
     }
   },
 }

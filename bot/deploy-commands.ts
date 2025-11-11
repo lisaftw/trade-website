@@ -1,10 +1,8 @@
 import { REST, Routes } from "discord.js"
-import dotenv from "dotenv"
+import "dotenv/config"
 import { addItemCommand } from "./commands/additem"
 import { editItemCommand } from "./commands/edititem"
 import { removeItemCommand } from "./commands/removeitem"
-
-dotenv.config({ path: ".env.local" })
 
 const commands = [addItemCommand.data.toJSON(), editItemCommand.data.toJSON(), removeItemCommand.data.toJSON()]
 

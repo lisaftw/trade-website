@@ -1,3 +1,4 @@
+import "dotenv/config"
 import { Client, GatewayIntentBits, Events, Collection } from "discord.js"
 import { addItemCommand } from "./commands/additem"
 import { editItemCommand } from "./commands/edititem"
@@ -84,5 +85,19 @@ if (!token) {
   )
   process.exit(1)
 }
+
+import { sql } from "@vercel/postgres"
+
+async function testDatabaseConnection() {
+  try {
+    const result = await sql`SELECT NOW()`
+    console.log("✅ Database connected successfully!")
+  } catch (error) {
+    console.error("❌ Database connection failed:", error)
+    console.error("Make sure POSTGRES_URL is set in your environment variables")
+  }
+}
+
+testDatabaseConnection()
 
 client.login(token)

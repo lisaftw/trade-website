@@ -8,9 +8,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
 } from "discord.js"
-import { MongoClient, ObjectId } from "mongodb"
-
-const MONGODB_URI = process.env.MONGODB_URI!
+import { sql } from "@vercel/postgres"
 
 export const removeItemCommand = {
   data: new SlashCommandBuilder().setName("removeitem").setDescription("Remove an item from the database"),
@@ -19,15 +17,7 @@ export const removeItemCommand = {
     await interaction.deferReply({ ephemeral: true })
 
     try {
-      const client = new MongoClient(MONGODB_URI)
-      await client.connect()
-
-      const db = client.db("trading-db")
-      const collection = db.collection("items")
-
-      const games = await collection.distinct("game")
-
-      await client.close()
+      const games = ["mm2", "sab", "adoptme"]
 
       if (games.length === 0) {
         await interaction.editReply("❌ No games found in the database!")
@@ -37,12 +27,11 @@ export const removeItemCommand = {
       const selectMenu = new StringSelectMenuBuilder()
         .setCustomId("removeitem_game")
         .setPlaceholder("Select a game")
-        .addOptions(
-          games.map((game) => ({
-            label: game,
-            value: game,
-          })),
-        )
+        .addOptions([
+          { label: "Murder Mystery 2", value: "mm2" },
+          { label: "Steal a Brain Rot", value: "sab" },
+          { label: "Adopt Me", value: "adoptme" },
+        ])
 
       const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu)
 
@@ -65,17 +54,16 @@ export const removeItemCommand = {
       const selectedGame = interaction.values[0]
 
       try {
-        const client = new MongoClient(MONGODB_URI)
-        await client.connect()
+        let items
+        if (selectedGame === "mm2") {
+          items = await sql`SELECT id, name, section, value FROM mm2_items ORDER BY name LIMIT 25`
+        } else if (selectedGame === "sab") {
+          items = await sql`SELECT id, name, section, value FROM sab_items ORDER BY name LIMIT 25`
+        } else if (selectedGame === "adoptme") {
+          items = await sql`SELECT id, name, section, value FROM adoptme_items ORDER BY name LIMIT 25`
+        }
 
-        const db = client.db("trading-db")
-        const collection = db.collection("items")
-
-        const items = await collection.find({ game: selectedGame }).limit(25).toArray()
-
-        await client.close()
-
-        if (items.length === 0) {
+        if (!items || items.rows.length === 0) {
           await interaction.editReply({
             content: `❌ No items found for ${selectedGame}!`,
             components: [],
@@ -84,12 +72,12 @@ export const removeItemCommand = {
         }
 
         const selectMenu = new StringSelectMenuBuilder()
-          .setCustomId("removeitem_item")
+          .setCustomId(`removeitem_item_${selectedGame}`)
           .setPlaceholder("Select an item to remove")
           .addOptions(
-            items.map((item) => ({
+            items.rows.map((item: any) => ({
               label: item.name.substring(0, 100),
-              value: item._id.toString(),
+              value: item.id,
               description: `Value: ${item.value} | Section: ${item.section || "N/A"}`,
             })),
           )
@@ -97,7 +85,7 @@ export const removeItemCommand = {
         const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu)
 
         await interaction.editReply({
-          content: `📋 Select an item from **${selectedGame}** to remove:`,
+          content: `📋 Select an item from **${selectedGame.toUpperCase()}** to remove:`,
           components: [row],
         })
       } catch (error) {
@@ -111,19 +99,19 @@ export const removeItemCommand = {
       await interaction.deferUpdate()
 
       const itemId = interaction.values[0]
+      const selectedGame = interaction.customId.split("_")[2]
 
       try {
-        const client = new MongoClient(MONGODB_URI)
-        await client.connect()
+        let item
+        if (selectedGame === "mm2") {
+          item = await sql`SELECT * FROM mm2_items WHERE id = ${itemId}`
+        } else if (selectedGame === "sab") {
+          item = await sql`SELECT * FROM sab_items WHERE id = ${itemId}`
+        } else if (selectedGame === "adoptme") {
+          item = await sql`SELECT * FROM adoptme_items WHERE id = ${itemId}`
+        }
 
-        const db = client.db("trading-db")
-        const collection = db.collection("items")
-
-        const item = await collection.findOne({ _id: new ObjectId(itemId) })
-
-        await client.close()
-
-        if (!item) {
+        if (!item || item.rows.length === 0) {
           await interaction.editReply({
             content: "❌ Item not found!",
             components: [],
@@ -131,8 +119,10 @@ export const removeItemCommand = {
           return
         }
 
+        const itemData = item.rows[0]
+
         const confirmButton = new ButtonBuilder()
-          .setCustomId(`removeitem_confirm_${itemId}`)
+          .setCustomId(`removeitem_confirm_${selectedGame}_${itemId}`)
           .setLabel("✅ Confirm Delete")
           .setStyle(ButtonStyle.Danger)
 
@@ -145,10 +135,10 @@ export const removeItemCommand = {
 
         await interaction.editReply({
           content:
-            `⚠️ Are you sure you want to delete **${item.name}**?\n\n` +
-            `📊 Value: ${item.value}\n` +
-            `📁 Section: ${item.section || "N/A"}\n` +
-            `🎮 Game: ${item.game}\n\n` +
+            `⚠️ Are you sure you want to delete **${itemData.name}**?\n\n` +
+            `📊 Value: ${itemData.value}\n` +
+            `📁 Section: ${itemData.section || "N/A"}\n` +
+            `🎮 Game: ${selectedGame.toUpperCase()}\n\n` +
             `**This action cannot be undone!**`,
           components: [row],
         })
@@ -163,7 +153,8 @@ export const removeItemCommand = {
   },
 
   async handleButton(interaction: ButtonInteraction) {
-    const [command, action, itemId] = interaction.customId.split("_")
+    const parts = interaction.customId.split("_")
+    const [command, action] = parts
 
     if (action === "cancel") {
       await interaction.update({
@@ -176,21 +167,30 @@ export const removeItemCommand = {
     if (action === "confirm") {
       await interaction.deferUpdate()
 
+      const selectedGame = parts[2]
+      const itemId = parts[3]
+
       try {
-        const client = new MongoClient(MONGODB_URI)
-        await client.connect()
+        let itemName = ""
+        let result
 
-        const db = client.db("trading-db")
-        const collection = db.collection("items")
+        if (selectedGame === "mm2") {
+          const item = await sql`SELECT name FROM mm2_items WHERE id = ${itemId}`
+          itemName = item.rows[0]?.name || "item"
+          result = await sql`DELETE FROM mm2_items WHERE id = ${itemId}`
+        } else if (selectedGame === "sab") {
+          const item = await sql`SELECT name FROM sab_items WHERE id = ${itemId}`
+          itemName = item.rows[0]?.name || "item"
+          result = await sql`DELETE FROM sab_items WHERE id = ${itemId}`
+        } else if (selectedGame === "adoptme") {
+          const item = await sql`SELECT name FROM adoptme_items WHERE id = ${itemId}`
+          itemName = item.rows[0]?.name || "item"
+          result = await sql`DELETE FROM adoptme_items WHERE id = ${itemId}`
+        }
 
-        const item = await collection.findOne({ _id: new ObjectId(itemId) })
-        const result = await collection.deleteOne({ _id: new ObjectId(itemId) })
-
-        await client.close()
-
-        if (result.deletedCount > 0) {
+        if (result && result.rowCount > 0) {
           await interaction.editReply({
-            content: `✅ Successfully deleted **${item?.name || "item"}**!`,
+            content: `✅ Successfully deleted **${itemName}**!`,
             components: [],
           })
         } else {
@@ -202,7 +202,7 @@ export const removeItemCommand = {
       } catch (error) {
         console.error("Error deleting item:", error)
         await interaction.editReply({
-          content: "❌ Failed to delete item. Please try again.",
+          content: `❌ Failed to delete item: ${error instanceof Error ? error.message : "Unknown error"}`,
           components: [],
         })
       }
