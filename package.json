@@ -72,6 +72,7 @@
     "http": "latest",
     "https": "latest",
     "input-otp": "1.4.1",
+    "ioredis": "latest",
     "kerberos": "latest",
     "lucide-react": "^0.454.0",
     "mongodb": "latest",
