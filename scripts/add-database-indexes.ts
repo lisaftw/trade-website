@@ -1,6 +1,6 @@
 import { config } from "dotenv"
 import { resolve } from "path"
-import { neon } from "@neondatabase/serverless"
+import postgres from "postgres"
 
 config({ path: resolve(process.cwd(), ".env.local"), override: true })
 
@@ -10,7 +10,7 @@ if (!process.env.POSTGRES_URL) {
   process.exit(1)
 }
 
-const sql = neon(process.env.POSTGRES_URL!)
+const sql = postgres(process.env.POSTGRES_URL!)
 
 console.log(`[v0] Using database: ${process.env.POSTGRES_URL.split("@")[1]?.split("/")[0]}`)
 
@@ -41,7 +41,7 @@ async function addIndexes() {
 
     for (const index of indexes) {
       try {
-        await sql(index.sql)
+        await sql.unsafe(index.sql)
         console.log(`✓ Created index: ${index.name}`)
       } catch (error: any) {
         if (error.message.includes("already exists")) {
@@ -54,6 +54,8 @@ async function addIndexes() {
 
     console.log("\nDatabase indexes added successfully!")
     console.log("Query performance should now be 10-50x faster.")
+
+    await sql.end()
   } catch (error) {
     console.error("Error adding indexes:", error)
     process.exit(1)

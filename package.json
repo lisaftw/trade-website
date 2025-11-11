@@ -80,6 +80,7 @@
     "path": "latest",
     "pg": "latest",
     "pg-native": "latest",
+    "postgres": "latest",
     "puppeteer": "latest",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

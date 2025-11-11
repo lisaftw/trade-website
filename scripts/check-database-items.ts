@@ -1,6 +1,6 @@
 import { config } from "dotenv"
 import { resolve } from "path"
-import { neon } from "@neondatabase/serverless"
+import postgres from "postgres"
 
 config({ path: resolve(process.cwd(), ".env.local"), override: true })
 
@@ -13,7 +13,7 @@ if (!process.env.POSTGRES_URL) {
 console.log(`[v0] Using database: ${process.env.POSTGRES_URL.split("@")[1]?.split("/")[0]}`)
 
 async function checkDatabase() {
-  const sql = neon(process.env.POSTGRES_URL!)
+  const sql = postgres(process.env.POSTGRES_URL!)
 
   console.log("\n=== Checking Database Items ===\n")
 
@@ -64,6 +64,8 @@ async function checkDatabase() {
 
   const total = await sql`SELECT COUNT(*) as total FROM items`
   console.log(`\nTotal items in database: ${total[0].total}\n`)
+
+  await sql.end()
 }
 
 checkDatabase()

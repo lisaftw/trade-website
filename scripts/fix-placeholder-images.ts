@@ -1,6 +1,6 @@
 import { config } from "dotenv"
 import { resolve } from "path"
-import { neon } from "@neondatabase/serverless"
+import postgres from "postgres"
 
 config({ path: resolve(process.cwd(), ".env.local"), override: true })
 
@@ -13,7 +13,7 @@ if (!process.env.POSTGRES_URL) {
 console.log(`[v0] Using database: ${process.env.POSTGRES_URL.split("@")[1]?.split("/")[0]}`)
 
 async function fixPlaceholderImages() {
-  const sql = neon(process.env.POSTGRES_URL!)
+  const sql = postgres(process.env.POSTGRES_URL!)
 
   console.log("\n=== Fixing Placeholder Image URLs ===\n")
 
@@ -34,6 +34,8 @@ async function fixPlaceholderImages() {
   `
 
   console.log(`Updated ${result.length} items to NULL image_url\n`)
+
+  await sql.end()
 }
 
 fixPlaceholderImages()
