@@ -32,24 +32,11 @@ export async function GET(req: Request) {
   const cookieStore = await cookies()
   const storedState = cookieStore.get("discord_oauth_state")?.value
 
-  console.log("[v0] OAuth callback - code:", !!code, "state:", !!state, "storedState:", !!storedState)
-
   if (error) {
-    console.error("Discord OAuth error:", error)
     return Response.redirect(`${url.origin}/login?error=oauth_denied`, 302)
   }
 
   if (!code || !state || !storedState || state !== storedState) {
-    console.error(
-      "Invalid OAuth state - code:",
-      !!code,
-      "state:",
-      !!state,
-      "storedState:",
-      !!storedState,
-      "match:",
-      state === storedState,
-    )
     return Response.redirect(`${url.origin}/login?error=invalid_state`, 302)
   }
 
@@ -68,7 +55,6 @@ export async function GET(req: Request) {
   const clientSecret = process.env.DISCORD_CLIENT_SECRET
 
   if (!clientId || !clientSecret) {
-    console.error("Missing Discord credentials - clientId:", !!clientId, "clientSecret:", !!clientSecret)
     return Response.redirect(`${url.origin}/login?error=config_error`, 302)
   }
 
@@ -89,7 +75,7 @@ export async function GET(req: Request) {
 
     if (!tokenRes.ok) {
       const errText = await tokenRes.text()
-      console.error("Token exchange failed - status:", tokenRes.status, "response:", errText)
+      console.error("Discord OAuth token exchange failed:", tokenRes.status, errText)
       return Response.redirect(`${url.origin}/login?error=token_exchange_failed`, 302)
     }
 
@@ -102,7 +88,7 @@ export async function GET(req: Request) {
 
     if (!userRes.ok) {
       const errText = await userRes.text()
-      console.error("Failed to fetch Discord user - status:", userRes.status, "response:", errText)
+      console.error("Failed to fetch Discord user:", userRes.status, errText)
       return Response.redirect(`${url.origin}/login?error=user_fetch_failed`, 302)
     }
 
@@ -111,15 +97,12 @@ export async function GET(req: Request) {
       ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png?size=256`
       : null
 
-    console.log("Checking for existing profile for discord_id:", discordUser.id)
     const existingProfileResult = await query<{ discord_id: string }>(
       "SELECT discord_id FROM profiles WHERE discord_id = $1",
       [discordUser.id],
     )
     const isNewUser = existingProfileResult.rows.length === 0
-    console.log("User status - isNewUser:", isNewUser)
 
-    console.log("Upserting profile...")
     try {
       await upsertProfile({
         discord_id: discordUser.id,
@@ -128,13 +111,11 @@ export async function GET(req: Request) {
         avatar_url: avatarUrl,
         email: discordUser.email ?? null,
       })
-      console.log("Profile upserted successfully")
     } catch (error: any) {
-      console.error("Failed to upsert user - error:", error.message, "details:", error)
+      console.error("Failed to upsert user profile:", error.message)
       return Response.redirect(`${url.origin}/login?error=database_error`, 302)
     }
 
-    console.log("Creating session...")
     const expiresAt = new Date(Date.now() + tokenJson.expires_in * 1000)
     const sessionId = await createDbSession({
       discordId: discordUser.id,
@@ -142,34 +123,29 @@ export async function GET(req: Request) {
       refreshToken: tokenJson.refresh_token || null,
       tokenExpiresAt: expiresAt,
     })
-    console.log("Session created successfully with ID:", sessionId)
 
     cookieStore.set("trade_session_id", sessionId, {
       httpOnly: true,
       secure: USE_SECURE_COOKIES,
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * 60 * 24 * 30, // 30 days
+      maxAge: 60 * 60 * 24 * 30,
     })
 
-    console.log("Logging activity...")
     try {
       await query("INSERT INTO activities (discord_id, type, meta) VALUES ($1, $2, $3)", [
         discordUser.id,
         "login",
         JSON.stringify({ via: "discord" }),
       ])
-      console.log("Activity logged successfully")
     } catch (error) {
       console.error("Failed to log activity:", error)
-      // Non-critical, continue anyway
     }
 
     const redirectPath = isNewUser ? "/?welcome=true" : "/"
-    console.log("Login successful, redirecting to:", redirectPath)
     return Response.redirect(`${url.origin}${redirectPath}`, 302)
   } catch (error: any) {
-    console.error("OAuth callback error - message:", error.message, "stack:", error.stack, "full error:", error)
+    console.error("OAuth callback error:", error.message)
     return Response.redirect(`${url.origin}/login?error=unexpected_error`, 302)
   }
 }
