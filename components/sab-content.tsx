@@ -15,7 +15,7 @@ interface SABItem {
   rarity: string
   demand: string
   pot?: string
-  value?: number
+  rap_value?: number
 }
 
 const RARITIES = ["All", "Common", "Rare", "Epic", "Legendary", "Mythic", "Brainrot God", "Secret", "OG", "Admin"]
@@ -96,34 +96,15 @@ export function SABContent() {
   const getGroupedAndSortedItems = () => {
     let filtered = [...items]
 
-    console.log("[v0] Total items before filtering:", filtered.length)
-    console.log("[v0] Selected rarity filter:", selectedRarity)
-
     if (searchQuery) {
       filtered = filtered.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
-      console.log("[v0] Items after search filter:", filtered.length)
     }
 
     if (selectedRarity !== "All") {
-      const beforeFilter = filtered.length
       filtered = filtered.filter((item) => {
         const itemSection = normalizeSection(item.section)
-        const matches = itemSection === selectedRarity
-        if (!matches && beforeFilter < 10) {
-          console.log(
-            "[v0] Item filtered out:",
-            item.name,
-            "section:",
-            item.section,
-            "normalized:",
-            itemSection,
-            "looking for:",
-            selectedRarity,
-          )
-        }
-        return matches
+        return itemSection === selectedRarity
       })
-      console.log("[v0] Items after rarity filter:", filtered.length)
     }
 
     const grouped: Record<string, SABItem[]> = {}
@@ -137,7 +118,7 @@ export function SABContent() {
     })
 
     Object.keys(grouped).forEach((section) => {
-      grouped[section].sort((a, b) => (a.value || 0) - (b.value || 0))
+      grouped[section].sort((a, b) => (a.rap_value || 0) - (b.rap_value || 0))
     })
 
     return grouped
