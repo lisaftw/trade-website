@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, type ChatInputCommandInteraction } from "discord.js"
-import { sql } from "@vercel/postgres"
+import { supabase } from "../lib/supabase"
 
 export const addItemCommand = {
   data: new SlashCommandBuilder()
@@ -57,30 +57,52 @@ export const addItemCommand = {
       let result
 
       if (game === "mm2") {
-        result = await sql`
-          INSERT INTO mm2_items (name, section, value, image_url, rarity, demand, created_at, updated_at)
-          VALUES (${name}, ${section}, ${value}, ${image}, ${rarity || "Common"}, ${demand || "Unknown"}, NOW(), NOW())
-          RETURNING id, name
-        `
+        result = await supabase
+          .from("mm2_items")
+          .insert({
+            name,
+            section,
+            value,
+            image_url: image,
+            rarity: rarity || "Common",
+            demand: demand || "Unknown",
+          })
+          .select()
       } else if (game === "sab") {
-        result = await sql`
-          INSERT INTO sab_items (name, section, value, image_url, rarity, demand, created_at, updated_at)
-          VALUES (${name}, ${section}, ${value}, ${image}, ${rarity || "Common"}, ${demand || "Unknown"}, NOW(), NOW())
-          RETURNING id, name
-        `
+        result = await supabase
+          .from("sab_items")
+          .insert({
+            name,
+            section,
+            value,
+            image_url: image,
+            rarity: rarity || "Common",
+            demand: demand || "Unknown",
+          })
+          .select()
       } else if (game === "adoptme") {
-        result = await sql`
-          INSERT INTO adoptme_items (name, section, value, image_url, pot, demand, created_at, updated_at)
-          VALUES (${name}, ${section}, ${value}, ${image}, ${pot || "Normal"}, ${demand || "Unknown"}, NOW(), NOW())
-          RETURNING id, name
-        `
+        result = await supabase
+          .from("adoptme_items")
+          .insert({
+            name,
+            section,
+            value,
+            image_url: image,
+            pot: pot || "Normal",
+            demand: demand || "Unknown",
+          })
+          .select()
+      }
+
+      if (result?.error) {
+        throw result.error
       }
 
       await interaction.editReply(
         `✅ Successfully added **${name}** to ${game.toUpperCase()}!\n` +
           `📊 Value: ${value}\n` +
           `📁 Section: ${section}\n` +
-          `🆔 ID: ${result?.rows[0]?.id}`,
+          `🆔 ID: ${result?.data?.[0]?.id}`,
       )
     } catch (error) {
       console.error("Error adding item:", error)

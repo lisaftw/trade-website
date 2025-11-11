@@ -8,7 +8,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
 } from "discord.js"
-import { sql } from "@vercel/postgres"
+import { supabase } from "../lib/supabase"
 
 export const removeItemCommand = {
   data: new SlashCommandBuilder().setName("removeitem").setDescription("Remove an item from the database"),
@@ -54,16 +54,18 @@ export const removeItemCommand = {
       const selectedGame = interaction.values[0]
 
       try {
-        let items
+        let result
         if (selectedGame === "mm2") {
-          items = await sql`SELECT id, name, section, value FROM mm2_items ORDER BY name LIMIT 25`
+          result = await supabase.from("mm2_items").select("id, name, section, value").order("name").limit(25)
         } else if (selectedGame === "sab") {
-          items = await sql`SELECT id, name, section, value FROM sab_items ORDER BY name LIMIT 25`
+          result = await supabase.from("sab_items").select("id, name, section, value").order("name").limit(25)
         } else if (selectedGame === "adoptme") {
-          items = await sql`SELECT id, name, section, value FROM adoptme_items ORDER BY name LIMIT 25`
+          result = await supabase.from("adoptme_items").select("id, name, section, value").order("name").limit(25)
         }
 
-        if (!items || items.rows.length === 0) {
+        if (result?.error) throw result.error
+
+        if (!result?.data || result.data.length === 0) {
           await interaction.editReply({
             content: `❌ No items found for ${selectedGame}!`,
             components: [],
@@ -75,7 +77,7 @@ export const removeItemCommand = {
           .setCustomId(`removeitem_item_${selectedGame}`)
           .setPlaceholder("Select an item to remove")
           .addOptions(
-            items.rows.map((item: any) => ({
+            result.data.map((item: any) => ({
               label: item.name.substring(0, 100),
               value: item.id,
               description: `Value: ${item.value} | Section: ${item.section || "N/A"}`,
@@ -102,16 +104,18 @@ export const removeItemCommand = {
       const selectedGame = interaction.customId.split("_")[2]
 
       try {
-        let item
+        let result
         if (selectedGame === "mm2") {
-          item = await sql`SELECT * FROM mm2_items WHERE id = ${itemId}`
+          result = await supabase.from("mm2_items").select("*").eq("id", itemId).single()
         } else if (selectedGame === "sab") {
-          item = await sql`SELECT * FROM sab_items WHERE id = ${itemId}`
+          result = await supabase.from("sab_items").select("*").eq("id", itemId).single()
         } else if (selectedGame === "adoptme") {
-          item = await sql`SELECT * FROM adoptme_items WHERE id = ${itemId}`
+          result = await supabase.from("adoptme_items").select("*").eq("id", itemId).single()
         }
 
-        if (!item || item.rows.length === 0) {
+        if (result?.error) throw result.error
+
+        if (!result?.data) {
           await interaction.editReply({
             content: "❌ Item not found!",
             components: [],
@@ -119,7 +123,7 @@ export const removeItemCommand = {
           return
         }
 
-        const itemData = item.rows[0]
+        const itemData = result.data
 
         const confirmButton = new ButtonBuilder()
           .setCustomId(`removeitem_confirm_${selectedGame}_${itemId}`)
@@ -172,33 +176,31 @@ export const removeItemCommand = {
 
       try {
         let itemName = ""
-        let result
+        let getResult
+        let deleteResult
 
         if (selectedGame === "mm2") {
-          const item = await sql`SELECT name FROM mm2_items WHERE id = ${itemId}`
-          itemName = item.rows[0]?.name || "item"
-          result = await sql`DELETE FROM mm2_items WHERE id = ${itemId}`
+          getResult = await supabase.from("mm2_items").select("name").eq("id", itemId).single()
+          itemName = getResult.data?.name || "item"
+          deleteResult = await supabase.from("mm2_items").delete().eq("id", itemId)
         } else if (selectedGame === "sab") {
-          const item = await sql`SELECT name FROM sab_items WHERE id = ${itemId}`
-          itemName = item.rows[0]?.name || "item"
-          result = await sql`DELETE FROM sab_items WHERE id = ${itemId}`
+          getResult = await supabase.from("sab_items").select("name").eq("id", itemId).single()
+          itemName = getResult.data?.name || "item"
+          deleteResult = await supabase.from("sab_items").delete().eq("id", itemId)
         } else if (selectedGame === "adoptme") {
-          const item = await sql`SELECT name FROM adoptme_items WHERE id = ${itemId}`
-          itemName = item.rows[0]?.name || "item"
-          result = await sql`DELETE FROM adoptme_items WHERE id = ${itemId}`
+          getResult = await supabase.from("adoptme_items").select("name").eq("id", itemId).single()
+          itemName = getResult.data?.name || "item"
+          deleteResult = await supabase.from("adoptme_items").delete().eq("id", itemId)
         }
 
-        if (result && result.rowCount > 0) {
-          await interaction.editReply({
-            content: `✅ Successfully deleted **${itemName}**!`,
-            components: [],
-          })
-        } else {
-          await interaction.editReply({
-            content: "❌ Failed to delete item. It may have already been removed.",
-            components: [],
-          })
+        if (deleteResult?.error) {
+          throw deleteResult.error
         }
+
+        await interaction.editReply({
+          content: `✅ Successfully deleted **${itemName}**!`,
+          components: [],
+        })
       } catch (error) {
         console.error("Error deleting item:", error)
         await interaction.editReply({

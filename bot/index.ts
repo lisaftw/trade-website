@@ -3,6 +3,7 @@ import { Client, GatewayIntentBits, Events, Collection } from "discord.js"
 import { addItemCommand } from "./commands/additem"
 import { editItemCommand } from "./commands/edititem"
 import { removeItemCommand } from "./commands/removeitem"
+import { supabase } from "./lib/supabase"
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
@@ -86,15 +87,14 @@ if (!token) {
   process.exit(1)
 }
 
-import { sql } from "@vercel/postgres"
-
 async function testDatabaseConnection() {
   try {
-    const result = await sql`SELECT NOW()`
+    const { data, error } = await supabase.from("mm2_items").select("count").limit(1).single()
+    if (error) throw error
     console.log("✅ Database connected successfully!")
   } catch (error) {
     console.error("❌ Database connection failed:", error)
-    console.error("Make sure POSTGRES_URL is set in your environment variables")
+    console.error("Make sure SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set in your environment variables")
   }
 }
 

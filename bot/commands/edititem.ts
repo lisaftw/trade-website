@@ -9,7 +9,7 @@ import {
   TextInputBuilder,
   TextInputStyle,
 } from "discord.js"
-import { sql } from "@vercel/postgres"
+import { supabase } from "../lib/supabase"
 
 export const editItemCommand = {
   data: new SlashCommandBuilder().setName("edititem").setDescription("Edit an existing item in the database"),
@@ -57,16 +57,18 @@ export const editItemCommand = {
       const selectedGame = interaction.values[0]
 
       try {
-        let items
+        let result
         if (selectedGame === "mm2") {
-          items = await sql`SELECT id, name, section, value FROM mm2_items ORDER BY name LIMIT 25`
+          result = await supabase.from("mm2_items").select("id, name, section, value").order("name").limit(25)
         } else if (selectedGame === "sab") {
-          items = await sql`SELECT id, name, section, value FROM sab_items ORDER BY name LIMIT 25`
+          result = await supabase.from("sab_items").select("id, name, section, value").order("name").limit(25)
         } else if (selectedGame === "adoptme") {
-          items = await sql`SELECT id, name, section, value FROM adoptme_items ORDER BY name LIMIT 25`
+          result = await supabase.from("adoptme_items").select("id, name, section, value").order("name").limit(25)
         }
 
-        if (!items || items.rows.length === 0) {
+        if (result?.error) throw result.error
+
+        if (!result?.data || result.data.length === 0) {
           await interaction.editReply({
             content: `❌ No items found for ${selectedGame}!`,
             components: [],
@@ -78,7 +80,7 @@ export const editItemCommand = {
           .setCustomId(`edititem_item_${selectedGame}`)
           .setPlaceholder("Select an item to edit")
           .addOptions(
-            items.rows.map((item: any) => ({
+            result.data.map((item: any) => ({
               label: item.name.substring(0, 100),
               value: item.id,
               description: `Value: ${item.value} | Section: ${item.section || "N/A"}`,
@@ -104,21 +106,23 @@ export const editItemCommand = {
       const selectedGame = interaction.customId.split("_")[2]
 
       try {
-        let item
+        let result
         if (selectedGame === "mm2") {
-          item = await sql`SELECT * FROM mm2_items WHERE id = ${itemId}`
+          result = await supabase.from("mm2_items").select("*").eq("id", itemId).single()
         } else if (selectedGame === "sab") {
-          item = await sql`SELECT * FROM sab_items WHERE id = ${itemId}`
+          result = await supabase.from("sab_items").select("*").eq("id", itemId).single()
         } else if (selectedGame === "adoptme") {
-          item = await sql`SELECT * FROM adoptme_items WHERE id = ${itemId}`
+          result = await supabase.from("adoptme_items").select("*").eq("id", itemId).single()
         }
 
-        if (!item || item.rows.length === 0) {
+        if (result?.error) throw result.error
+
+        if (!result?.data) {
           await interaction.reply({ content: "❌ Item not found!", ephemeral: true })
           return
         }
 
-        const itemData = item.rows[0]
+        const itemData = result.data
 
         // Create modal with current values
         const modal = new ModalBuilder()
@@ -214,48 +218,51 @@ export const editItemCommand = {
 
       let result
       if (selectedGame === "mm2") {
-        result = await sql`
-          UPDATE mm2_items 
-          SET name = ${name}, 
-              section = ${section}, 
-              value = ${value}, 
-              image_url = ${image || null},
-              rarity = ${updates.rarity || "Common"},
-              demand = ${updates.demand || "Unknown"},
-              updated_at = NOW()
-          WHERE id = ${itemId}
-        `
+        result = await supabase
+          .from("mm2_items")
+          .update({
+            name,
+            section,
+            value,
+            image_url: image || null,
+            rarity: updates.rarity || "Common",
+            demand: updates.demand || "Unknown",
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", itemId)
       } else if (selectedGame === "sab") {
-        result = await sql`
-          UPDATE sab_items 
-          SET name = ${name}, 
-              section = ${section}, 
-              value = ${value}, 
-              image_url = ${image || null},
-              rarity = ${updates.rarity || "Common"},
-              demand = ${updates.demand || "Unknown"},
-              updated_at = NOW()
-          WHERE id = ${itemId}
-        `
+        result = await supabase
+          .from("sab_items")
+          .update({
+            name,
+            section,
+            value,
+            image_url: image || null,
+            rarity: updates.rarity || "Common",
+            demand: updates.demand || "Unknown",
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", itemId)
       } else if (selectedGame === "adoptme") {
-        result = await sql`
-          UPDATE adoptme_items 
-          SET name = ${name}, 
-              section = ${section}, 
-              value = ${value}, 
-              image_url = ${image || null},
-              pot = ${updates.pot || "Normal"},
-              demand = ${updates.demand || "Unknown"},
-              updated_at = NOW()
-          WHERE id = ${itemId}
-        `
+        result = await supabase
+          .from("adoptme_items")
+          .update({
+            name,
+            section,
+            value,
+            image_url: image || null,
+            pot: updates.pot || "Normal",
+            demand: updates.demand || "Unknown",
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", itemId)
       }
 
-      if (result && result.rowCount > 0) {
-        await interaction.editReply(`✅ Successfully updated **${name}**!`)
-      } else {
-        await interaction.editReply("⚠️ No changes were made.")
+      if (result?.error) {
+        throw result.error
       }
+
+      await interaction.editReply(`✅ Successfully updated **${name}**!`)
     } catch (error) {
       console.error("Error updating item:", error)
       await interaction.editReply(
