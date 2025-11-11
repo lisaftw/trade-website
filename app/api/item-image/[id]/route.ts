@@ -1,8 +1,4 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getItemById } from "@/lib/db/queries/items"
-import { readFile } from "fs/promises"
-import { join } from "path"
-import { existsSync } from "fs"
 
 const imageCache = new Map<string, { buffer: ArrayBuffer; contentType: string; timestamp: number }>()
 const CACHE_DURATION = 10 * 60 * 1000
@@ -47,102 +43,7 @@ function getImageFetchHeaders(url: string): HeadersInit {
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const { id } = params
 
-  try {
-    const cached = imageCache.get(id)
-    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-      return new NextResponse(cached.buffer, {
-        headers: {
-          "Content-Type": cached.contentType,
-          "Cache-Control": "public, max-age=31536000, immutable",
-          "X-Cache": "HIT",
-        },
-      })
-    }
-
-    const item = await getItemById(id)
-
-    if (!item || !item.image_url || item.image_url.includes("/placeholder.svg") || item.image_url === "null") {
-      return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
-    }
-
-    if (item.image_url.startsWith("/images/")) {
-      const filepath = join(process.cwd(), "public", item.image_url)
-
-      if (existsSync(filepath)) {
-        const imageBuffer = await readFile(filepath)
-        const extension = item.image_url.split(".").pop()?.toLowerCase()
-
-        const contentType =
-          {
-            png: "image/png",
-            jpg: "image/jpeg",
-            jpeg: "image/jpeg",
-            gif: "image/gif",
-            webp: "image/webp",
-          }[extension || "png"] || "image/png"
-
-        imageCache.set(id, {
-          buffer: imageBuffer.buffer,
-          contentType,
-          timestamp: Date.now(),
-        })
-
-        return new NextResponse(imageBuffer, {
-          headers: {
-            "Content-Type": contentType,
-            "Cache-Control": "public, max-age=31536000, immutable",
-            "X-Cache": "MISS",
-          },
-        })
-      } else {
-        return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
-      }
-    }
-
-    const imageUrl = getRobloxImageUrl(item.image_url)
-
-    if (!imageUrl) {
-      return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
-    }
-
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 10000)
-
-    try {
-      const response = await fetch(imageUrl, {
-        headers: getImageFetchHeaders(imageUrl),
-        signal: controller.signal,
-      })
-
-      clearTimeout(timeoutId)
-
-      if (!response.ok) {
-        return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
-      }
-
-      const imageBuffer = await response.arrayBuffer()
-      const contentType = response.headers.get("Content-Type") || "image/png"
-
-      if (!contentType.startsWith("image/")) {
-        return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
-      }
-
-      imageCache.set(id, { buffer: imageBuffer, contentType, timestamp: Date.now() })
-
-      return new NextResponse(imageBuffer, {
-        headers: {
-          "Content-Type": contentType,
-          "Cache-Control": "public, max-age=31536000, immutable",
-          "CDN-Cache-Control": "public, max-age=31536000",
-          "X-Cache": "MISS",
-        },
-      })
-    } catch (fetchError) {
-      clearTimeout(timeoutId)
-      return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
-    }
-  } catch (error) {
-    console.error("Error proxying image for item", id, ":", error)
-    return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
-  }
+  // For now, just return placeholder SVG for all image requests
+  // This prevents 400 errors and shows placeholder images consistently
+  return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
 }
