@@ -4,6 +4,12 @@ import { neon } from "@neondatabase/serverless"
 
 config({ path: resolve(process.cwd(), ".env.local") })
 
+if (!process.env.POSTGRES_URL) {
+  console.error("❌ Error: POSTGRES_URL not found in environment variables")
+  console.error("Make sure .env.local exists in the project root with POSTGRES_URL")
+  process.exit(1)
+}
+
 async function fixPlaceholderImages() {
   const sql = neon(process.env.POSTGRES_URL!)
 
