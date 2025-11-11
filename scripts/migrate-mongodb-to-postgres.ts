@@ -121,63 +121,31 @@ async function migrate() {
       const uniqueItems = Array.from(itemMap.values())
       console.log(`   Deduplicated to ${uniqueItems.length} unique items`)
 
-      // Create a temporary table for bulk insert
-      await pgPool.query(`
-        CREATE TEMP TABLE temp_items (
-          name TEXT,
-          game TEXT,
-          image_url TEXT,
-          rap_value NUMERIC(15, 2),
-          section TEXT,
-          rarity TEXT,
-          demand TEXT,
-          created_at TIMESTAMPTZ,
-          updated_at TIMESTAMPTZ
-        )
-      `)
+      await pgPool.query("DELETE FROM public.items")
+      console.log("   Cleared existing items from PostgreSQL")
 
-      // Prepare values for bulk insert
-      const values: any[] = []
-      const placeholders: string[] = []
+      let insertedCount = 0
+      for (const item of uniqueItems) {
+        try {
+          await pgPool.query(
+            `INSERT INTO public.items (name, game, image_url, rap_value, created_at, updated_at)
+             VALUES ($1, $2, $3, $4, $5, $6)`,
+            [
+              item.name,
+              item.game,
+              item.image_url || "",
+              item.value || 0,
+              item.createdAt || new Date(),
+              item.updatedAt || new Date(),
+            ],
+          )
+          insertedCount++
+        } catch (error: any) {
+          console.log(`   ⚠️  Skipped duplicate item: ${item.name} (${item.game})`)
+        }
+      }
 
-      uniqueItems.forEach((item, index) => {
-        const offset = index * 9
-        placeholders.push(
-          `($${offset + 1}, $${offset + 2}, $${offset + 3}, $${offset + 4}, $${offset + 5}, $${offset + 6}, $${offset + 7}, $${offset + 8}, $${offset + 9})`,
-        )
-        values.push(
-          item.name,
-          item.game,
-          item.image_url || "",
-          item.value || 0,
-          item.section || "Unknown",
-          item.rarity || null,
-          item.demand || null,
-          item.createdAt || new Date(),
-          item.updatedAt || new Date(),
-        )
-      })
-
-      // Bulk insert into temp table
-      await pgPool.query(
-        `INSERT INTO temp_items (name, game, image_url, rap_value, section, rarity, demand, created_at, updated_at)
-         VALUES ${placeholders.join(", ")}`,
-        values,
-      )
-
-      // Merge into main items table (upsert based on name + game)
-      const result = await pgPool.query(`
-        INSERT INTO public.items (name, game, image_url, rap_value, created_at, updated_at)
-        SELECT name, game, image_url, rap_value, created_at, updated_at
-        FROM temp_items
-        ON CONFLICT (name, game) DO UPDATE SET
-          image_url = EXCLUDED.image_url,
-          rap_value = EXCLUDED.rap_value,
-          updated_at = EXCLUDED.updated_at
-        RETURNING id
-      `)
-
-      console.log(`   ✅ Migrated ${result.rowCount} items to PostgreSQL\n`)
+      console.log(`   ✅ Migrated ${insertedCount} items to PostgreSQL\n`)
     } else {
       console.log("   ⚠️  No items found to migrate\n")
     }
@@ -208,13 +176,9 @@ async function migrate() {
       const uniquePets = Array.from(petMap.values())
       console.log(`   Deduplicated to ${uniquePets.length} unique pets`)
 
-      // For Adopt Me pets, we'll store them as items with special metadata
-      // We'll create 3 items per pet: base, neon, mega
-
       const petItems: any[] = []
 
       uniquePets.forEach((pet) => {
-        // Base variant
         petItems.push({
           name: pet.name,
           game: "Adopt Me",
@@ -226,7 +190,6 @@ async function migrate() {
           updated_at: pet.updatedAt || new Date(),
         })
 
-        // Neon variant
         petItems.push({
           name: `Neon ${pet.name}`,
           game: "Adopt Me",
@@ -238,7 +201,6 @@ async function migrate() {
           updated_at: pet.updatedAt || new Date(),
         })
 
-        // Mega variant
         petItems.push({
           name: `Mega ${pet.name}`,
           game: "Adopt Me",
@@ -251,20 +213,21 @@ async function migrate() {
         })
       })
 
-      // Bulk insert pet items
+      let insertedPets = 0
       for (const petItem of petItems) {
-        await pgPool.query(
-          `INSERT INTO public.items (name, game, image_url, rap_value, created_at, updated_at)
-           VALUES ($1, $2, $3, $4, $5, $6)
-           ON CONFLICT (name, game) DO UPDATE SET
-             image_url = EXCLUDED.image_url,
-             rap_value = EXCLUDED.rap_value,
-             updated_at = EXCLUDED.updated_at`,
-          [petItem.name, petItem.game, petItem.image_url, petItem.rap_value, petItem.created_at, petItem.updated_at],
-        )
+        try {
+          await pgPool.query(
+            `INSERT INTO public.items (name, game, image_url, rap_value, created_at, updated_at)
+             VALUES ($1, $2, $3, $4, $5, $6)`,
+            [petItem.name, petItem.game, petItem.image_url, petItem.rap_value, petItem.created_at, petItem.updated_at],
+          )
+          insertedPets++
+        } catch (error: any) {
+          console.log(`   ⚠️  Skipped duplicate pet: ${petItem.name}`)
+        }
       }
 
-      console.log(`   ✅ Migrated ${petItems.length} Adopt Me pet variants to PostgreSQL\n`)
+      console.log(`   ✅ Migrated ${insertedPets} Adopt Me pet variants to PostgreSQL\n`)
     } else {
       console.log("   ⚠️  No Adopt Me pets found to migrate\n")
     }
