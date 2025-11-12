@@ -85,7 +85,7 @@ function ReferenceHero() {
             <div className="grid grid-cols-3 gap-2 md:gap-3">
               <div className="relative aspect-square overflow-hidden rounded-xl">
                 <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-n2ELcUjJRAMQ6u1ue7xEs7RXYLAwP7.png"
+                  src="/home/sab-icon.png"
                   alt="Steal a Brainrot (SAB)"
                   width={400}
                   height={400}
@@ -94,7 +94,7 @@ function ReferenceHero() {
               </div>
               <div className="relative aspect-square overflow-hidden rounded-xl bg-black/80 flex items-center justify-center">
                 <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-4eE8qAMvDpzhpN9L8bRypmDnoVdTsg.png"
+                  src="/home/mm2-icon.png"
                   alt="Murder Mystery 2 (MM2)"
                   width={400}
                   height={400}
@@ -103,7 +103,7 @@ function ReferenceHero() {
               </div>
               <div className="relative aspect-square overflow-hidden rounded-xl">
                 <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-YpFYJXyjM5QKbfzc1pSkJlL3Ad5jzw.png"
+                  src="/home/adoptme-icon.png"
                   alt="Adopt Me"
                   width={400}
                   height={400}
