@@ -79,16 +79,47 @@ function ReferenceHero() {
         </div>
 
         {/* Games row */}
-        <div className="pointer-events-none relative mt-4 md:mt-6 w-full px-2 md:px-0">
+        <div className="relative mt-4 md:mt-6 w-full px-2 md:px-0">
           <div className="absolute inset-0 rounded-3xl border border-white/8 shadow-[0_10px_40px_rgba(0,0,0,0.35)]" />
           <div className="rounded-3xl bg-background/40 p-3 backdrop-blur">
-            <Image
-              src="/home/games-row.png"
-              alt="Featured games"
-              width={1600}
-              height={380}
-              className="h-auto w-full rounded-2xl"
-            />
+            <div className="flex items-center justify-center gap-3 md:gap-4 rounded-2xl p-2">
+              <a
+                href="/values?game=Adopt+Me"
+                className="group relative overflow-hidden rounded-xl transition-transform hover:scale-105"
+              >
+                <Image
+                  src="/placeholder.svg?height=160&width=160"
+                  alt="Adopt Me"
+                  width={160}
+                  height={160}
+                  className="h-20 w-20 md:h-28 md:w-28 rounded-xl object-cover"
+                />
+              </a>
+              <a
+                href="/values?game=MM2"
+                className="group relative overflow-hidden rounded-xl transition-transform hover:scale-105"
+              >
+                <Image
+                  src="/placeholder.svg?height=160&width=160"
+                  alt="Murder Mystery 2"
+                  width={160}
+                  height={160}
+                  className="h-20 w-20 md:h-28 md:w-28 rounded-xl object-cover"
+                />
+              </a>
+              <a
+                href="/values?game=SAB"
+                className="group relative overflow-hidden rounded-xl transition-transform hover:scale-105"
+              >
+                <Image
+                  src="/placeholder.svg?height=160&width=160"
+                  alt="Steal a Brain Rot"
+                  width={160}
+                  height={160}
+                  className="h-20 w-20 md:h-28 md:w-28 rounded-xl object-cover"
+                />
+              </a>
+            </div>
           </div>
         </div>
       </div>
