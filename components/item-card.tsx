@@ -159,7 +159,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
           {/* Content overlay */}
           <div className="relative h-full flex flex-col items-center justify-start p-3" style={{ zIndex: 1 }}>
-            {/* Item holder with image and last updated */}
+            {/* Item holder with image */}
             <div className="relative w-full aspect-[4/3] mt-1">
               <Image
                 src="/card-ui/itemimageholderandlastupdatedholder.png"
@@ -181,26 +181,6 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
                     className="object-contain drop-shadow-2xl"
                     onError={() => setImageError(true)}
                   />
-                </div>
-              </div>
-
-              {/* Last Updated overlay */}
-              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[150px]">
-                <div className="relative w-full h-[24px]">
-                  <Image
-                    src="/card-ui/lastupdateui.png"
-                    alt="Last updated"
-                    fill
-                    style={{ imageRendering: "pixelated" }}
-                    className="object-contain"
-                    draggable={false}
-                    priority
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center px-3">
-                    <span className="text-white text-[10px] font-bold whitespace-nowrap tracking-tight">
-                      {getTimeAgo(item.last_updated_at)}
-                    </span>
-                  </div>
                 </div>
               </div>
             </div>
