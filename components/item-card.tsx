@@ -219,8 +219,8 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
               />
               <div className="absolute inset-0 flex items-center justify-center px-2">
                 <span
-                  className="text-white font-black text-[11px] text-center truncate tracking-wide"
-                  style={{ fontFamily: 'Impact, "Arial Black", sans-serif', textShadow: "2px 2px 0 #000" }}
+                  className="text-white font-semibold text-[11px] text-center truncate"
+                  style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.8)" }}
                 >
                   {item.name}
                 </span>
