@@ -24,7 +24,11 @@ export const removeItemCommand = {
         ),
     )
     .addStringOption((option) =>
-      option.setName("item").setDescription("Search for an item by name").setRequired(true).setAutocomplete(true),
+      option
+        .setName("item")
+        .setDescription("Search for item by name (type at least 2 characters)")
+        .setRequired(true)
+        .setAutocomplete(true),
     ),
 
   async autocomplete(interaction: any) {
@@ -32,10 +36,15 @@ export const removeItemCommand = {
 
     if (focusedOption.name === "item") {
       const game = interaction.options.getString("game")
-      const searchTerm = focusedOption.value.toLowerCase()
+      const searchTerm = focusedOption.value.toLowerCase().trim()
 
       if (!game) {
-        await interaction.respond([])
+        await interaction.respond([{ name: "Please select a game first", value: "none" }])
+        return
+      }
+
+      if (searchTerm.length < 2) {
+        await interaction.respond([{ name: "Type at least 2 characters to search...", value: "none" }])
         return
       }
 
@@ -50,16 +59,21 @@ export const removeItemCommand = {
 
         if (result.error) throw result.error
 
+        if (!result.data || result.data.length === 0) {
+          await interaction.respond([{ name: `No items found matching "${searchTerm}"`, value: "none" }])
+          return
+        }
+
         const choices =
           result.data?.map((item: any) => ({
-            name: `${item.name} (${item.rap_value} - ${item.section})`.substring(0, 100),
+            name: `${item.name} (${item.rap_value || 0} - ${item.section || "Unknown"})`.substring(0, 100),
             value: item.id,
           })) || []
 
         await interaction.respond(choices)
       } catch (error) {
         console.error("Error in autocomplete:", error)
-        await interaction.respond([])
+        await interaction.respond([{ name: "Error during search", value: "error" }])
       }
     }
   },
@@ -69,6 +83,11 @@ export const removeItemCommand = {
 
     const game = interaction.options.getString("game", true)
     const itemId = interaction.options.getString("item", true)
+
+    if (itemId === "none" || itemId === "error") {
+      await interaction.editReply("❌ Please select a valid item from the search results.")
+      return
+    }
 
     try {
       const result = await supabase.from("items").select("*").eq("id", itemId).single()
