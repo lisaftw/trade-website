@@ -122,7 +122,7 @@ export function IngameCalculator() {
               />
             </div>
             <p className="text-lg font-bold text-white">SAB</p>
-            <p className="mt-1 text-xs text-gray-400">Sword Art Blade</p>
+            <p className="mt-1 text-xs text-gray-400">Steal a Brainrot</p>
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-gray-500/0 to-gray-500/5 opacity-0 transition-opacity group-hover:opacity-100" />
           </button>
 
