@@ -11,9 +11,9 @@ export const addItemCommand = {
         .setDescription("Select the game")
         .setRequired(true)
         .addChoices(
-          { name: "Murder Mystery 2", value: "mm2" },
-          { name: "Adopt Me", value: "adoptme" },
-          { name: "Steal a Brain Rot", value: "sab" },
+          { name: "Murder Mystery 2", value: "MM2" },
+          { name: "Adopt Me", value: "Adopt Me" },
+          { name: "Steal a Brain Rot", value: "SAB" },
         ),
     )
     .addStringOption((option) => option.setName("name").setDescription("Item name").setRequired(true))

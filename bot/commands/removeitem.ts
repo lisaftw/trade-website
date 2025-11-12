@@ -17,7 +17,7 @@ export const removeItemCommand = {
     await interaction.deferReply({ ephemeral: true })
 
     try {
-      const games = ["mm2", "sab", "adoptme"]
+      const games = ["MM2", "SAB", "Adopt Me"]
 
       if (games.length === 0) {
         await interaction.editReply("❌ No games found in the database!")
@@ -28,9 +28,9 @@ export const removeItemCommand = {
         .setCustomId("removeitem_game")
         .setPlaceholder("Select a game")
         .addOptions([
-          { label: "Murder Mystery 2", value: "mm2" },
-          { label: "Steal a Brain Rot", value: "sab" },
-          { label: "Adopt Me", value: "adoptme" },
+          { label: "Murder Mystery 2", value: "MM2" },
+          { label: "Steal a Brain Rot", value: "SAB" },
+          { label: "Adopt Me", value: "Adopt Me" },
         ])
 
       const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu)
