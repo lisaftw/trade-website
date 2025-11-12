@@ -30,6 +30,10 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'assetdelivery.roblox.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'tr.rbxcdn.com',
       },
       {
