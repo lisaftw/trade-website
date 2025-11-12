@@ -185,20 +185,19 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
               </div>
 
               {/* Last Updated overlay at bottom */}
-              <div className="absolute bottom-2 left-1/2 -translate-x-1/2">
-                <div className="relative w-auto h-auto">
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-[160px]">
+                <div className="relative w-full h-[20px]">
                   <Image
                     src="/card-ui/lastupdateui.png"
                     alt="Last updated"
-                    width={140}
-                    height={18}
+                    fill
                     style={{ imageRendering: "pixelated" }}
                     className="object-contain"
                     draggable={false}
                     priority
                   />
-                  <div className="absolute inset-0 flex items-center justify-center pl-2">
-                    <span className="text-white text-[7px] font-bold whitespace-nowrap">
+                  <div className="absolute inset-0 flex items-center justify-end pr-4">
+                    <span className="text-white text-[8px] font-semibold whitespace-nowrap tracking-tight">
                       {getTimeAgo(item.last_updated_at)}
                     </span>
                   </div>
@@ -219,7 +218,12 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
                 priority
               />
               <div className="absolute inset-0 flex items-center justify-center px-2">
-                <span className="text-white font-bold text-[10px] text-center truncate">{item.name}</span>
+                <span
+                  className="text-white font-black text-[11px] text-center truncate tracking-wide"
+                  style={{ fontFamily: 'Impact, "Arial Black", sans-serif', textShadow: "2px 2px 0 #000" }}
+                >
+                  {item.name}
+                </span>
               </div>
             </div>
 
