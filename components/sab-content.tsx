@@ -184,7 +184,7 @@ export function SABContent() {
                 <span className="text-sm text-muted-foreground">({groupedItems[rarity].length} items)</span>
               </div>
 
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
                 {groupedItems[rarity].map((item) => (
                   <ItemCard key={item.id} item={item} />
                 ))}
