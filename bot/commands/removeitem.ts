@@ -54,18 +54,16 @@ export const removeItemCommand = {
       const selectedGame = interaction.values[0]
 
       try {
-        let result
-        if (selectedGame === "mm2") {
-          result = await supabase.from("mm2_items").select("id, name, section, value").order("name").limit(25)
-        } else if (selectedGame === "sab") {
-          result = await supabase.from("sab_items").select("id, name, section, value").order("name").limit(25)
-        } else if (selectedGame === "adoptme") {
-          result = await supabase.from("adoptme_items").select("id, name, section, value").order("name").limit(25)
-        }
+        const result = await supabase
+          .from("items")
+          .select("id, name, section, rap_value")
+          .eq("game", selectedGame)
+          .order("name")
+          .limit(25)
 
-        if (result?.error) throw result.error
+        if (result.error) throw result.error
 
-        if (!result?.data || result.data.length === 0) {
+        if (!result.data || result.data.length === 0) {
           await interaction.editReply({
             content: `❌ No items found for ${selectedGame}!`,
             components: [],
@@ -80,7 +78,7 @@ export const removeItemCommand = {
             result.data.map((item: any) => ({
               label: item.name.substring(0, 100),
               value: item.id,
-              description: `Value: ${item.value} | Section: ${item.section || "N/A"}`,
+              description: `Value: ${item.rap_value} | Section: ${item.section || "N/A"}`,
             })),
           )
 
@@ -104,18 +102,11 @@ export const removeItemCommand = {
       const selectedGame = interaction.customId.split("_")[2]
 
       try {
-        let result
-        if (selectedGame === "mm2") {
-          result = await supabase.from("mm2_items").select("*").eq("id", itemId).single()
-        } else if (selectedGame === "sab") {
-          result = await supabase.from("sab_items").select("*").eq("id", itemId).single()
-        } else if (selectedGame === "adoptme") {
-          result = await supabase.from("adoptme_items").select("*").eq("id", itemId).single()
-        }
+        const result = await supabase.from("items").select("*").eq("id", itemId).single()
 
-        if (result?.error) throw result.error
+        if (result.error) throw result.error
 
-        if (!result?.data) {
+        if (!result.data) {
           await interaction.editReply({
             content: "❌ Item not found!",
             components: [],
@@ -140,7 +131,7 @@ export const removeItemCommand = {
         await interaction.editReply({
           content:
             `⚠️ Are you sure you want to delete **${itemData.name}**?\n\n` +
-            `📊 Value: ${itemData.value}\n` +
+            `📊 Value: ${itemData.rap_value}\n` +
             `📁 Section: ${itemData.section || "N/A"}\n` +
             `🎮 Game: ${selectedGame.toUpperCase()}\n\n` +
             `**This action cannot be undone!**`,
@@ -175,25 +166,12 @@ export const removeItemCommand = {
       const itemId = parts[3]
 
       try {
-        let itemName = ""
-        let getResult
-        let deleteResult
+        const getResult = await supabase.from("items").select("name").eq("id", itemId).single()
+        const itemName = getResult.data?.name || "item"
 
-        if (selectedGame === "mm2") {
-          getResult = await supabase.from("mm2_items").select("name").eq("id", itemId).single()
-          itemName = getResult.data?.name || "item"
-          deleteResult = await supabase.from("mm2_items").delete().eq("id", itemId)
-        } else if (selectedGame === "sab") {
-          getResult = await supabase.from("sab_items").select("name").eq("id", itemId).single()
-          itemName = getResult.data?.name || "item"
-          deleteResult = await supabase.from("sab_items").delete().eq("id", itemId)
-        } else if (selectedGame === "adoptme") {
-          getResult = await supabase.from("adoptme_items").select("name").eq("id", itemId).single()
-          itemName = getResult.data?.name || "item"
-          deleteResult = await supabase.from("adoptme_items").delete().eq("id", itemId)
-        }
+        const deleteResult = await supabase.from("items").delete().eq("id", itemId)
 
-        if (deleteResult?.error) {
+        if (deleteResult.error) {
           throw deleteResult.error
         }
 

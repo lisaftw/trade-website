@@ -57,18 +57,16 @@ export const editItemCommand = {
       const selectedGame = interaction.values[0]
 
       try {
-        let result
-        if (selectedGame === "mm2") {
-          result = await supabase.from("mm2_items").select("id, name, section, value").order("name").limit(25)
-        } else if (selectedGame === "sab") {
-          result = await supabase.from("sab_items").select("id, name, section, value").order("name").limit(25)
-        } else if (selectedGame === "adoptme") {
-          result = await supabase.from("adoptme_items").select("id, name, section, value").order("name").limit(25)
-        }
+        const result = await supabase
+          .from("items")
+          .select("id, name, section, rap_value")
+          .eq("game", selectedGame)
+          .order("name")
+          .limit(25)
 
-        if (result?.error) throw result.error
+        if (result.error) throw result.error
 
-        if (!result?.data || result.data.length === 0) {
+        if (!result.data || result.data.length === 0) {
           await interaction.editReply({
             content: `❌ No items found for ${selectedGame}!`,
             components: [],
@@ -83,7 +81,7 @@ export const editItemCommand = {
             result.data.map((item: any) => ({
               label: item.name.substring(0, 100),
               value: item.id,
-              description: `Value: ${item.value} | Section: ${item.section || "N/A"}`,
+              description: `Value: ${item.rap_value} | Section: ${item.section || "N/A"}`,
             })),
           )
 
@@ -106,18 +104,11 @@ export const editItemCommand = {
       const selectedGame = interaction.customId.split("_")[2]
 
       try {
-        let result
-        if (selectedGame === "mm2") {
-          result = await supabase.from("mm2_items").select("*").eq("id", itemId).single()
-        } else if (selectedGame === "sab") {
-          result = await supabase.from("sab_items").select("*").eq("id", itemId).single()
-        } else if (selectedGame === "adoptme") {
-          result = await supabase.from("adoptme_items").select("*").eq("id", itemId).single()
-        }
+        const result = await supabase.from("items").select("*").eq("id", itemId).single()
 
-        if (result?.error) throw result.error
+        if (result.error) throw result.error
 
-        if (!result?.data) {
+        if (!result.data) {
           await interaction.reply({ content: "❌ Item not found!", ephemeral: true })
           return
         }
@@ -147,7 +138,7 @@ export const editItemCommand = {
           .setCustomId("value")
           .setLabel("Value")
           .setStyle(TextInputStyle.Short)
-          .setValue(itemData.value.toString())
+          .setValue(itemData.rap_value?.toString() || "0")
           .setRequired(true)
 
         const imageInput = new TextInputBuilder()
@@ -157,19 +148,11 @@ export const editItemCommand = {
           .setValue(itemData.image_url || "")
           .setRequired(false)
 
-        const extraInput = new TextInputBuilder()
-          .setCustomId("extra")
-          .setLabel("Rarity/Demand/Pot (format: rarity:value,demand:value)")
+        const ratingInput = new TextInputBuilder()
+          .setCustomId("rating")
+          .setLabel("Rating (0-5)")
           .setStyle(TextInputStyle.Short)
-          .setValue(
-            [
-              itemData.rarity ? `rarity:${itemData.rarity}` : "",
-              itemData.demand ? `demand:${itemData.demand}` : "",
-              itemData.pot ? `pot:${itemData.pot}` : "",
-            ]
-              .filter(Boolean)
-              .join(","),
-          )
+          .setValue(itemData.rating?.toString() || "0")
           .setRequired(false)
 
         modal.addComponents(
@@ -177,7 +160,7 @@ export const editItemCommand = {
           new ActionRowBuilder<TextInputBuilder>().addComponents(sectionInput),
           new ActionRowBuilder<TextInputBuilder>().addComponents(valueInput),
           new ActionRowBuilder<TextInputBuilder>().addComponents(imageInput),
-          new ActionRowBuilder<TextInputBuilder>().addComponents(extraInput),
+          new ActionRowBuilder<TextInputBuilder>().addComponents(ratingInput),
         )
 
         await interaction.showModal(modal)
@@ -196,7 +179,7 @@ export const editItemCommand = {
     const section = interaction.fields.getTextInputValue("section")
     const value = Number.parseFloat(interaction.fields.getTextInputValue("value"))
     const image = interaction.fields.getTextInputValue("image")
-    const extraFields = interaction.fields.getTextInputValue("extra")
+    const rating = Number.parseFloat(interaction.fields.getTextInputValue("rating")) || 0
 
     if (isNaN(value)) {
       await interaction.editReply("❌ Invalid value! Please enter a number.")
@@ -204,61 +187,19 @@ export const editItemCommand = {
     }
 
     try {
-      // Parse extra fields
-      const updates: any = { rarity: null, demand: null, pot: null }
-      if (extraFields) {
-        const pairs = extraFields.split(",")
-        pairs.forEach((pair) => {
-          const [key, val] = pair.split(":").map((s) => s.trim())
-          if (key && val) {
-            updates[key] = val
-          }
+      const result = await supabase
+        .from("items")
+        .update({
+          name,
+          section,
+          rap_value: value,
+          image_url: image || null,
+          rating,
+          updated_at: new Date().toISOString(),
         })
-      }
+        .eq("id", itemId)
 
-      let result
-      if (selectedGame === "mm2") {
-        result = await supabase
-          .from("mm2_items")
-          .update({
-            name,
-            section,
-            value,
-            image_url: image || null,
-            rarity: updates.rarity || "Common",
-            demand: updates.demand || "Unknown",
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", itemId)
-      } else if (selectedGame === "sab") {
-        result = await supabase
-          .from("sab_items")
-          .update({
-            name,
-            section,
-            value,
-            image_url: image || null,
-            rarity: updates.rarity || "Common",
-            demand: updates.demand || "Unknown",
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", itemId)
-      } else if (selectedGame === "adoptme") {
-        result = await supabase
-          .from("adoptme_items")
-          .update({
-            name,
-            section,
-            value,
-            image_url: image || null,
-            pot: updates.pot || "Normal",
-            demand: updates.demand || "Unknown",
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", itemId)
-      }
-
-      if (result?.error) {
+      if (result.error) {
         throw result.error
       }
 
