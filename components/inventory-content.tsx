@@ -151,7 +151,7 @@ export function InventoryContent() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-[repeat(auto-fit,160px)] justify-center">
         {inventory.map((invItem) => {
           const item = items.find((i) => i.id === invItem.item_id)
 
@@ -180,7 +180,7 @@ export function InventoryContent() {
           }
 
           return (
-            <div key={invItem.id} className="flex flex-col items-center gap-2">
+            <div key={invItem.id} className="flex flex-col items-center">
               <div className="relative">
                 <ItemCard item={item} hideAddButton={true} />
                 {invItem.quantity > 1 && (
