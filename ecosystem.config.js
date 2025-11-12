@@ -2,7 +2,7 @@ const fs = require("fs")
 const path = require("path")
 
 function loadEnvFile() {
-  const envPath = path.join(__dirname, ".env.local")
+  const envPath = path.join(__dirname, ".env")
   const env = {}
 
   if (fs.existsSync(envPath)) {
