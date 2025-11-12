@@ -144,7 +144,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
   return (
     <>
-      <div className="relative w-full max-w-[280px] mx-auto select-none">
+      <div className="relative w-[220px] mx-auto select-none">
         {/* Background layer */}
         <div className="relative w-full aspect-[3/5]">
           <Image
@@ -158,9 +158,9 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
           />
 
           {/* Content overlay */}
-          <div className="relative h-full flex flex-col items-center justify-start p-4" style={{ zIndex: 1 }}>
+          <div className="relative h-full flex flex-col items-center justify-start p-3" style={{ zIndex: 1 }}>
             {/* Item holder with image and last updated */}
-            <div className="relative w-full aspect-[4/3] mt-2">
+            <div className="relative w-full aspect-[4/3] mt-1">
               <Image
                 src="/card-ui/itemimageholderandlastupdatedholder.png"
                 alt="Item holder"
@@ -172,7 +172,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
               />
 
               {/* Item image */}
-              <div className="absolute inset-0 flex items-center justify-center p-8">
+              <div className="absolute inset-0 flex items-center justify-center p-6">
                 <div className="relative w-full h-full">
                   <Image
                     src={imageUrl || "/placeholder.svg"}
@@ -185,19 +185,20 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
               </div>
 
               {/* Last Updated overlay at bottom */}
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-[85%]">
-                <div className="relative w-full h-7">
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2">
+                <div className="relative w-auto h-auto">
                   <Image
                     src="/card-ui/lastupdateui.png"
                     alt="Last updated"
-                    fill
+                    width={140}
+                    height={18}
                     style={{ imageRendering: "pixelated" }}
-                    className="object-fill"
+                    className="object-contain"
                     draggable={false}
                     priority
                   />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-white text-[10px] font-bold whitespace-nowrap">
+                  <div className="absolute inset-0 flex items-center justify-center pl-2">
+                    <span className="text-white text-[7px] font-bold whitespace-nowrap">
                       {getTimeAgo(item.last_updated_at)}
                     </span>
                   </div>
@@ -206,60 +207,53 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
             </div>
 
             {/* Item name holder */}
-            <div className="relative w-full h-10 mt-3">
+            <div className="relative w-full h-auto mt-1.5">
               <Image
                 src="/card-ui/boxtodisplayname.png"
                 alt="Name holder"
-                fill
+                width={200}
+                height={32}
                 style={{ imageRendering: "pixelated" }}
-                className="object-fill"
+                className="w-full h-auto object-contain"
                 draggable={false}
                 priority
               />
               <div className="absolute inset-0 flex items-center justify-center px-2">
-                <span className="text-white font-bold text-sm text-center truncate">{item.name}</span>
+                <span className="text-white font-bold text-[10px] text-center truncate">{item.name}</span>
               </div>
             </div>
 
             {/* Rarity, Demand, Value holder */}
-            <div className="relative w-full h-24 mt-3">
+            <div className="relative w-full h-auto mt-1.5">
               <Image
                 src="/card-ui/raritydemandvalue.png"
                 alt="Stats holder"
-                fill
+                width={200}
+                height={80}
                 style={{ imageRendering: "pixelated" }}
-                className="object-fill"
+                className="w-full h-auto object-contain"
                 draggable={false}
                 priority
               />
 
-              <div className="absolute inset-0 flex flex-col justify-center px-6 gap-1">
+              <div className="absolute inset-0 flex flex-col justify-center px-6 py-1 gap-0">
                 {/* Rarity */}
-                <div className="flex items-center justify-between">
-                  <span className="text-white font-bold text-xs" style={{ textShadow: "2px 2px 0 #000" }}>
-                    Rarity:
-                  </span>
-                  <span className="text-white font-bold text-xs" style={{ textShadow: "2px 2px 0 #000" }}>
+                <div className="flex items-center justify-end">
+                  <span className="text-white font-bold text-[8px]" style={{ textShadow: "1px 1px 0 #000" }}>
                     {item.rarity || item.section || "N/A"}
                   </span>
                 </div>
 
                 {/* Demand */}
-                <div className="flex items-center justify-between">
-                  <span className="text-white font-bold text-xs" style={{ textShadow: "2px 2px 0 #000" }}>
-                    Demand:
-                  </span>
-                  <span className="text-white font-bold text-xs" style={{ textShadow: "2px 2px 0 #000" }}>
+                <div className="flex items-center justify-end">
+                  <span className="text-white font-bold text-[8px]" style={{ textShadow: "1px 1px 0 #000" }}>
                     {item.demand || "N/A"}
                   </span>
                 </div>
 
                 {/* Value */}
-                <div className="flex items-center justify-between">
-                  <span className="text-white font-bold text-xs" style={{ textShadow: "2px 2px 0 #000" }}>
-                    Value:
-                  </span>
-                  <span className="text-white font-bold text-xs" style={{ textShadow: "2px 2px 0 #000" }}>
+                <div className="flex items-center justify-end">
+                  <span className="text-white font-bold text-[8px]" style={{ textShadow: "1px 1px 0 #000" }}>
                     {toNumber(item.rap_value)}
                   </span>
                 </div>
@@ -273,7 +267,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
                 disabled={isAdding || userLoading}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
-                className="relative w-[90%] h-12 mt-4 cursor-pointer transition-transform duration-150 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="relative w-auto h-auto mt-2 cursor-pointer transition-transform duration-150 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   transform: isHovered ? "scale(1.05)" : "scale(1)",
                 }}
@@ -281,9 +275,10 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
                 <Image
                   src="/card-ui/add to inventory.png"
                   alt="Add to Inventory"
-                  fill
+                  width={160}
+                  height={32}
                   style={{ imageRendering: "pixelated" }}
-                  className="object-fill pointer-events-none"
+                  className="object-contain pointer-events-none"
                   draggable={false}
                   priority
                 />
