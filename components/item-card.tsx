@@ -1,12 +1,12 @@
 "use client"
 
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { ChevronDown, ChevronUp, LogIn } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { useUser } from "@/lib/hooks/use-user"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { LogIn } from "lucide-react"
 import { getProxiedImageUrl } from "@/lib/utils/image-proxy"
 
 interface ItemCardProps {
@@ -34,22 +34,13 @@ function toNumber(value: any): number {
   return isNaN(num) ? 0 : num
 }
 
-function formatValue(value: number | null | undefined): string {
-  const numValue = toNumber(value)
-  if (numValue === 0) return "0"
-  if (numValue >= 1_000_000_000) return `${(numValue / 1_000_000_000).toFixed(2)}B`
-  if (numValue >= 1_000_000) return `${(numValue / 1_000_000).toFixed(2)}M`
-  if (numValue >= 1_000) return `${(numValue / 1_000).toFixed(2)}K`
-  return numValue.toString()
-}
-
 function getTimeAgo(timestamp: string): string {
   const now = new Date()
   const updated = new Date(timestamp)
   const diffMs = now.getTime() - updated.getTime()
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
 
-  if (diffHours < 1) return "less than 1 hour ago"
+  if (diffHours < 1) return "Less than 1 hour ago"
   if (diffHours === 1) return "1 hour ago"
   if (diffHours < 24) return `${diffHours} hours ago`
   const diffDays = Math.floor(diffHours / 24)
@@ -58,10 +49,9 @@ function getTimeAgo(timestamp: string): string {
 }
 
 export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
-  const changePercent = toNumber(item.change_percent)
-  const isPositive = changePercent >= 0
   const [imageError, setImageError] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
   const { user, loading: userLoading, refetch } = useUser()
   const [showLoginDialog, setShowLoginDialog] = useState(false)
   const { toast } = useToast()
@@ -78,11 +68,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
   const imageUrl = imageError ? "/placeholder.svg?height=200&width=200" : getProxiedImageUrl(item.id)
 
-  const displayRating = item.rarity || item.rating || 0
-  const sectionLabel = item.section ? item.section.toUpperCase() : "VALUE"
-
   const handleAddToInventory = async () => {
-    // If user is not logged in, show login dialog
     if (!user) {
       setShowLoginDialog(true)
       return
@@ -137,7 +123,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-base text-foreground truncate">{item.name}</p>
-              <p className="text-sm text-muted-foreground mt-0.5">Value: {formatValue(item.rap_value)}</p>
+              <p className="text-sm text-muted-foreground mt-0.5">Value: {toNumber(item.rap_value)}</p>
             </div>
           </div>
         ),
@@ -158,76 +144,153 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
   return (
     <>
-      <div className="group relative overflow-hidden rounded-2xl border border-border bg-secondary/10 p-3 md:p-4 transition-all hover:border-border/60 hover:bg-secondary/20">
-        <div className="mb-2 md:mb-3 flex items-center justify-between gap-2 flex-wrap">
-          <div className="rounded-full bg-muted/60 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-muted-foreground">
-            {sectionLabel}: {formatValue(item.rap_value)}
-          </div>
-          {item.rarity && (
-            <div className="rounded-full bg-purple-500/20 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-purple-300">
-              Rarity: {item.rarity}
-            </div>
-          )}
-          {item.pot && (
-            <div className="rounded-full bg-blue-500/20 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-blue-300">
-              Pot: {item.pot}
-            </div>
-          )}
-        </div>
-
-        <div className="relative mx-auto aspect-square w-full max-w-[200px] md:max-w-[240px] overflow-hidden rounded-xl border border-border bg-card/60 shadow-lg">
+      <div className="relative w-full max-w-[280px] mx-auto select-none">
+        {/* Background layer */}
+        <div className="relative w-full aspect-[3/5]">
           <Image
-            src={imageUrl || "/placeholder.svg"}
-            alt={item.name}
+            src="/card-ui/backgroundforeachitem.png"
+            alt="Card background"
             fill
-            loading="lazy"
-            className="object-contain p-2"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            onError={(e) => {
-              setImageError(true)
-            }}
+            style={{ imageRendering: "pixelated" }}
+            className="object-fill"
+            draggable={false}
+            priority
           />
-        </div>
 
-        <h3 className="mt-2 md:mt-3 text-center text-xs md:text-sm font-semibold line-clamp-2">{item.name}</h3>
+          {/* Content overlay */}
+          <div className="relative h-full flex flex-col items-center justify-start p-4" style={{ zIndex: 1 }}>
+            {/* Item holder with image and last updated */}
+            <div className="relative w-full aspect-[4/3] mt-2">
+              <Image
+                src="/card-ui/itemimageholderandlastupdatedholder.png"
+                alt="Item holder"
+                fill
+                style={{ imageRendering: "pixelated" }}
+                className="object-contain"
+                draggable={false}
+                priority
+              />
 
-        {item.demand && (
-          <p className="mt-1 text-center text-[10px] md:text-xs text-muted-foreground">Demand: {item.demand}</p>
-        )}
+              {/* Item image */}
+              <div className="absolute inset-0 flex items-center justify-center p-8">
+                <div className="relative w-full h-full">
+                  <Image
+                    src={imageUrl || "/placeholder.svg"}
+                    alt={item.name}
+                    fill
+                    className="object-contain drop-shadow-2xl"
+                    onError={() => setImageError(true)}
+                  />
+                </div>
+              </div>
 
-        <p className="mt-1 text-center text-[10px] md:text-xs text-muted-foreground">
-          Last Updated: {getTimeAgo(item.last_updated_at)}
-        </p>
+              {/* Last Updated overlay at bottom */}
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-[85%]">
+                <div className="relative w-full h-7">
+                  <Image
+                    src="/card-ui/lastupdateui.png"
+                    alt="Last updated"
+                    fill
+                    style={{ imageRendering: "pixelated" }}
+                    className="object-fill"
+                    draggable={false}
+                    priority
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-white text-[10px] font-bold whitespace-nowrap">
+                      {getTimeAgo(item.last_updated_at)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-        {changePercent !== 0 && (
-          <div className="mt-3 md:mt-4 flex items-center justify-center gap-1">
-            {isPositive ? (
-              <ChevronUp className="h-3 w-3 md:h-4 md:w-4 text-green-500" />
-            ) : (
-              <ChevronDown className="h-3 w-3 md:h-4 md:w-4 text-red-500" />
+            {/* Item name holder */}
+            <div className="relative w-full h-10 mt-3">
+              <Image
+                src="/card-ui/boxtodisplayname.png"
+                alt="Name holder"
+                fill
+                style={{ imageRendering: "pixelated" }}
+                className="object-fill"
+                draggable={false}
+                priority
+              />
+              <div className="absolute inset-0 flex items-center justify-center px-2">
+                <span className="text-white font-bold text-sm text-center truncate">{item.name}</span>
+              </div>
+            </div>
+
+            {/* Rarity, Demand, Value holder */}
+            <div className="relative w-full h-24 mt-3">
+              <Image
+                src="/card-ui/raritydemandvalue.png"
+                alt="Stats holder"
+                fill
+                style={{ imageRendering: "pixelated" }}
+                className="object-fill"
+                draggable={false}
+                priority
+              />
+
+              <div className="absolute inset-0 flex flex-col justify-center px-6 gap-1">
+                {/* Rarity */}
+                <div className="flex items-center justify-between">
+                  <span className="text-white font-bold text-xs" style={{ textShadow: "2px 2px 0 #000" }}>
+                    Rarity:
+                  </span>
+                  <span className="text-white font-bold text-xs" style={{ textShadow: "2px 2px 0 #000" }}>
+                    {item.rarity || item.section || "N/A"}
+                  </span>
+                </div>
+
+                {/* Demand */}
+                <div className="flex items-center justify-between">
+                  <span className="text-white font-bold text-xs" style={{ textShadow: "2px 2px 0 #000" }}>
+                    Demand:
+                  </span>
+                  <span className="text-white font-bold text-xs" style={{ textShadow: "2px 2px 0 #000" }}>
+                    {item.demand || "N/A"}
+                  </span>
+                </div>
+
+                {/* Value */}
+                <div className="flex items-center justify-between">
+                  <span className="text-white font-bold text-xs" style={{ textShadow: "2px 2px 0 #000" }}>
+                    Value:
+                  </span>
+                  <span className="text-white font-bold text-xs" style={{ textShadow: "2px 2px 0 #000" }}>
+                    {toNumber(item.rap_value)}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Add to Inventory button */}
+            {!hideAddButton && (
+              <button
+                onClick={handleAddToInventory}
+                disabled={isAdding || userLoading}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                className="relative w-[90%] h-12 mt-4 cursor-pointer transition-transform duration-150 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  transform: isHovered ? "scale(1.05)" : "scale(1)",
+                }}
+              >
+                <Image
+                  src="/card-ui/add to inventory.png"
+                  alt="Add to Inventory"
+                  fill
+                  style={{ imageRendering: "pixelated" }}
+                  className="object-fill pointer-events-none"
+                  draggable={false}
+                  priority
+                />
+              </button>
             )}
-            <span className={`text-xs md:text-sm font-semibold ${isPositive ? "text-green-500" : "text-red-500"}`}>
-              {Math.abs(changePercent).toFixed(1)}%
-            </span>
           </div>
-        )}
-
-        {displayRating !== 0 && (
-          <div className="mt-2 text-center text-base md:text-lg font-bold text-yellow-500">
-            {typeof displayRating === "string" ? displayRating : `${toNumber(displayRating).toFixed(1)}/10`}
-          </div>
-        )}
-
-        {!hideAddButton && (
-          <Button
-            onClick={handleAddToInventory}
-            disabled={isAdding || userLoading}
-            variant="secondary"
-            className="mt-3 md:mt-4 w-full rounded-lg bg-muted/60 text-[10px] md:text-xs font-medium uppercase tracking-wide text-muted-foreground hover:bg-muted/80 disabled:opacity-50"
-          >
-            {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
-          </Button>
-        )}
+        </div>
       </div>
 
       <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
