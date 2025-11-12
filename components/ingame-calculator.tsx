@@ -89,17 +89,60 @@ export function IngameCalculator() {
           <p className="mt-2 text-sm text-gray-400">Select a game to calculate your items</p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-          {(["MM2", "SAB", "Adopt Me"] as const).map((g) => (
-            <button
-              key={g}
-              onClick={() => handleGameSelect(g)}
-              className="rounded-xl border border-gray-700 bg-gray-800/50 p-6 text-left transition-all hover:border-gray-600 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-            >
-              <p className="text-lg font-semibold text-white">{g}</p>
-              <p className="mt-1 text-xs text-gray-400">Calculate {g} items</p>
-            </button>
-          ))}
+        <div className="mx-auto grid max-w-4xl gap-6 sm:grid-cols-3">
+          <button
+            onClick={() => handleGameSelect("MM2")}
+            className="group relative overflow-hidden rounded-2xl border-2 border-gray-800/50 bg-black p-8 transition-all hover:scale-105 hover:border-red-500/50 hover:shadow-lg hover:shadow-red-500/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+          >
+            <div className="relative mb-4 flex h-32 items-center justify-center rounded-xl border border-gray-800 bg-black p-4">
+              <Image
+                src="/game-icons/mm2-gray.png"
+                alt="MM2"
+                width={120}
+                height={120}
+                className="object-contain transition-transform group-hover:scale-110"
+              />
+            </div>
+            <p className="text-lg font-bold text-white">MM2</p>
+            <p className="mt-1 text-xs text-gray-400">Murder Mystery 2</p>
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-red-500/0 to-red-500/5 opacity-0 transition-opacity group-hover:opacity-100" />
+          </button>
+
+          <button
+            onClick={() => handleGameSelect("SAB")}
+            className="group relative overflow-hidden rounded-2xl border-2 border-gray-800/50 bg-black p-8 transition-all hover:scale-105 hover:border-gray-500/50 hover:shadow-lg hover:shadow-gray-500/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+          >
+            <div className="relative mb-4 flex h-32 items-center justify-center rounded-xl border border-gray-800 bg-black p-4">
+              <Image
+                src="/game-icons/sab-gray.png"
+                alt="SAB"
+                width={120}
+                height={120}
+                className="object-contain transition-transform group-hover:scale-110"
+              />
+            </div>
+            <p className="text-lg font-bold text-white">SAB</p>
+            <p className="mt-1 text-xs text-gray-400">Sword Art Blade</p>
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-gray-500/0 to-gray-500/5 opacity-0 transition-opacity group-hover:opacity-100" />
+          </button>
+
+          <button
+            onClick={() => handleGameSelect("Adopt Me")}
+            className="group relative overflow-hidden rounded-2xl border-2 border-gray-800/50 bg-black p-8 transition-all hover:scale-105 hover:border-gray-500/50 hover:shadow-lg hover:shadow-gray-500/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+          >
+            <div className="relative mb-4 flex h-32 items-center justify-center rounded-xl border border-gray-800 bg-black p-4">
+              <Image
+                src="/game-icons/adoptme-gray.png"
+                alt="Adopt Me"
+                width={120}
+                height={120}
+                className="object-contain transition-transform group-hover:scale-110"
+              />
+            </div>
+            <p className="text-lg font-bold text-white">Adopt Me</p>
+            <p className="mt-1 text-xs text-gray-400">Adopt Me Pets</p>
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-gray-500/0 to-gray-500/5 opacity-0 transition-opacity group-hover:opacity-100" />
+          </button>
         </div>
 
         <div className="flex justify-center pt-4">

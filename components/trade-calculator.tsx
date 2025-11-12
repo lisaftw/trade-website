@@ -63,33 +63,62 @@ export function TradeCalculator() {
         </div>
 
         <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-3 max-w-4xl mx-auto">
-          {(
-            [
-              { name: "MM2", icon: "/game-icons/mm2-gray.png", desc: "Murder Mystery 2" },
-              { name: "SAB", icon: "/game-icons/sab-gray.png", desc: "Sword Art Blade" },
-              { name: "Adopt Me", icon: "/game-icons/adoptme-gray.png", desc: "Adopt Me Pets" },
-            ] as const
-          ).map((g) => (
-            <button
-              key={g.name}
-              onClick={() => setGame(g.name)}
-              className="group relative overflow-hidden rounded-xl border-2 border-gray-800/80 bg-gradient-to-b from-gray-900 to-black p-6 md:p-8 text-center transition-all hover:border-red-500/50 hover:shadow-xl hover:shadow-red-500/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
-            >
-              <div className="relative z-10 flex flex-col items-center">
-                <div className="mb-4 h-24 md:h-32 w-24 md:w-32 relative bg-black/40 rounded-lg flex items-center justify-center border border-gray-800">
-                  <Image
-                    src={g.icon || "/placeholder.svg"}
-                    alt={g.name}
-                    fill
-                    className="object-contain transition-transform group-hover:scale-110 p-2"
-                  />
-                </div>
-                <p className="text-xl md:text-2xl font-bold text-white mb-1">{g.name}</p>
-                <p className="text-xs md:text-sm text-gray-400">{g.desc}</p>
+          <button
+            onClick={() => setGame("MM2")}
+            className="group relative overflow-hidden rounded-xl border-2 border-gray-800/50 bg-black p-6 md:p-8 text-center transition-all hover:scale-105 hover:border-red-500/50 hover:shadow-xl hover:shadow-red-500/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+          >
+            <div className="relative z-10 flex flex-col items-center">
+              <div className="mb-4 h-24 md:h-32 w-24 md:w-32 relative bg-black rounded-lg flex items-center justify-center border border-gray-800">
+                <Image
+                  src="/game-icons/mm2-gray.png"
+                  alt="MM2"
+                  fill
+                  className="object-contain transition-transform group-hover:scale-110 p-2"
+                />
               </div>
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-            </button>
-          ))}
+              <p className="text-xl md:text-2xl font-bold text-white mb-1">MM2</p>
+              <p className="text-xs md:text-sm text-gray-400">Murder Mystery 2</p>
+            </div>
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-red-500/0 to-red-500/5 opacity-0 transition-opacity group-hover:opacity-100" />
+          </button>
+
+          <button
+            onClick={() => setGame("SAB")}
+            className="group relative overflow-hidden rounded-xl border-2 border-gray-800/50 bg-black p-6 md:p-8 text-center transition-all hover:scale-105 hover:border-gray-500/50 hover:shadow-xl hover:shadow-gray-500/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+          >
+            <div className="relative z-10 flex flex-col items-center">
+              <div className="mb-4 h-24 md:h-32 w-24 md:w-32 relative bg-black rounded-lg flex items-center justify-center border border-gray-800">
+                <Image
+                  src="/game-icons/sab-gray.png"
+                  alt="SAB"
+                  fill
+                  className="object-contain transition-transform group-hover:scale-110 p-2"
+                />
+              </div>
+              <p className="text-xl md:text-2xl font-bold text-white mb-1">SAB</p>
+              <p className="text-xs md:text-sm text-gray-400">Sword Art Blade</p>
+            </div>
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-gray-500/0 to-gray-500/5 opacity-0 transition-opacity group-hover:opacity-100" />
+          </button>
+
+          <button
+            onClick={() => setGame("Adopt Me")}
+            className="group relative overflow-hidden rounded-xl border-2 border-gray-800/50 bg-black p-6 md:p-8 text-center transition-all hover:scale-105 hover:border-gray-500/50 hover:shadow-xl hover:shadow-gray-500/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+          >
+            <div className="relative z-10 flex flex-col items-center">
+              <div className="mb-4 h-24 md:h-32 w-24 md:w-32 relative bg-black rounded-lg flex items-center justify-center border border-gray-800">
+                <Image
+                  src="/game-icons/adoptme-gray.png"
+                  alt="Adopt Me"
+                  fill
+                  className="object-contain transition-transform group-hover:scale-110 p-2"
+                />
+              </div>
+              <p className="text-xl md:text-2xl font-bold text-white mb-1">Adopt Me</p>
+              <p className="text-xs md:text-sm text-gray-400">Adopt Me Pets</p>
+            </div>
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-gray-500/0 to-gray-500/5 opacity-0 transition-opacity group-hover:opacity-100" />
+          </button>
         </div>
       </div>
     )
