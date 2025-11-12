@@ -79,46 +79,37 @@ function ReferenceHero() {
         </div>
 
         {/* Games row */}
-        <div className="relative mt-4 md:mt-6 w-full px-2 md:px-0">
+        <div className="pointer-events-none relative mt-4 md:mt-6 w-full px-2 md:px-0">
           <div className="absolute inset-0 rounded-3xl border border-white/8 shadow-[0_10px_40px_rgba(0,0,0,0.35)]" />
           <div className="rounded-3xl bg-background/40 p-3 backdrop-blur">
-            <div className="flex items-center justify-center gap-3 md:gap-4 rounded-2xl p-2">
-              <a
-                href="/values?game=Adopt+Me"
-                className="group relative overflow-hidden rounded-xl transition-transform hover:scale-105"
-              >
+            <div className="grid grid-cols-3 gap-2 md:gap-3">
+              <div className="relative aspect-square overflow-hidden rounded-xl">
                 <Image
-                  src="/game-icons/adoptme.png"
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-n2ELcUjJRAMQ6u1ue7xEs7RXYLAwP7.png"
+                  alt="Steal a Brainrot (SAB)"
+                  width={400}
+                  height={400}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="relative aspect-square overflow-hidden rounded-xl bg-black/80 flex items-center justify-center">
+                <Image
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-4eE8qAMvDpzhpN9L8bRypmDnoVdTsg.png"
+                  alt="Murder Mystery 2 (MM2)"
+                  width={400}
+                  height={400}
+                  className="h-3/4 w-3/4 object-contain"
+                />
+              </div>
+              <div className="relative aspect-square overflow-hidden rounded-xl">
+                <Image
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-YpFYJXyjM5QKbfzc1pSkJlL3Ad5jzw.png"
                   alt="Adopt Me"
-                  width={160}
-                  height={160}
-                  className="h-20 w-20 md:h-28 md:w-28 rounded-xl object-cover"
+                  width={400}
+                  height={400}
+                  className="h-full w-full object-cover"
                 />
-              </a>
-              <a
-                href="/values?game=MM2"
-                className="group relative overflow-hidden rounded-xl transition-transform hover:scale-105"
-              >
-                <Image
-                  src="/game-icons/mm2.png"
-                  alt="Murder Mystery 2"
-                  width={160}
-                  height={160}
-                  className="h-20 w-20 md:h-28 md:w-28 rounded-xl object-cover"
-                />
-              </a>
-              <a
-                href="/values?game=SAB"
-                className="group relative overflow-hidden rounded-xl transition-transform hover:scale-105"
-              >
-                <Image
-                  src="/game-icons/sab.png"
-                  alt="Steal a Brain Rot"
-                  width={160}
-                  height={160}
-                  className="h-20 w-20 md:h-28 md:w-28 rounded-xl object-cover"
-                />
-              </a>
+              </div>
             </div>
           </div>
         </div>

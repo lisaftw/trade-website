@@ -33,9 +33,40 @@ function toNumber(value: any): number {
   return isNaN(num) ? 0 : num
 }
 
-function getActualImageUrl(imageUrl: string, itemId: string): string {
-  // The proxy endpoint will handle Discord CDN, Roblox assets, and other image sources
-  return `/api/item-image/${itemId}`
+function getActualImageUrl(imageUrl: string): string {
+  // If it's already a full URL (Adopt Me CDN), return as-is
+  if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+    return imageUrl
+  }
+
+  // Extract asset ID from proxy path like "/api/item-image/12345?size=150"
+  const proxyMatch = imageUrl.match(/\/api\/item-image\/(\d+)/)
+  if (proxyMatch) {
+    const assetId = proxyMatch[1]
+    return `https://assetdelivery.roblox.com/v1/asset/?id=${assetId}`
+  }
+
+  // If it's just a number, treat it as asset ID
+  if (/^\d+$/.test(imageUrl)) {
+    return `https://assetdelivery.roblox.com/v1/asset/?id=${imageUrl}`
+  }
+
+  // Fallback to placeholder
+  return "/placeholder.svg?height=200&width=200"
+}
+
+function getTimeAgo(timestamp: string): string {
+  const now = new Date()
+  const updated = new Date(timestamp)
+  const diffMs = now.getTime() - updated.getTime()
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+
+  if (diffHours < 1) return "Less than 1 hour ago"
+  if (diffHours === 1) return "1 hour ago"
+  if (diffHours < 24) return `${diffHours} hours ago`
+  const diffDays = Math.floor(diffHours / 24)
+  if (diffDays === 1) return "1 day ago"
+  return `${diffDays} days ago`
 }
 
 export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
@@ -58,9 +89,81 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
   const imageUrl = imageError
     ? "/placeholder.svg?height=200&width=200"
-    : getActualImageUrl(item.image_url || "/placeholder.svg?height=200&width=200", item.id)
+    : getActualImageUrl(item.image_url || "/placeholder.svg?height=200&width=200")
 
-  const shouldUnoptimize = false
+  const handleAddToInventory = async () => {
+    if (!user) {
+      setShowLoginDialog(true)
+      return
+    }
+
+    setIsAdding(true)
+    try {
+      const response = await fetch("/api/inventory", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          itemId: item.id,
+          quantity: 1,
+        }),
+      })
+
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.details || data.error || "Failed to add to inventory")
+      }
+
+      toast({
+        title: (
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-5 w-5 text-white"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </div>
+            <span className="text-lg font-bold">Added to your inventory</span>
+          </div>
+        ),
+        description: (
+          <div className="mt-3 flex items-center gap-3 rounded-lg bg-background/50 p-3 border border-green-500/30">
+            <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border border-border bg-card">
+              <Image
+                src={imageUrl || "/placeholder.svg"}
+                alt={item.name}
+                fill
+                className="object-contain p-1"
+                sizes="64px"
+              />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-base text-foreground truncate">{item.name}</p>
+              <p className="text-sm text-muted-foreground mt-0.5">Value: {toNumber(item.rap_value)}</p>
+            </div>
+          </div>
+        ),
+        duration: 5000,
+        className: "border-2 border-green-500 bg-green-500/5 shadow-xl shadow-green-500/20",
+      })
+    } catch (error) {
+      toast({
+        title: "Failed to add item",
+        description: error instanceof Error ? error.message : "Please try again or check your connection.",
+        variant: "destructive",
+        duration: 4000,
+      })
+    } finally {
+      setIsAdding(false)
+    }
+  }
 
   return (
     <>
@@ -100,7 +203,6 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
                     fill
                     className="object-contain drop-shadow-2xl"
                     onError={() => setImageError(true)}
-                    unoptimized={shouldUnoptimize}
                   />
                 </div>
               </div>
@@ -220,8 +322,4 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
       </Dialog>
     </>
   )
-}
-
-function handleAddToInventory() {
-  // Implementation of handleAddToInventory
 }
