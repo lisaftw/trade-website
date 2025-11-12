@@ -96,7 +96,7 @@ export function TradeCalculator() {
                 />
               </div>
               <p className="text-xl md:text-2xl font-bold text-white mb-1">SAB</p>
-              <p className="text-xs md:text-sm text-gray-400">Sword Art Blade</p>
+              <p className="text-xs md:text-sm text-gray-400">Steal a Brainrot</p>
             </div>
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-gray-500/0 to-gray-500/5 opacity-0 transition-opacity group-hover:opacity-100" />
           </button>
