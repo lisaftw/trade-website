@@ -13,6 +13,11 @@ const data = XLSX.utils.sheet_to_json(sheet);
 
 console.log(`Found ${data.length} items to update with variant values`);
 
+if (data.length > 0) {
+  console.log('Excel columns found:', Object.keys(data[0]));
+  console.log('First row sample:', data[0]);
+}
+
 for (const row of data) {
   const itemName = row['PetName'];
   const imageUrl = `https://assetdelivery.roblox.com/v1/asset/?id=${row['ImageURL']}`;
