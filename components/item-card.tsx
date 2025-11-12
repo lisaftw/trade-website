@@ -266,6 +266,15 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
               </div>
             </div>
 
+            {/* Last Updated section */}
+            <div className="relative w-full h-auto mt-1.5">
+              <div className="w-full bg-muted/80 rounded-full px-3 py-1 backdrop-blur-sm">
+                <span className="text-white/90 font-medium text-[9px]" style={{ textShadow: "1px 1px 1px #000" }}>
+                  Last Updated: {getTimeAgo(item.last_updated_at)}
+                </span>
+              </div>
+            </div>
+
             {/* Add to Inventory button */}
             {!hideAddButton && (
               <button
