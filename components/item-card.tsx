@@ -266,11 +266,24 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
               </div>
             </div>
 
-            {/* Last Updated section */}
+            {/* Last updated section */}
             <div className="relative w-full h-auto mt-1.5">
-              <div className="w-full bg-muted/80 rounded-full px-3 py-1 backdrop-blur-sm">
-                <span className="text-white/90 font-medium text-[9px]" style={{ textShadow: "1px 1px 1px #000" }}>
-                  Last Updated: {getTimeAgo(item.last_updated_at)}
+              <Image
+                src="/card-ui/itemimageholderandlastupdatedholder.png"
+                alt="Last updated holder"
+                width={200}
+                height={24}
+                style={{ imageRendering: "pixelated" }}
+                className="w-full h-auto object-contain"
+                draggable={false}
+                priority
+              />
+              <div className="absolute inset-0 flex items-center justify-center px-2">
+                <span
+                  className="text-white font-semibold text-[9px] text-center"
+                  style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.8)" }}
+                >
+                  {getTimeAgo(item.last_updated_at)}
                 </span>
               </div>
             </div>
