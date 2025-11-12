@@ -184,8 +184,9 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
                 </div>
               </div>
 
-              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[140px]">
-                <div className="relative w-full h-[22px]">
+              {/* Last Updated overlay */}
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[150px]">
+                <div className="relative w-full h-[24px]">
                   <Image
                     src="/card-ui/lastupdateui.png"
                     alt="Last updated"
@@ -195,8 +196,8 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
                     draggable={false}
                     priority
                   />
-                  <div className="absolute inset-0 flex items-center justify-center px-2">
-                    <span className="text-white text-[9px] font-bold whitespace-nowrap">
+                  <div className="absolute inset-0 flex items-center justify-center px-3">
+                    <span className="text-white text-[10px] font-bold whitespace-nowrap tracking-tight">
                       {getTimeAgo(item.last_updated_at)}
                     </span>
                   </div>
