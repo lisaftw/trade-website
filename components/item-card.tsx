@@ -7,6 +7,7 @@ import { useUser } from "@/lib/hooks/use-user"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { LogIn } from "lucide-react"
+import { AdoptMeVariantSelector } from "./adoptme-variant-selector"
 
 interface ItemCardProps {
   item: {
@@ -73,6 +74,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
   const [imageError, setImageError] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
+  const [showVariantSelector, setShowVariantSelector] = useState(false)
   const { user, loading: userLoading, refetch } = useUser()
   const [showLoginDialog, setShowLoginDialog] = useState(false)
   const { toast } = useToast()
@@ -97,6 +99,17 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
       return
     }
 
+    // Show variant selector for Adopt Me items
+    if (item.game === "Adopt Me") {
+      setShowVariantSelector(true)
+      return
+    }
+
+    // For non-Adopt Me items, add directly
+    await addToInventory(1, item.rap_value || 0)
+  }
+
+  const addToInventory = async (quantity: number, value: number) => {
     setIsAdding(true)
     try {
       const response = await fetch("/api/inventory", {
@@ -104,7 +117,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           itemId: item.id,
-          quantity: 1,
+          quantity,
         }),
       })
 
@@ -146,7 +159,8 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-base text-foreground truncate">{item.name}</p>
-              <p className="text-sm text-muted-foreground mt-0.5">Value: {toNumber(item.rap_value)}</p>
+              <p className="text-sm text-muted-foreground mt-0.5">Value: {value}</p>
+              {quantity > 1 && <p className="text-sm text-muted-foreground">Quantity: {quantity}</p>}
             </div>
           </div>
         ),
@@ -163,6 +177,10 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
     } finally {
       setIsAdding(false)
     }
+  }
+
+  const handleVariantSelect = async (variant: string, quantity: number, value: number) => {
+    await addToInventory(quantity, value)
   }
 
   return (
@@ -320,6 +338,16 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Adopt Me variant selector dialog */}
+      {item.game === "Adopt Me" && (
+        <AdoptMeVariantSelector
+          open={showVariantSelector}
+          onOpenChange={setShowVariantSelector}
+          item={item as any}
+          onSelect={handleVariantSelect}
+        />
+      )}
     </>
   )
 }
