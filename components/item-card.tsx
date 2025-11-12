@@ -144,7 +144,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
   return (
     <>
-      <div className="relative w-[220px] select-none">
+      <div className="relative w-full select-none">
         {/* Background layer */}
         <div className="relative w-full aspect-[3/5]">
           <Image
