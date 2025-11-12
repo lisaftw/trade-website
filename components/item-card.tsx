@@ -207,16 +207,12 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
                 </div>
               </div>
 
-              <div className="absolute bottom-1 left-1/2 -translate-x-1/2 z-10">
-                <span
-                  className="text-white font-bold text-[8px] px-2 py-0.5 rounded"
-                  style={{
-                    textShadow: "1px 1px 2px rgba(0,0,0,0.9)",
-                    backgroundColor: "rgba(0,0,0,0.4)",
-                  }}
-                >
-                  {getTimeAgo(item.last_updated_at)}
-                </span>
+              <div className="absolute bottom-1 right-2 z-10">
+                <div className="bg-gray-300/90 rounded-full px-2 py-0.5 backdrop-blur-sm">
+                  <span className="text-gray-800 font-bold text-[8px] whitespace-nowrap">
+                    Last Updated: {getTimeAgo(item.last_updated_at)}
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -235,7 +231,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
               <div className="absolute inset-0 flex items-center justify-center px-2">
                 <span
                   className="text-white font-semibold text-[11px] text-center truncate"
-                  style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.8)" }}
+                  style={{ textShadow: "1px 1px 1px #000" }}
                 >
                   {item.name}
                 </span>
