@@ -80,13 +80,11 @@ export const editItemCommand = {
   },
 
   async execute(interaction: ChatInputCommandInteraction) {
-    await interaction.deferReply({ ephemeral: true })
-
     const game = interaction.options.getString("game", true)
     const itemId = interaction.options.getString("item", true)
 
     if (itemId === "none" || itemId === "error") {
-      await interaction.editReply("❌ Please select a valid item from the search results.")
+      await interaction.reply({ content: "❌ Please select a valid item from the search results.", ephemeral: true })
       return
     }
 
@@ -96,7 +94,7 @@ export const editItemCommand = {
       if (result.error) throw result.error
 
       if (!result.data) {
-        await interaction.editReply("❌ Item not found!")
+        await interaction.reply({ content: "❌ Item not found!", ephemeral: true })
         return
       }
 
@@ -151,10 +149,11 @@ export const editItemCommand = {
 
       await interaction.showModal(modal)
     } catch (error) {
-      console.error("Error updating item:", error)
-      await interaction.editReply(
-        `❌ Failed to update item: ${error instanceof Error ? error.message : "Unknown error"}`,
-      )
+      console.error("Error loading item for edit:", error)
+      await interaction.reply({
+        content: `❌ Failed to load item: ${error instanceof Error ? error.message : "Unknown error"}`,
+        ephemeral: true,
+      })
     }
   },
 
