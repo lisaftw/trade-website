@@ -208,12 +208,12 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
               </div>
 
               {/* Last Updated badge */}
-              <div className="absolute bottom-2 right-2 z-10 relative">
+              <div className="absolute bottom-2 left-3 z-10">
                 <Image
                   src="/card-ui/lastupdateui.png"
                   alt="Last Updated"
-                  width={120}
-                  height={20}
+                  width={110}
+                  height={18}
                   style={{ imageRendering: "pixelated" }}
                   className="object-contain"
                   draggable={false}
