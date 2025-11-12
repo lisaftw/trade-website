@@ -33,6 +33,28 @@ function toNumber(value: any): number {
   return isNaN(num) ? 0 : num
 }
 
+function getActualImageUrl(imageUrl: string): string {
+  // If it's already a full URL (Adopt Me CDN), return as-is
+  if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+    return imageUrl
+  }
+
+  // Extract asset ID from proxy path like "/api/item-image/12345?size=150"
+  const proxyMatch = imageUrl.match(/\/api\/item-image\/(\d+)/)
+  if (proxyMatch) {
+    const assetId = proxyMatch[1]
+    return `https://assetdelivery.roblox.com/v1/asset/?id=${assetId}`
+  }
+
+  // If it's just a number, treat it as asset ID
+  if (/^\d+$/.test(imageUrl)) {
+    return `https://assetdelivery.roblox.com/v1/asset/?id=${imageUrl}`
+  }
+
+  // Fallback to placeholder
+  return "/placeholder.svg?height=200&width=200"
+}
+
 function getTimeAgo(timestamp: string): string {
   const now = new Date()
   const updated = new Date(timestamp)
@@ -67,7 +89,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
   const imageUrl = imageError
     ? "/placeholder.svg?height=200&width=200"
-    : item.image_url || "/placeholder.svg?height=200&width=200"
+    : getActualImageUrl(item.image_url || "/placeholder.svg?height=200&width=200")
 
   const handleAddToInventory = async () => {
     if (!user) {
