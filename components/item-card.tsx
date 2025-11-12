@@ -184,9 +184,8 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
                 </div>
               </div>
 
-              {/* Last Updated overlay at bottom */}
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-[160px]">
-                <div className="relative w-full h-[20px]">
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[140px]">
+                <div className="relative w-full h-[22px]">
                   <Image
                     src="/card-ui/lastupdateui.png"
                     alt="Last updated"
@@ -196,8 +195,8 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
                     draggable={false}
                     priority
                   />
-                  <div className="absolute inset-0 flex items-center justify-end pr-4">
-                    <span className="text-white text-[8px] font-semibold whitespace-nowrap tracking-tight">
+                  <div className="absolute inset-0 flex items-center justify-center px-2">
+                    <span className="text-white text-[9px] font-bold whitespace-nowrap">
                       {getTimeAgo(item.last_updated_at)}
                     </span>
                   </div>
@@ -227,7 +226,6 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
               </div>
             </div>
 
-            {/* Rarity, Demand, Value holder */}
             <div className="relative w-full h-auto mt-1.5">
               <Image
                 src="/card-ui/raritydemandvalue.png"
@@ -240,24 +238,24 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
                 priority
               />
 
-              <div className="absolute inset-0 flex flex-col justify-center px-6 py-1 gap-0">
+              <div className="absolute inset-0 flex flex-col justify-evenly px-8 py-2">
                 {/* Rarity */}
-                <div className="flex items-center justify-end">
-                  <span className="text-white font-bold text-[8px]" style={{ textShadow: "1px 1px 0 #000" }}>
+                <div className="flex items-center justify-end h-[20px]">
+                  <span className="text-white font-bold text-[10px]" style={{ textShadow: "1px 1px 1px #000" }}>
                     {item.rarity || item.section || "N/A"}
                   </span>
                 </div>
 
                 {/* Demand */}
-                <div className="flex items-center justify-end">
-                  <span className="text-white font-bold text-[8px]" style={{ textShadow: "1px 1px 0 #000" }}>
+                <div className="flex items-center justify-end h-[20px]">
+                  <span className="text-white font-bold text-[10px]" style={{ textShadow: "1px 1px 1px #000" }}>
                     {item.demand || "N/A"}
                   </span>
                 </div>
 
                 {/* Value */}
-                <div className="flex items-center justify-end">
-                  <span className="text-white font-bold text-[8px]" style={{ textShadow: "1px 1px 0 #000" }}>
+                <div className="flex items-center justify-end h-[20px]">
+                  <span className="text-white font-bold text-[10px]" style={{ textShadow: "1px 1px 1px #000" }}>
                     {toNumber(item.rap_value)}
                   </span>
                 </div>
