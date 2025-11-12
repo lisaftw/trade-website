@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { LogIn } from "lucide-react"
+import { ChevronDown, ChevronUp, LogIn } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { useUser } from "@/lib/hooks/use-user"
@@ -58,6 +58,8 @@ function getTimeAgo(timestamp: string): string {
 }
 
 export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
+  const changePercent = toNumber(item.change_percent)
+  const isPositive = changePercent >= 0
   const [imageError, setImageError] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const { user, loading: userLoading, refetch } = useUser()
@@ -76,7 +78,11 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
   const imageUrl = imageError ? "/placeholder.svg?height=200&width=200" : getProxiedImageUrl(item.id)
 
+  const displayRating = item.rarity || item.rating || 0
+  const sectionLabel = item.section ? item.section.toUpperCase() : "VALUE"
+
   const handleAddToInventory = async () => {
+    // If user is not logged in, show login dialog
     if (!user) {
       setShowLoginDialog(true)
       return
@@ -152,141 +158,76 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
   return (
     <>
-      <div className="relative w-full max-w-[280px] mx-auto">
-        {/* Main card with gradient background */}
-        <div
-          className="relative w-full rounded-[20px] border-4 border-white/20 shadow-2xl overflow-hidden"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(100,100,100,0.9) 0%, rgba(160,160,160,0.9) 50%, rgba(100,100,100,0.9) 100%)",
-          }}
-        >
-          {/* Card content */}
-          <div className="relative flex flex-col p-4">
-            {/* Image container with Last Updated overlay */}
-            <div className="relative w-full aspect-[4/3] rounded-2xl border-4 border-white/30 bg-gradient-to-br from-gray-700 via-gray-600 to-gray-700 overflow-hidden mb-3">
-              {/* Item image */}
-              <div className="absolute inset-0 p-4 flex items-center justify-center">
-                <div className="relative w-full h-full">
-                  <Image
-                    src={imageUrl || "/placeholder.svg"}
-                    alt={item.name}
-                    fill
-                    loading="lazy"
-                    className="object-contain drop-shadow-2xl"
-                    sizes="280px"
-                    onError={() => setImageError(true)}
-                  />
-                </div>
-              </div>
-
-              {/* Last Updated badge */}
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-white/90 border-2 border-gray-300 shadow-lg">
-                <p className="text-gray-700 text-xs font-bold whitespace-nowrap">
-                  Last Updated: {getTimeAgo(item.last_updated_at)}
-                </p>
-              </div>
-            </div>
-
-            {/* Item name box */}
-            <div className="relative w-full rounded-xl bg-gradient-to-b from-gray-600 to-gray-700 border-3 border-white/25 shadow-lg px-4 py-2.5 mb-3">
-              <h3
-                className="text-center font-black text-lg tracking-wide truncate"
-                style={{
-                  color: "white",
-                  textShadow: "2px 2px 0px rgba(0,0,0,0.8), -1px -1px 0px rgba(255,255,255,0.2)",
-                }}
-              >
-                {item.name}
-              </h3>
-            </div>
-
-            {/* Rarity, Demand, Value box */}
-            <div className="relative w-full rounded-xl bg-gradient-to-b from-gray-500 to-gray-600 border-3 border-white/25 shadow-lg px-4 py-3 mb-3">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between border-b border-white/20 pb-1.5">
-                  <span
-                    className="font-black text-base"
-                    style={{
-                      color: "white",
-                      textShadow: "2px 2px 0px rgba(0,0,0,0.9)",
-                    }}
-                  >
-                    Rarity:
-                  </span>
-                  <span
-                    className="font-bold text-base"
-                    style={{
-                      color: "white",
-                      textShadow: "1px 1px 0px rgba(0,0,0,0.8)",
-                    }}
-                  >
-                    {item.rarity || "N/A"}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between border-b border-white/20 pb-1.5">
-                  <span
-                    className="font-black text-base"
-                    style={{
-                      color: "white",
-                      textShadow: "2px 2px 0px rgba(0,0,0,0.9)",
-                    }}
-                  >
-                    Demand:
-                  </span>
-                  <span
-                    className="font-bold text-base"
-                    style={{
-                      color: "white",
-                      textShadow: "1px 1px 0px rgba(0,0,0,0.8)",
-                    }}
-                  >
-                    {item.demand || "N/A"}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span
-                    className="font-black text-base"
-                    style={{
-                      color: "white",
-                      textShadow: "2px 2px 0px rgba(0,0,0,0.9)",
-                    }}
-                  >
-                    Value:
-                  </span>
-                  <span
-                    className="font-bold text-base"
-                    style={{
-                      color: "white",
-                      textShadow: "1px 1px 0px rgba(0,0,0,0.8)",
-                    }}
-                  >
-                    {formatValue(item.rap_value)}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Add to Inventory button */}
-            {!hideAddButton && (
-              <button
-                onClick={handleAddToInventory}
-                disabled={isAdding || userLoading}
-                className="relative w-full rounded-xl bg-gradient-to-b from-gray-500 to-gray-600 border-3 border-white/25 shadow-lg px-6 py-3 transition-all duration-200 active:scale-95 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <span
-                  className="font-black text-base"
-                  style={{
-                    color: "white",
-                    textShadow: "2px 2px 0px rgba(0,0,0,0.9)",
-                  }}
-                >
-                  {isAdding ? "Adding..." : user ? "Add To Inventory" : "Login to Add"}
-                </span>
-              </button>
-            )}
+      <div className="group relative overflow-hidden rounded-2xl border border-border bg-secondary/10 p-3 md:p-4 transition-all hover:border-border/60 hover:bg-secondary/20">
+        <div className="mb-2 md:mb-3 flex items-center justify-between gap-2 flex-wrap">
+          <div className="rounded-full bg-muted/60 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-muted-foreground">
+            {sectionLabel}: {formatValue(item.rap_value)}
           </div>
+          {item.rarity && (
+            <div className="rounded-full bg-purple-500/20 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-purple-300">
+              Rarity: {item.rarity}
+            </div>
+          )}
+          {item.pot && (
+            <div className="rounded-full bg-blue-500/20 px-2 md:px-3 py-1 text-[10px] md:text-xs font-medium text-blue-300">
+              Pot: {item.pot}
+            </div>
+          )}
         </div>
+
+        <div className="relative mx-auto aspect-square w-full max-w-[200px] md:max-w-[240px] overflow-hidden rounded-xl border border-border bg-card/60 shadow-lg">
+          <Image
+            src={imageUrl || "/placeholder.svg"}
+            alt={item.name}
+            fill
+            loading="lazy"
+            className="object-contain p-2"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            onError={(e) => {
+              setImageError(true)
+            }}
+          />
+        </div>
+
+        <h3 className="mt-2 md:mt-3 text-center text-xs md:text-sm font-semibold line-clamp-2">{item.name}</h3>
+
+        {item.demand && (
+          <p className="mt-1 text-center text-[10px] md:text-xs text-muted-foreground">Demand: {item.demand}</p>
+        )}
+
+        <p className="mt-1 text-center text-[10px] md:text-xs text-muted-foreground">
+          Last Updated: {getTimeAgo(item.last_updated_at)}
+        </p>
+
+        {changePercent !== 0 && (
+          <div className="mt-3 md:mt-4 flex items-center justify-center gap-1">
+            {isPositive ? (
+              <ChevronUp className="h-3 w-3 md:h-4 md:w-4 text-green-500" />
+            ) : (
+              <ChevronDown className="h-3 w-3 md:h-4 md:w-4 text-red-500" />
+            )}
+            <span className={`text-xs md:text-sm font-semibold ${isPositive ? "text-green-500" : "text-red-500"}`}>
+              {Math.abs(changePercent).toFixed(1)}%
+            </span>
+          </div>
+        )}
+
+        {displayRating !== 0 && (
+          <div className="mt-2 text-center text-base md:text-lg font-bold text-yellow-500">
+            {typeof displayRating === "string" ? displayRating : `${toNumber(displayRating).toFixed(1)}/10`}
+          </div>
+        )}
+
+        {!hideAddButton && (
+          <Button
+            onClick={handleAddToInventory}
+            disabled={isAdding || userLoading}
+            variant="secondary"
+            className="mt-3 md:mt-4 w-full rounded-lg bg-muted/60 text-[10px] md:text-xs font-medium uppercase tracking-wide text-muted-foreground hover:bg-muted/80 disabled:opacity-50"
+          >
+            {isAdding ? "Adding..." : user ? "Add to Inventory" : "Login to Add"}
+          </Button>
+        )}
       </div>
 
       <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
