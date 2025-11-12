@@ -181,7 +181,7 @@ export function AdoptMeContent() {
                 <span className="text-sm text-muted-foreground">({groupedItems[rarity].length} items)</span>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,200px))]">
                 {groupedItems[rarity].map((item) => (
                   <ItemCard key={item.id} item={item} />
                 ))}

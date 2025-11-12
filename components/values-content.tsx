@@ -96,7 +96,7 @@ export function ValuesContent() {
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,200px))]">
           {[...Array(8)].map((_, i) => (
             <div key={i} className="h-[380px] md:h-[420px] animate-pulse rounded-2xl bg-secondary/20" />
           ))}
@@ -110,7 +110,7 @@ export function ValuesContent() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,200px))]">
           {filteredItems.map((item) => (
             <ItemCard key={item.id} item={item} />
           ))}
