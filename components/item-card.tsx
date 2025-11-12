@@ -101,6 +101,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
     // Show variant selector for Adopt Me items
     if (item.game === "Adopt Me") {
+      console.log("[v0] ItemCard item data for Adopt Me:", item)
       setShowVariantSelector(true)
       return
     }

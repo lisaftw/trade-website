@@ -61,6 +61,16 @@ export function AdoptMeVariantSelector({ open, onOpenChange, item, onSelect }: A
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null)
   const [quantity, setQuantity] = useState(1)
 
+  console.log("[v0] AdoptMeVariantSelector received item:", {
+    name: item.name,
+    value_f: item.value_f,
+    value_r: item.value_r,
+    value_n: item.value_n,
+    value_m: item.value_m,
+    value_fr: item.value_fr,
+    value_nfr: item.value_nfr,
+  })
+
   const getVariantValue = (variant: Variant): number => {
     const valueKeys = VARIANT_INFO[variant].valueKeys
     for (const key of valueKeys) {
