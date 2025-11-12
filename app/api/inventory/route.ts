@@ -38,13 +38,13 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: "Item ID is required" }, { status: 400 })
     }
 
-    await addToInventory(session.discordId, itemId, quantity)
+    const result = await addToInventory(session.discordId, itemId, quantity)
 
     // Log activity
     await logActivity(session.discordId, "add_inventory", { item_id: itemId, quantity })
 
     console.log("[v0] Successfully added to inventory")
-    return Response.json({ success: true })
+    return Response.json({ success: true, isFirstItem: result.isFirstItem })
   } catch (error) {
     console.error("[v0] Unexpected error in POST /api/inventory:", error)
     return Response.json(

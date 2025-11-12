@@ -7,6 +7,7 @@ import { useUser } from "@/lib/hooks/use-user"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { LogIn } from "lucide-react"
+import Link from "next/link"
 
 interface ItemCardProps {
   item: {
@@ -113,46 +114,97 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
         throw new Error(data.details || data.error || "Failed to add to inventory")
       }
 
-      toast({
-        title: (
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="h-5 w-5 text-white"
-              >
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
+      const data = await response.json()
+      const isFirstItem = data.isFirstItem
+
+      if (isFirstItem) {
+        toast({
+          title: (
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-5 w-5 text-white"
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </div>
+              <span className="text-lg font-bold">First item added!</span>
             </div>
-            <span className="text-lg font-bold">Added to your inventory</span>
-          </div>
-        ),
-        description: (
-          <div className="mt-3 flex items-center gap-3 rounded-lg bg-background/50 p-3 border border-green-500/30">
-            <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border border-border bg-card">
-              <Image
-                src={imageUrl || "/placeholder.svg"}
-                alt={item.name}
-                fill
-                className="object-contain p-1"
-                sizes="64px"
-              />
+          ),
+          description: (
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 rounded-lg bg-background/50 p-3 border border-green-500/30">
+                <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border border-border bg-card">
+                  <Image
+                    src={imageUrl || "/placeholder.svg"}
+                    alt={item.name}
+                    fill
+                    className="object-contain p-1"
+                    sizes="64px"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-base text-foreground truncate">{item.name}</p>
+                  <p className="text-sm text-muted-foreground mt-0.5">Value: {toNumber(item.rap_value)}</p>
+                </div>
+              </div>
+              <Link href="/inventory" className="block">
+                <Button className="w-full bg-green-600 hover:bg-green-700 text-white">View My Inventory</Button>
+              </Link>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-base text-foreground truncate">{item.name}</p>
-              <p className="text-sm text-muted-foreground mt-0.5">Value: {toNumber(item.rap_value)}</p>
+          ),
+          duration: 8000,
+          className: "border-2 border-green-500 bg-green-500/5 shadow-xl shadow-green-500/20",
+        })
+      } else {
+        toast({
+          title: (
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-5 w-5 text-white"
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </div>
+              <span className="text-lg font-bold">Added to your inventory</span>
             </div>
-          </div>
-        ),
-        duration: 5000,
-        className: "border-2 border-green-500 bg-green-500/5 shadow-xl shadow-green-500/20",
-      })
+          ),
+          description: (
+            <div className="mt-3 flex items-center gap-3 rounded-lg bg-background/50 p-3 border border-green-500/30">
+              <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border border-border bg-card">
+                <Image
+                  src={imageUrl || "/placeholder.svg"}
+                  alt={item.name}
+                  fill
+                  className="object-contain p-1"
+                  sizes="64px"
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-base text-foreground truncate">{item.name}</p>
+                <p className="text-sm text-muted-foreground mt-0.5">Value: {toNumber(item.rap_value)}</p>
+              </div>
+            </div>
+          ),
+          duration: 5000,
+          className: "border-2 border-green-500 bg-green-500/5 shadow-xl shadow-green-500/20",
+        })
+      }
     } catch (error) {
       toast({
         title: "Failed to add item",

@@ -36,7 +36,18 @@ export async function getUserInventory(discordId: string): Promise<UserInventory
 /**
  * Add item to inventory or update quantity
  */
-export async function addToInventory(discordId: string, itemId: string, quantity = 1): Promise<void> {
+export async function addToInventory(
+  discordId: string,
+  itemId: string,
+  quantity = 1,
+): Promise<{ isFirstItem: boolean }> {
+  const inventoryCountResult = await query<{ count: number }>(
+    "SELECT COUNT(*) as count FROM user_inventories WHERE discord_id = $1",
+    [discordId],
+  )
+
+  const isFirstItem = inventoryCountResult.rows[0]?.count === 0
+
   // Check if item already exists
   const existingResult = await query<{ id: string; quantity: number }>(
     "SELECT id, quantity FROM user_inventories WHERE discord_id = $1 AND item_id = $2",
@@ -63,6 +74,8 @@ export async function addToInventory(discordId: string, itemId: string, quantity
 
   // Invalidate cache
   cache.delete(`inventory:${discordId}`)
+
+  return { isFirstItem }
 }
 
 /**
