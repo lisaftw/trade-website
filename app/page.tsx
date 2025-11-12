@@ -88,7 +88,7 @@ function ReferenceHero() {
                 className="group relative overflow-hidden rounded-xl transition-transform hover:scale-105"
               >
                 <Image
-                  src="/placeholder.svg?height=160&width=160"
+                  src="/placeholder.svg?height=160&width=160&game=Adopt+Me"
                   alt="Adopt Me"
                   width={160}
                   height={160}
@@ -100,7 +100,7 @@ function ReferenceHero() {
                 className="group relative overflow-hidden rounded-xl transition-transform hover:scale-105"
               >
                 <Image
-                  src="/placeholder.svg?height=160&width=160"
+                  src="/placeholder.svg?height=160&width=160&game=MM2"
                   alt="Murder Mystery 2"
                   width={160}
                   height={160}
@@ -112,7 +112,7 @@ function ReferenceHero() {
                 className="group relative overflow-hidden rounded-xl transition-transform hover:scale-105"
               >
                 <Image
-                  src="/placeholder.svg?height=160&width=160"
+                  src="/placeholder.svg?height=160&width=160&game=SAB"
                   alt="Steal a Brain Rot"
                   width={160}
                   height={160}
