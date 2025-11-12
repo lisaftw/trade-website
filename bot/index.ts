@@ -89,7 +89,7 @@ if (!token) {
 
 async function testDatabaseConnection() {
   try {
-    const { data, error } = await supabase.from("mm2_items").select("count").limit(1).single()
+    const { data, error } = await supabase.from("items").select("count").limit(1).single()
     if (error) throw error
     console.log("✅ Database connected successfully!")
   } catch (error) {

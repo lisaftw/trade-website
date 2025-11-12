@@ -13,6 +13,7 @@
     "db:check-images": "tsx scripts/check-image-urls.ts",
     "db:fix-images": "tsx scripts/fix-placeholder-images.ts",
     "db:migrate": "tsx scripts/migrate-mongodb-to-postgres.ts",
+    "deploy-commands": "tsx bot/deploy-commands.ts",
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start"
