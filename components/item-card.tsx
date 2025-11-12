@@ -7,7 +7,6 @@ import { useUser } from "@/lib/hooks/use-user"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { LogIn } from "lucide-react"
-import { getProxiedImageUrl } from "@/lib/utils/image-proxy"
 
 interface ItemCardProps {
   item: {
@@ -66,7 +65,9 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
     checkLoginStatus()
   }, [refetch])
 
-  const imageUrl = imageError ? "/placeholder.svg?height=200&width=200" : getProxiedImageUrl(item.id)
+  const imageUrl = imageError
+    ? "/placeholder.svg?height=200&width=200"
+    : item.image_url || "/placeholder.svg?height=200&width=200"
 
   const handleAddToInventory = async () => {
     if (!user) {
