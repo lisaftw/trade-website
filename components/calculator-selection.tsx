@@ -4,7 +4,6 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Calculator, Coins } from "lucide-react"
 import Link from "next/link"
-import Image from "next/image"
 
 export function CalculatorSelection() {
   return (
@@ -12,18 +11,6 @@ export function CalculatorSelection() {
       <div className="text-center">
         <h1 className="text-balance text-3xl font-bold tracking-wide text-white md:text-4xl">Choose Calculator Type</h1>
         <p className="mt-2 text-sm text-gray-400 md:text-base">Select the calculator that fits your needs</p>
-      </div>
-
-      <div className="flex items-center justify-center gap-8">
-        <div className="relative h-24 w-24 opacity-80">
-          <Image src="/sab-grayscale.png" alt="SAB" fill className="object-contain" />
-        </div>
-        <div className="relative h-24 w-24 opacity-80">
-          <Image src="/mm2-grayscale.png" alt="MM2" fill className="object-contain" />
-        </div>
-        <div className="relative h-24 w-24 opacity-80">
-          <Image src="/adoptme-grayscale.png" alt="Adopt Me" fill className="object-contain" />
-        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
