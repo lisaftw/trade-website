@@ -207,10 +207,20 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
                 </div>
               </div>
 
-              <div className="absolute bottom-1 right-2 z-10">
-                <div className="bg-gray-300/90 rounded-full px-2 py-0.5 backdrop-blur-sm">
-                  <span className="text-gray-800 font-bold text-[8px] whitespace-nowrap">
-                    Last Updated: {getTimeAgo(item.last_updated_at)}
+              {/* Last Updated badge */}
+              <div className="absolute bottom-2 right-2 z-10 relative">
+                <Image
+                  src="/card-ui/lastupdateui.png"
+                  alt="Last Updated"
+                  width={120}
+                  height={20}
+                  style={{ imageRendering: "pixelated" }}
+                  className="object-contain"
+                  draggable={false}
+                />
+                <div className="absolute inset-0 flex items-center justify-start pl-2">
+                  <span className="text-gray-700 font-bold text-[8px] whitespace-nowrap">
+                    {getTimeAgo(item.last_updated_at)}
                   </span>
                 </div>
               </div>
