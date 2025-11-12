@@ -91,6 +91,10 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
     const imageUrl = getRobloxImageUrl(rawImageUrl) || rawImageUrl
 
     if (!shouldProxyImage(imageUrl)) {
+      // Ensure the URL is absolute before redirecting
+      if (!imageUrl || (!imageUrl.startsWith("http://") && !imageUrl.startsWith("https://"))) {
+        return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
+      }
       return NextResponse.redirect(imageUrl)
     }
 
@@ -128,7 +132,6 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
       },
     })
   } catch (error) {
-    console.error("[v0] Error fetching image for id:", id, error)
     return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
   }
 }
