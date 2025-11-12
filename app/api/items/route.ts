@@ -37,6 +37,18 @@ export async function GET(request: NextRequest) {
         rarity: item.rarity,
         demand: item.demand,
         pot: item.pot,
+        value_f: item.value_f || null,
+        value_r: item.value_r || null,
+        value_n: item.value_n || null,
+        value_fr: item.value_fr || null,
+        value_h: item.value_h || null,
+        value_nfr: item.value_nfr || null,
+        value_np: item.value_np || null,
+        value_nr: item.value_nr || null,
+        value_mfr: item.value_mfr || null,
+        value_mf: item.value_mf || null,
+        value_mr: item.value_mr || null,
+        value_m: item.value_m || null,
       }
     })
 
