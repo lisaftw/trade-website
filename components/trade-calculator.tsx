@@ -73,22 +73,21 @@ export function TradeCalculator() {
             <button
               key={g.name}
               onClick={() => setGame(g.name)}
-              className="group relative overflow-hidden rounded-xl border-2 border-gray-700/50 bg-gradient-to-b from-gray-900/60 to-black/80 p-6 md:p-8 text-center transition-all hover:border-gray-600 hover:shadow-xl hover:shadow-gray-500/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              className="group relative overflow-hidden rounded-xl border-2 border-gray-800/80 bg-gradient-to-b from-gray-900 to-black p-6 md:p-8 text-center transition-all hover:border-red-500/50 hover:shadow-xl hover:shadow-red-500/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
             >
               <div className="relative z-10 flex flex-col items-center">
-                <div className="mb-4 h-24 md:h-32 w-24 md:w-32 relative">
+                <div className="mb-4 h-24 md:h-32 w-24 md:w-32 relative bg-black/40 rounded-lg flex items-center justify-center border border-gray-800">
                   <Image
                     src={g.icon || "/placeholder.svg"}
                     alt={g.name}
                     fill
-                    className="object-contain transition-transform group-hover:scale-110"
+                    className="object-contain transition-transform group-hover:scale-110 p-2"
                   />
                 </div>
                 <p className="text-xl md:text-2xl font-bold text-white mb-1">{g.name}</p>
                 <p className="text-xs md:text-sm text-gray-400">{g.desc}</p>
               </div>
-              {/* Decorative gradient overlay */}
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
             </button>
           ))}
         </div>
