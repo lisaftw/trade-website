@@ -13,17 +13,17 @@ interface AdoptMeVariantSelectorProps {
     id: string
     name: string
     image_url: string
-    value_f?: number | null
-    value_r?: number | null
-    value_n?: number | null
-    value_fr?: number | null
-    value_nfr?: number | null
-    value_np?: number | null
-    value_nr?: number | null
-    value_m?: number | null
-    value_mf?: number | null
-    value_mr?: number | null
-    value_mfr?: number | null
+    value_f?: number | string | null
+    value_r?: number | string | null
+    value_n?: number | string | null
+    value_fr?: number | string | null
+    value_nfr?: number | string | null
+    value_np?: number | string | null
+    value_nr?: number | string | null
+    value_m?: number | string | null
+    value_mf?: number | string | null
+    value_mr?: number | string | null
+    value_mfr?: number | string | null
   }
   onSelect: (variant: string, quantity: number, value: number) => void
 }
@@ -75,8 +75,11 @@ export function AdoptMeVariantSelector({ open, onOpenChange, item, onSelect }: A
     const valueKeys = VARIANT_INFO[variant].valueKeys
     for (const key of valueKeys) {
       const value = item[key as keyof typeof item]
-      if (value && typeof value === "number" && value > 0) {
-        return value
+      if (value != null) {
+        const numValue = typeof value === "string" ? Number.parseFloat(value) : value
+        if (!isNaN(numValue) && numValue > 0) {
+          return numValue
+        }
       }
     }
     return 0
