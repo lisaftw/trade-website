@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -23,7 +22,6 @@ export function ProfileForm() {
   const p = data?.profile
 
   const [bio, setBio] = useState("")
-  const [theme, setTheme] = useState<"light" | "dark" | "system">("dark")
   const [isPublic, setIsPublic] = useState(true)
   const [showEmail, setShowEmail] = useState(false)
   const [showActivity, setShowActivity] = useState(true)
@@ -31,33 +29,12 @@ export function ProfileForm() {
 
   useEffect(() => {
     if (p) {
-      const nextTheme = (p.theme_preference ?? "dark") as "light" | "dark" | "system"
       setBio(p.bio ?? "")
-      setTheme(nextTheme)
       setIsPublic(Boolean(p.is_public))
       setShowEmail(Boolean(p.show_email))
       setShowActivity(Boolean(p.show_activity))
-      try {
-        if (nextTheme === "dark") document.documentElement.classList.add("dark")
-        else if (nextTheme === "light") document.documentElement.classList.remove("dark")
-        else {
-          const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
-          document.documentElement.classList.toggle("dark", prefersDark)
-        }
-        localStorage.setItem("theme", nextTheme)
-      } catch {}
     }
   }, [p])
-
-  const applyTheme = (t: "light" | "dark" | "system") => {
-    if (t === "dark") document.documentElement.classList.add("dark")
-    else if (t === "light") document.documentElement.classList.remove("dark")
-    else {
-      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
-      document.documentElement.classList.toggle("dark", prefersDark)
-    }
-    localStorage.setItem("theme", t)
-  }
 
   async function onSave() {
     setSaving(true)
@@ -67,7 +44,6 @@ export function ProfileForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           bio,
-          theme_preference: theme,
           is_public: isPublic,
           show_email: showEmail,
           show_activity: showActivity,
@@ -87,7 +63,6 @@ export function ProfileForm() {
   function onReset() {
     if (p) {
       setBio(p.bio ?? "")
-      setTheme(p.theme_preference ?? "dark")
       setIsPublic(Boolean(p.is_public))
       setShowEmail(Boolean(p.show_email))
       setShowActivity(Boolean(p.show_activity))
@@ -125,7 +100,6 @@ export function ProfileForm() {
 
   const hasChanges =
     bio !== (p.bio ?? "") ||
-    theme !== (p.theme_preference ?? "dark") ||
     isPublic !== Boolean(p.is_public) ||
     showEmail !== Boolean(p.show_email) ||
     showActivity !== Boolean(p.show_activity)
@@ -162,9 +136,6 @@ export function ProfileForm() {
                       Discord Connected
                     </Badge>
                   )}
-                  <Badge variant="outline" className="text-xs">
-                    Theme: {theme}
-                  </Badge>
                 </div>
               </div>
             </div>
@@ -191,32 +162,6 @@ export function ProfileForm() {
               className="resize-none"
             />
             <p className="text-xs text-muted-foreground">{bio.length}/512 characters</p>
-          </div>
-
-          <Separator />
-
-          {/* Theme Selection */}
-          <div className="space-y-2">
-            <Label htmlFor="theme">Theme Preference</Label>
-            <Select
-              value={theme}
-              onValueChange={(v) => {
-                const t = v as "light" | "dark" | "system"
-                setTheme(t)
-                // apply right away to reflect change
-                applyTheme(t)
-              }}
-            >
-              <SelectTrigger id="theme">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="dark">Dark</SelectItem>
-                <SelectItem value="light">Light</SelectItem>
-                <SelectItem value="system">System</SelectItem>
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-muted-foreground">Choose your preferred color scheme</p>
           </div>
 
           <Separator />

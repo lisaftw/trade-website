@@ -19,7 +19,7 @@ import Image from "next/image"
 import { useDebounce } from "@/lib/hooks/use-debounce"
 import { cn } from "@/lib/utils"
 
-const GAMES = ["MM2", "SAB", "GAG", "Adopt Me"]
+const GAMES = ["MM2", "SAB", "Adopt Me"]
 
 interface TradeItem {
   id: string

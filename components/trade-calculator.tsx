@@ -2,9 +2,11 @@
 
 import { useState, useCallback, useEffect } from "react"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import { X, Search, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
+import Link from "next/link"
 
 interface TradeItem {
   id: string
@@ -19,7 +21,7 @@ export function TradeCalculator() {
   const [theirItems, setTheirItems] = useState<TradeItem[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [activeColumn, setActiveColumn] = useState<"yours" | "theirs" | null>(null)
-  const [game, setGame] = useState<"MM2" | "SAB" | "GAG" | "Adopt Me" | null>(null)
+  const [game, setGame] = useState<"MM2" | "SAB" | "Adopt Me" | null>(null)
 
   const yourTotal = yourItems.reduce((sum, item) => sum + item.value, 0)
   const theirTotal = theirItems.reduce((sum, item) => sum + item.value, 0)
@@ -51,8 +53,17 @@ export function TradeCalculator() {
           <p className="mt-1 text-[10px] md:text-xs text-gray-400">Select a game to start trading</p>
         </div>
 
-        <div className="grid gap-2 md:gap-3 grid-cols-2 md:grid-cols-4">
-          {(["MM2", "SAB", "GAG", "Adopt Me"] as const).map((g) => (
+        <div className="mb-4 flex justify-center">
+          <Button asChild variant="outline" size="sm">
+            <Link href="/">
+              <span aria-hidden="true">←</span>
+              <span className="ml-2">Back to Home</span>
+            </Link>
+          </Button>
+        </div>
+
+        <div className="grid gap-2 md:gap-3 grid-cols-2 md:grid-cols-3">
+          {(["MM2", "SAB", "Adopt Me"] as const).map((g) => (
             <button
               key={g}
               onClick={() => setGame(g)}
@@ -147,7 +158,7 @@ interface TradeGridProps {
   searchQuery: string
   onSearchChange: (query: string) => void
   onAddItem: (item: TradeItem) => void
-  selectedGame: "MM2" | "SAB" | "GAG" | "Adopt Me"
+  selectedGame: "MM2" | "SAB" | "Adopt Me"
 }
 
 function TradeGrid({
@@ -194,7 +205,7 @@ function TradeGrid({
           name: item.name,
           value: item.value ?? item.rap_value ?? 0,
           game: item.game,
-          imageUrl: item.imageUrl || item.image_url,
+          imageUrl: item.image_url || "/placeholder.svg",
         }))
 
         setAllItems(transformedItems)

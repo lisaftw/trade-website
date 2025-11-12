@@ -41,7 +41,7 @@ export default function AboutPage() {
             <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div className="rounded-2xl border border-border bg-secondary/20 p-4">
                 <p className="text-xs text-muted-foreground">Tracked Games</p>
-                <p className="mt-1 text-xl font-semibold">4</p>
+                <p className="mt-1 text-xl font-semibold">3</p>
               </div>
               <div className="rounded-2xl border border-border bg-secondary/20 p-4">
                 <p className="text-xs text-muted-foreground">Daily Updates</p>

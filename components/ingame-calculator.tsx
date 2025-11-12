@@ -21,14 +21,14 @@ export function IngameCalculator() {
   const [selectedItems, setSelectedItems] = useState<GameItem[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const [game, setGame] = useState<"MM2" | "SAB" | "GAG" | "Adopt Me" | null>(null)
+  const [game, setGame] = useState<"MM2" | "SAB" | "Adopt Me" | null>(null)
   const [allItems, setAllItems] = useState<GameItem[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
   const totalValue = selectedItems.reduce((sum, item) => sum + item.value, 0)
 
-  const handleGameSelect = (selectedGame: "MM2" | "SAB" | "GAG" | "Adopt Me") => {
+  const handleGameSelect = (selectedGame: "MM2" | "SAB" | "Adopt Me") => {
     if (selectedGame === "SAB") {
       router.push("/sab-calculator")
     } else if (selectedGame === "Adopt Me") {
@@ -89,8 +89,8 @@ export function IngameCalculator() {
           <p className="mt-2 text-sm text-gray-400">Select a game to calculate your items</p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
-          {(["MM2", "SAB", "GAG", "Adopt Me"] as const).map((g) => (
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+          {(["MM2", "SAB", "Adopt Me"] as const).map((g) => (
             <button
               key={g}
               onClick={() => handleGameSelect(g)}
