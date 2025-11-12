@@ -180,12 +180,19 @@ export function InventoryContent() {
           }
 
           return (
-            <div key={invItem.id} className="relative group">
-              <ItemCard item={item} hideAddButton={true} />
+            <div key={invItem.id} className="flex flex-col items-center gap-2">
+              <div className="relative">
+                <ItemCard item={item} hideAddButton={true} />
+                {invItem.quantity > 1 && (
+                  <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 rounded-full bg-white/90 dark:bg-gray-900/90 px-2.5 py-1 text-xs font-bold text-foreground shadow-md border-2 border-border backdrop-blur-sm">
+                    ×{invItem.quantity}
+                  </div>
+                )}
+              </div>
               <Button
                 variant="destructive"
                 size="sm"
-                className="absolute bottom-2 right-2 z-10 h-9 px-3 opacity-90 hover:opacity-100 transition-opacity shadow-lg"
+                className="w-[160px] h-9 px-3 shadow-lg"
                 onClick={() => handleRemove(invItem.id, item.name)}
                 disabled={removing === invItem.id}
               >
@@ -198,11 +205,6 @@ export function InventoryContent() {
                   </>
                 )}
               </Button>
-              {invItem.quantity > 1 && (
-                <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 rounded-full bg-white/90 dark:bg-gray-900/90 px-2.5 py-1 text-xs font-bold text-foreground shadow-md border-2 border-border backdrop-blur-sm">
-                  ×{invItem.quantity}
-                </div>
-              )}
             </div>
           )
         })}

@@ -1,7 +1,20 @@
 import * as XLSX from "xlsx"
-import clientPromise from "../lib/mongodb"
+import { createClient } from "@supabase/supabase-js"
+import * as dotenv from "dotenv"
 import * as fs from "fs"
 import * as path from "path"
+
+dotenv.config()
+
+const supabaseUrl = process.env.SUPABASE_URL
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+if (!supabaseUrl || !supabaseKey) {
+  console.error("❌ Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY")
+  process.exit(1)
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 /**
  * Script to import Adopt Me pets from Excel file (adm.xlsx)
@@ -28,16 +41,16 @@ import * as path from "path"
  */
 
 interface ExcelRow {
-  "Pet Name"?: string
-  "Image URL"?: string
+  PetName?: string
+  ImageURL?: string
   Rarity?: string
   Demand?: string
-  "Base Value (No Pot)"?: number
+  Base?: number
   FR?: number
-  F?: number
   R?: number
+  H?: number
   NFR?: number
-  NF?: number
+  NP?: number
   NR?: number
   N?: number
   MFR?: number
@@ -46,37 +59,28 @@ interface ExcelRow {
   M?: number
 }
 
-interface AdoptMePetDocument {
+interface AdoptMePetItem {
+  game: string
   name: string
-  game: "Adopt Me"
   section: string
   image_url: string
+  rap_value: number
   rarity: string
   demand: string
-
-  // Base values (no potion)
-  baseValue: number
-
-  // Base with potions
-  baseValueFR: number // Fly Ride
-  baseValueF: number // Fly only
-  baseValueR: number // Ride only
-
-  // Neon values
-  neonValue: number // No potion
-  neonValueFR: number // Fly Ride
-  neonValueF: number // Fly only
-  neonValueR: number // Ride only
-
-  // Mega values
-  megaValue: number // No potion
-  megaValueFR: number // Fly Ride
-  megaValueF: number // Fly only
-  megaValueR: number // Ride only
-
-  lastValueUpdate: Date
-  createdAt: Date
-  updatedAt: Date
+  value_fr: number
+  value_r: number
+  value_h: number
+  value_nfr: number
+  value_np: number
+  value_nr: number
+  value_n: number
+  value_mfr: number
+  value_mf: number
+  value_mr: number
+  value_m: number
+  rating: number
+  change_percent: number
+  exist_count: number
 }
 
 async function importAdoptMePets() {
@@ -87,7 +91,6 @@ async function importAdoptMePets() {
     if (!fs.existsSync(filePath)) {
       console.error("❌ Error: adm.xlsx file not found in project root")
       console.log("\n📝 Please place your adm.xlsx file in the project root directory")
-      console.log("📋 Use the template: scripts/adoptme-template.csv")
       process.exit(1)
     }
 
@@ -99,32 +102,30 @@ async function importAdoptMePets() {
 
     console.log(`✅ Found ${data.length} pets in Excel file\n`)
 
-    // Connect to MongoDB
-    const client = await clientPromise
-    const db = client.db("trading-db")
-    const collection = db.collection<AdoptMePetDocument>("adoptme_pets")
-
-    // Clear existing Adopt Me pets
     console.log("🗑️  Clearing existing Adopt Me pets...")
-    const deleteResult = await collection.deleteMany({ game: "Adopt Me" })
-    console.log(`   Deleted ${deleteResult.deletedCount} existing pets\n`)
+    const { error: deleteError } = await supabase.from("items").delete().eq("game", "Adopt Me")
+
+    if (deleteError) {
+      console.error("Error clearing existing items:", deleteError)
+    } else {
+      console.log("   Cleared existing Adopt Me items\n")
+    }
 
     // Transform and validate pets
-    const pets: AdoptMePetDocument[] = []
+    const pets: AdoptMePetItem[] = []
     const errors: string[] = []
 
     data.forEach((row, index) => {
       const rowNum = index + 2 // +2 because Excel is 1-indexed and has header row
 
-      // Validate required fields
-      if (!row["Pet Name"]) {
+      // Check for Pet Name field
+      if (!row.PetName) {
         errors.push(`Row ${rowNum}: Missing Pet Name`)
         return
       }
 
-      // Determine section from rarity
       const rarity = row.Rarity || "Unknown"
-      let section = "Unknown"
+      let section = "Pets"
       if (rarity.toLowerCase().includes("legendary")) section = "Legendary"
       else if (rarity.toLowerCase().includes("ultra")) section = "Ultra-Rare"
       else if (rarity.toLowerCase().includes("rare")) section = "Rare"
@@ -132,34 +133,27 @@ async function importAdoptMePets() {
       else if (rarity.toLowerCase().includes("common")) section = "Common"
 
       pets.push({
-        name: row["Pet Name"],
         game: "Adopt Me",
+        name: row.PetName,
         section,
-        image_url: row["Image URL"] || "/adopt-me-pet.jpg",
-        rarity: rarity,
-        demand: row.Demand || "Medium",
-
-        // Base values
-        baseValue: Number(row["Base Value (No Pot)"]) || 0,
-        baseValueFR: Number(row.FR) || 0,
-        baseValueF: Number(row.F) || 0,
-        baseValueR: Number(row.R) || 0,
-
-        // Neon values
-        neonValue: Number(row.N) || 0,
-        neonValueFR: Number(row.NFR) || 0,
-        neonValueF: Number(row.NF) || 0,
-        neonValueR: Number(row.NR) || 0,
-
-        // Mega values
-        megaValue: Number(row.M) || 0,
-        megaValueFR: Number(row.MFR) || 0,
-        megaValueF: Number(row.MF) || 0,
-        megaValueR: Number(row.MR) || 0,
-
-        lastValueUpdate: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        image_url: row.ImageURL || "",
+        rap_value: Number(row.Base) || 0,
+        rarity: row.Rarity || "",
+        demand: row.Demand || "",
+        value_fr: Number(row.FR) || 0,
+        value_r: Number(row.R) || 0,
+        value_h: Number(row.H) || 0,
+        value_nfr: Number(row.NFR) || 0,
+        value_np: Number(row.NP) || 0,
+        value_nr: Number(row.NR) || 0,
+        value_n: Number(row.N) || 0,
+        value_mfr: Number(row.MFR) || 0,
+        value_mf: Number(row.MF) || 0,
+        value_mr: Number(row.MR) || 0,
+        value_m: Number(row.M) || 0,
+        rating: 0,
+        change_percent: 0,
+        exist_count: 0,
       })
     })
 
@@ -175,11 +169,15 @@ async function importAdoptMePets() {
       process.exit(1)
     }
 
-    // Import to MongoDB
-    console.log(`💾 Importing ${pets.length} pets to MongoDB...`)
-    const result = await collection.insertMany(pets)
+    console.log(`💾 Importing ${pets.length} pets to Supabase...`)
+    const { data: insertedData, error: insertError } = await supabase.from("items").insert(pets).select()
 
-    console.log(`\n✅ Successfully imported ${result.insertedCount} Adopt Me pets!\n`)
+    if (insertError) {
+      console.error("❌ Error importing pets:", insertError)
+      process.exit(1)
+    }
+
+    console.log(`\n✅ Successfully imported ${pets.length} Adopt Me pets!\n`)
 
     // Show summary by section
     const sections = pets.reduce(
@@ -198,9 +196,7 @@ async function importAdoptMePets() {
     console.log("\n🎉 Sample imported pets:")
     pets.slice(0, 3).forEach((pet) => {
       console.log(`   • ${pet.name} (${pet.section})`)
-      console.log(`     Base: ${pet.baseValue} | FR: ${pet.baseValueFR}`)
-      console.log(`     Neon: ${pet.neonValue} | NFR: ${pet.neonValueFR}`)
-      console.log(`     Mega: ${pet.megaValue} | MFR: ${pet.megaValueFR}`)
+      console.log(`     Base Value: ${pet.rap_value}`)
     })
 
     console.log("\n✨ Import complete!")
