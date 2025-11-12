@@ -47,13 +47,13 @@ export function TradeCalculator() {
 
   if (!game) {
     return (
-      <div className="space-y-3 md:space-y-4 px-3 md:px-0">
+      <div className="space-y-6 md:space-y-8 px-3 md:px-0">
         <div className="text-center">
-          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-wide text-white">Trade Calculator</h1>
-          <p className="mt-1 text-[10px] md:text-xs text-gray-400">Select a game to start trading</p>
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-wide text-white">Trade Calculator</h1>
+          <p className="mt-2 text-xs md:text-sm text-gray-400">Select a game to start trading</p>
         </div>
 
-        <div className="mb-4 flex justify-center">
+        <div className="mb-6 flex justify-center">
           <Button asChild variant="outline" size="sm">
             <Link href="/">
               <span aria-hidden="true">←</span>
@@ -62,15 +62,33 @@ export function TradeCalculator() {
           </Button>
         </div>
 
-        <div className="grid gap-2 md:gap-3 grid-cols-2 md:grid-cols-3">
-          {(["MM2", "SAB", "Adopt Me"] as const).map((g) => (
+        <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-3 max-w-4xl mx-auto">
+          {(
+            [
+              { name: "MM2", icon: "/game-icons/mm2-gray.png", desc: "Murder Mystery 2" },
+              { name: "SAB", icon: "/game-icons/sab-gray.png", desc: "Sword Art Blade" },
+              { name: "Adopt Me", icon: "/game-icons/adoptme-gray.png", desc: "Adopt Me Pets" },
+            ] as const
+          ).map((g) => (
             <button
-              key={g}
-              onClick={() => setGame(g)}
-              className="rounded-lg border border-gray-700 bg-gray-800/50 p-3 md:p-4 text-left transition-all hover:border-gray-600 hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              key={g.name}
+              onClick={() => setGame(g.name)}
+              className="group relative overflow-hidden rounded-xl border-2 border-gray-700/50 bg-gradient-to-b from-gray-900/60 to-black/80 p-6 md:p-8 text-center transition-all hover:border-gray-600 hover:shadow-xl hover:shadow-gray-500/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
-              <p className="text-sm md:text-base font-semibold text-white">{g}</p>
-              <p className="mt-0.5 text-[9px] md:text-[10px] text-gray-400">Load items for {g}</p>
+              <div className="relative z-10 flex flex-col items-center">
+                <div className="mb-4 h-24 md:h-32 w-24 md:w-32 relative">
+                  <Image
+                    src={g.icon || "/placeholder.svg"}
+                    alt={g.name}
+                    fill
+                    className="object-contain transition-transform group-hover:scale-110"
+                  />
+                </div>
+                <p className="text-xl md:text-2xl font-bold text-white mb-1">{g.name}</p>
+                <p className="text-xs md:text-sm text-gray-400">{g.desc}</p>
+              </div>
+              {/* Decorative gradient overlay */}
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
             </button>
           ))}
         </div>
