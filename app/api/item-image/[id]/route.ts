@@ -24,6 +24,21 @@ function getRobloxImageUrl(assetIdOrUrl: string): string | null {
   return null
 }
 
+function shouldProxyImage(url: string): boolean {
+  // Don't proxy Adopt Me CDN images - they work fine client-side
+  if (url.includes("cdn.playadopt.me")) {
+    return false
+  }
+
+  // Don't proxy Roblox assets - they return 403 for server requests
+  if (url.includes("roblox.com") || url.includes("rbxcdn.com")) {
+    return false
+  }
+
+  // Proxy Discord and other CDN images
+  return url.includes("cdn.discordapp.com") || url.includes("wikia.nocookie.net") || url.includes("fandom.com")
+}
+
 function getImageFetchHeaders(url: string): HeadersInit {
   const headers: HeadersInit = {
     "User-Agent":
@@ -48,31 +63,39 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
   const { id } = params
 
   try {
-    console.log("[v0] Fetching image for item ID:", id)
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)
 
-    const items = await sql`
-      SELECT image_url 
-      FROM items 
-      WHERE id = ${id}
-      LIMIT 1
-    `
-
-    console.log("[v0] Database query result:", items.length > 0 ? "found" : "not found")
+    let items
+    if (isUUID) {
+      items = await sql`
+        SELECT image_url 
+        FROM items 
+        WHERE id = ${id}
+        LIMIT 1
+      `
+    } else {
+      // For non-UUID IDs, try to find by matching name or treat as direct asset ID
+      items = await sql`
+        SELECT image_url 
+        FROM items 
+        WHERE CAST(id AS TEXT) = ${id}
+        LIMIT 1
+      `
+    }
 
     if (items.length === 0 || !items[0].image_url) {
-      console.log("[v0] No image URL found, returning placeholder")
       return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
     }
 
     const rawImageUrl = items[0].image_url
-    console.log("[v0] Raw image URL:", rawImageUrl)
-
     const imageUrl = getRobloxImageUrl(rawImageUrl) || rawImageUrl
-    console.log("[v0] Processed image URL:", imageUrl)
+
+    if (!shouldProxyImage(imageUrl)) {
+      return NextResponse.redirect(imageUrl)
+    }
 
     const cached = imageCache.get(id)
     if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-      console.log("[v0] Returning cached image")
       return new NextResponse(cached.buffer, {
         headers: {
           "Content-Type": cached.contentType,
@@ -81,15 +104,11 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
       })
     }
 
-    console.log("[v0] Fetching image from:", imageUrl)
     const imageResponse = await fetch(imageUrl, {
       headers: getImageFetchHeaders(imageUrl),
     })
 
-    console.log("[v0] Image fetch response status:", imageResponse.status)
-
     if (!imageResponse.ok) {
-      console.log("[v0] Image fetch failed, returning placeholder")
       return NextResponse.redirect(new URL("/placeholder.svg?height=200&width=200", request.url))
     }
 
@@ -102,7 +121,6 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
       timestamp: Date.now(),
     })
 
-    console.log("[v0] Successfully returning image")
     return new NextResponse(imageBuffer, {
       headers: {
         "Content-Type": contentType,
