@@ -154,7 +154,7 @@ export function AdoptMeInlineVariantSelector({
                 toggleVariant(variant)
               }}
               className={`
-                w-8 h-8 rounded-full font-bold text-xs text-white
+                w-7 h-7 rounded-full font-bold text-xs text-white
                 transition-all duration-200 shadow-md
                 ${isSelected ? config.color : "bg-gray-600"}
                 ${isSelected ? "scale-110 ring-2 ring-white" : "hover:scale-105"}
