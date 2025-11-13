@@ -240,16 +240,11 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
               </div>
 
               <div className="absolute bottom-2 left-0 right-0 flex justify-center z-10">
-                <div
-                  className="rounded-sm px-2 py-0.5"
-                  style={{
-                    backgroundColor: "rgba(0, 0, 0, 0.75)",
-                  }}
-                >
+                <div className="rounded-sm px-2 py-0.5">
                   <span
-                    className="text-white font-semibold text-[8px] whitespace-nowrap"
+                    className="text-white font-semibold text-[9px] whitespace-nowrap"
                     style={{
-                      textShadow: "1px 1px 1px rgba(0,0,0,0.8)",
+                      textShadow: "2px 2px 3px rgba(0,0,0,0.9)",
                     }}
                   >
                     {timeAgo}
@@ -304,19 +299,19 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
               <div className="absolute inset-0 flex flex-col justify-evenly px-8 py-2">
                 <div className="flex items-center justify-end h-[16px]">
-                  <span className="text-white font-extrabold text-[9px]" style={{ textShadow: "1px 1px 1px #000" }}>
+                  <span className="text-white font-extrabold text-[10px]" style={{ textShadow: "1px 1px 1px #000" }}>
                     {item.rarity || item.section || "N/A"}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-end h-[16px]">
-                  <span className="text-white font-extrabold text-[9px]" style={{ textShadow: "1px 1px 1px #000" }}>
+                  <span className="text-white font-extrabold text-[10px]" style={{ textShadow: "1px 1px 1px #000" }}>
                     {item.demand || "N/A"}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-end h-[16px]">
-                  <span className="text-white font-bold text-[9px]" style={{ textShadow: "1px 1px 1px #000" }}>
+                  <span className="text-white font-bold text-[10px]" style={{ textShadow: "1px 1px 1px #000" }}>
                     {formatValue(currentValue)}
                   </span>
                 </div>
