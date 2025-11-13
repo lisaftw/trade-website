@@ -24,6 +24,7 @@ interface ItemCardProps {
     rarity?: string
     demand?: string
     pot?: string
+    value_fr?: number | null | undefined
   }
   hideAddButton?: boolean
 }
@@ -34,25 +35,26 @@ function toNumber(value: any): number {
   return isNaN(num) ? 0 : num
 }
 
+function formatValue(value: any): string {
+  const num = toNumber(value)
+  return num % 1 === 0 ? num.toLocaleString() : num.toFixed(2)
+}
+
 function getActualImageUrl(imageUrl: string): string {
-  // If it's already a full URL (Adopt Me CDN), return as-is
   if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
     return imageUrl
   }
 
-  // Extract asset ID from proxy path like "/api/item-image/12345?size=150"
   const proxyMatch = imageUrl.match(/\/api\/item-image\/(\d+)/)
   if (proxyMatch) {
     const assetId = proxyMatch[1]
     return `https://assetdelivery.roblox.com/v1/asset/?id=${assetId}`
   }
 
-  // If it's just a number, treat it as asset ID
   if (/^\d+$/.test(imageUrl)) {
     return `https://assetdelivery.roblox.com/v1/asset/?id=${imageUrl}`
   }
 
-  // Fallback to placeholder
   return "/placeholder.svg?height=200&width=200"
 }
 
@@ -68,6 +70,14 @@ function getTimeAgo(timestamp: string): string {
   const diffDays = Math.floor(diffHours / 24)
   if (diffDays === 1) return "1 day ago"
   return `${diffDays} days ago`
+}
+
+function getDisplayValue(item: ItemCardProps["item"]): number {
+  if (item.game === "Adopt Me" && item.value_fr !== null && item.value_fr !== undefined) {
+    const frValue = toNumber(item.value_fr)
+    if (frValue > 0) return frValue
+  }
+  return toNumber(item.rap_value)
 }
 
 export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
@@ -99,15 +109,13 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
       return
     }
 
-    // Show variant selector for Adopt Me items
     if (item.game === "Adopt Me") {
       console.log("[v0] ItemCard item data for Adopt Me:", item)
       setShowVariantSelector(true)
       return
     }
 
-    // For non-Adopt Me items, add directly
-    await addToInventory(1, item.rap_value || 0)
+    await addToInventory(1, getDisplayValue(item))
   }
 
   const addToInventory = async (quantity: number, value: number) => {
@@ -160,7 +168,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-base text-foreground truncate">{item.name}</p>
-              <p className="text-sm text-muted-foreground mt-0.5">Value: {value}</p>
+              <p className="text-sm text-muted-foreground mt-0.5">Value: {formatValue(value)}</p>
               {quantity > 1 && <p className="text-sm text-muted-foreground">Quantity: {quantity}</p>}
             </div>
           </div>
@@ -187,7 +195,6 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
   return (
     <>
       <div className="relative w-full max-w-[200px] select-none">
-        {/* Background layer */}
         <div className="relative w-full aspect-[3/5]">
           <Image
             src="/card-ui/backgroundforeachitem.png"
@@ -199,9 +206,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
             priority
           />
 
-          {/* Content overlay */}
           <div className="relative h-full flex flex-col items-center justify-start p-3" style={{ zIndex: 1 }}>
-            {/* Item holder with image */}
             <div className="relative w-full aspect-[4/3] mt-1">
               <Image
                 src="/card-ui/itemimageholderandlastupdatedholder.png"
@@ -213,7 +218,6 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
                 priority
               />
 
-              {/* Item image */}
               <div className="absolute inset-0 flex items-center justify-center p-6">
                 <div className="relative w-full h-full">
                   <Image
@@ -227,7 +231,6 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
               </div>
             </div>
 
-            {/* Item name holder */}
             <div className="relative w-full h-auto mt-1.5">
               <Image
                 src="/card-ui/boxtodisplayname.png"
@@ -262,30 +265,26 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
               />
 
               <div className="absolute inset-0 flex flex-col justify-evenly px-8 py-2">
-                {/* Rarity */}
                 <div className="flex items-center justify-end h-[20px]">
                   <span className="text-white font-bold text-[10px]" style={{ textShadow: "1px 1px 1px #000" }}>
                     {item.rarity || item.section || "N/A"}
                   </span>
                 </div>
 
-                {/* Demand */}
                 <div className="flex items-center justify-end h-[20px]">
                   <span className="text-white font-bold text-[10px]" style={{ textShadow: "1px 1px 1px #000" }}>
                     {item.demand || "N/A"}
                   </span>
                 </div>
 
-                {/* Value */}
                 <div className="flex items-center justify-end h-[20px]">
                   <span className="text-white font-bold text-[10px]" style={{ textShadow: "1px 1px 1px #000" }}>
-                    {toNumber(item.rap_value)}
+                    {formatValue(getDisplayValue(item))}
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* Add to Inventory button */}
             {!hideAddButton && (
               <button
                 onClick={handleAddToInventory}
@@ -340,7 +339,6 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
         </DialogContent>
       </Dialog>
 
-      {/* Adopt Me variant selector dialog */}
       {item.game === "Adopt Me" && (
         <AdoptMeVariantSelector
           open={showVariantSelector}

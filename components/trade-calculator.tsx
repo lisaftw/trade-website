@@ -7,6 +7,7 @@ import { X, Search, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 import Link from "next/link"
+import { AdoptMeVariantSelector } from "./adoptme-variant-selector"
 
 interface TradeItem {
   id: string
@@ -14,6 +15,7 @@ interface TradeItem {
   value: number
   imageUrl?: string
   game: string
+  variantLabel?: string
 }
 
 export function TradeCalculator() {
@@ -22,6 +24,8 @@ export function TradeCalculator() {
   const [searchQuery, setSearchQuery] = useState("")
   const [activeColumn, setActiveColumn] = useState<"yours" | "theirs" | null>(null)
   const [game, setGame] = useState<"MM2" | "SAB" | "Adopt Me" | null>(null)
+  const [variantSelectorItem, setVariantSelectorItem] = useState<any | null>(null)
+  const [variantSelectorColumn, setVariantSelectorColumn] = useState<"yours" | "theirs" | null>(null)
 
   const yourTotal = yourItems.reduce((sum, item) => sum + item.value, 0)
   const theirTotal = theirItems.reduce((sum, item) => sum + item.value, 0)
@@ -34,16 +38,60 @@ export function TradeCalculator() {
     }
   }, [])
 
-  const addItem = useCallback((item: TradeItem, column: "yours" | "theirs") => {
-    const newItem = { ...item, id: `${item.id}-${Date.now()}` }
-    if (column === "yours") {
-      setYourItems((prev) => [...prev, newItem])
+  const handleItemClick = useCallback((item: any, column: "yours" | "theirs") => {
+    if (item.game === "Adopt Me") {
+      // Open variant selector for Adopt Me items
+      setVariantSelectorItem(item)
+      setVariantSelectorColumn(column)
+      setActiveColumn(null)
     } else {
-      setTheirItems((prev) => [...prev, newItem])
+      // Add directly for non-Adopt Me items
+      const newItem: TradeItem = {
+        id: `${item.id}-${Date.now()}`,
+        name: item.name,
+        value: item.value ?? item.rap_value ?? 0,
+        imageUrl: item.imageUrl || item.image_url,
+        game: item.game,
+      }
+      if (column === "yours") {
+        setYourItems((prev) => [...prev, newItem])
+      } else {
+        setTheirItems((prev) => [...prev, newItem])
+      }
+      setActiveColumn(null)
+      setSearchQuery("")
     }
-    setActiveColumn(null)
-    setSearchQuery("")
   }, [])
+
+  const handleVariantSelect = useCallback(
+    (variant: string, quantity: number, value: number) => {
+      if (!variantSelectorItem || !variantSelectorColumn) return
+
+      const newItem: TradeItem = {
+        id: `${variantSelectorItem.id}-${variant}-${Date.now()}`,
+        name: variantSelectorItem.name,
+        value,
+        imageUrl: variantSelectorItem.imageUrl || variantSelectorItem.image_url,
+        game: variantSelectorItem.game,
+        variantLabel: variant,
+      }
+
+      // Add multiple copies if quantity > 1
+      for (let i = 0; i < quantity; i++) {
+        const itemWithId = { ...newItem, id: `${newItem.id}-${i}` }
+        if (variantSelectorColumn === "yours") {
+          setYourItems((prev) => [...prev, itemWithId])
+        } else {
+          setTheirItems((prev) => [...prev, itemWithId])
+        }
+      }
+
+      setVariantSelectorItem(null)
+      setVariantSelectorColumn(null)
+      setSearchQuery("")
+    },
+    [variantSelectorItem, variantSelectorColumn],
+  )
 
   if (!game) {
     return (
@@ -123,7 +171,7 @@ export function TradeCalculator() {
               onClose={() => setActiveColumn(null)}
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
-              onAddItem={(item) => addItem(item, "yours")}
+              onAddItem={(item) => handleItemClick(item, "yours")}
               selectedGame={game}
             />
 
@@ -137,12 +185,26 @@ export function TradeCalculator() {
               onClose={() => setActiveColumn(null)}
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
-              onAddItem={(item) => addItem(item, "theirs")}
+              onAddItem={(item) => handleItemClick(item, "theirs")}
               selectedGame={game}
             />
           </div>
         </div>
       </div>
+
+      {variantSelectorItem && (
+        <AdoptMeVariantSelector
+          open={!!variantSelectorItem}
+          onOpenChange={(open) => {
+            if (!open) {
+              setVariantSelectorItem(null)
+              setVariantSelectorColumn(null)
+            }
+          }}
+          item={variantSelectorItem}
+          onSelect={handleVariantSelect}
+        />
+      )}
     </div>
   )
 }
@@ -200,13 +262,34 @@ function TradeGrid({
         const data = await response.json()
         console.log("[v0] Loaded items count:", data.items?.length || 0)
 
-        const transformedItems = (data.items || []).map((item: any) => ({
-          id: item._id || item.id || item.name,
-          name: item.name,
-          value: item.value ?? item.rap_value ?? 0,
-          game: item.game,
-          imageUrl: item.image_url || "/placeholder.svg",
-        }))
+        const transformedItems = (data.items || []).map((item: any) => {
+          let displayValue = item.value ?? item.rap_value ?? 0
+          if (selectedGame === "Adopt Me" && item.value_fr !== null && item.value_fr !== undefined) {
+            const frValue = typeof item.value_fr === "string" ? Number.parseFloat(item.value_fr) : item.value_fr
+            if (!isNaN(frValue) && frValue > 0) {
+              displayValue = frValue
+            }
+          }
+
+          return {
+            id: item._id || item.id || item.name,
+            name: item.name,
+            value: displayValue,
+            game: item.game,
+            imageUrl: item.image_url || "/placeholder.svg",
+            value_f: item.value_f,
+            value_r: item.value_r,
+            value_n: item.value_n,
+            value_fr: item.value_fr,
+            value_nf: item.value_nf,
+            value_nr: item.value_nr,
+            value_nfr: item.value_nfr,
+            value_m: item.value_m,
+            value_mf: item.value_mf,
+            value_mr: item.value_mr,
+            value_mfr: item.value_mfr,
+          }
+        })
 
         setAllItems(transformedItems)
       } catch (err) {
@@ -267,7 +350,9 @@ function TradeGrid({
                   <X className="h-2.5 md:h-3 w-2.5 md:w-3 text-white" />
                 </button>
                 <div className="absolute bottom-0 left-0 right-0 rounded-b-lg bg-black/90 p-1 md:p-1.5 text-center">
-                  <p className="truncate text-[9px] md:text-[10px] font-semibold text-white">{item.name}</p>
+                  <p className="truncate text-[9px] md:text-[10px] font-semibold text-white">
+                    {item.variantLabel ? `${item.variantLabel} ${item.name}` : item.name}
+                  </p>
                 </div>
               </div>
             ) : null}
@@ -277,7 +362,9 @@ function TradeGrid({
 
       <div className="flex items-center justify-between px-1 md:px-2">
         <span className="text-sm md:text-base font-bold tracking-wide text-white">VALUE</span>
-        <span className="text-sm md:text-base font-bold text-white">{total.toLocaleString()}</span>
+        <span className="text-sm md:text-base font-bold text-white">
+          {total % 1 === 0 ? total.toLocaleString() : total.toFixed(2)}
+        </span>
       </div>
 
       {isActive && (
@@ -343,7 +430,9 @@ function TradeGrid({
                         <p className="text-xs md:text-sm font-medium text-white">{item.name}</p>
                         <p className="text-[10px] md:text-xs text-gray-400">{item.game}</p>
                       </div>
-                      <p className="text-sm md:text-base font-bold text-white">{item.value.toLocaleString()}</p>
+                      <p className="text-sm md:text-base font-bold text-white">
+                        {item.value % 1 === 0 ? item.value.toLocaleString() : item.value.toFixed(2)}
+                      </p>
                     </button>
                   ))}
                 </>

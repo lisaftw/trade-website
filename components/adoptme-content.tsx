@@ -15,9 +15,25 @@ interface AdoptMeItem {
   demand: string
   pot?: string
   rap_value?: number
+  value_fr?: number
 }
 
 const RARITIES = ["All", "Common", "Uncommon", "Rare", "Ultra-Rare", "Legendary", "Mythic"]
+
+function formatValue(value: any): string {
+  if (value === null || value === undefined) return "0"
+  const num = typeof value === "string" ? Number.parseFloat(value) : Number(value)
+  if (isNaN(num)) return "0"
+  return num % 1 === 0 ? num.toLocaleString() : num.toFixed(2)
+}
+
+function getSortValue(item: AdoptMeItem): number {
+  if (item.value_fr !== null && item.value_fr !== undefined) {
+    const frValue = typeof item.value_fr === "string" ? Number.parseFloat(item.value_fr) : item.value_fr
+    if (!isNaN(frValue) && frValue > 0) return frValue
+  }
+  return item.rap_value || 0
+}
 
 export function AdoptMeContent() {
   const [items, setItems] = useState<AdoptMeItem[]>([])
@@ -103,7 +119,7 @@ export function AdoptMeContent() {
     })
 
     Object.keys(grouped).forEach((section) => {
-      grouped[section].sort((a, b) => (b.rap_value || 0) - (a.rap_value || 0))
+      grouped[section].sort((a, b) => getSortValue(b) - getSortValue(a))
     })
 
     return grouped

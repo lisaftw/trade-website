@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { UserMenu } from "@/components/user-menu"
-import { Calculator, Menu, MessageSquare } from "lucide-react"
+import { Calculator, Menu, MessageSquare, Users } from "lucide-react"
 import Image from "next/image"
 import { useState } from "react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -33,6 +33,17 @@ export function SiteHeader() {
           variant="secondary"
         >
           <Link href="/values">Our Values</Link>
+        </Button>
+        <Button
+          asChild
+          size="sm"
+          className="h-9 rounded-full border border-border bg-secondary/40 px-5 text-sm text-secondary-foreground hover:bg-secondary/60"
+          variant="secondary"
+        >
+          <Link href="/trading">
+            <Users className="mr-2 h-4 w-4" />
+            Trade Ads
+          </Link>
         </Button>
         <Button
           asChild
@@ -84,6 +95,14 @@ export function SiteHeader() {
                 className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors hover:bg-secondary/60"
               >
                 Our Values
+              </Link>
+              <Link
+                href="/trading"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors hover:bg-secondary/60"
+              >
+                <Users className="h-4 w-4" />
+                Trade Ads
               </Link>
               <Link
                 href="/calculator"

@@ -20,66 +20,107 @@ interface AdoptMeVariantSelectorProps {
     value_nfr?: number | string | null
     value_np?: number | string | null
     value_nr?: number | string | null
+    value_nf?: number | string | null
     value_m?: number | string | null
     value_mf?: number | string | null
     value_mr?: number | string | null
     value_mfr?: number | string | null
+    rap_value?: number | string | null
   }
   onSelect: (variant: string, quantity: number, value: number) => void
 }
 
-type Variant = "F" | "R" | "N" | "M"
+type VariantCombo = "Base" | "FR" | "F" | "R" | "N" | "NFR" | "NF" | "NR" | "MFR" | "MF" | "MR" | "M"
 
-const VARIANT_INFO: Record<Variant, { label: string; color: string; valueKeys: string[]; description: string }> = {
+const VARIANT_COMBOS: Record<
+  VariantCombo,
+  { label: string; color: string; valueKey: keyof AdoptMeVariantSelectorProps["item"]; description: string }
+> = {
+  Base: {
+    label: "Base",
+    color: "bg-gray-600 hover:bg-gray-700",
+    valueKey: "rap_value",
+    description: "Base value (no potions, not neon/mega)",
+  },
+  FR: {
+    label: "FR",
+    color: "bg-purple-600 hover:bg-purple-700",
+    valueKey: "value_fr",
+    description: "Fly + Ride",
+  },
   F: {
-    label: "Fly",
+    label: "F",
     color: "bg-blue-500 hover:bg-blue-600",
-    valueKeys: ["value_f", "value_nf", "value_mf"],
-    description: "Fly potion",
+    valueKey: "value_f",
+    description: "Fly only",
   },
   R: {
-    label: "Ride",
+    label: "R",
     color: "bg-pink-500 hover:bg-pink-600",
-    valueKeys: ["value_r", "value_nr", "value_mr"],
-    description: "Ride potion",
+    valueKey: "value_r",
+    description: "Ride only",
   },
   N: {
-    label: "Normal",
-    color: "bg-gray-600 hover:bg-gray-700",
-    valueKeys: ["value_n", "value_np"],
-    description: "No potions",
+    label: "N",
+    color: "hover:bg-[#7ab838]",
+    valueKey: "value_n",
+    description: "Neon (no potions)",
+  },
+  NFR: {
+    label: "NFR",
+    color: "bg-gradient-to-r from-purple-600 to-cyan-500 hover:opacity-90",
+    valueKey: "value_nfr",
+    description: "Neon Fly + Ride",
+  },
+  NF: {
+    label: "NF",
+    color: "bg-gradient-to-r from-blue-500 to-cyan-400 hover:opacity-90",
+    valueKey: "value_nf",
+    description: "Neon Fly",
+  },
+  NR: {
+    label: "NR",
+    color: "bg-gradient-to-r from-pink-500 to-cyan-400 hover:opacity-90",
+    valueKey: "value_nr",
+    description: "Neon Ride",
+  },
+  MFR: {
+    label: "MFR",
+    color: "bg-gradient-to-r from-red-500 via-yellow-500 to-purple-600 hover:opacity-90",
+    valueKey: "value_mfr",
+    description: "Mega Fly + Ride",
+  },
+  MF: {
+    label: "MF",
+    color: "bg-gradient-to-r from-blue-500 via-yellow-500 to-red-500 hover:opacity-90",
+    valueKey: "value_mf",
+    description: "Mega Fly",
+  },
+  MR: {
+    label: "MR",
+    color: "bg-gradient-to-r from-pink-500 via-yellow-500 to-red-500 hover:opacity-90",
+    valueKey: "value_mr",
+    description: "Mega Ride",
   },
   M: {
-    label: "Mega",
-    color: "bg-purple-600 hover:bg-purple-700",
-    valueKeys: ["value_m", "value_mf", "value_mr", "value_mfr"],
-    description: "Mega/Neon",
+    label: "M",
+    color: "bg-gradient-to-r from-yellow-500 to-red-500 hover:opacity-90",
+    valueKey: "value_m",
+    description: "Mega (no potions)",
   },
 }
 
 export function AdoptMeVariantSelector({ open, onOpenChange, item, onSelect }: AdoptMeVariantSelectorProps) {
-  const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null)
+  const [selectedVariant, setSelectedVariant] = useState<VariantCombo | null>(null)
   const [quantity, setQuantity] = useState(1)
 
-  console.log("[v0] AdoptMeVariantSelector received item:", {
-    name: item.name,
-    value_f: item.value_f,
-    value_r: item.value_r,
-    value_n: item.value_n,
-    value_m: item.value_m,
-    value_fr: item.value_fr,
-    value_nfr: item.value_nfr,
-  })
-
-  const getVariantValue = (variant: Variant): number => {
-    const valueKeys = VARIANT_INFO[variant].valueKeys
-    for (const key of valueKeys) {
-      const value = item[key as keyof typeof item]
-      if (value != null) {
-        const numValue = typeof value === "string" ? Number.parseFloat(value) : value
-        if (!isNaN(numValue) && numValue > 0) {
-          return numValue
-        }
+  const getVariantValue = (variant: VariantCombo): number => {
+    const valueKey = VARIANT_COMBOS[variant].valueKey
+    const value = item[valueKey]
+    if (value != null) {
+      const numValue = typeof value === "string" ? Number.parseFloat(value) : value
+      if (!isNaN(numValue) && numValue > 0) {
+        return numValue
       }
     }
     return 0
@@ -90,7 +131,6 @@ export function AdoptMeVariantSelector({ open, onOpenChange, item, onSelect }: A
     const value = getVariantValue(selectedVariant)
     onSelect(selectedVariant, quantity, value)
     onOpenChange(false)
-    // Reset state
     setSelectedVariant(null)
     setQuantity(1)
   }
@@ -98,6 +138,10 @@ export function AdoptMeVariantSelector({ open, onOpenChange, item, onSelect }: A
   const handleQuantityChange = (delta: number) => {
     setQuantity((prev) => Math.max(1, Math.min(99, prev + delta)))
   }
+
+  const normalVariants: VariantCombo[] = ["Base", "FR", "F", "R"]
+  const neonVariants: VariantCombo[] = ["N", "NFR", "NF", "NR"]
+  const megaVariants: VariantCombo[] = ["M", "MFR", "MF", "MR"]
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -112,37 +156,96 @@ export function AdoptMeVariantSelector({ open, onOpenChange, item, onSelect }: A
             <Image src={item.image_url || "/placeholder.svg"} alt={item.name} fill className="object-contain p-2" />
           </div>
 
-          {/* Variant Selector */}
-          <div className="flex gap-3 bg-gray-700/30 rounded-2xl p-3">
-            {(Object.keys(VARIANT_INFO) as Variant[]).map((variant) => {
-              const value = getVariantValue(variant)
-              const isSelected = selectedVariant === variant
-              const isDisabled = value === 0
+          <div className="w-full space-y-2">
+            <p className="text-xs text-gray-400 text-center font-semibold">Normal</p>
+            <div className="grid grid-cols-4 gap-2">
+              {normalVariants.map((variant) => {
+                const value = getVariantValue(variant)
+                const isSelected = selectedVariant === variant
+                const isDisabled = value === 0
 
-              return (
-                <button
-                  key={variant}
-                  onClick={() => !isDisabled && setSelectedVariant(variant)}
-                  disabled={isDisabled}
-                  className={`
-                    relative w-14 h-14 rounded-full font-bold text-xl text-white
-                    transition-all duration-200 shadow-lg
-                    ${isDisabled ? "opacity-30 cursor-not-allowed bg-gray-600" : VARIANT_INFO[variant].color}
-                    ${isSelected ? "ring-4 ring-white scale-110" : "hover:scale-105"}
-                  `}
-                  title={`${VARIANT_INFO[variant].description} - Value: ${value}`}
-                >
-                  {variant}
-                </button>
-              )
-            })}
+                return (
+                  <button
+                    key={variant}
+                    onClick={() => !isDisabled && setSelectedVariant(variant)}
+                    disabled={isDisabled}
+                    className={`
+                      relative px-3 py-2 rounded-lg font-bold text-sm text-white
+                      transition-all duration-200 shadow-lg
+                      ${isDisabled ? "opacity-30 cursor-not-allowed bg-gray-600" : VARIANT_COMBOS[variant].color}
+                      ${isSelected ? "ring-4 ring-white scale-105" : "hover:scale-105"}
+                    `}
+                    title={`${VARIANT_COMBOS[variant].description} - Value: ${value.toFixed(2)}`}
+                  >
+                    {variant}
+                  </button>
+                )
+              })}
+            </div>
           </div>
 
-          {/* Show value when variant is selected */}
+          <div className="w-full space-y-2">
+            <p className="text-xs text-gray-400 text-center font-semibold">Neon</p>
+            <div className="grid grid-cols-4 gap-2">
+              {neonVariants.map((variant) => {
+                const value = getVariantValue(variant)
+                const isSelected = selectedVariant === variant
+                const isDisabled = value === 0
+                // Apply special green color for N variant
+                const buttonColor = variant === "N" ? "bg-[#8dc43e] hover:bg-[#7ab838]" : VARIANT_COMBOS[variant].color
+
+                return (
+                  <button
+                    key={variant}
+                    onClick={() => !isDisabled && setSelectedVariant(variant)}
+                    disabled={isDisabled}
+                    className={`
+                      relative px-3 py-2 rounded-lg font-bold text-sm text-white
+                      transition-all duration-200 shadow-lg
+                      ${isDisabled ? "opacity-30 cursor-not-allowed bg-gray-600" : buttonColor}
+                      ${isSelected ? "ring-4 ring-white scale-105" : "hover:scale-105"}
+                    `}
+                    title={`${VARIANT_COMBOS[variant].description} - Value: ${value.toFixed(2)}`}
+                  >
+                    {variant}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          <div className="w-full space-y-2">
+            <p className="text-xs text-gray-400 text-center font-semibold">Mega</p>
+            <div className="grid grid-cols-4 gap-2">
+              {megaVariants.map((variant) => {
+                const value = getVariantValue(variant)
+                const isSelected = selectedVariant === variant
+                const isDisabled = value === 0
+
+                return (
+                  <button
+                    key={variant}
+                    onClick={() => !isDisabled && setSelectedVariant(variant)}
+                    disabled={isDisabled}
+                    className={`
+                      relative px-3 py-2 rounded-lg font-bold text-sm text-white
+                      transition-all duration-200 shadow-lg
+                      ${isDisabled ? "opacity-30 cursor-not-allowed bg-gray-600" : VARIANT_COMBOS[variant].color}
+                      ${isSelected ? "ring-4 ring-white scale-105" : "hover:scale-105"}
+                    `}
+                    title={`${VARIANT_COMBOS[variant].description} - Value: ${value.toFixed(2)}`}
+                  >
+                    {variant}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
           {selectedVariant && (
             <div className="text-center">
-              <p className="text-sm text-gray-400">{VARIANT_INFO[selectedVariant].description}</p>
-              <p className="text-lg font-bold text-white">Value: {getVariantValue(selectedVariant)}</p>
+              <p className="text-sm text-gray-400">{VARIANT_COMBOS[selectedVariant].description}</p>
+              <p className="text-lg font-bold text-white">Value: {getVariantValue(selectedVariant).toFixed(2)}</p>
             </div>
           )}
 

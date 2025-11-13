@@ -147,7 +147,7 @@ export function SABCalculator() {
     } else if (safeNum >= 1000) {
       return `${(safeNum / 1000).toFixed(2)}k/1s`
     }
-    return `${safeNum.toFixed(2)}/1s`
+    return safeNum % 1 === 0 ? `${safeNum.toFixed(0)}/1s` : `${safeNum.toFixed(2)}/1s`
   }
 
   return (

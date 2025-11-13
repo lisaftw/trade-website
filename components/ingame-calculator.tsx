@@ -32,7 +32,7 @@ export function IngameCalculator() {
     if (selectedGame === "SAB") {
       router.push("/sab-calculator")
     } else if (selectedGame === "Adopt Me") {
-      router.push("/adoptme-calculator")
+      router.push("/calculator/trade")
     } else {
       setGame(selectedGame)
     }

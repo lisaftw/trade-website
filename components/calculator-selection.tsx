@@ -28,7 +28,6 @@ export function CalculatorSelection() {
               <Link href="/calculator/trade">Start Trade Calculator</Link>
             </Button>
           </div>
-          {/* Decorative gradient */}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
         </Card>
 
@@ -45,7 +44,6 @@ export function CalculatorSelection() {
               <Link href="/calculator/ingame">Start In-game Calculator</Link>
             </Button>
           </div>
-          {/* Decorative gradient */}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-gray-500/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
         </Card>
       </div>
