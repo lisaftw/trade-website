@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getSession } from "@/lib/auth/session-postgres"
 import { deleteTrade, updateTrade } from "@/lib/db/queries/trades"
+import { moderateContent } from "@/lib/utils/content-moderation"
 
 export const dynamic = "force-dynamic"
 
@@ -33,6 +34,13 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
 
     const body = await request.json()
     const { status, offering, requesting, notes } = body
+
+    if (notes) {
+      const moderationResult = await moderateContent(notes)
+      if (!moderationResult.safe) {
+        return NextResponse.json({ error: moderationResult.reason }, { status: 400 })
+      }
+    }
 
     const updatedTrade = await updateTrade(params.id, session.discordId, {
       status,

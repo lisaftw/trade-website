@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Plus, Search, MessageSquare } from "lucide-react"
+import { Plus, Search, MessageSquare, Home } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import TradeCard from "@/components/trade-card"
@@ -135,11 +135,19 @@ export default function TradingPage() {
             <div className="relative z-[1] space-y-4 md:space-y-8">
               {/* Header Section */}
               <div className="flex flex-col md:flex-row items-start md:items-start justify-between gap-3 md:gap-4">
-                <div>
-                  <h1 className="text-2xl md:text-4xl font-bold text-foreground">Trade Ads</h1>
-                  <p className="mt-1 md:mt-2 text-xs md:text-base text-foreground/60">
-                    Browse and find the perfect trade for your items.
-                  </p>
+                <div className="flex items-center gap-3">
+                  <Link href="/">
+                    <Button variant="ghost" size="sm" className="gap-2">
+                      <Home className="h-4 w-4" />
+                      <span className="hidden sm:inline">Home</span>
+                    </Button>
+                  </Link>
+                  <div>
+                    <h1 className="text-2xl md:text-4xl font-bold text-foreground">Trade Ads</h1>
+                    <p className="mt-1 md:mt-2 text-xs md:text-base text-foreground/60">
+                      Browse and find the perfect trade for your items.
+                    </p>
+                  </div>
                 </div>
                 <Link href="/trading/create" className="w-full md:w-auto">
                   <Button className="btn-neo gap-2 w-full md:w-auto whitespace-nowrap">
