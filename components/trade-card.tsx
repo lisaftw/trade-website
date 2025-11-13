@@ -7,7 +7,6 @@ import { useState, useEffect } from "react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { TradeInteractionModal } from "@/components/trade-interaction-modal"
 import Image from "next/image"
-import { getProxiedImageUrl } from "@/lib/utils/image-proxy"
 
 interface Trade {
   id: string
@@ -222,9 +221,9 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
               ) : (
                 offeringItems.map((item, idx) => (
                   <div key={idx} className="flex items-center gap-1.5 md:gap-2 rounded-lg bg-foreground/5 p-1.5 md:p-2">
-                    {item.id && (
+                    {item.image_url && (
                       <Image
-                        src={getProxiedImageUrl(item.id) || "/placeholder.svg"}
+                        src={item.image_url || "/placeholder.svg"}
                         alt={item.name}
                         width={32}
                         height={32}
@@ -252,9 +251,9 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
               ) : (
                 requestingItems.map((item, idx) => (
                   <div key={idx} className="flex items-center gap-1.5 md:gap-2 rounded-lg bg-foreground/5 p-1.5 md:p-2">
-                    {item.id && (
+                    {item.image_url && (
                       <Image
-                        src={getProxiedImageUrl(item.id) || "/placeholder.svg"}
+                        src={item.image_url || "/placeholder.svg"}
                         alt={item.name}
                         width={32}
                         height={32}

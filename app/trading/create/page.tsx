@@ -102,13 +102,17 @@ export default function CreateTradePage() {
                     </p>
                   </div>
 
-                  {/* Game Selection */}
-                  <Card className="card-neo p-6">
-                    <label className="block text-sm font-semibold mb-3">Select Game</label>
+                  <Card className="card-neo p-6 border-2 border-primary/30">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-primary">
+                        1
+                      </div>
+                      <label className="text-base font-bold">Select Game</label>
+                    </div>
                     <div className="relative">
                       <button
                         onClick={() => setGameDropdownOpen(!gameDropdownOpen)}
-                        className="btn-neo w-full justify-between px-4 py-3 text-base"
+                        className="btn-neo w-full justify-between px-4 py-3 text-base font-semibold"
                       >
                         <span className={selectedGame ? "text-foreground" : "text-muted-foreground"}>
                           {selectedGame || "Choose a game..."}
@@ -118,7 +122,7 @@ export default function CreateTradePage() {
                         />
                       </button>
                       {gameDropdownOpen && (
-                        <div className="absolute top-full left-0 right-0 mt-2 z-50 space-y-2 rounded-lg border border-border bg-card/80 p-2 backdrop-blur-glass">
+                        <div className="absolute top-full left-0 right-0 mt-2 z-50 space-y-2 rounded-lg border border-border bg-card/95 p-2 backdrop-blur-lg shadow-xl">
                           {GAMES.map((game) => (
                             <button
                               key={game}
@@ -127,10 +131,10 @@ export default function CreateTradePage() {
                                 setGameDropdownOpen(false)
                               }}
                               className={cn(
-                                "w-full rounded-lg px-4 py-2 text-left transition-all",
+                                "w-full rounded-lg px-4 py-3 text-left font-semibold transition-all",
                                 selectedGame === game
-                                  ? "bg-primary/20 text-primary border border-primary/50"
-                                  : "bg-foreground/5 text-foreground hover:bg-foreground/10",
+                                  ? "bg-primary/20 text-primary border-2 border-primary/50"
+                                  : "bg-foreground/5 text-foreground hover:bg-foreground/10 border border-transparent",
                               )}
                             >
                               {game}
@@ -141,27 +145,46 @@ export default function CreateTradePage() {
                     </div>
                   </Card>
 
-                  {/* Two Column Layout */}
-                  <div className="grid gap-6 md:grid-cols-2">
-                    {/* I Have */}
-                    <TradeColumn
-                      title="I Have"
-                      items={offering}
-                      onRemove={(id) => setOffering(offering.filter((item) => item.id !== id))}
-                      onAddItem={(item) => setOffering([...offering, { ...item, id: `${item.id}-${Date.now()}` }])}
-                      selectedGame={selectedGame}
-                      columnType="offering"
-                    />
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-primary font-bold">
+                        2
+                      </div>
+                      <h2 className="text-xl font-bold">Set Up Your Trade</h2>
+                    </div>
+                    <div className="grid gap-6 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 rounded-lg bg-green-500/10 border border-green-500/30 px-4 py-2">
+                          <div className="h-2 w-2 rounded-full bg-green-500" />
+                          <h3 className="font-bold text-green-400">What I'm Offering</h3>
+                        </div>
+                        <TradeColumn
+                          title="I Have"
+                          items={offering}
+                          onRemove={(id) => setOffering(offering.filter((item) => item.id !== id))}
+                          onAddItem={(item) => setOffering([...offering, { ...item, id: `${item.id}-${Date.now()}` }])}
+                          selectedGame={selectedGame}
+                          columnType="offering"
+                        />
+                      </div>
 
-                    {/* I Want */}
-                    <TradeColumn
-                      title="I Want"
-                      items={requesting}
-                      onRemove={(id) => setRequesting(requesting.filter((item) => item.id !== id))}
-                      onAddItem={(item) => setRequesting([...requesting, { ...item, id: `${item.id}-${Date.now()}` }])}
-                      selectedGame={selectedGame}
-                      columnType="requesting"
-                    />
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 rounded-lg bg-blue-500/10 border border-blue-500/30 px-4 py-2">
+                          <div className="h-2 w-2 rounded-full bg-blue-500" />
+                          <h3 className="font-bold text-blue-400">What I'm Requesting</h3>
+                        </div>
+                        <TradeColumn
+                          title="I Want"
+                          items={requesting}
+                          onRemove={(id) => setRequesting(requesting.filter((item) => item.id !== id))}
+                          onAddItem={(item) =>
+                            setRequesting([...requesting, { ...item, id: `${item.id}-${Date.now()}` }])
+                          }
+                          selectedGame={selectedGame}
+                          columnType="requesting"
+                        />
+                      </div>
+                    </div>
                   </div>
 
                   {/* Trade Summary */}
@@ -176,11 +199,11 @@ export default function CreateTradePage() {
                       <div className="flex gap-8">
                         <div className="text-center">
                           <p className="text-xs text-muted-foreground">YOUR OFFER</p>
-                          <p className="mt-1 text-xl font-bold">{offeringTotal.toLocaleString()}</p>
+                          <p className="mt-1 text-xl font-bold text-green-400">{offeringTotal.toLocaleString()}</p>
                         </div>
                         <div className="text-center">
                           <p className="text-xs text-muted-foreground">YOU WANT</p>
-                          <p className="mt-1 text-xl font-bold">{requestingTotal.toLocaleString()}</p>
+                          <p className="mt-1 text-xl font-bold text-blue-400">{requestingTotal.toLocaleString()}</p>
                         </div>
                       </div>
                     </div>
@@ -189,7 +212,7 @@ export default function CreateTradePage() {
                   {/* Notes */}
                   <Card className="card-neo p-6">
                     <label className="block text-sm font-semibold mb-3">
-                      Trade Notes <span className="text-muted-foreground">({notes.length}/100)</span>
+                      Trade Notes <span className="text-muted-foreground font-normal">({notes.length}/100)</span>
                     </label>
                     <Textarea
                       placeholder="Add any additional details about your trade..."
@@ -203,7 +226,7 @@ export default function CreateTradePage() {
                   <Button
                     onClick={handlePublish}
                     disabled={isSubmitting || !selectedGame || offering.length === 0 || requesting.length === 0}
-                    className="btn-neo w-full py-4 text-lg font-semibold"
+                    className="btn-neo w-full py-6 text-lg font-bold"
                   >
                     {isSubmitting ? "Publishing..." : "Publish Trade Ad"}
                   </Button>

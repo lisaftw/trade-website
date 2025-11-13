@@ -1,34 +1,20 @@
-import { createServerClient } from "@supabase/ssr"
-import { cookies } from "next/headers"
 import { type NextRequest, NextResponse } from "next/server"
+import { getSession } from "@/lib/auth/session-postgres"
+import { deleteTrade, updateTrade } from "@/lib/db/queries/trades"
 
 export const dynamic = "force-dynamic"
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const cookieStore = await cookies()
-    const supabase = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
-        },
-      },
-    })
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) {
+    const session = await getSession()
+    if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { error } = await supabase.from("trades").delete().eq("id", params.id).eq("discord_id", user.id)
+    const success = await deleteTrade(params.id, session.discordId)
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
+    if (!success) {
+      return NextResponse.json({ error: "Trade not found or unauthorized" }, { status: 404 })
     }
 
     return NextResponse.json({ success: true })
@@ -40,40 +26,26 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
 
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const cookieStore = await cookies()
-    const supabase = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
-        },
-      },
-    })
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) {
+    const session = await getSession()
+    if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const body = await request.json()
-    const { status } = body
+    const { status, offering, requesting, notes } = body
 
-    const { data, error } = await supabase
-      .from("trades")
-      .update({ status, updated_at: new Date().toISOString() })
-      .eq("id", params.id)
-      .eq("discord_id", user.id)
-      .select()
+    const updatedTrade = await updateTrade(params.id, session.discordId, {
+      status,
+      offering,
+      requesting,
+      notes,
+    })
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
+    if (!updatedTrade) {
+      return NextResponse.json({ error: "Trade not found or unauthorized" }, { status: 404 })
     }
 
-    return NextResponse.json(data[0])
+    return NextResponse.json(updatedTrade)
   } catch (error) {
     console.error("Error updating trade:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
