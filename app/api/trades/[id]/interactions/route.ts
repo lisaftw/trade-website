@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { cookies } from "next/headers"
 import { getSession } from "@/lib/auth/session-postgres"
 import { query } from "@/lib/db/postgres"
-import { validateContent } from "@/lib/utils/content-filter"
+import { moderateContent } from "@/lib/utils/content-moderation"
 
 export const dynamic = "force-dynamic"
 
@@ -22,10 +22,10 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const { message } = body
 
     if (message) {
-      const contentError = validateContent(message, "message")
-      if (contentError) {
+      const moderation = await moderateContent(message)
+      if (moderation.isInappropriate) {
         console.log("Trade request blocked: Inappropriate content detected")
-        return NextResponse.json({ error: contentError }, { status: 400 })
+        return NextResponse.json({ error: moderation.reason }, { status: 400 })
       }
     }
 

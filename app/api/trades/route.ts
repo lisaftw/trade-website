@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getSession } from "@/lib/auth/session-postgres"
 import { createTrade, getActiveTrades } from "@/lib/db/queries/trades"
 import { getProfile } from "@/lib/db/queries/profiles"
-import { validateContent } from "@/lib/utils/content-filter"
+import { moderateContent } from "@/lib/utils/content-moderation"
 
 export const dynamic = "force-dynamic"
 
@@ -38,10 +38,10 @@ export async function POST(request: NextRequest) {
     }
 
     if (notes) {
-      const contentError = validateContent(notes, "trade notes")
-      if (contentError) {
+      const moderation = await moderateContent(notes)
+      if (moderation.isInappropriate) {
         console.error("[v0] Trade creation failed: Inappropriate content in notes")
-        return NextResponse.json({ error: contentError }, { status: 400 })
+        return NextResponse.json({ error: moderation.reason }, { status: 400 })
       }
     }
 

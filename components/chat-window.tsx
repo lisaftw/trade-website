@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import { MessageActionsMenu } from "@/components/message-actions-menu"
 import { EmojiPicker } from "@/components/emoji-picker"
-import { validateContent } from "@/lib/utils/content-filter"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -302,15 +301,22 @@ export function ChatWindow({
   const handleEditMessage = async (messageId: string) => {
     if (!editContent.trim() || sending) return
 
-    const contentError = validateContent(editContent.trim(), "message")
-    if (contentError) {
-      alert(contentError)
-      return
-    }
-
     setSending(true)
 
     try {
+      const moderationResponse = await fetch("/api/moderate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: editContent.trim() }),
+      })
+
+      if (!moderationResponse.ok) {
+        const error = await moderationResponse.json()
+        alert(error.reason || "Your message contains inappropriate content.")
+        setSending(false)
+        return
+      }
+
       const { error } = await supabase
         .from("messages")
         .update({
@@ -419,9 +425,24 @@ export function ChatWindow({
     e.preventDefault()
     if (!newMessage.trim() || sending) return
 
-    const contentError = validateContent(newMessage.trim(), "message")
-    if (contentError) {
-      alert(contentError)
+    setSending(true)
+
+    try {
+      const moderationResponse = await fetch("/api/moderate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: newMessage.trim() }),
+      })
+
+      if (!moderationResponse.ok) {
+        const error = await moderationResponse.json()
+        alert(error.reason || "Your message contains inappropriate content.")
+        setSending(false)
+        return
+      }
+    } catch (error) {
+      console.error("Error checking message:", error)
+      setSending(false)
       return
     }
 
