@@ -113,13 +113,15 @@ export function IngameCalculator() {
     (item: GameItem) => {
       const defaultVariant = game === "Adopt Me" ? "FR" : undefined
 
-      const rawDefaultValue = game === "Adopt Me" ? item.value_fr || (item as any).rap_value || item.value : item.value
+      const rawDefaultValue =
+        game === "Adopt Me" ? item.value_fr || item.value_n || (item as any).rap_value || item.value : item.value
 
       const defaultValue =
         typeof rawDefaultValue === "string" ? Number.parseFloat(rawDefaultValue) || 0 : rawDefaultValue || 0
 
       console.log("[v0] Adding item:", item.name, "with value:", defaultValue, "from:", {
         value_fr: item.value_fr,
+        value_n: item.value_n,
         rap_value: (item as any).rap_value,
         value: item.value,
       })
