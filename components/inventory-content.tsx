@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useUser } from "@/lib/hooks/use-user"
 import { ItemCard } from "@/components/item-card"
 import { Button } from "@/components/ui/button"
-import { Loader2, Package, Trash2 } from "lucide-react"
+import { Loader2, Package, Trash2 } from 'lucide-react'
 import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
 
@@ -151,7 +151,7 @@ export function InventoryContent() {
         </p>
       </div>
 
-      <div className="grid grid-cols-[repeat(auto-fit,160px)] justify-center">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 justify-items-center">
         {inventory.map((invItem) => {
           const item = items.find((i) => i.id === invItem.item_id)
 
@@ -180,11 +180,11 @@ export function InventoryContent() {
           }
 
           return (
-            <div key={invItem.id} className="flex flex-col items-center">
+            <div key={invItem.id} className="flex flex-col items-center gap-2">
               <div className="relative">
                 <ItemCard item={item} hideAddButton={true} />
                 {invItem.quantity > 1 && (
-                  <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 rounded-full bg-white/90 dark:bg-gray-900/90 px-2.5 py-1 text-xs font-bold text-foreground shadow-md border-2 border-border backdrop-blur-sm">
+                  <div className="absolute top-2 right-2 z-10 rounded-full bg-white/90 dark:bg-gray-900/90 px-2.5 py-1 text-xs font-bold text-foreground shadow-md border-2 border-border backdrop-blur-sm">
                     ×{invItem.quantity}
                   </div>
                 )}
@@ -192,7 +192,7 @@ export function InventoryContent() {
               <Button
                 variant="destructive"
                 size="sm"
-                className="w-[160px] h-9 px-3 shadow-lg"
+                className="w-full max-w-[200px] h-9 px-3 shadow-lg"
                 onClick={() => handleRemove(invItem.id, item.name)}
                 disabled={removing === invItem.id}
               >
