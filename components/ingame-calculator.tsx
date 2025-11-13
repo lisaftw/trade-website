@@ -27,6 +27,7 @@ interface GameItem {
   value_mr?: number
   value_mfr?: number
   variant?: string
+  rap_value?: number
 }
 
 type Variant = "F" | "R" | "N" | "M"
@@ -75,7 +76,7 @@ export function IngameCalculator() {
         const transformedItems = (data.items || []).map((item: any) => ({
           id: item._id || item.id || item.name,
           name: item.name,
-          value: item.value ?? item.rap_value ?? 0,
+          value: item.rap_value ?? item.value ?? 0,
           game: item.game,
           imageUrl: item.imageUrl || item.image_url,
           value_f: item.value_f,
@@ -89,8 +90,10 @@ export function IngameCalculator() {
           value_mf: item.value_mf,
           value_mr: item.value_mr,
           value_mfr: item.value_mfr,
+          rap_value: item.rap_value ?? 0,
         }))
 
+        console.log("[v0] Transformed items sample:", transformedItems.slice(0, 3))
         setAllItems(transformedItems)
       } catch (error) {
         console.error("[v0] Failed to fetch items:", error)
@@ -109,10 +112,17 @@ export function IngameCalculator() {
   const addItem = useCallback(
     (item: GameItem) => {
       const defaultVariant = game === "Adopt Me" ? "FR" : undefined
-      const rawDefaultValue = game === "Adopt Me" ? item.value_fr || item.value : item.value
+
+      const rawDefaultValue = game === "Adopt Me" ? item.value_fr || (item as any).rap_value || item.value : item.value
 
       const defaultValue =
         typeof rawDefaultValue === "string" ? Number.parseFloat(rawDefaultValue) || 0 : rawDefaultValue || 0
+
+      console.log("[v0] Adding item:", item.name, "with value:", defaultValue, "from:", {
+        value_fr: item.value_fr,
+        rap_value: (item as any).rap_value,
+        value: item.value,
+      })
 
       const newItem = {
         ...item,
