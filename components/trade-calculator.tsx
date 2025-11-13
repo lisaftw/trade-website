@@ -528,19 +528,19 @@ function AdoptMeGridCard({ item, onRemove }: AdoptMeGridCardProps) {
   }
 
   return (
-    <div className="group relative h-full w-full flex flex-col p-1 md:p-1.5">
+    <div className="group relative h-full w-full flex flex-col p-0.5 md:p-1">
       <button
         onClick={onRemove}
-        className="absolute right-0.5 md:right-1 top-0.5 md:top-1 z-10 rounded-full bg-red-500/90 p-0.5 opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
+        className="absolute right-0 md:right-0.5 top-0 md:top-0.5 z-10 rounded-full bg-red-500/90 p-0.5 opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
       >
-        <X className="h-2 md:h-2.5 w-2 md:w-2.5 text-white" />
+        <X className="h-1.5 md:h-2 w-1.5 md:w-2 text-white" />
       </button>
 
-      <div className="relative w-full h-12 md:h-16 mb-0.5">
+      <div className="relative w-full h-8 md:h-12 mb-0.5">
         <Image src={item.imageUrl || "/placeholder.svg"} alt={item.name} fill className="rounded-md object-contain" />
       </div>
 
-      <p className="truncate text-[7px] md:text-[8px] font-semibold text-white text-center mb-0.5">{item.name}</p>
+      <p className="truncate text-[6px] md:text-[7px] font-semibold text-white text-center mb-0.5">{item.name}</p>
 
       <CompactVariantSelector item={item} onSelect={handleVariantSelect} selectedVariant={selectedVariant} />
     </div>
@@ -671,7 +671,7 @@ function CompactVariantSelector({ item, onSelect, selectedVariant }: CompactVari
               toggleVariant(variant)
             }}
             className={`
-              w-4 h-4 md:w-5 md:h-5 rounded-full font-bold text-[7px] md:text-[8px] text-white
+              w-3 h-3 md:w-4 md:h-4 rounded-full font-bold text-[6px] md:text-[7px] text-white
               transition-all duration-200 shadow-sm
               ${isSelected ? config.color : "bg-gray-600"}
               ${isSelected ? "scale-105 ring-1 ring-white/50" : "hover:scale-105 opacity-70"}
