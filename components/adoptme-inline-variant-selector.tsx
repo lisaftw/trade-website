@@ -17,8 +17,10 @@ interface InlineVariantSelectorProps {
     value_mfr?: number | string | null
   }
   onSelect: (variant: string, value: number) => void
-  onQuantityChange: (quantity: number) => void
+  onQuantityChange?: (quantity: number) => void
   initialQuantity?: number
+  showQuantity?: boolean
+  onValueChange?: (variant: string, value: number) => void
 }
 
 type Variant = "F" | "R" | "N" | "M"
@@ -35,6 +37,8 @@ export function AdoptMeInlineVariantSelector({
   onSelect,
   onQuantityChange,
   initialQuantity = 1,
+  showQuantity = true,
+  onValueChange,
 }: InlineVariantSelectorProps) {
   const [selectedVariants, setSelectedVariants] = useState<Set<Variant>>(new Set(["F", "R"]))
   const [quantity, setQuantity] = useState(initialQuantity)
@@ -120,12 +124,18 @@ export function AdoptMeInlineVariantSelector({
     const finalValue = !isNaN(numValue) && numValue > 0 ? numValue : 0
 
     onSelect(variantLabel, finalValue)
+
+    if (onValueChange) {
+      onValueChange(variantLabel, finalValue)
+    }
   }
 
   const handleQuantityChange = (delta: number) => {
     const newQuantity = Math.max(1, Math.min(99, quantity + delta))
     setQuantity(newQuantity)
-    onQuantityChange(newQuantity)
+    if (onQuantityChange) {
+      onQuantityChange(newQuantity)
+    }
   }
 
   return (
@@ -156,30 +166,31 @@ export function AdoptMeInlineVariantSelector({
         })}
       </div>
 
-      {/* Quantity selector */}
-      <div className="flex items-center gap-2 bg-white rounded-md px-2 py-1">
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            handleQuantityChange(-1)
-          }}
-          disabled={quantity <= 1}
-          className="text-gray-700 font-bold text-lg px-1 hover:bg-gray-100 rounded disabled:opacity-30"
-        >
-          −
-        </button>
-        <span className="text-gray-900 font-bold text-sm min-w-[2rem] text-center">{quantity}</span>
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            handleQuantityChange(1)
-          }}
-          disabled={quantity >= 99}
-          className="text-gray-700 font-bold text-lg px-1 hover:bg-gray-100 rounded disabled:opacity-30"
-        >
-          +
-        </button>
-      </div>
+      {showQuantity && (
+        <div className="flex items-center gap-2 bg-white rounded-md px-2 py-1">
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              handleQuantityChange(-1)
+            }}
+            disabled={quantity <= 1}
+            className="text-gray-700 font-bold text-lg px-1 hover:bg-gray-100 rounded disabled:opacity-30"
+          >
+            −
+          </button>
+          <span className="text-gray-900 font-bold text-sm min-w-[2rem] text-center">{quantity}</span>
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              handleQuantityChange(1)
+            }}
+            disabled={quantity >= 99}
+            className="text-gray-700 font-bold text-lg px-1 hover:bg-gray-100 rounded disabled:opacity-30"
+          >
+            +
+          </button>
+        </div>
+      )}
     </div>
   )
 }

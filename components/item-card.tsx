@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/ui/button"
 import { LogIn } from "lucide-react"
 import { AdoptMeVariantSelector } from "./adoptme-variant-selector"
+import { AdoptMeInlineVariantSelector } from "./adoptme-inline-variant-selector"
 
 interface ItemCardProps {
   item: {
@@ -88,6 +89,8 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
   const { user, loading: userLoading, refetch } = useUser()
   const [showLoginDialog, setShowLoginDialog] = useState(false)
   const { toast } = useToast()
+
+  const [currentValue, setCurrentValue] = useState(() => getDisplayValue(item))
 
   useEffect(() => {
     const checkLoginStatus = () => {
@@ -192,6 +195,10 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
     await addToInventory(quantity, value)
   }
 
+  const handleVariantChange = (variant: string, value: number) => {
+    setCurrentValue(value)
+  }
+
   return (
     <>
       <div className="relative w-full max-w-[200px] select-none">
@@ -252,6 +259,17 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
               </div>
             </div>
 
+            {item.game === "Adopt Me" && (
+              <div className="relative w-full h-auto mt-1.5 flex justify-center">
+                <AdoptMeInlineVariantSelector
+                  item={item as any}
+                  onSelect={handleVariantChange}
+                  onValueChange={handleVariantChange}
+                  showQuantity={false}
+                />
+              </div>
+            )}
+
             <div className="relative w-full h-auto mt-1.5">
               <Image
                 src="/card-ui/raritydemandvalue.png"
@@ -279,7 +297,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
                 <div className="flex items-center justify-end h-[20px]">
                   <span className="text-white font-bold text-[10px]" style={{ textShadow: "1px 1px 1px #000" }}>
-                    {formatValue(getDisplayValue(item))}
+                    {formatValue(currentValue)}
                   </span>
                 </div>
               </div>
