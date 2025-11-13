@@ -15,6 +15,27 @@ interface GameItem {
   value: number
   imageUrl?: string
   game: string
+  value_f?: number
+  value_r?: number
+  value_n?: number
+  value_fr?: number
+  value_nfr?: number
+  value_nf?: number
+  value_nr?: number
+  value_m?: number
+  value_mf?: number
+  value_mr?: number
+  value_mfr?: number
+  variant?: string
+}
+
+type Variant = "F" | "R" | "N" | "M"
+
+const VARIANT_CONFIG = {
+  F: { label: "F", color: "bg-cyan-500" },
+  R: { label: "R", color: "bg-pink-500" },
+  N: { label: "N", color: "bg-[#8dc43e]" },
+  M: { label: "M", color: "bg-purple-500" },
 }
 
 export function IngameCalculator() {
@@ -51,6 +72,17 @@ export function IngameCalculator() {
           value: item.value ?? item.rap_value ?? 0,
           game: item.game,
           imageUrl: item.imageUrl || item.image_url,
+          value_f: item.value_f,
+          value_r: item.value_r,
+          value_n: item.value_n,
+          value_fr: item.value_fr,
+          value_nfr: item.value_nfr,
+          value_nf: item.value_nf,
+          value_nr: item.value_nr,
+          value_m: item.value_m,
+          value_mf: item.value_mf,
+          value_mr: item.value_mr,
+          value_mfr: item.value_mfr,
         }))
 
         setAllItems(transformedItems)
@@ -68,11 +100,92 @@ export function IngameCalculator() {
     setSelectedItems((prev) => prev.filter((item) => item.id !== id))
   }, [])
 
-  const addItem = useCallback((item: GameItem) => {
-    const newItem = { ...item, id: `${item.id}-${Date.now()}` }
-    setSelectedItems((prev) => [...prev, newItem])
-    setIsSearchOpen(false)
-    setSearchQuery("")
+  const addItem = useCallback(
+    (item: GameItem) => {
+      const defaultVariant = game === "Adopt Me" ? "FR" : undefined
+      const defaultValue = game === "Adopt Me" ? item.value_fr || item.value : item.value
+
+      const newItem = {
+        ...item,
+        id: `${item.id}-${Date.now()}`,
+        variant: defaultVariant,
+        value: defaultValue,
+      }
+      setSelectedItems((prev) => [...prev, newItem])
+      setIsSearchOpen(false)
+      setSearchQuery("")
+    },
+    [game],
+  )
+
+  const updateItemVariant = useCallback((itemId: string, selectedVariants: Set<Variant>) => {
+    setSelectedItems((prev) =>
+      prev.map((item) => {
+        if (item.id !== itemId) return item
+
+        const hasF = selectedVariants.has("F")
+        const hasR = selectedVariants.has("R")
+        const hasN = selectedVariants.has("N")
+        const hasM = selectedVariants.has("M")
+
+        let variantKey: keyof GameItem
+        let variantLabel: string
+
+        if (hasM) {
+          if (hasF && hasR) {
+            variantKey = "value_mfr"
+            variantLabel = "MFR"
+          } else if (hasF) {
+            variantKey = "value_mf"
+            variantLabel = "MF"
+          } else if (hasR) {
+            variantKey = "value_mr"
+            variantLabel = "MR"
+          } else {
+            variantKey = "value_m"
+            variantLabel = "M"
+          }
+        } else if (hasN) {
+          if (hasF && hasR) {
+            variantKey = "value_nfr"
+            variantLabel = "NFR"
+          } else if (hasF) {
+            variantKey = "value_nf"
+            variantLabel = "NF"
+          } else if (hasR) {
+            variantKey = "value_nr"
+            variantLabel = "NR"
+          } else {
+            variantKey = "value_n"
+            variantLabel = "N"
+          }
+        } else {
+          if (hasF && hasR) {
+            variantKey = "value_fr"
+            variantLabel = "FR"
+          } else if (hasF) {
+            variantKey = "value_f"
+            variantLabel = "F"
+          } else if (hasR) {
+            variantKey = "value_r"
+            variantLabel = "R"
+          } else {
+            variantKey = "value_fr"
+            variantLabel = "FR"
+          }
+        }
+
+        const value = item[variantKey]
+        const numValue = value != null ? (typeof value === "string" ? Number.parseFloat(value) : value) : 0
+        const finalValue = !isNaN(numValue) && numValue > 0 ? numValue : 0
+
+        return {
+          ...item,
+          variant: variantLabel,
+          value: finalValue,
+        }
+      }),
+    )
   }, [])
 
   const displayedItems = searchQuery.trim()
@@ -152,49 +265,56 @@ export function IngameCalculator() {
             <p className="text-sm text-gray-400">Add items to calculate total value</p>
           </div>
 
-          {/* Items Grid */}
-          <div className="mb-6 grid grid-cols-3 gap-3 md:grid-cols-4">
+          {/* Items Grid - Updated grid for smaller items with better spacing */}
+          <div className="mb-6 grid grid-cols-4 gap-3 md:grid-cols-5 lg:grid-cols-6">
             {/* Add Item Button */}
             <div
               className={cn(
-                "relative aspect-square rounded-2xl border-2 transition-all",
+                "relative aspect-square rounded-xl border-2 transition-all",
                 "border-gray-800/50 bg-[#0d0d0d]",
               )}
             >
               <button
                 onClick={() => setIsSearchOpen(true)}
-                className="flex h-full w-full flex-col items-center justify-center gap-2 text-gray-400 transition-colors hover:text-white"
+                className="flex h-full w-full flex-col items-center justify-center gap-1 text-gray-400 transition-colors hover:text-white"
               >
-                <Plus className="h-8 w-8 stroke-[2.5]" />
-                <span className="text-xs font-semibold tracking-wide">Add Item</span>
+                <Plus className="h-6 w-6 stroke-[2.5]" />
+                <span className="text-[8px] font-semibold tracking-wide">Add Item</span>
               </button>
             </div>
 
-            {/* Selected Items */}
+            {/* Selected Items - Smaller cards with variant selector */}
             {selectedItems.map((item) => (
               <div
                 key={item.id}
                 className={cn(
-                  "group relative aspect-square rounded-2xl border-2 transition-all",
+                  "group relative aspect-square rounded-xl border-2 transition-all",
                   "border-gray-700/50 bg-[#1a1a1a] hover:border-gray-600",
                 )}
               >
-                <div className="relative h-full w-full p-2">
-                  <Image
-                    src={item.imageUrl || "/placeholder.svg"}
-                    alt={item.name}
-                    fill
-                    className="rounded-xl object-contain"
-                  />
-                  <button
-                    onClick={() => removeItem(item.id)}
-                    className="absolute right-2 top-2 rounded-full bg-red-500/90 p-1.5 opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
-                  >
-                    <X className="h-4 w-4 text-white" />
-                  </button>
-                  <div className="absolute bottom-0 left-0 right-0 rounded-b-xl bg-black/90 p-2 text-center">
-                    <p className="truncate text-xs font-semibold text-white">{item.name}</p>
-                    <p className="text-xs text-gray-400">{item.value.toLocaleString()}</p>
+                <div className="relative flex h-full w-full flex-col p-1.5">
+                  {/* Item Image */}
+                  <div className="relative flex-1">
+                    <Image
+                      src={item.imageUrl || "/placeholder.svg"}
+                      alt={item.name}
+                      fill
+                      className="rounded-lg object-contain p-1"
+                    />
+                    <button
+                      onClick={() => removeItem(item.id)}
+                      className="absolute right-0 top-0 rounded-full bg-red-500/90 p-1 opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
+                    >
+                      <X className="h-3 w-3 text-white" />
+                    </button>
+                  </div>
+
+                  {/* Item Info */}
+                  <div className="mt-1 space-y-0.5 text-center">
+                    <p className="truncate text-[9px] font-semibold leading-tight text-white">{item.name}</p>
+                    <p className="text-[8px] text-gray-400">{item.value.toFixed(2)}</p>
+
+                    {game === "Adopt Me" && <VariantSelector itemId={item.id} onVariantChange={updateItemVariant} />}
                   </div>
                 </div>
               </div>
@@ -204,7 +324,7 @@ export function IngameCalculator() {
           {/* Total Value Display */}
           <div className="rounded-xl border-2 border-brand/50 bg-brand/10 p-6 text-center">
             <p className="text-sm text-gray-400">Total Value</p>
-            <p className="mt-2 text-4xl font-bold text-brand">{totalValue.toLocaleString()}</p>
+            <p className="mt-2 text-4xl font-bold text-brand">{totalValue.toFixed(2)}</p>
             <p className="mt-1 text-sm text-gray-400">{selectedItems.length} items</p>
           </div>
 
@@ -293,6 +413,64 @@ export function IngameCalculator() {
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+function VariantSelector({
+  itemId,
+  onVariantChange,
+}: {
+  itemId: string
+  onVariantChange: (itemId: string, variants: Set<Variant>) => void
+}) {
+  const [selectedVariants, setSelectedVariants] = useState<Set<Variant>>(new Set(["F", "R"]))
+
+  const toggleVariant = (variant: Variant) => {
+    const newVariants = new Set(selectedVariants)
+
+    if (variant === "N" || variant === "M") {
+      newVariants.delete("N")
+      newVariants.delete("M")
+      if (!selectedVariants.has(variant)) {
+        newVariants.add(variant)
+      }
+    } else {
+      if (newVariants.has(variant)) {
+        newVariants.delete(variant)
+      } else {
+        newVariants.add(variant)
+      }
+    }
+
+    setSelectedVariants(newVariants)
+    onVariantChange(itemId, newVariants)
+  }
+
+  return (
+    <div className="flex items-center justify-center gap-0.5">
+      {(Object.keys(VARIANT_CONFIG) as Variant[]).map((variant) => {
+        const isSelected = selectedVariants.has(variant)
+        const config = VARIANT_CONFIG[variant]
+
+        return (
+          <button
+            key={variant}
+            onClick={(e) => {
+              e.stopPropagation()
+              toggleVariant(variant)
+            }}
+            className={`
+              w-5 h-5 rounded-full font-bold text-[8px] text-white
+              transition-all duration-200 shadow-sm
+              ${isSelected ? config.color : "bg-gray-600"}
+              ${isSelected ? "scale-105 ring-1 ring-white" : "hover:scale-105"}
+            `}
+          >
+            {config.label}
+          </button>
+        )
+      })}
     </div>
   )
 }
