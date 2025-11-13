@@ -40,6 +40,7 @@ interface TradeItem {
   value_mf?: number | string | null
   value_mr?: number | string | null
   value_mfr?: number | string | null
+  rap_value?: number | string | null
 }
 
 export default function CreateTradePage() {
@@ -296,9 +297,9 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
               (item.value_n && Number(item.value_n) > 0)
 
             if (hasVariants) {
-              displayValue = item.value_fr || item.value || 0
+              displayValue = Number(item.value_fr) || Number(item.value) || 0
             } else {
-              displayValue = item.rap_value || item.value || 0
+              displayValue = Number(item.rap_value) || 0
             }
 
             return {
@@ -318,6 +319,7 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
               value_mf: item.value_mf,
               value_mr: item.value_mr,
               value_mfr: item.value_mfr,
+              rap_value: item.rap_value,
             }
           }),
         )
@@ -400,7 +402,7 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
                     className="flex w-full items-center gap-3 rounded-lg border border-border bg-card p-2 text-left transition-transform hover:scale-[1.01] hover:bg-accent"
                   >
                     <Image
-                      src={item.imageUrl || "/placeholder.svg?height=40&width=40"}
+                      src={item.imageUrl || "/itemplaceholder.png"}
                       alt={item.name}
                       width={40}
                       height={40}
@@ -434,7 +436,7 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
               className="flex items-center gap-3 rounded-lg border border-border bg-card p-3 transition-colors hover:bg-accent/50"
             >
               <Image
-                src={item.imageUrl || "/placeholder.svg?height=48&width=48"}
+                src={item.imageUrl || "/itemplaceholder.png"}
                 alt={item.name}
                 width={48}
                 height={48}
@@ -490,14 +492,7 @@ function AdoptMeItemButton({ item, onAddItem, onClose }: AdoptMeItemButtonProps)
   const isEgg = !hasVariants
 
   const [selectedVariant, setSelectedVariant] = useState("FR")
-  const [selectedValue, setSelectedValue] = useState(() => {
-    if (isEgg) {
-      return item.value
-    }
-    const frValue = item.value_fr
-    const numValue = frValue != null ? (typeof frValue === "string" ? Number.parseFloat(frValue) : frValue) : 0
-    return !isNaN(numValue) && numValue > 0 ? numValue : item.value
-  })
+  const [selectedValue, setSelectedValue] = useState(() => item.value)
 
   const handleVariantSelect = (variant: string, value: number) => {
     setSelectedVariant(variant)
@@ -517,7 +512,7 @@ function AdoptMeItemButton({ item, onAddItem, onClose }: AdoptMeItemButtonProps)
     <div className="rounded-lg border border-border bg-card p-3 space-y-2">
       <div className="flex items-start gap-3">
         <Image
-          src={item.imageUrl || "/placeholder.svg?height=48&width=48"}
+          src={item.imageUrl || "/itemplaceholder.png"}
           alt={item.name}
           width={48}
           height={48}

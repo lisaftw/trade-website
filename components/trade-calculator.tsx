@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { X, Search, Plus, Check } from "lucide-react"
+import { X, Search, Plus, Check } from 'lucide-react'
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 import Link from "next/link"
@@ -256,7 +256,7 @@ function TradeGrid({
               ? item.image_url
               : item.image_url
                 ? `/api/item-image/${item.image_url}`
-                : "/placeholder.svg",
+                : "/itemplaceholder.png",
             value_f: item.value_f,
             value_r: item.value_r,
             value_n: item.value_n,
@@ -319,7 +319,7 @@ function TradeGrid({
                 <div className="group relative h-full w-full p-0.5 md:p-1">
                   <div className="relative w-full h-full">
                     <Image
-                      src={item.imageUrl || "/placeholder.svg"}
+                      src={item.imageUrl || "/itemplaceholder.png"}
                       alt={item.name}
                       fill
                       className="rounded-md object-contain"
@@ -454,7 +454,7 @@ function AdoptMeItemButton({ item, onAddItem, isAdoptMe }: AdoptMeItemButtonProp
         className="flex w-full items-center gap-2 md:gap-3 rounded-lg border border-gray-700 bg-gray-800 p-2 md:p-2.5 text-left transition-all hover:border-gray-600 hover:bg-gray-750"
       >
         <Image
-          src={item.imageUrl || "/placeholder.svg"}
+          src={item.imageUrl || "/itemplaceholder.png"}
           alt={item.name}
           width={40}
           height={40}
@@ -479,7 +479,7 @@ function AdoptMeItemButton({ item, onAddItem, isAdoptMe }: AdoptMeItemButtonProp
     <div className="rounded-lg border border-gray-700 bg-gray-800 p-3 transition-all hover:border-gray-600">
       <div className="flex items-start gap-3">
         <Image
-          src={item.imageUrl || "/placeholder.svg"}
+          src={item.imageUrl || "/itemplaceholder.png"}
           alt={item.name}
           width={64}
           height={64}
@@ -555,7 +555,7 @@ function AdoptMeGridCard({ item, onRemove }: AdoptMeGridCardProps) {
       </button>
 
       <div className="relative w-full h-16 md:h-20 mb-1">
-        <Image src={item.imageUrl || "/placeholder.svg"} alt={item.name} fill className="rounded-md object-contain" />
+        <Image src={item.imageUrl || "/itemplaceholder.png"} alt={item.name} fill className="rounded-md object-contain" />
       </div>
 
       <p className="truncate text-[9px] md:text-[10px] font-semibold text-white text-center mb-1">{item.name}</p>

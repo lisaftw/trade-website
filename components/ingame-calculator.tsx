@@ -3,11 +3,11 @@
 import { useState, useCallback, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { X, Search, Plus, ArrowLeft } from "lucide-react"
+import { X, Search, Plus, ArrowLeft } from 'lucide-react'
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter } from 'next/navigation'
 
 interface GameItem {
   id: string
@@ -336,7 +336,7 @@ export function IngameCalculator() {
                   {/* Item Image */}
                   <div className="relative flex-1">
                     <Image
-                      src={item.imageUrl || "/placeholder.svg"}
+                      src={item.imageUrl || "/itemplaceholder.png"}
                       alt={item.name}
                       fill
                       className="rounded-lg object-contain p-1"
@@ -436,7 +436,7 @@ export function IngameCalculator() {
                       className="flex w-full items-center gap-4 rounded-xl border border-gray-700 bg-gray-800 p-3 text-left transition-all hover:border-gray-600 hover:bg-gray-750"
                     >
                       <Image
-                        src={item.imageUrl || "/placeholder.svg"}
+                        src={item.imageUrl || "/itemplaceholder.png"}
                         alt={item.name}
                         width={50}
                         height={50}

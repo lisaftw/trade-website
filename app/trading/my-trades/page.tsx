@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { ArrowLeft } from "lucide-react"
+import { useRouter } from 'next/navigation'
+import { ArrowLeft, Plus } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import TradeCard from "@/components/trade-card"
 import { EditTradeDialog } from "@/components/edit-trade-dialog"
@@ -94,7 +94,20 @@ export default function MyTradesPage() {
                 {loading ? (
                   <div className="text-center text-foreground/60">Loading your trades...</div>
                 ) : trades.length === 0 ? (
-                  <div className="text-center text-foreground/60">You haven't created any trades yet.</div>
+                  <div className="flex flex-col items-center justify-center py-16 space-y-6">
+                    <div className="text-center space-y-2">
+                      <h3 className="text-xl font-semibold text-foreground">No Trade Ads Yet</h3>
+                      <p className="text-foreground/60">Create your first trade ad to get started</p>
+                    </div>
+                    <Button
+                      onClick={() => router.push("/trading/create")}
+                      size="lg"
+                      className="btn-neo gap-2"
+                    >
+                      <Plus className="h-5 w-5" />
+                      Create a Trade
+                    </Button>
+                  </div>
                 ) : (
                   trades.map((trade) => (
                     <TradeCard
