@@ -2,8 +2,8 @@
 
 import React from "react"
 import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { ChevronDown, Plus, X, Search } from "lucide-react"
+import { useRouter } from 'next/navigation'
+import { ChevronDown, Plus, X, Search } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -482,19 +482,22 @@ interface AdoptMeItemButtonProps {
 }
 
 function AdoptMeItemButton({ item, onAddItem, onClose }: AdoptMeItemButtonProps) {
-  const [selectedVariant, setSelectedVariant] = useState("FR")
-  const [selectedValue, setSelectedValue] = useState(() => {
-    const frValue = item.value_fr
-    const numValue = frValue != null ? (typeof frValue === "string" ? Number.parseFloat(frValue) : frValue) : 0
-    return !isNaN(numValue) && numValue > 0 ? numValue : item.value
-  })
-
   const hasVariants =
     (item.value_fr && Number(item.value_fr) > 0) ||
     (item.value_f && Number(item.value_f) > 0) ||
     (item.value_r && Number(item.value_r) > 0) ||
     (item.value_n && Number(item.value_n) > 0)
   const isEgg = !hasVariants
+
+  const [selectedVariant, setSelectedVariant] = useState("FR")
+  const [selectedValue, setSelectedValue] = useState(() => {
+    if (isEgg) {
+      return item.value
+    }
+    const frValue = item.value_fr
+    const numValue = frValue != null ? (typeof frValue === "string" ? Number.parseFloat(frValue) : frValue) : 0
+    return !isNaN(numValue) && numValue > 0 ? numValue : item.value
+  })
 
   const handleVariantSelect = (variant: string, value: number) => {
     setSelectedVariant(variant)
