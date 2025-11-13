@@ -238,23 +238,23 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
                   />
                 </div>
               </div>
-            </div>
 
-            <div className="relative w-full mt-1 mb-0.5 flex justify-center">
-              <div
-                className="rounded-sm px-2 py-0.5"
-                style={{
-                  backgroundColor: "rgba(0, 0, 0, 0.75)",
-                }}
-              >
-                <span
-                  className="text-white font-semibold text-[8px] whitespace-nowrap"
+              <div className="absolute bottom-2 left-0 right-0 flex justify-center z-10">
+                <div
+                  className="rounded-sm px-2 py-0.5"
                   style={{
-                    textShadow: "1px 1px 1px rgba(0,0,0,0.8)",
+                    backgroundColor: "rgba(0, 0, 0, 0.75)",
                   }}
                 >
-                  {timeAgo}
-                </span>
+                  <span
+                    className="text-white font-semibold text-[8px] whitespace-nowrap"
+                    style={{
+                      textShadow: "1px 1px 1px rgba(0,0,0,0.8)",
+                    }}
+                  >
+                    {timeAgo}
+                  </span>
+                </div>
               </div>
             </div>
 
