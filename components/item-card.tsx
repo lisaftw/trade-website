@@ -283,20 +283,20 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
               />
 
               <div className="absolute inset-0 flex flex-col justify-evenly px-8 py-2">
-                <div className="flex items-center justify-end h-[20px]">
-                  <span className="text-white font-bold text-[10px]" style={{ textShadow: "1px 1px 1px #000" }}>
+                <div className="flex items-center justify-end h-[16px]">
+                  <span className="text-white font-bold text-[9px]" style={{ textShadow: "1px 1px 1px #000" }}>
                     {item.rarity || item.section || "N/A"}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-end h-[20px]">
-                  <span className="text-white font-bold text-[10px]" style={{ textShadow: "1px 1px 1px #000" }}>
+                <div className="flex items-center justify-end h-[16px]">
+                  <span className="text-white font-bold text-[9px]" style={{ textShadow: "1px 1px 1px #000" }}>
                     {item.demand || "N/A"}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-end h-[20px]">
-                  <span className="text-white font-bold text-[10px]" style={{ textShadow: "1px 1px 1px #000" }}>
+                <div className="flex items-center justify-end h-[16px]">
+                  <span className="text-white font-bold text-[9px]" style={{ textShadow: "1px 1px 1px #000" }}>
                     {formatValue(currentValue)}
                   </span>
                 </div>
