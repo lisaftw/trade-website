@@ -286,24 +286,40 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
         const response = await fetch(`/api/items?${params.toString()}`)
         const data = await response.json()
         setSearchResults(
-          (data.items || []).map((item: any) => ({
-            id: item._id || item.id || item.name,
-            name: item.name,
-            value: item.value ?? item.rap_value ?? 0,
-            game: item.game,
-            imageUrl: item.imageUrl || item.image_url,
-            value_f: item.value_f,
-            value_r: item.value_r,
-            value_n: item.value_n,
-            value_fr: item.value_fr,
-            value_nf: item.value_nf,
-            value_nr: item.value_nr,
-            value_nfr: item.value_nfr,
-            value_m: item.value_m,
-            value_mf: item.value_mf,
-            value_mr: item.value_mr,
-            value_mfr: item.value_mfr,
-          })),
+          (data.items || []).map((item: any) => {
+            let displayValue = 0
+
+            const hasVariants =
+              (item.value_fr && Number(item.value_fr) > 0) ||
+              (item.value_f && Number(item.value_f) > 0) ||
+              (item.value_r && Number(item.value_r) > 0) ||
+              (item.value_n && Number(item.value_n) > 0)
+
+            if (hasVariants) {
+              displayValue = item.value_fr || item.value || 0
+            } else {
+              displayValue = item.rap_value || item.value || 0
+            }
+
+            return {
+              id: item._id || item.id || item.name,
+              name: item.name,
+              value: displayValue,
+              game: item.game,
+              imageUrl: item.imageUrl || item.image_url,
+              value_f: item.value_f,
+              value_r: item.value_r,
+              value_n: item.value_n,
+              value_fr: item.value_fr,
+              value_nf: item.value_nf,
+              value_nr: item.value_nr,
+              value_nfr: item.value_nfr,
+              value_m: item.value_m,
+              value_mf: item.value_mf,
+              value_mr: item.value_mr,
+              value_mfr: item.value_mfr,
+            }
+          }),
         )
       } catch (error) {
         console.error("[v0] Failed to fetch items:", error)
@@ -316,7 +332,10 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
     fetchItems()
   }, [debouncedSearch, showSearch, selectedGame])
 
-  const itemTotal = items.reduce((sum, item) => sum + item.value, 0)
+  const itemTotal = items.reduce((sum, item) => {
+    const value = typeof item.value === "number" ? item.value : Number.parseFloat(String(item.value)) || 0
+    return sum + value
+  }, 0)
 
   return (
     <Card className="card-neo p-4">
@@ -448,7 +467,7 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
         <div className="mt-4 border-t border-border pt-3">
           <div className="flex justify-between text-sm font-semibold">
             <span>Total Value:</span>
-            <span>{itemTotal.toLocaleString()}</span>
+            <span>{itemTotal.toFixed(2)}</span>
           </div>
         </div>
       )}

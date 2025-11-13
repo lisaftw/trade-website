@@ -232,12 +232,19 @@ function TradeGrid({
         const data = await response.json()
 
         const transformedItems = (data.items || []).map((item: any) => {
-          let displayValue = item.value ?? item.rap_value ?? 0
-          if (selectedGame === "Adopt Me" && item.value_fr !== null && item.value_fr !== undefined) {
+          let displayValue = 0
+
+          const hasVariants =
+            (item.value_fr && Number(item.value_fr) > 0) ||
+            (item.value_f && Number(item.value_f) > 0) ||
+            (item.value_r && Number(item.value_r) > 0) ||
+            (item.value_n && Number(item.value_n) > 0)
+
+          if (hasVariants) {
             const frValue = typeof item.value_fr === "string" ? Number.parseFloat(item.value_fr) : item.value_fr
-            if (!isNaN(frValue) && frValue > 0) {
-              displayValue = frValue
-            }
+            displayValue = !isNaN(frValue) && frValue > 0 ? frValue : item.value || 0
+          } else {
+            displayValue = item.rap_value || item.value || 0
           }
 
           return {
@@ -336,13 +343,7 @@ function TradeGrid({
 
       <div className="flex items-center justify-between px-0.5 md:px-1">
         <span className="text-xs md:text-sm font-bold tracking-wide text-white">VALUE</span>
-        <span className="text-xs md:text-sm font-bold text-white">
-          {typeof total === "number" && !isNaN(total)
-            ? total % 1 === 0
-              ? total.toLocaleString()
-              : total.toString()
-            : "0"}
-        </span>
+        <span className="text-xs md:text-sm font-bold text-white">{total.toFixed(2)}</span>
       </div>
 
       {isActive && (
