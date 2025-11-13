@@ -431,7 +431,11 @@ function TradeGrid({
                         <p className="text-[10px] md:text-xs text-gray-400">{item.game}</p>
                       </div>
                       <p className="text-sm md:text-base font-bold text-white">
-                        {item.value % 1 === 0 ? item.value.toLocaleString() : item.value.toFixed(2)}
+                        {typeof item.value === "number" && !isNaN(item.value)
+                          ? item.value % 1 === 0
+                            ? item.value.toLocaleString()
+                            : item.value.toFixed(2)
+                          : "0"}
                       </p>
                     </button>
                   ))}
