@@ -8,6 +8,7 @@ import { Search } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 const GAMES = ["MM2", "SAB", "Adopt Me"] as const
+const VISIBLE_GAMES = ["Adopt Me"] as const
 type Game = (typeof GAMES)[number]
 
 interface Item {
@@ -24,7 +25,7 @@ interface Item {
 
 export function ValuesContent() {
   const router = useRouter()
-  const [selectedGame, setSelectedGame] = useState<Game>("MM2")
+  const [selectedGame, setSelectedGame] = useState<Game>("Adopt Me")
   const [searchQuery, setSearchQuery] = useState("")
   const [items, setItems] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
@@ -55,21 +56,7 @@ export function ValuesContent() {
   return (
     <div className="space-y-4 md:space-y-6">
       <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-        {GAMES.map((game) => {
-          if (game === "SAB") {
-            return (
-              <Button
-                key={game}
-                onClick={() => router.push("/sab")}
-                variant="secondary"
-                className="rounded-full whitespace-nowrap flex-shrink-0"
-                size="sm"
-              >
-                {game}
-              </Button>
-            )
-          }
-
+        {VISIBLE_GAMES.map((game) => {
           return (
             <Button
               key={game}

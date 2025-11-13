@@ -76,6 +76,8 @@ export function TradeCalculator() {
     setSearchQuery("")
   }, [])
 
+  const visibleGames = ["Adopt Me"] as const
+
   if (!game) {
     return (
       <div className="space-y-3 md:space-y-4 px-3 md:px-0">
@@ -93,8 +95,8 @@ export function TradeCalculator() {
           </Button>
         </div>
 
-        <div className="grid gap-2 md:gap-3 grid-cols-2 md:grid-cols-3">
-          {(["MM2", "SAB", "Adopt Me"] as const).map((g) => (
+        <div className="grid gap-2 md:gap-3 grid-cols-1 max-w-xs mx-auto">
+          {visibleGames.map((g) => (
             <button
               key={g}
               onClick={() => setGame(g)}

@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils"
 import { AdoptMeInlineVariantSelector } from "@/components/adoptme-inline-variant-selector"
 
 const GAMES = ["MM2", "SAB", "Adopt Me"]
+const VISIBLE_GAMES = ["Adopt Me"]
 
 interface TradeItem {
   id: string
@@ -135,7 +136,7 @@ export default function CreateTradePage() {
                       </button>
                       {gameDropdownOpen && (
                         <div className="absolute top-full left-0 right-0 mt-2 z-50 space-y-2 rounded-lg border border-border bg-card/95 p-2 backdrop-blur-lg shadow-xl">
-                          {GAMES.map((game) => (
+                          {VISIBLE_GAMES.map((game) => (
                             <button
                               key={game}
                               onClick={() => {

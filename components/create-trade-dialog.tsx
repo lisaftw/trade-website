@@ -33,7 +33,7 @@ export function CreateTradeDialog({
 }) {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
-    game: "MM2",
+    game: "Adopt Me", // Default to Adopt Me
     type: "offer" as "offer" | "request",
     item_name: "",
     item_value: "",
@@ -62,7 +62,7 @@ export function CreateTradeDialog({
       onSuccess()
       onOpenChange(false)
       setFormData({
-        game: "MM2",
+        game: "Adopt Me", // Default to Adopt Me
         type: "offer",
         item_name: "",
         item_value: "",
@@ -111,9 +111,11 @@ export function CreateTradeDialog({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="Adopt Me">Adopt Me</SelectItem>
+                {/* MM2 and SAB hidden for future launch
                 <SelectItem value="MM2">Murder Mystery 2</SelectItem>
                 <SelectItem value="SAB">Steal a Brainrot</SelectItem>
-                <SelectItem value="Adopt Me">Adopt Me</SelectItem>
+                */}
               </SelectContent>
             </Select>
           </div>

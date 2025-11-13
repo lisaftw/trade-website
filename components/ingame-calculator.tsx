@@ -81,6 +81,8 @@ export function IngameCalculator() {
     ? allItems.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
     : allItems
 
+  const visibleGames = ["Adopt Me"] as const
+
   if (!game) {
     return (
       <div className="space-y-6 p-6">
@@ -90,7 +92,7 @@ export function IngameCalculator() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-          {(["MM2", "SAB", "Adopt Me"] as const).map((g) => (
+          {visibleGames.map((g) => (
             <button
               key={g}
               onClick={() => handleGameSelect(g)}

@@ -9,6 +9,7 @@ import { CableIcon as CalcIcon, MessageSquare } from "lucide-react"
 export const revalidate = 3600
 
 const games = ["MM2", "SAB", "Adopt Me"]
+const visibleGames = ["Adopt Me"]
 
 function ReferenceHero() {
   return (
@@ -80,25 +81,7 @@ function ReferenceHero() {
         <div className="pointer-events-none relative mt-4 md:mt-6 w-full px-2 md:px-0">
           <div className="absolute inset-0 rounded-3xl border border-white/8 shadow-[0_10px_40px_rgba(0,0,0,0.35)]" />
           <div className="rounded-3xl bg-background/40 p-3 backdrop-blur">
-            <div className="grid grid-cols-3 gap-2 md:gap-3">
-              <div className="relative aspect-square overflow-hidden rounded-xl">
-                <Image
-                  src="/home/sab-icon.png"
-                  alt="Steal a Brainrot (SAB)"
-                  width={400}
-                  height={400}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="relative aspect-square overflow-hidden rounded-xl bg-black/80 flex items-center justify-center">
-                <Image
-                  src="/home/mm2-icon.png"
-                  alt="Murder Mystery 2 (MM2)"
-                  width={400}
-                  height={400}
-                  className="h-3/4 w-3/4 object-contain"
-                />
-              </div>
+            <div className="grid grid-cols-1 gap-2 md:gap-3 max-w-xs mx-auto">
               <div className="relative aspect-square overflow-hidden rounded-xl">
                 <Image
                   src="/home/adoptme-icon.png"
@@ -157,9 +140,8 @@ function About() {
         About Us
       </h3>
       <p className="mt-2 text-[11px] md:text-xs leading-5 md:leading-6 text-muted-foreground">
-        Trade is a handheld, value-first project focused on giving players reliable, curated trading values for popular
-        games including MM2, SAB, and Adopt Me. We maintain a balanced, data-driven list so you can make smarter trades
-        with confidence.
+        Trade is a handheld, value-first project focused on giving players reliable, curated trading values for Adopt
+        Me. We maintain a balanced, data-driven list so you can make smarter trades with confidence.
       </p>
     </section>
   )

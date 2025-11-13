@@ -33,7 +33,7 @@ type TradeRequest = {
 export function TradesContent({ currentUser }: { currentUser: UserSession | null }) {
   const [trades, setTrades] = useState<TradeRequest[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedGame, setSelectedGame] = useState("all")
+  const [selectedGame, setSelectedGame] = useState("Adopt Me")
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
   const [messagingUserId, setMessagingUserId] = useState<string | null>(null)
   const router = useRouter()
@@ -159,9 +159,11 @@ export function TradesContent({ currentUser }: { currentUser: UserSession | null
       <Tabs value={selectedGame} onValueChange={setSelectedGame}>
         <TabsList>
           <TabsTrigger value="all">All Games</TabsTrigger>
+          <TabsTrigger value="Adopt Me">Adopt Me</TabsTrigger>
+          {/* MM2 and SAB hidden for future launch
           <TabsTrigger value="MM2">MM2</TabsTrigger>
           <TabsTrigger value="SAB">SAB</TabsTrigger>
-          <TabsTrigger value="Adopt Me">Adopt Me</TabsTrigger>
+          */}
         </TabsList>
 
         <TabsContent value={selectedGame} className="mt-6">

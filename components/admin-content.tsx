@@ -14,7 +14,7 @@ const GAMES = ["MM2", "SAB", "Adopt Me"] as const
 
 export function AdminContent() {
   const { user, isLoading } = useUser()
-  const [game, setGame] = useState<string>("MM2")
+  const [game, setGame] = useState<string>("Adopt Me") // Default to Adopt Me
   const [name, setName] = useState("")
   const [imageUrl, setImageUrl] = useState("")
   const [rapValue, setRapValue] = useState("")
