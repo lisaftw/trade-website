@@ -121,7 +121,7 @@ export default function CreateTradePage() {
                       </div>
                       <label className="text-base font-bold">Select Game</label>
                     </div>
-                    <div className="relative">
+                    <div className="relative z-50">
                       <button
                         onClick={() => setGameDropdownOpen(!gameDropdownOpen)}
                         className="btn-neo w-full justify-between px-4 py-3 text-base font-semibold"

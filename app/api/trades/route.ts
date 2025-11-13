@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getSession } from "@/lib/auth/session-postgres"
 import { createTrade, getActiveTrades } from "@/lib/db/queries/trades"
 import { getProfile } from "@/lib/db/queries/profiles"
+import { validateContent } from "@/lib/utils/content-filter"
 
 export const dynamic = "force-dynamic"
 
@@ -34,6 +35,14 @@ export async function POST(request: NextRequest) {
     if (!Array.isArray(requesting) || requesting.length === 0) {
       console.error("[v0] Trade creation failed: Invalid requesting")
       return NextResponse.json({ error: "Please add at least one item you're requesting" }, { status: 400 })
+    }
+
+    if (notes) {
+      const contentError = validateContent(notes, "trade notes")
+      if (contentError) {
+        console.error("[v0] Trade creation failed: Inappropriate content in notes")
+        return NextResponse.json({ error: contentError }, { status: 400 })
+      }
     }
 
     const trade = await createTrade({

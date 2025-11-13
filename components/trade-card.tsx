@@ -156,6 +156,7 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
                 width={40}
                 height={40}
                 className="h-8 w-8 md:h-10 md:w-10 rounded-full object-cover"
+                unoptimized
               />
             ) : (
               <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400" />
@@ -228,6 +229,11 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
                         width={32}
                         height={32}
                         className="h-6 w-6 md:h-8 md:w-8 rounded object-cover"
+                        unoptimized
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement
+                          target.style.display = "none"
+                        }}
                       />
                     )}
                     <div className="flex flex-col">
@@ -258,6 +264,11 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
                         width={32}
                         height={32}
                         className="h-6 w-6 md:h-8 md:w-8 rounded object-cover"
+                        unoptimized
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement
+                          target.style.display = "none"
+                        }}
                       />
                     )}
                     <div className="flex flex-col">

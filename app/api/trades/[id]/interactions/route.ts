@@ -1,34 +1,19 @@
-import { createServerClient } from "@supabase/ssr"
-import { cookies } from "next/headers"
 import { type NextRequest, NextResponse } from "next/server"
+import { cookies } from "next/headers"
+import { getSession } from "@/lib/auth/session-postgres"
+import { query } from "@/lib/db/postgres"
+import { validateContent } from "@/lib/utils/content-filter"
 
 export const dynamic = "force-dynamic"
 
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const cookieStore = await cookies()
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll()
-          },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
-          },
-        },
-      },
-    )
+    const session = await getSession(cookieStore)
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
+    console.log("Trade request - User:", session?.userId)
 
-    console.log("Trade request - User:", user?.id)
-
-    if (!user) {
+    if (!session?.userId) {
       console.log("Trade request - No user found, returning 401")
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
@@ -36,31 +21,31 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const body = await request.json()
     const { message } = body
 
-    // Verify trade exists
-    const { data: trade, error: tradeError } = await supabase.from("trades").select("id").eq("id", params.id).single()
+    if (message) {
+      const contentError = validateContent(message, "message")
+      if (contentError) {
+        console.log("Trade request blocked: Inappropriate content detected")
+        return NextResponse.json({ error: contentError }, { status: 400 })
+      }
+    }
 
-    if (tradeError || !trade) {
+    // Verify trade exists
+    const tradeCheck = await query("SELECT id FROM trades WHERE id = $1", [params.id])
+
+    if (tradeCheck.rows.length === 0) {
       console.log("Trade not found:", params.id)
       return NextResponse.json({ error: "Trade not found" }, { status: 404 })
     }
 
-    const { data, error } = await supabase
-      .from("trade_interactions")
-      .insert({
-        initiator_id: user.id,
-        trade_id: params.id,
-        message,
-        status: "pending",
-      })
-      .select()
-
-    if (error) {
-      console.error("Error creating interaction:", error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
-    }
+    const result = await query(
+      `INSERT INTO trade_interactions (initiator_id, trade_id, message, status, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, NOW(), NOW())
+       RETURNING *`,
+      [session.userId, params.id, message, "pending"],
+    )
 
     console.log("Trade request created successfully")
-    return NextResponse.json(data[0])
+    return NextResponse.json(result.rows[0])
   } catch (error) {
     console.error("Error creating interaction:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
@@ -69,33 +54,17 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const cookieStore = await cookies()
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll()
-          },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
-          },
-        },
-      },
+    const result = await query(
+      `SELECT ti.*, 
+              p.discord_id, p.username, p.global_name, p.avatar_url
+       FROM trade_interactions ti
+       LEFT JOIN profiles p ON ti.initiator_id = p.discord_id
+       WHERE ti.trade_id = $1
+       ORDER BY ti.created_at DESC`,
+      [params.id],
     )
 
-    const { data, error } = await supabase
-      .from("trade_interactions")
-      .select("*")
-      .eq("trade_id", params.id)
-      .order("created_at", { ascending: false })
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
-    }
-
-    return NextResponse.json(data || [])
+    return NextResponse.json(result.rows)
   } catch (error) {
     console.error("Error fetching interactions:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
