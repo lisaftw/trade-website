@@ -1,7 +1,6 @@
 "use client"
 
 import React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { ChevronDown, Plus, X, Search } from "lucide-react"
@@ -18,6 +17,7 @@ import { RobloxDecos } from "@/components/roblox-decos"
 import Image from "next/image"
 import { useDebounce } from "@/lib/hooks/use-debounce"
 import { cn } from "@/lib/utils"
+import { AdoptMeInlineVariantSelector } from "@/components/adoptme-inline-variant-selector"
 
 const GAMES = ["MM2", "SAB", "Adopt Me"]
 
@@ -27,6 +27,18 @@ interface TradeItem {
   value: number
   imageUrl?: string
   game: string
+  variantLabel?: string
+  value_f?: number | string | null
+  value_r?: number | string | null
+  value_n?: number | string | null
+  value_fr?: number | string | null
+  value_nf?: number | string | null
+  value_nr?: number | string | null
+  value_nfr?: number | string | null
+  value_m?: number | string | null
+  value_mf?: number | string | null
+  value_mr?: number | string | null
+  value_mfr?: number | string | null
 }
 
 export default function CreateTradePage() {
@@ -279,6 +291,17 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
             value: item.value ?? item.rap_value ?? 0,
             game: item.game,
             imageUrl: item.imageUrl || item.image_url,
+            value_f: item.value_f,
+            value_r: item.value_r,
+            value_n: item.value_n,
+            value_fr: item.value_fr,
+            value_nf: item.value_nf,
+            value_nr: item.value_nr,
+            value_nfr: item.value_nfr,
+            value_m: item.value_m,
+            value_mf: item.value_mf,
+            value_mr: item.value_mr,
+            value_mfr: item.value_mfr,
           })),
         )
       } catch (error) {
@@ -335,30 +358,42 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
                 {debouncedSearch ? "No items found" : "No items available"}
               </div>
             ) : (
-              searchResults.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    onAddItem(item)
-                    setSearchQuery("")
-                    setShowSearch(false)
-                  }}
-                  className="flex w-full items-center gap-3 rounded-lg border border-border bg-card p-2 text-left transition-transform hover:scale-[1.01] hover:bg-accent"
-                >
-                  <Image
-                    src={item.imageUrl || "/placeholder.svg?height=40&width=40"}
-                    alt={item.name}
-                    width={40}
-                    height={40}
-                    className="rounded"
+              searchResults.map((item) =>
+                selectedGame === "Adopt Me" ? (
+                  <AdoptMeItemButton
+                    key={item.id}
+                    item={item}
+                    onAddItem={onAddItem}
+                    onClose={() => {
+                      setSearchQuery("")
+                      setShowSearch(false)
+                    }}
                   />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">{item.name}</p>
-                    <p className="text-xs text-muted-foreground">{item.game}</p>
-                  </div>
-                  <p className="text-sm font-semibold">{item.value.toLocaleString()}</p>
-                </button>
-              ))
+                ) : (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      onAddItem(item)
+                      setSearchQuery("")
+                      setShowSearch(false)
+                    }}
+                    className="flex w-full items-center gap-3 rounded-lg border border-border bg-card p-2 text-left transition-transform hover:scale-[1.01] hover:bg-accent"
+                  >
+                    <Image
+                      src={item.imageUrl || "/placeholder.svg?height=40&width=40"}
+                      alt={item.name}
+                      width={40}
+                      height={40}
+                      className="rounded"
+                    />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">{item.name}</p>
+                      <p className="text-xs text-muted-foreground">{item.game}</p>
+                    </div>
+                    <p className="text-sm font-semibold">{item.value.toLocaleString()}</p>
+                  </button>
+                ),
+              )
             )}
           </div>
         </div>
@@ -387,7 +422,10 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
               />
               <div className="flex-1">
                 <p className="text-sm font-medium">{item.name}</p>
-                <p className="text-xs text-muted-foreground">{item.game}</p>
+                <p className="text-xs text-muted-foreground">
+                  {item.game}
+                  {item.variantLabel && ` - ${item.variantLabel}`}
+                </p>
               </div>
               <div className="text-right">
                 <p className="text-sm font-semibold">{item.value.toLocaleString()}</p>
@@ -414,5 +452,72 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
         </div>
       )}
     </Card>
+  )
+}
+
+interface AdoptMeItemButtonProps {
+  item: TradeItem
+  onAddItem: (item: TradeItem) => void
+  onClose: () => void
+}
+
+function AdoptMeItemButton({ item, onAddItem, onClose }: AdoptMeItemButtonProps) {
+  const [selectedVariant, setSelectedVariant] = useState("FR")
+  const [selectedValue, setSelectedValue] = useState(() => {
+    const frValue = item.value_fr
+    const numValue = frValue != null ? (typeof frValue === "string" ? Number.parseFloat(frValue) : frValue) : 0
+    return !isNaN(numValue) && numValue > 0 ? numValue : item.value
+  })
+
+  const handleVariantSelect = (variant: string, value: number) => {
+    setSelectedVariant(variant)
+    setSelectedValue(value)
+  }
+
+  const handleAdd = () => {
+    onAddItem({
+      ...item,
+      value: selectedValue,
+      variantLabel: selectedVariant,
+    })
+    onClose()
+  }
+
+  return (
+    <div className="rounded-lg border border-border bg-card p-3 space-y-2">
+      <div className="flex items-start gap-3">
+        <Image
+          src={item.imageUrl || "/placeholder.svg?height=48&width=48"}
+          alt={item.name}
+          width={48}
+          height={48}
+          className="rounded flex-shrink-0"
+        />
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium truncate">{item.name}</p>
+          <p className="text-xs text-muted-foreground">{selectedVariant}</p>
+        </div>
+        <div className="text-right">
+          <p className="text-sm font-semibold whitespace-nowrap">
+            {typeof selectedValue === "number" && !isNaN(selectedValue)
+              ? selectedValue % 1 === 0
+                ? selectedValue.toLocaleString()
+                : selectedValue.toFixed(2)
+              : "0"}
+          </p>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <AdoptMeInlineVariantSelector item={item} onSelect={handleVariantSelect} showQuantity={false} />
+        <Button
+          onClick={handleAdd}
+          size="sm"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold"
+        >
+          Add
+        </Button>
+      </div>
+    </div>
   )
 }
