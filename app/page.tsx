@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { PageBackground } from "@/components/page-background"
 import { ScrollParallax } from "@/components/scroll-parallax"
-import { ArrowRight, CableIcon as CalcIcon, MessageSquare } from "lucide-react"
+import { CableIcon as CalcIcon, MessageSquare } from "lucide-react"
 
 export const revalidate = 3600
 
@@ -51,21 +51,6 @@ function ReferenceHero() {
         <div className="mt-4 md:mt-5 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-2 md:gap-3 px-2 md:px-0">
           <Button
             asChild
-            className="group h-10 md:h-11 w-full sm:w-auto rounded-[14px] border border-white/15 bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.02))] px-4 md:px-5 text-xs md:text-[13px] font-medium text-background shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_10px_30px_rgba(0,0,0,0.35)] backdrop-saturate-150 transition-all duration-200 hover:scale-[1.03] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_14px_40px_rgba(0,0,0,0.45)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04))]"
-          >
-            <a href="/trading" aria-label="Start Trading">
-              <span className="flex items-center justify-center gap-2">
-                <span>Start Trading</span>
-                <ArrowRight
-                  className="size-4 translate-x-0 transition-transform duration-200 group-hover:translate-x-0.5"
-                  aria-hidden
-                />
-              </span>
-            </a>
-          </Button>
-
-          <Button
-            asChild
             variant="ghost"
             className="h-10 md:h-11 w-full sm:w-auto rounded-[14px] border border-white/20 bg-background/60 px-4 md:px-5 text-xs md:text-[13px] font-medium text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] backdrop-blur transition-all duration-200 hover:scale-[1.03] hover:bg-background/75 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]"
           >
@@ -79,16 +64,13 @@ function ReferenceHero() {
 
           <Button
             asChild
-            className="group h-10 md:h-11 w-full sm:w-auto rounded-[14px] border border-white/15 bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.02))] px-4 md:px-5 text-xs md:text-[13px] font-medium text-background shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_10px_30px_rgba(0,0,0,0.35)] backdrop-saturate-150 transition-all duration-200 hover:scale-[1.03] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_14px_40px_rgba(0,0,0,0.45)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04))]"
+            variant="ghost"
+            className="h-10 md:h-11 w-full sm:w-auto rounded-[14px] border border-white/20 bg-background/60 px-4 md:px-5 text-xs md:text-[13px] font-medium text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] backdrop-blur transition-all duration-200 hover:scale-[1.03] hover:bg-background/75 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]"
           >
             <a href="/trade-ads" aria-label="Trade Ads - Browse and post trades">
               <span className="flex items-center justify-center gap-2">
                 <MessageSquare className="size-4 opacity-90" aria-hidden />
                 <span>Trade Ads</span>
-                <ArrowRight
-                  className="size-4 translate-x-0 transition-transform duration-200 group-hover:translate-x-0.5"
-                  aria-hidden
-                />
               </span>
             </a>
           </Button>

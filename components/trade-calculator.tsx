@@ -3,11 +3,11 @@
 import { useState, useCallback, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { X, Search, Plus } from "lucide-react"
+import { X, Search, Plus, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 import Link from "next/link"
-import { AdoptMeVariantSelector } from "./adoptme-variant-selector"
+import { AdoptMeInlineVariantSelector } from "./adoptme-inline-variant-selector"
 
 interface TradeItem {
   id: string
@@ -24,8 +24,6 @@ export function TradeCalculator() {
   const [searchQuery, setSearchQuery] = useState("")
   const [activeColumn, setActiveColumn] = useState<"yours" | "theirs" | null>(null)
   const [game, setGame] = useState<"MM2" | "SAB" | "Adopt Me" | null>(null)
-  const [variantSelectorItem, setVariantSelectorItem] = useState<any | null>(null)
-  const [variantSelectorColumn, setVariantSelectorColumn] = useState<"yours" | "theirs" | null>(null)
 
   const yourTotal = yourItems.reduce((sum, item) => sum + item.value, 0)
   const theirTotal = theirItems.reduce((sum, item) => sum + item.value, 0)
@@ -39,59 +37,21 @@ export function TradeCalculator() {
   }, [])
 
   const handleItemClick = useCallback((item: any, column: "yours" | "theirs") => {
-    if (item.game === "Adopt Me") {
-      // Open variant selector for Adopt Me items
-      setVariantSelectorItem(item)
-      setVariantSelectorColumn(column)
-      setActiveColumn(null)
-    } else {
-      // Add directly for non-Adopt Me items
-      const newItem: TradeItem = {
-        id: `${item.id}-${Date.now()}`,
-        name: item.name,
-        value: item.value ?? item.rap_value ?? 0,
-        imageUrl: item.imageUrl || item.image_url,
-        game: item.game,
-      }
-      if (column === "yours") {
-        setYourItems((prev) => [...prev, newItem])
-      } else {
-        setTheirItems((prev) => [...prev, newItem])
-      }
-      setActiveColumn(null)
-      setSearchQuery("")
+    const newItem: TradeItem = {
+      id: `${item.id}-${Date.now()}`,
+      name: item.name,
+      value: item.value ?? item.rap_value ?? 0,
+      imageUrl: item.imageUrl || item.image_url,
+      game: item.game,
     }
+    if (column === "yours") {
+      setYourItems((prev) => [...prev, newItem])
+    } else {
+      setTheirItems((prev) => [...prev, newItem])
+    }
+    setActiveColumn(null)
+    setSearchQuery("")
   }, [])
-
-  const handleVariantSelect = useCallback(
-    (variant: string, quantity: number, value: number) => {
-      if (!variantSelectorItem || !variantSelectorColumn) return
-
-      const newItem: TradeItem = {
-        id: `${variantSelectorItem.id}-${variant}-${Date.now()}`,
-        name: variantSelectorItem.name,
-        value,
-        imageUrl: variantSelectorItem.imageUrl || variantSelectorItem.image_url,
-        game: variantSelectorItem.game,
-        variantLabel: variant,
-      }
-
-      // Add multiple copies if quantity > 1
-      for (let i = 0; i < quantity; i++) {
-        const itemWithId = { ...newItem, id: `${newItem.id}-${i}` }
-        if (variantSelectorColumn === "yours") {
-          setYourItems((prev) => [...prev, itemWithId])
-        } else {
-          setTheirItems((prev) => [...prev, itemWithId])
-        }
-      }
-
-      setVariantSelectorItem(null)
-      setVariantSelectorColumn(null)
-      setSearchQuery("")
-    },
-    [variantSelectorItem, variantSelectorColumn],
-  )
 
   if (!game) {
     return (
@@ -191,20 +151,6 @@ export function TradeCalculator() {
           </div>
         </div>
       </div>
-
-      {variantSelectorItem && (
-        <AdoptMeVariantSelector
-          open={!!variantSelectorItem}
-          onOpenChange={(open) => {
-            if (!open) {
-              setVariantSelectorItem(null)
-              setVariantSelectorColumn(null)
-            }
-          }}
-          item={variantSelectorItem}
-          onSelect={handleVariantSelect}
-        />
-      )}
     </div>
   )
 }
@@ -249,7 +195,6 @@ function TradeGrid({
     const fetchAllItems = async () => {
       setIsLoading(true)
       setError(null)
-      console.log("[v0] Loading all items for game:", selectedGame)
 
       try {
         const params = new URLSearchParams({ game: selectedGame })
@@ -260,7 +205,6 @@ function TradeGrid({
         }
 
         const data = await response.json()
-        console.log("[v0] Loaded items count:", data.items?.length || 0)
 
         const transformedItems = (data.items || []).map((item: any) => {
           let displayValue = item.value ?? item.rap_value ?? 0
@@ -276,7 +220,11 @@ function TradeGrid({
             name: item.name,
             value: displayValue,
             game: item.game,
-            imageUrl: item.image_url || "/placeholder.svg",
+            imageUrl: item.image_url?.startsWith("http")
+              ? item.image_url
+              : item.image_url
+                ? `/api/item-image/${item.image_url}`
+                : "/placeholder.svg",
             value_f: item.value_f,
             value_r: item.value_r,
             value_n: item.value_n,
@@ -337,12 +285,14 @@ function TradeGrid({
               </button>
             ) : item ? (
               <div className="group relative h-full w-full p-1 md:p-1.5">
-                <Image
-                  src={item.imageUrl || "/placeholder.svg"}
-                  alt={item.name}
-                  fill
-                  className="rounded-lg object-contain"
-                />
+                <div className="relative w-full h-full">
+                  <Image
+                    src={item.imageUrl || "/placeholder.svg"}
+                    alt={item.name}
+                    fill
+                    className="rounded-lg object-contain"
+                  />
+                </div>
                 <button
                   onClick={() => onRemove(item.id)}
                   className="absolute right-1 md:right-1.5 top-1 md:top-1.5 rounded-full bg-red-500/90 p-0.5 md:p-1 opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
@@ -414,30 +364,12 @@ function TradeGrid({
                     {searchQuery && ` matching "${searchQuery}"`}
                   </div>
                   {displayedItems.map((item) => (
-                    <button
+                    <AdoptMeItemButton
                       key={item.id}
-                      onClick={() => onAddItem(item)}
-                      className="flex w-full items-center gap-2 md:gap-3 rounded-lg border border-gray-700 bg-gray-800 p-2 md:p-2.5 text-left transition-all hover:border-gray-600 hover:bg-gray-750"
-                    >
-                      <Image
-                        src={item.imageUrl || "/placeholder.svg"}
-                        alt={item.name}
-                        width={40}
-                        height={40}
-                        className="h-8 w-8 md:h-10 md:w-10 rounded-lg"
-                      />
-                      <div className="flex-1">
-                        <p className="text-xs md:text-sm font-medium text-white">{item.name}</p>
-                        <p className="text-[10px] md:text-xs text-gray-400">{item.game}</p>
-                      </div>
-                      <p className="text-sm md:text-base font-bold text-white">
-                        {typeof item.value === "number" && !isNaN(item.value)
-                          ? item.value % 1 === 0
-                            ? item.value.toLocaleString()
-                            : item.value.toFixed(2)
-                          : "0"}
-                      </p>
-                    </button>
+                      item={item}
+                      onAddItem={onAddItem}
+                      isAdoptMe={selectedGame === "Adopt Me"}
+                    />
                   ))}
                 </>
               )}
@@ -445,6 +377,105 @@ function TradeGrid({
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+interface AdoptMeItemButtonProps {
+  item: any
+  onAddItem: (item: any) => void
+  isAdoptMe: boolean
+}
+
+function AdoptMeItemButton({ item, onAddItem, isAdoptMe }: AdoptMeItemButtonProps) {
+  const [selectedVariant, setSelectedVariant] = useState("FR")
+  const [selectedValue, setSelectedValue] = useState(item.value)
+  const [quantity, setQuantity] = useState(1)
+  const [showConfirm, setShowConfirm] = useState(false)
+
+  const handleVariantSelect = (variant: string, value: number) => {
+    setSelectedVariant(variant)
+    setSelectedValue(value)
+  }
+
+  const handleAdd = () => {
+    for (let i = 0; i < quantity; i++) {
+      onAddItem({
+        ...item,
+        value: selectedValue,
+        variantLabel: selectedVariant,
+        id: `${item.id}-${selectedVariant}-${Date.now()}-${i}`,
+      })
+    }
+    setShowConfirm(true)
+    setTimeout(() => setShowConfirm(false), 1000)
+  }
+
+  if (!isAdoptMe) {
+    return (
+      <button
+        onClick={() => onAddItem(item)}
+        className="flex w-full items-center gap-2 md:gap-3 rounded-lg border border-gray-700 bg-gray-800 p-2 md:p-2.5 text-left transition-all hover:border-gray-600 hover:bg-gray-750"
+      >
+        <Image
+          src={item.imageUrl || "/placeholder.svg"}
+          alt={item.name}
+          width={40}
+          height={40}
+          className="h-8 w-8 md:h-10 md:w-10 rounded-lg"
+        />
+        <div className="flex-1">
+          <p className="text-xs md:text-sm font-medium text-white">{item.name}</p>
+          <p className="text-[10px] md:text-xs text-gray-400">{item.game}</p>
+        </div>
+        <p className="text-sm md:text-base font-bold text-white">
+          {typeof item.value === "number" && !isNaN(item.value)
+            ? item.value % 1 === 0
+              ? item.value.toLocaleString()
+              : item.value.toFixed(2)
+            : "0"}
+        </p>
+      </button>
+    )
+  }
+
+  return (
+    <div className="rounded-lg border border-gray-700 bg-gray-800 p-3 transition-all hover:border-gray-600">
+      <div className="flex items-start gap-3">
+        <Image
+          src={item.imageUrl || "/placeholder.svg"}
+          alt={item.name}
+          width={64}
+          height={64}
+          className="h-16 w-16 rounded-lg flex-shrink-0 bg-gray-700"
+        />
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium text-white truncate">{item.name}</p>
+          <p className="text-xs text-gray-400 mb-2">{selectedVariant}</p>
+
+          <AdoptMeInlineVariantSelector
+            item={item}
+            onSelect={handleVariantSelect}
+            onQuantityChange={setQuantity}
+            initialQuantity={quantity}
+          />
+        </div>
+
+        <div className="flex flex-col items-end gap-2">
+          <p className="text-base font-bold text-white whitespace-nowrap">
+            {selectedValue % 1 === 0 ? selectedValue.toLocaleString() : selectedValue.toFixed(2)}
+          </p>
+          <button
+            onClick={handleAdd}
+            className={cn(
+              "px-4 py-2 rounded-lg font-bold text-sm transition-all",
+              showConfirm ? "bg-green-500 text-white" : "bg-blue-500 hover:bg-blue-600 text-white",
+            )}
+          >
+            {showConfirm ? <Check className="h-4 w-4" /> : "Add"}
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
