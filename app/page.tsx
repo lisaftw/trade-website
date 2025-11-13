@@ -9,7 +9,6 @@ import { CableIcon as CalcIcon, MessageSquare } from "lucide-react"
 export const revalidate = 3600
 
 const games = ["MM2", "SAB", "Adopt Me"]
-const visibleGames = ["Adopt Me"]
 
 function ReferenceHero() {
   return (
@@ -68,7 +67,7 @@ function ReferenceHero() {
             variant="ghost"
             className="h-10 md:h-11 w-full sm:w-auto rounded-[14px] border border-white/20 bg-background/60 px-4 md:px-5 text-xs md:text-[13px] font-medium text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] backdrop-blur transition-all duration-200 hover:scale-[1.03] hover:bg-background/75 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]"
           >
-            <a href="/trade-ads" aria-label="Trade Ads - Browse and post trades">
+            <a href="/trading" aria-label="Trade Ads - Browse and post trades">
               <span className="flex items-center justify-center gap-2">
                 <MessageSquare className="size-4 opacity-90" aria-hidden />
                 <span>Trade Ads</span>
@@ -81,7 +80,25 @@ function ReferenceHero() {
         <div className="pointer-events-none relative mt-4 md:mt-6 w-full px-2 md:px-0">
           <div className="absolute inset-0 rounded-3xl border border-white/8 shadow-[0_10px_40px_rgba(0,0,0,0.35)]" />
           <div className="rounded-3xl bg-background/40 p-3 backdrop-blur">
-            <div className="grid grid-cols-1 gap-2 md:gap-3 max-w-xs mx-auto">
+            <div className="grid grid-cols-3 gap-2 md:gap-3">
+              <div className="relative aspect-square overflow-hidden rounded-xl">
+                <Image
+                  src="/home/mm2-icon.png"
+                  alt="MM2"
+                  width={400}
+                  height={400}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="relative aspect-square overflow-hidden rounded-xl">
+                <Image
+                  src="/home/sab-icon.png"
+                  alt="SAB"
+                  width={400}
+                  height={400}
+                  className="h-full w-full object-cover"
+                />
+              </div>
               <div className="relative aspect-square overflow-hidden rounded-xl">
                 <Image
                   src="/home/adoptme-icon.png"

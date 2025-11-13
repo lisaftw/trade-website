@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import TradeCard from "@/components/trade-card"
+import { EditTradeDialog } from "@/components/edit-trade-dialog"
 import { useUser } from "@/lib/hooks/use-user"
 import AuthGate from "@/components/auth-gate"
 import { SiteHeader } from "@/components/site-header"
@@ -29,6 +30,8 @@ export default function MyTradesPage() {
   const [trades, setTrades] = useState<Trade[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [editingTrade, setEditingTrade] = useState<Trade | null>(null)
+  const [showEditDialog, setShowEditDialog] = useState(false)
 
   useEffect(() => {
     const fetchMyTrades = async () => {
@@ -54,6 +57,15 @@ export default function MyTradesPage() {
 
   const handleDelete = (id: string) => {
     setTrades(trades.filter((t) => t.id !== id))
+  }
+
+  const handleEdit = (trade: Trade) => {
+    setEditingTrade(trade)
+    setShowEditDialog(true)
+  }
+
+  const handleEditSuccess = (updatedTrade: Trade) => {
+    setTrades(trades.map((t) => (t.id === updatedTrade.id ? updatedTrade : t)))
   }
 
   return (
@@ -85,7 +97,13 @@ export default function MyTradesPage() {
                   <div className="text-center text-foreground/60">You haven't created any trades yet.</div>
                 ) : (
                   trades.map((trade) => (
-                    <TradeCard key={trade.id} trade={trade} isOwnTrade={true} onDelete={handleDelete} />
+                    <TradeCard
+                      key={trade.id}
+                      trade={trade}
+                      isOwnTrade={true}
+                      onDelete={handleDelete}
+                      onEdit={handleEdit}
+                    />
                   ))
                 )}
               </div>
@@ -94,6 +112,13 @@ export default function MyTradesPage() {
           <SiteFooter />
         </div>
       </main>
+
+      <EditTradeDialog
+        trade={editingTrade}
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+        onSuccess={handleEditSuccess}
+      />
     </AuthGate>
   )
 }
