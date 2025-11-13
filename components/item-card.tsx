@@ -307,21 +307,21 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
                 priority
               />
 
-              <div className="absolute inset-0 flex flex-col justify-evenly px-8 py-2">
-                <div className="flex items-center justify-end h-[16px] pr-1">
-                  <span className="text-white font-extrabold text-[10px] text-right" style={{ textShadow: "1px 1px 1px #000" }}>
+              <div className="absolute inset-0 flex flex-col justify-evenly px-4 py-2">
+                <div className="flex items-center justify-end h-[16px] pr-2">
+                  <span className="text-white font-extrabold text-[10px] text-right tracking-wide" style={{ textShadow: "1px 1px 1px #000" }}>
                     {item.rarity || item.section || "N/A"}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-end h-[16px] pr-1">
-                  <span className="text-white font-extrabold text-[10px] text-right" style={{ textShadow: "1px 1px 1px #000" }}>
+                <div className="flex items-center justify-end h-[16px] pr-2">
+                  <span className="text-white font-extrabold text-[10px] text-right tracking-wide" style={{ textShadow: "1px 1px 1px #000" }}>
                     {item.demand || "N/A"}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-end h-[16px] pr-1">
-                  <span className="text-white font-bold text-[10px] text-right" style={{ textShadow: "1px 1px 1px #000" }}>
+                <div className="flex items-center justify-end h-[16px] pr-2">
+                  <span className="text-white font-bold text-[10px] text-right tracking-wide" style={{ textShadow: "1px 1px 1px #000" }}>
                     {formatValue(currentValue)}
                   </span>
                 </div>
