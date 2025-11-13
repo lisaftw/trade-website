@@ -137,7 +137,11 @@ export function IngameCalculator() {
         console.warn("[v0] WARNING: Item", item.name, "has no value set in database")
       }
 
-      const hasVariants = item.value_fr || item.value_f || item.value_r || item.value_n
+      const hasVariants =
+        (item.value_fr && item.value_fr > 0) ||
+        (item.value_f && item.value_f > 0) ||
+        (item.value_r && item.value_r > 0) ||
+        (item.value_n && item.value_n > 0)
       const itemType = hasVariants ? "pet" : "egg"
 
       const newItem = {
