@@ -106,6 +106,8 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
     ? "/placeholder.svg?height=200&width=200"
     : getActualImageUrl(item.image_url || "/placeholder.svg?height=200&width=200")
 
+  const timeAgo = getTimeAgo(item.last_updated_at)
+
   const handleAddToInventory = async () => {
     if (!user) {
       setShowLoginDialog(true)
@@ -228,7 +230,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
               <div className="absolute inset-0 flex items-center justify-center p-6">
                 <div className="relative w-full h-full">
                   <Image
-                    src={imageUrl || "/itemplaceholder.png"}
+                    src={imageUrl || "/placeholder.svg"}
                     alt={item.name}
                     fill
                     className="object-contain drop-shadow-2xl"
@@ -238,21 +240,25 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
               </div>
             </div>
 
-            <div className="relative w-full mt-1 flex justify-center">
-              <div className="px-3 py-1 rounded-md bg-black/70 backdrop-blur-sm border border-white/10">
+            <div className="relative w-full mt-1 mb-0.5 flex justify-center">
+              <div
+                className="rounded-sm px-2 py-0.5"
+                style={{
+                  backgroundColor: "rgba(0, 0, 0, 0.75)",
+                }}
+              >
                 <span
-                  className="text-white font-bold text-[9px] whitespace-nowrap block"
+                  className="text-white font-semibold text-[8px] whitespace-nowrap"
                   style={{
-                    textShadow: "0 1px 2px rgba(0,0,0,0.8)",
-                    WebkitFontSmoothing: "antialiased",
+                    textShadow: "1px 1px 1px rgba(0,0,0,0.8)",
                   }}
                 >
-                  {getTimeAgo(item.last_updated_at)}
+                  {timeAgo}
                 </span>
               </div>
             </div>
 
-            <div className="relative w-full h-auto mt-1">
+            <div className="relative w-full h-auto mt-0.5">
               <Image
                 src="/card-ui/boxtodisplayname.png"
                 alt="Name holder"
@@ -298,19 +304,19 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
               <div className="absolute inset-0 flex flex-col justify-evenly px-8 py-2">
                 <div className="flex items-center justify-end h-[16px]">
-                  <span className="text-white font-black text-[10px]" style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.9)" }}>
+                  <span className="text-white font-extrabold text-[9px]" style={{ textShadow: "1px 1px 1px #000" }}>
                     {item.rarity || item.section || "N/A"}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-end h-[16px]">
-                  <span className="text-white font-black text-[10px]" style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.9)" }}>
+                  <span className="text-white font-extrabold text-[9px]" style={{ textShadow: "1px 1px 1px #000" }}>
                     {item.demand || "N/A"}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-end h-[16px]">
-                  <span className="text-white font-black text-[10px]" style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.9)" }}>
+                  <span className="text-white font-bold text-[9px]" style={{ textShadow: "1px 1px 1px #000" }}>
                     {formatValue(currentValue)}
                   </span>
                 </div>
