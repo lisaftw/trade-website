@@ -175,7 +175,7 @@ export function AdoptMeVariantSelector({ open, onOpenChange, item, onSelect }: A
                       ${isDisabled ? "opacity-30 cursor-not-allowed bg-gray-600" : VARIANT_COMBOS[variant].color}
                       ${isSelected ? "ring-4 ring-white scale-105" : "hover:scale-105"}
                     `}
-                    title={`${VARIANT_COMBOS[variant].description} - Value: ${value.toFixed(2)}`}
+                    title={`${VARIANT_COMBOS[variant].description} - Value: ${value.toString()}`}
                   >
                     {variant}
                   </button>
@@ -205,7 +205,7 @@ export function AdoptMeVariantSelector({ open, onOpenChange, item, onSelect }: A
                       ${isDisabled ? "opacity-30 cursor-not-allowed bg-gray-600" : buttonColor}
                       ${isSelected ? "ring-4 ring-white scale-105" : "hover:scale-105"}
                     `}
-                    title={`${VARIANT_COMBOS[variant].description} - Value: ${value.toFixed(2)}`}
+                    title={`${VARIANT_COMBOS[variant].description} - Value: ${value.toString()}`}
                   >
                     {variant}
                   </button>
@@ -233,7 +233,7 @@ export function AdoptMeVariantSelector({ open, onOpenChange, item, onSelect }: A
                       ${isDisabled ? "opacity-30 cursor-not-allowed bg-gray-600" : VARIANT_COMBOS[variant].color}
                       ${isSelected ? "ring-4 ring-white scale-105" : "hover:scale-105"}
                     `}
-                    title={`${VARIANT_COMBOS[variant].description} - Value: ${value.toFixed(2)}`}
+                    title={`${VARIANT_COMBOS[variant].description} - Value: ${value.toString()}`}
                   >
                     {variant}
                   </button>
@@ -245,7 +245,7 @@ export function AdoptMeVariantSelector({ open, onOpenChange, item, onSelect }: A
           {selectedVariant && (
             <div className="text-center">
               <p className="text-sm text-gray-400">{VARIANT_COMBOS[selectedVariant].description}</p>
-              <p className="text-lg font-bold text-white">Value: {getVariantValue(selectedVariant).toFixed(2)}</p>
+              <p className="text-lg font-bold text-white">Value: {getVariantValue(selectedVariant).toString()}</p>
             </div>
           )}
 

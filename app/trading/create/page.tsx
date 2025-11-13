@@ -391,7 +391,7 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
                       <p className="text-sm font-medium">{item.name}</p>
                       <p className="text-xs text-muted-foreground">{item.game}</p>
                     </div>
-                    <p className="text-sm font-semibold">{item.value.toLocaleString()}</p>
+                    <p className="text-sm font-semibold">{item.value.toString()}</p>
                   </button>
                 ),
               )
@@ -429,7 +429,7 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-sm font-semibold">{item.value.toLocaleString()}</p>
+                <p className="text-sm font-semibold">{item.value.toString()}</p>
                 <Button
                   size="sm"
                   variant="ghost"
@@ -500,11 +500,7 @@ function AdoptMeItemButton({ item, onAddItem, onClose }: AdoptMeItemButtonProps)
         </div>
         <div className="text-right">
           <p className="text-sm font-semibold whitespace-nowrap">
-            {typeof selectedValue === "number" && !isNaN(selectedValue)
-              ? selectedValue % 1 === 0
-                ? selectedValue.toLocaleString()
-                : selectedValue.toFixed(2)
-              : "0"}
+            {typeof selectedValue === "number" && !isNaN(selectedValue) ? selectedValue.toString() : "0"}
           </p>
         </div>
       </div>

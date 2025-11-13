@@ -95,8 +95,7 @@ export function AdoptMeCalculator() {
 
   const formatNumber = (num: number) => {
     const safeNum = toNumber(num)
-    // Show 2 decimal places for values with decimals
-    return safeNum % 1 === 0 ? safeNum.toLocaleString() : safeNum.toFixed(2)
+    return safeNum % 1 === 0 ? safeNum.toLocaleString() : safeNum.toString()
   }
 
   const getDisplayName = () => {

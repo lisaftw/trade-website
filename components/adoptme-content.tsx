@@ -24,7 +24,8 @@ function formatValue(value: any): string {
   if (value === null || value === undefined) return "0"
   const num = typeof value === "string" ? Number.parseFloat(value) : Number(value)
   if (isNaN(num)) return "0"
-  return num % 1 === 0 ? num.toLocaleString() : num.toFixed(2)
+  // For whole numbers, use locale formatting; for decimals, show full precision
+  return num % 1 === 0 ? num.toLocaleString() : num.toString()
 }
 
 function getSortValue(item: AdoptMeItem): number {

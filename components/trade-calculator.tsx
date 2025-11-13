@@ -340,7 +340,7 @@ function TradeGrid({
           {typeof total === "number" && !isNaN(total)
             ? total % 1 === 0
               ? total.toLocaleString()
-              : total.toFixed(2)
+              : total.toString()
             : "0"}
         </span>
       </div>
@@ -460,7 +460,7 @@ function AdoptMeItemButton({ item, onAddItem, isAdoptMe }: AdoptMeItemButtonProp
           {typeof item.value === "number" && !isNaN(item.value)
             ? item.value % 1 === 0
               ? item.value.toLocaleString()
-              : item.value.toFixed(2)
+              : item.value.toString()
             : "0"}
         </p>
       </button>
@@ -494,7 +494,7 @@ function AdoptMeItemButton({ item, onAddItem, isAdoptMe }: AdoptMeItemButtonProp
             {typeof selectedValue === "number" && !isNaN(selectedValue)
               ? selectedValue % 1 === 0
                 ? selectedValue.toLocaleString()
-                : selectedValue.toFixed(2)
+                : selectedValue.toString()
               : "0"}
           </p>
           <button
