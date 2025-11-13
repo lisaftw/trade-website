@@ -260,7 +260,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
             </div>
 
             {item.game === "Adopt Me" && (
-              <div className="relative w-full h-auto mt-1 flex justify-center">
+              <div className="relative w-full h-auto mt-0.5 flex justify-center">
                 <AdoptMeInlineVariantSelector
                   item={item as any}
                   onSelect={handleVariantChange}
@@ -270,7 +270,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
               </div>
             )}
 
-            <div className="relative w-full h-auto mt-1">
+            <div className="relative w-full h-auto mt-0.5">
               <Image
                 src="/card-ui/raritydemandvalue.png"
                 alt="Stats holder"
@@ -309,7 +309,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
                 disabled={isAdding || userLoading}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
-                className="relative w-auto h-auto mt-1.5 flex-shrink-0 cursor-pointer transition-transform duration-150 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="relative w-auto h-auto mt-0.5 flex-shrink-0 cursor-pointer transition-transform duration-150 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   transform: isHovered ? "scale(1.05)" : "scale(1)",
                 }}

@@ -139,9 +139,9 @@ export function AdoptMeInlineVariantSelector({
   }
 
   return (
-    <div className="flex flex-col items-center gap-2 mt-2">
+    <div className="flex flex-col items-center gap-1">
       {/* Variant buttons */}
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1">
         {(Object.keys(VARIANT_CONFIG) as Variant[]).map((variant) => {
           const isSelected = selectedVariants.has(variant)
           const config = VARIANT_CONFIG[variant]
@@ -154,7 +154,7 @@ export function AdoptMeInlineVariantSelector({
                 toggleVariant(variant)
               }}
               className={`
-                w-7 h-7 rounded-full font-bold text-xs text-white
+                w-6 h-6 rounded-full font-bold text-[10px] text-white
                 transition-all duration-200 shadow-md
                 ${isSelected ? config.color : "bg-gray-600"}
                 ${isSelected ? "scale-110 ring-2 ring-white" : "hover:scale-105"}
@@ -166,26 +166,27 @@ export function AdoptMeInlineVariantSelector({
         })}
       </div>
 
+      {/* Quantity controls */}
       {showQuantity && (
-        <div className="flex items-center gap-2 bg-white rounded-md px-2 py-1">
+        <div className="flex items-center gap-1.5 bg-white rounded-md px-1.5 py-0.5">
           <button
             onClick={(e) => {
               e.stopPropagation()
               handleQuantityChange(-1)
             }}
             disabled={quantity <= 1}
-            className="text-gray-700 font-bold text-lg px-1 hover:bg-gray-100 rounded disabled:opacity-30"
+            className="text-gray-700 font-bold text-base px-0.5 hover:bg-gray-100 rounded disabled:opacity-30"
           >
             −
           </button>
-          <span className="text-gray-900 font-bold text-sm min-w-[2rem] text-center">{quantity}</span>
+          <span className="text-gray-900 font-bold text-xs min-w-[1.5rem] text-center">{quantity}</span>
           <button
             onClick={(e) => {
               e.stopPropagation()
               handleQuantityChange(1)
             }}
             disabled={quantity >= 99}
-            className="text-gray-700 font-bold text-lg px-1 hover:bg-gray-100 rounded disabled:opacity-30"
+            className="text-gray-700 font-bold text-base px-0.5 hover:bg-gray-100 rounded disabled:opacity-30"
           >
             +
           </button>
