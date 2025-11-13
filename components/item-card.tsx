@@ -7,7 +7,6 @@ import { useUser } from "@/lib/hooks/use-user"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { LogIn } from 'lucide-react'
-import { AdoptMeVariantSelector } from "./adoptme-variant-selector"
 import { AdoptMeInlineVariantSelector } from "./adoptme-inline-variant-selector"
 
 interface ItemCardProps {
@@ -95,7 +94,6 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
   const [imageError, setImageError] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
-  const [showVariantSelector, setShowVariantSelector] = useState(false)
   const { user, loading: userLoading, refetch } = useUser()
   const [showLoginDialog, setShowLoginDialog] = useState(false)
   const { toast } = useToast()
@@ -124,13 +122,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
       return
     }
 
-    if (item.game === "Adopt Me" && !isEgg(item)) {
-      console.log("[v0] ItemCard item data for Adopt Me:", item)
-      setShowVariantSelector(true)
-      return
-    }
-
-    await addToInventory(1, getDisplayValue(item))
+    await addToInventory(1, currentValue)
   }
 
   const addToInventory = async (quantity: number, value: number) => {
@@ -201,10 +193,6 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
     } finally {
       setIsAdding(false)
     }
-  }
-
-  const handleVariantSelect = async (variant: string, quantity: number, value: number) => {
-    await addToInventory(quantity, value)
   }
 
   const handleVariantChange = (variant: string, value: number) => {
@@ -381,15 +369,6 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
           </div>
         </DialogContent>
       </Dialog>
-
-      {item.game === "Adopt Me" && !isEgg(item) && (
-        <AdoptMeVariantSelector
-          open={showVariantSelector}
-          onOpenChange={setShowVariantSelector}
-          item={item as any}
-          onSelect={handleVariantSelect}
-        />
-      )}
     </>
   )
 }
