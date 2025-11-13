@@ -528,19 +528,19 @@ function AdoptMeGridCard({ item, onRemove }: AdoptMeGridCardProps) {
   }
 
   return (
-    <div className="group relative h-full w-full flex flex-col p-0.5 md:p-1">
+    <div className="group relative h-full w-full flex flex-col p-2">
       <button
         onClick={onRemove}
-        className="absolute right-0 md:right-0.5 top-0 md:top-0.5 z-10 rounded-full bg-red-500/90 p-0.5 opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
+        className="absolute right-1 top-1 z-10 rounded-full bg-red-500/90 p-1 opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
       >
-        <X className="h-1.5 md:h-2 w-1.5 md:w-2 text-white" />
+        <X className="h-3 w-3 text-white" />
       </button>
 
-      <div className="relative w-full h-8 md:h-12 mb-0.5">
+      <div className="relative w-full h-16 md:h-20 mb-1">
         <Image src={item.imageUrl || "/placeholder.svg"} alt={item.name} fill className="rounded-md object-contain" />
       </div>
 
-      <p className="truncate text-[6px] md:text-[7px] font-semibold text-white text-center mb-0.5">{item.name}</p>
+      <p className="truncate text-[9px] md:text-[10px] font-semibold text-white text-center mb-1">{item.name}</p>
 
       <CompactVariantSelector item={item} onSelect={handleVariantSelect} selectedVariant={selectedVariant} />
     </div>
@@ -658,7 +658,7 @@ function CompactVariantSelector({ item, onSelect, selectedVariant }: CompactVari
   }
 
   return (
-    <div className="flex items-center justify-center gap-0.5">
+    <div className="flex items-center justify-center gap-1">
       {(Object.keys(VARIANT_CONFIG) as Variant[]).map((variant) => {
         const isSelected = selectedVariants.has(variant)
         const config = VARIANT_CONFIG[variant]
@@ -671,7 +671,7 @@ function CompactVariantSelector({ item, onSelect, selectedVariant }: CompactVari
               toggleVariant(variant)
             }}
             className={`
-              w-3 h-3 md:w-4 md:h-4 rounded-full font-bold text-[6px] md:text-[7px] text-white
+              w-6 h-6 md:w-7 md:h-7 rounded-full font-bold text-[9px] md:text-[10px] text-white
               transition-all duration-200 shadow-sm
               ${isSelected ? config.color : "bg-gray-600"}
               ${isSelected ? "scale-105 ring-1 ring-white/50" : "hover:scale-105 opacity-70"}
