@@ -73,7 +73,17 @@ function getTimeAgo(timestamp: string): string {
   return `${diffDays} days ago`
 }
 
+function isEgg(item: ItemCardProps["item"]): boolean {
+  return item.section?.toLowerCase() === "egg" || item.name.toLowerCase().includes("egg")
+}
+
 function getDisplayValue(item: ItemCardProps["item"]): number {
+  // For eggs, always use rap_value
+  if (isEgg(item)) {
+    return toNumber(item.rap_value)
+  }
+  
+  // For pets, use value_fr if available, otherwise rap_value
   if (item.game === "Adopt Me" && item.value_fr !== null && item.value_fr !== undefined) {
     const frValue = toNumber(item.value_fr)
     if (frValue > 0) return frValue
@@ -114,7 +124,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
       return
     }
 
-    if (item.game === "Adopt Me") {
+    if (item.game === "Adopt Me" && !isEgg(item)) {
       console.log("[v0] ItemCard item data for Adopt Me:", item)
       setShowVariantSelector(true)
       return
@@ -274,7 +284,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
               </div>
             </div>
 
-            {item.game === "Adopt Me" && (
+            {item.game === "Adopt Me" && !isEgg(item) && (
               <div className="relative w-full h-auto mt-0.5 flex justify-center">
                 <AdoptMeInlineVariantSelector
                   item={item as any}
@@ -372,7 +382,7 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
         </DialogContent>
       </Dialog>
 
-      {item.game === "Adopt Me" && (
+      {item.game === "Adopt Me" && !isEgg(item) && (
         <AdoptMeVariantSelector
           open={showVariantSelector}
           onOpenChange={setShowVariantSelector}
