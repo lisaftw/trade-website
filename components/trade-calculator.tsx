@@ -283,47 +283,47 @@ function TradeGrid({
 
   return (
     <div className="flex flex-col">
-      <div className="mb-2 md:mb-3 flex justify-center">
-        <div className="rounded-full border border-gray-600/80 md:border-2 bg-black/90 px-4 md:px-6 py-1 md:py-1.5 shadow-lg">
-          <span className="text-sm md:text-base font-bold tracking-wide text-white">{title}</span>
+      <div className="mb-1.5 md:mb-2 flex justify-center">
+        <div className="rounded-full border border-gray-600/80 md:border-2 bg-black/90 px-3 md:px-4 py-0.5 md:py-1 shadow-lg">
+          <span className="text-xs md:text-sm font-bold tracking-wide text-white">{title}</span>
         </div>
       </div>
 
-      <div className="mb-3 md:mb-4 grid grid-cols-3 gap-1.5 md:gap-2.5">
+      <div className="mb-2 md:mb-3 grid grid-cols-3 gap-1 md:gap-1.5">
         {slots.map((item, index) => (
           <div
             key={index}
-            className="relative aspect-square rounded-lg md:rounded-xl border border-gray-700/50 md:border-2 bg-[#0d0d0d] transition-all hover:border-gray-600"
+            className="relative aspect-square rounded-md md:rounded-lg border border-gray-700/50 md:border-2 bg-[#0d0d0d] transition-all hover:border-gray-600"
           >
             {index === items.length && !item ? (
               <button
                 onClick={onAddClick}
-                className="flex h-full w-full flex-col items-center justify-center gap-1 md:gap-1.5 text-gray-400 transition-colors hover:text-white"
+                className="flex h-full w-full flex-col items-center justify-center gap-0.5 md:gap-1 text-gray-400 transition-colors hover:text-white"
               >
-                <Plus className="h-5 md:h-6 w-5 md:w-6 stroke-[2.5]" />
-                <span className="text-[9px] md:text-[10px] font-semibold tracking-wide">Add Item</span>
+                <Plus className="h-4 md:h-5 w-4 md:w-5 stroke-[2.5]" />
+                <span className="text-[8px] md:text-[9px] font-semibold tracking-wide">Add Item</span>
               </button>
             ) : item ? (
               selectedGame === "Adopt Me" ? (
                 <AdoptMeGridCard item={item} onRemove={() => onRemove(item.id)} />
               ) : (
-                <div className="group relative h-full w-full p-1 md:p-1.5">
+                <div className="group relative h-full w-full p-0.5 md:p-1">
                   <div className="relative w-full h-full">
                     <Image
                       src={item.imageUrl || "/placeholder.svg"}
                       alt={item.name}
                       fill
-                      className="rounded-lg object-contain"
+                      className="rounded-md object-contain"
                     />
                   </div>
                   <button
                     onClick={() => onRemove(item.id)}
-                    className="absolute right-1 md:right-1.5 top-1 md:top-1.5 rounded-full bg-red-500/90 p-0.5 md:p-1 opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
+                    className="absolute right-0.5 md:right-1 top-0.5 md:top-1 rounded-full bg-red-500/90 p-0.5 opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
                   >
-                    <X className="h-2.5 md:h-3 w-2.5 md:w-3 text-white" />
+                    <X className="h-2 md:h-2.5 w-2 md:w-2.5 text-white" />
                   </button>
-                  <div className="absolute bottom-0 left-0 right-0 rounded-b-lg bg-black/90 p-1 md:p-1.5 text-center">
-                    <p className="truncate text-[9px] md:text-[10px] font-semibold text-white">{item.name}</p>
+                  <div className="absolute bottom-0 left-0 right-0 rounded-b-md bg-black/90 p-0.5 md:p-1 text-center">
+                    <p className="truncate text-[8px] md:text-[9px] font-semibold text-white">{item.name}</p>
                   </div>
                 </div>
               )
@@ -332,9 +332,9 @@ function TradeGrid({
         ))}
       </div>
 
-      <div className="flex items-center justify-between px-1 md:px-2">
-        <span className="text-sm md:text-base font-bold tracking-wide text-white">VALUE</span>
-        <span className="text-sm md:text-base font-bold text-white">
+      <div className="flex items-center justify-between px-0.5 md:px-1">
+        <span className="text-xs md:text-sm font-bold tracking-wide text-white">VALUE</span>
+        <span className="text-xs md:text-sm font-bold text-white">
           {typeof total === "number" && !isNaN(total)
             ? total % 1 === 0
               ? total.toLocaleString()
@@ -528,24 +528,20 @@ function AdoptMeGridCard({ item, onRemove }: AdoptMeGridCardProps) {
   }
 
   return (
-    <div className="group relative h-full w-full flex flex-col p-1.5 md:p-2">
-      {/* Remove button */}
+    <div className="group relative h-full w-full flex flex-col p-1 md:p-1.5">
       <button
         onClick={onRemove}
-        className="absolute right-1 md:right-1.5 top-1 md:top-1.5 z-10 rounded-full bg-red-500/90 p-0.5 md:p-1 opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
+        className="absolute right-0.5 md:right-1 top-0.5 md:top-1 z-10 rounded-full bg-red-500/90 p-0.5 opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
       >
-        <X className="h-2.5 md:h-3 w-2.5 md:w-3 text-white" />
+        <X className="h-2 md:h-2.5 w-2 md:w-2.5 text-white" />
       </button>
 
-      {/* Pet image */}
-      <div className="relative w-full h-16 md:h-20 mb-1">
-        <Image src={item.imageUrl || "/placeholder.svg"} alt={item.name} fill className="rounded-lg object-contain" />
+      <div className="relative w-full h-12 md:h-16 mb-0.5">
+        <Image src={item.imageUrl || "/placeholder.svg"} alt={item.name} fill className="rounded-md object-contain" />
       </div>
 
-      {/* Pet name */}
-      <p className="truncate text-[9px] md:text-[10px] font-semibold text-white text-center mb-1">{item.name}</p>
+      <p className="truncate text-[7px] md:text-[8px] font-semibold text-white text-center mb-0.5">{item.name}</p>
 
-      {/* Inline variant selector */}
       <CompactVariantSelector item={item} onSelect={handleVariantSelect} selectedVariant={selectedVariant} />
     </div>
   )
@@ -662,7 +658,7 @@ function CompactVariantSelector({ item, onSelect, selectedVariant }: CompactVari
   }
 
   return (
-    <div className="flex items-center justify-center gap-0.5 md:gap-1">
+    <div className="flex items-center justify-center gap-0.5">
       {(Object.keys(VARIANT_CONFIG) as Variant[]).map((variant) => {
         const isSelected = selectedVariants.has(variant)
         const config = VARIANT_CONFIG[variant]
@@ -675,7 +671,7 @@ function CompactVariantSelector({ item, onSelect, selectedVariant }: CompactVari
               toggleVariant(variant)
             }}
             className={`
-              w-5 h-5 md:w-6 md:h-6 rounded-full font-bold text-[8px] md:text-[10px] text-white
+              w-4 h-4 md:w-5 md:h-5 rounded-full font-bold text-[7px] md:text-[8px] text-white
               transition-all duration-200 shadow-sm
               ${isSelected ? config.color : "bg-gray-600"}
               ${isSelected ? "scale-105 ring-1 ring-white/50" : "hover:scale-105 opacity-70"}
