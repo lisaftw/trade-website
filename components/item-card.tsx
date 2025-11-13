@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast"
 import { useUser } from "@/lib/hooks/use-user"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { LogIn } from "lucide-react"
+import { LogIn } from 'lucide-react'
 import { AdoptMeVariantSelector } from "./adoptme-variant-selector"
 import { AdoptMeInlineVariantSelector } from "./adoptme-inline-variant-selector"
 
@@ -228,13 +228,27 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
               <div className="absolute inset-0 flex items-center justify-center p-6">
                 <div className="relative w-full h-full">
                   <Image
-                    src={imageUrl || "/placeholder.svg"}
+                    src={imageUrl || "/itemplaceholder.png"}
                     alt={item.name}
                     fill
                     className="object-contain drop-shadow-2xl"
                     onError={() => setImageError(true)}
                   />
                 </div>
+              </div>
+            </div>
+
+            <div className="relative w-full mt-1 flex justify-center">
+              <div className="px-3 py-1 rounded-md bg-black/70 backdrop-blur-sm border border-white/10">
+                <span
+                  className="text-white font-bold text-[9px] whitespace-nowrap block"
+                  style={{
+                    textShadow: "0 1px 2px rgba(0,0,0,0.8)",
+                    WebkitFontSmoothing: "antialiased",
+                  }}
+                >
+                  {getTimeAgo(item.last_updated_at)}
+                </span>
               </div>
             </div>
 
@@ -284,19 +298,19 @@ export function ItemCard({ item, hideAddButton = false }: ItemCardProps) {
 
               <div className="absolute inset-0 flex flex-col justify-evenly px-8 py-2">
                 <div className="flex items-center justify-end h-[16px]">
-                  <span className="text-white font-bold text-[9px]" style={{ textShadow: "1px 1px 1px #000" }}>
+                  <span className="text-white font-black text-[10px]" style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.9)" }}>
                     {item.rarity || item.section || "N/A"}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-end h-[16px]">
-                  <span className="text-white font-bold text-[9px]" style={{ textShadow: "1px 1px 1px #000" }}>
+                  <span className="text-white font-black text-[10px]" style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.9)" }}>
                     {item.demand || "N/A"}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-end h-[16px]">
-                  <span className="text-white font-bold text-[9px]" style={{ textShadow: "1px 1px 1px #000" }}>
+                  <span className="text-white font-black text-[10px]" style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.9)" }}>
                     {formatValue(currentValue)}
                   </span>
                 </div>
