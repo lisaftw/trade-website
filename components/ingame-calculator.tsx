@@ -28,6 +28,7 @@ interface GameItem {
   value_mfr?: number
   variant?: string
   rap_value?: number
+  itemType?: string
 }
 
 type Variant = "F" | "R" | "N" | "M"
@@ -114,23 +115,37 @@ export function IngameCalculator() {
       const defaultVariant = game === "Adopt Me" ? "FR" : undefined
 
       const rawDefaultValue =
-        game === "Adopt Me" ? item.value_fr || item.value_n || (item as any).rap_value || item.value : item.value
+        game === "Adopt Me"
+          ? item.rap_value && item.rap_value > 0
+            ? item.rap_value // Use rap_value first for eggs
+            : item.value_fr || item.value_n || item.value_f || item.value_r || item.value
+          : item.value
 
       const defaultValue =
         typeof rawDefaultValue === "string" ? Number.parseFloat(rawDefaultValue) || 0 : rawDefaultValue || 0
 
       console.log("[v0] Adding item:", item.name, "with value:", defaultValue, "from:", {
+        rap_value: item.rap_value,
         value_fr: item.value_fr,
         value_n: item.value_n,
-        rap_value: (item as any).rap_value,
+        value_f: item.value_f,
+        value_r: item.value_r,
         value: item.value,
       })
+
+      if (defaultValue === 0) {
+        console.warn("[v0] WARNING: Item", item.name, "has no value set in database")
+      }
+
+      const hasVariants = item.value_fr || item.value_f || item.value_r || item.value_n
+      const itemType = hasVariants ? "pet" : "egg"
 
       const newItem = {
         ...item,
         id: `${item.id}-${Date.now()}`,
-        variant: defaultVariant,
+        variant: hasVariants ? defaultVariant : undefined, // No variant for eggs
         value: defaultValue,
+        itemType, // Track whether it's a pet or egg
       }
       setSelectedItems((prev) => [...prev, newItem])
       setIsSearchOpen(false)
@@ -335,7 +350,9 @@ export function IngameCalculator() {
                     <p className="truncate text-[9px] font-semibold leading-tight text-white">{item.name}</p>
                     <p className="text-[8px] text-gray-400">{Number(item.value || 0).toString()}</p>
 
-                    {game === "Adopt Me" && <VariantSelector itemId={item.id} onVariantChange={updateItemVariant} />}
+                    {game === "Adopt Me" && item.itemType === "pet" && (
+                      <VariantSelector itemId={item.id} onVariantChange={updateItemVariant} />
+                    )}
                   </div>
                 </div>
               </div>
