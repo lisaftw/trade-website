@@ -109,44 +109,6 @@ export function InventoryContent() {
     }
   }
 
-  const isEgg = (item: Item) => {
-    return item.section?.toLowerCase().includes('egg') || item.name?.toLowerCase().includes('egg')
-  }
-
-  const rarityOrder: { [key: string]: number } = {
-    'legendary': 1,
-    'ultra rare': 2,
-    'rare': 3,
-    'uncommon': 4,
-    'common': 5,
-    'n/a': 6
-  }
-
-  const organizeInventory = () => {
-    const itemsWithInventory = inventory
-      .map((invItem) => {
-        const item = items.find((i) => i.id === invItem.item_id)
-        return item ? { ...invItem, item } : null
-      })
-      .filter((item): item is InventoryItem & { item: Item } => item !== null)
-
-    // Separate eggs and pets
-    const eggs = itemsWithInventory.filter((inv) => isEgg(inv.item))
-    const pets = itemsWithInventory.filter((inv) => !isEgg(inv.item))
-
-    // Sort each group by rarity
-    const sortByRarity = (a: InventoryItem & { item: Item }, b: InventoryItem & { item: Item }) => {
-      const rarityA = (a.item.rarity?.toLowerCase() || 'n/a')
-      const rarityB = (b.item.rarity?.toLowerCase() || 'n/a')
-      return (rarityOrder[rarityA] || 999) - (rarityOrder[rarityB] || 999)
-    }
-
-    eggs.sort(sortByRarity)
-    pets.sort(sortByRarity)
-
-    return { eggs, pets }
-  }
-
   if (userLoading || loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -181,8 +143,6 @@ export function InventoryContent() {
     )
   }
 
-  const { eggs, pets } = organizeInventory()
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -191,85 +151,64 @@ export function InventoryContent() {
         </p>
       </div>
 
-      {pets.length > 0 && (
-        <div className="space-y-4">
-          <h2 className="text-2xl font-bold text-foreground">Pets</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 justify-items-center">
-            {pets.map((invItem) => {
-              const item = invItem.item
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 justify-items-center">
+        {inventory.map((invItem) => {
+          const item = items.find((i) => i.id === invItem.item_id)
 
-              return (
-                <div key={invItem.id} className="flex flex-col items-center gap-2">
-                  <div className="relative">
-                    <ItemCard item={item} hideAddButton={true} />
-                    {invItem.quantity > 1 && (
-                      <div className="absolute top-2 right-2 z-10 rounded-full bg-white/90 dark:bg-gray-900/90 px-2.5 py-1 text-xs font-bold text-foreground shadow-md border-2 border-border backdrop-blur-sm">
-                        ×{invItem.quantity}
-                      </div>
-                    )}
+          if (!item) {
+            return (
+              <div key={invItem.id} className="rounded-2xl border border-border bg-secondary/10 p-4">
+                <p className="text-sm text-muted-foreground">Item not found</p>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="mt-2 w-full"
+                  onClick={() => handleRemove(invItem.id, "Unknown item")}
+                  disabled={removing === invItem.id}
+                >
+                  {removing === invItem.id ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <>
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Remove
+                    </>
+                  )}
+                </Button>
+              </div>
+            )
+          }
+
+          return (
+            <div key={invItem.id} className="flex flex-col items-center gap-2">
+              <div className="relative">
+                <ItemCard item={item} hideAddButton={true} />
+                {invItem.quantity > 1 && (
+                  <div className="absolute top-2 right-2 z-10 rounded-full bg-white/90 dark:bg-gray-900/90 px-2.5 py-1 text-xs font-bold text-foreground shadow-md border-2 border-border backdrop-blur-sm">
+                    ×{invItem.quantity}
                   </div>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    className="w-full max-w-[200px] h-9 px-3 shadow-lg"
-                    onClick={() => handleRemove(invItem.id, item.name)}
-                    disabled={removing === invItem.id}
-                  >
-                    {removing === invItem.id ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <>
-                        <Trash2 className="mr-1.5 h-4 w-4" />
-                        Remove
-                      </>
-                    )}
-                  </Button>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      )}
-
-      {eggs.length > 0 && (
-        <div className="space-y-4">
-          <h2 className="text-2xl font-bold text-foreground">Eggs</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 justify-items-center">
-            {eggs.map((invItem) => {
-              const item = invItem.item
-
-              return (
-                <div key={invItem.id} className="flex flex-col items-center gap-2">
-                  <div className="relative">
-                    <ItemCard item={item} hideAddButton={true} />
-                    {invItem.quantity > 1 && (
-                      <div className="absolute top-2 right-2 z-10 rounded-full bg-white/90 dark:bg-gray-900/90 px-2.5 py-1 text-xs font-bold text-foreground shadow-md border-2 border-border backdrop-blur-sm">
-                        ×{invItem.quantity}
-                      </div>
-                    )}
-                  </div>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    className="w-full max-w-[200px] h-9 px-3 shadow-lg"
-                    onClick={() => handleRemove(invItem.id, item.name)}
-                    disabled={removing === invItem.id}
-                  >
-                    {removing === invItem.id ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <>
-                        <Trash2 className="mr-1.5 h-4 w-4" />
-                        Remove
-                      </>
-                    )}
-                  </Button>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      )}
+                )}
+              </div>
+              <Button
+                variant="destructive"
+                size="sm"
+                className="w-full max-w-[200px] h-9 px-3 shadow-lg"
+                onClick={() => handleRemove(invItem.id, item.name)}
+                disabled={removing === invItem.id}
+              >
+                {removing === invItem.id ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    <Trash2 className="mr-1.5 h-4 w-4" />
+                    Remove
+                  </>
+                )}
+              </Button>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
