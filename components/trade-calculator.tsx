@@ -16,6 +16,17 @@ interface TradeItem {
   imageUrl?: string
   game: string
   variantLabel?: string
+  value_f?: number | string | null
+  value_r?: number | string | null
+  value_n?: number | string | null
+  value_fr?: number | string | null
+  value_nf?: number | string | null
+  value_nr?: number | string | null
+  value_nfr?: number | string | null
+  value_m?: number | string | null
+  value_mf?: number | string | null
+  value_mr?: number | string | null
+  value_mfr?: number | string | null
 }
 
 export function TradeCalculator() {
@@ -43,6 +54,18 @@ export function TradeCalculator() {
       value: item.value ?? item.rap_value ?? 0,
       imageUrl: item.imageUrl || item.image_url,
       game: item.game,
+      value_f: item.value_f,
+      value_r: item.value_r,
+      value_n: item.value_n,
+      value_fr: item.value_fr,
+      value_nf: item.value_nf,
+      value_nr: item.value_nr,
+      value_nfr: item.value_nfr,
+      value_m: item.value_m,
+      value_mf: item.value_mf,
+      value_mr: item.value_mr,
+      value_mfr: item.value_mfr,
+      variantLabel: item.variantLabel,
     }
     if (column === "yours") {
       setYourItems((prev) => [...prev, newItem])
@@ -271,8 +294,12 @@ function TradeGrid({
           <div
             key={index}
             className={cn(
-              "relative h-20 md:h-24 rounded-lg md:rounded-xl border border-gray-700/50 md:border-2 transition-all",
-              item ? "bg-[#1a1a1a] hover:border-gray-600" : "bg-[#0d0d0d]",
+              "relative rounded-lg md:rounded-xl border border-gray-700/50 md:border-2 transition-all",
+              item && selectedGame === "Adopt Me"
+                ? "h-32 md:h-40 bg-[#1a1a1a] hover:border-gray-600"
+                : item
+                  ? "h-20 md:h-24 bg-[#1a1a1a] hover:border-gray-600"
+                  : "h-20 md:h-24 bg-[#0d0d0d]",
             )}
           >
             {index === items.length && !item ? (
@@ -284,27 +311,29 @@ function TradeGrid({
                 <span className="text-[9px] md:text-[10px] font-semibold tracking-wide">Add Item</span>
               </button>
             ) : item ? (
-              <div className="group relative h-full w-full p-1 md:p-1.5">
-                <div className="relative w-full h-full">
-                  <Image
-                    src={item.imageUrl || "/placeholder.svg"}
-                    alt={item.name}
-                    fill
-                    className="rounded-lg object-contain"
-                  />
+              selectedGame === "Adopt Me" ? (
+                <AdoptMeGridCard item={item} onRemove={() => onRemove(item.id)} />
+              ) : (
+                <div className="group relative h-full w-full p-1 md:p-1.5">
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={item.imageUrl || "/placeholder.svg"}
+                      alt={item.name}
+                      fill
+                      className="rounded-lg object-contain"
+                    />
+                  </div>
+                  <button
+                    onClick={() => onRemove(item.id)}
+                    className="absolute right-1 md:right-1.5 top-1 md:top-1.5 rounded-full bg-red-500/90 p-0.5 md:p-1 opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
+                  >
+                    <X className="h-2.5 md:h-3 w-2.5 md:w-3 text-white" />
+                  </button>
+                  <div className="absolute bottom-0 left-0 right-0 rounded-b-lg bg-black/90 p-1 md:p-1.5 text-center">
+                    <p className="truncate text-[9px] md:text-[10px] font-semibold text-white">{item.name}</p>
+                  </div>
                 </div>
-                <button
-                  onClick={() => onRemove(item.id)}
-                  className="absolute right-1 md:right-1.5 top-1 md:top-1.5 rounded-full bg-red-500/90 p-0.5 md:p-1 opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
-                >
-                  <X className="h-2.5 md:h-3 w-2.5 md:w-3 text-white" />
-                </button>
-                <div className="absolute bottom-0 left-0 right-0 rounded-b-lg bg-black/90 p-1 md:p-1.5 text-center">
-                  <p className="truncate text-[9px] md:text-[10px] font-semibold text-white">
-                    {item.variantLabel ? `${item.variantLabel} ${item.name}` : item.name}
-                  </p>
-                </div>
-              </div>
+              )
             ) : null}
           </div>
         ))}
@@ -313,7 +342,11 @@ function TradeGrid({
       <div className="flex items-center justify-between px-1 md:px-2">
         <span className="text-sm md:text-base font-bold tracking-wide text-white">VALUE</span>
         <span className="text-sm md:text-base font-bold text-white">
-          {total % 1 === 0 ? total.toLocaleString() : total.toFixed(2)}
+          {typeof total === "number" && !isNaN(total)
+            ? total % 1 === 0
+              ? total.toLocaleString()
+              : total.toFixed(2)
+            : "0"}
         </span>
       </div>
 
@@ -463,7 +496,11 @@ function AdoptMeItemButton({ item, onAddItem, isAdoptMe }: AdoptMeItemButtonProp
 
         <div className="flex flex-col items-end gap-2">
           <p className="text-base font-bold text-white whitespace-nowrap">
-            {selectedValue % 1 === 0 ? selectedValue.toLocaleString() : selectedValue.toFixed(2)}
+            {typeof selectedValue === "number" && !isNaN(selectedValue)
+              ? selectedValue % 1 === 0
+                ? selectedValue.toLocaleString()
+                : selectedValue.toFixed(2)
+              : "0"}
           </p>
           <button
             onClick={handleAdd}
@@ -476,6 +513,185 @@ function AdoptMeItemButton({ item, onAddItem, isAdoptMe }: AdoptMeItemButtonProp
           </button>
         </div>
       </div>
+    </div>
+  )
+}
+
+interface AdoptMeGridCardProps {
+  item: TradeItem
+  onRemove: () => void
+}
+
+function AdoptMeGridCard({ item, onRemove }: AdoptMeGridCardProps) {
+  const [selectedVariant, setSelectedVariant] = useState<string>(item.variantLabel || "FR")
+  const [currentValue, setCurrentValue] = useState<number>(item.value)
+
+  const handleVariantSelect = (variant: string, value: number) => {
+    setSelectedVariant(variant)
+    setCurrentValue(value)
+    // Update the item value in the parent component
+    item.value = value
+    item.variantLabel = variant
+  }
+
+  return (
+    <div className="group relative h-full w-full flex flex-col p-1.5 md:p-2">
+      {/* Remove button */}
+      <button
+        onClick={onRemove}
+        className="absolute right-1 md:right-1.5 top-1 md:top-1.5 z-10 rounded-full bg-red-500/90 p-0.5 md:p-1 opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
+      >
+        <X className="h-2.5 md:h-3 w-2.5 md:w-3 text-white" />
+      </button>
+
+      {/* Pet image */}
+      <div className="relative w-full h-16 md:h-20 mb-1">
+        <Image src={item.imageUrl || "/placeholder.svg"} alt={item.name} fill className="rounded-lg object-contain" />
+      </div>
+
+      {/* Pet name */}
+      <p className="truncate text-[9px] md:text-[10px] font-semibold text-white text-center mb-1">{item.name}</p>
+
+      {/* Inline variant selector */}
+      <CompactVariantSelector item={item} onSelect={handleVariantSelect} selectedVariant={selectedVariant} />
+    </div>
+  )
+}
+
+interface CompactVariantSelectorProps {
+  item: TradeItem
+  onSelect: (variant: string, value: number) => void
+  selectedVariant: string
+}
+
+type Variant = "F" | "R" | "N" | "M"
+
+const VARIANT_CONFIG = {
+  F: { label: "F", color: "bg-cyan-500" },
+  R: { label: "R", color: "bg-pink-500" },
+  N: { label: "N", color: "bg-[#8dc43e]" },
+  M: { label: "M", color: "bg-purple-500" },
+}
+
+function CompactVariantSelector({ item, onSelect, selectedVariant }: CompactVariantSelectorProps) {
+  const [selectedVariants, setSelectedVariants] = useState<Set<Variant>>(() => {
+    const initial = new Set<Variant>()
+    if (selectedVariant.includes("F")) initial.add("F")
+    if (selectedVariant.includes("R")) initial.add("R")
+    if (selectedVariant.includes("N") && !selectedVariant.includes("M")) initial.add("N")
+    if (selectedVariant.includes("M")) initial.add("M")
+    if (initial.size === 0) {
+      initial.add("F")
+      initial.add("R")
+    }
+    return initial
+  })
+
+  const toggleVariant = (variant: Variant) => {
+    const newVariants = new Set(selectedVariants)
+
+    if (variant === "N" || variant === "M") {
+      newVariants.delete("N")
+      newVariants.delete("M")
+      if (!selectedVariants.has(variant)) {
+        newVariants.add(variant)
+      }
+    } else {
+      if (newVariants.has(variant)) {
+        newVariants.delete(variant)
+      } else {
+        newVariants.add(variant)
+      }
+    }
+
+    setSelectedVariants(newVariants)
+    updateSelection(newVariants)
+  }
+
+  const updateSelection = (variants: Set<Variant>) => {
+    const hasF = variants.has("F")
+    const hasR = variants.has("R")
+    const hasN = variants.has("N")
+    const hasM = variants.has("M")
+
+    let variantKey: keyof TradeItem
+    let variantLabel: string
+
+    if (hasM) {
+      if (hasF && hasR) {
+        variantKey = "value_mfr"
+        variantLabel = "MFR"
+      } else if (hasF) {
+        variantKey = "value_mf"
+        variantLabel = "MF"
+      } else if (hasR) {
+        variantKey = "value_mr"
+        variantLabel = "MR"
+      } else {
+        variantKey = "value_m"
+        variantLabel = "M"
+      }
+    } else if (hasN) {
+      if (hasF && hasR) {
+        variantKey = "value_nfr"
+        variantLabel = "NFR"
+      } else if (hasF) {
+        variantKey = "value_nf"
+        variantLabel = "NF"
+      } else if (hasR) {
+        variantKey = "value_nr"
+        variantLabel = "NR"
+      } else {
+        variantKey = "value_n"
+        variantLabel = "N"
+      }
+    } else {
+      if (hasF && hasR) {
+        variantKey = "value_fr"
+        variantLabel = "FR"
+      } else if (hasF) {
+        variantKey = "value_f"
+        variantLabel = "F"
+      } else if (hasR) {
+        variantKey = "value_r"
+        variantLabel = "R"
+      } else {
+        variantKey = "value_fr"
+        variantLabel = "FR"
+      }
+    }
+
+    const value = item[variantKey]
+    const numValue = value != null ? (typeof value === "string" ? Number.parseFloat(value) : value) : 0
+    const finalValue = !isNaN(numValue) && numValue > 0 ? numValue : 0
+
+    onSelect(variantLabel, finalValue)
+  }
+
+  return (
+    <div className="flex items-center justify-center gap-0.5 md:gap-1">
+      {(Object.keys(VARIANT_CONFIG) as Variant[]).map((variant) => {
+        const isSelected = selectedVariants.has(variant)
+        const config = VARIANT_CONFIG[variant]
+
+        return (
+          <button
+            key={variant}
+            onClick={(e) => {
+              e.stopPropagation()
+              toggleVariant(variant)
+            }}
+            className={`
+              w-5 h-5 md:w-6 md:h-6 rounded-full font-bold text-[8px] md:text-[10px] text-white
+              transition-all duration-200 shadow-sm
+              ${isSelected ? config.color : "bg-gray-600"}
+              ${isSelected ? "scale-105 ring-1 ring-white/50" : "hover:scale-105 opacity-70"}
+            `}
+          >
+            {config.label}
+          </button>
+        )
+      })}
     </div>
   )
 }
