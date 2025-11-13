@@ -47,7 +47,13 @@ export function IngameCalculator() {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
-  const totalValue = selectedItems.reduce((sum, item) => sum + item.value, 0)
+  const totalValue = selectedItems.reduce((sum, item) => {
+    const itemValue = Number(item.value) || 0
+    console.log("[v0] Adding item to total:", item.name, "value:", itemValue, "current sum:", sum)
+    return sum + itemValue
+  }, 0)
+
+  console.log("[v0] Total value calculated:", totalValue, "from", selectedItems.length, "items")
 
   const handleGameSelect = (selectedGame: "MM2" | "SAB" | "Adopt Me") => {
     if (selectedGame === "SAB") {
