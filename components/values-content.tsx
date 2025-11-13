@@ -46,7 +46,7 @@ export function ValuesContent() {
     }
     fetchItems()
 
-    const interval = setInterval(fetchItems, 30000)
+    const interval = setInterval(fetchItems, 600000)
     return () => clearInterval(interval)
   }, [selectedGame])
 

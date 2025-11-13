@@ -293,14 +293,7 @@ function TradeGrid({
         {slots.map((item, index) => (
           <div
             key={index}
-            className={cn(
-              "relative rounded-lg md:rounded-xl border border-gray-700/50 md:border-2 transition-all",
-              item && selectedGame === "Adopt Me"
-                ? "h-32 md:h-40 bg-[#1a1a1a] hover:border-gray-600"
-                : item
-                  ? "h-20 md:h-24 bg-[#1a1a1a] hover:border-gray-600"
-                  : "h-20 md:h-24 bg-[#0d0d0d]",
-            )}
+            className="relative aspect-square rounded-lg md:rounded-xl border border-gray-700/50 md:border-2 bg-[#0d0d0d] transition-all hover:border-gray-600"
           >
             {index === items.length && !item ? (
               <button
