@@ -21,6 +21,7 @@ type Conversation = {
     avatar_url: string | null
   }
   unreadCount: number
+  pinned?: boolean
 }
 
 export function MessagesContent({
@@ -255,6 +256,59 @@ export function MessagesContent({
     setConversations((prev) => prev.map((c) => (c.id === conversationId ? { ...c, unreadCount: count || 0 } : c)))
   }
 
+  const handleDeleteConversation = async (conversationId: string) => {
+    if (!confirm("Are you sure you want to delete this conversation? This cannot be undone.")) {
+      return
+    }
+
+    try {
+      const supabase = createClient()
+
+      // Delete all messages in the conversation first
+      await supabase.from("messages").delete().eq("conversation_id", conversationId)
+
+      // Delete the conversation
+      const { error } = await supabase.from("conversations").delete().eq("id", conversationId)
+
+      if (error) throw error
+
+      // Remove from local state
+      setConversations((prev) => prev.filter((c) => c.id !== conversationId))
+
+      // If this was the selected conversation, deselect it
+      if (selectedConversationId === conversationId) {
+        setSelectedConversationId(null)
+      }
+    } catch (error) {
+      console.error("Error deleting conversation:", error)
+      alert("Failed to delete conversation. Please try again.")
+    }
+  }
+
+  // Added handler to pin/unpin conversations
+  const handlePinConversation = async (conversationId: string) => {
+    const conversation = conversations.find((c) => c.id === conversationId)
+    if (!conversation) return
+
+    try {
+      const supabase = createClient()
+
+      // Toggle pinned status
+      const { error } = await supabase
+        .from("conversations")
+        .update({ pinned: !conversation.pinned })
+        .eq("id", conversationId)
+
+      if (error) throw error
+
+      // Update local state
+      setConversations((prev) => prev.map((c) => (c.id === conversationId ? { ...c, pinned: !c.pinned } : c)))
+    } catch (error) {
+      console.error("Error pinning conversation:", error)
+      alert("Failed to pin conversation. Please try again.")
+    }
+  }
+
   const selectedConversation = conversations.find((c) => c.id === selectedConversationId)
 
   return (
@@ -284,12 +338,13 @@ export function MessagesContent({
             </Link>
           </Button>
         </div>
-        {/* </CHANGE> */}
         <ConversationList
           conversations={conversations}
           selectedId={selectedConversationId}
           onSelect={setSelectedConversationId}
           loading={loading}
+          onDelete={handleDeleteConversation}
+          onPin={handlePinConversation}
         />
       </div>
 
@@ -322,7 +377,6 @@ export function MessagesContent({
               </Button>
             </div>
           </div>
-          // </CHANGE>
         )}
       </div>
     </div>

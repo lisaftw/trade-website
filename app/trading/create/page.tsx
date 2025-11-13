@@ -419,7 +419,7 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
                 alt={item.name}
                 width={48}
                 height={48}
-                className="rounded"
+                className="rounded flex-shrink-0"
               />
               <div className="flex-1">
                 <p className="text-sm font-medium">{item.name}</p>
@@ -470,6 +470,13 @@ function AdoptMeItemButton({ item, onAddItem, onClose }: AdoptMeItemButtonProps)
     return !isNaN(numValue) && numValue > 0 ? numValue : item.value
   })
 
+  const hasVariants =
+    (item.value_fr && Number(item.value_fr) > 0) ||
+    (item.value_f && Number(item.value_f) > 0) ||
+    (item.value_r && Number(item.value_r) > 0) ||
+    (item.value_n && Number(item.value_n) > 0)
+  const isEgg = !hasVariants
+
   const handleVariantSelect = (variant: string, value: number) => {
     setSelectedVariant(variant)
     setSelectedValue(value)
@@ -496,7 +503,7 @@ function AdoptMeItemButton({ item, onAddItem, onClose }: AdoptMeItemButtonProps)
         />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium truncate">{item.name}</p>
-          <p className="text-xs text-muted-foreground">{selectedVariant}</p>
+          <p className="text-xs text-muted-foreground">{isEgg ? "Egg" : selectedVariant}</p>
         </div>
         <div className="text-right">
           <p className="text-sm font-semibold whitespace-nowrap">
@@ -506,7 +513,7 @@ function AdoptMeItemButton({ item, onAddItem, onClose }: AdoptMeItemButtonProps)
       </div>
 
       <div className="flex items-center justify-between">
-        <AdoptMeInlineVariantSelector item={item} onSelect={handleVariantSelect} showQuantity={false} />
+        {!isEgg && <AdoptMeInlineVariantSelector item={item} onSelect={handleVariantSelect} showQuantity={false} />}
         <Button
           onClick={handleAdd}
           size="sm"

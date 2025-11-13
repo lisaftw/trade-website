@@ -30,6 +30,54 @@ interface ModerationResponse {
 }
 
 /**
+ * Fallback word filter for when OpenAI API is not available
+ * This uses a comprehensive list of inappropriate terms
+ */
+function containsInappropriateWords(text: string): boolean {
+  const lowerText = text.toLowerCase().replace(/[^a-z0-9]/g, "")
+
+  const inappropriateWords = [
+    "nigger",
+    "nigga",
+    "faggot",
+    "fag",
+    "retard",
+    "chink",
+    "spic",
+    "kike",
+    "tranny",
+    "cunt",
+    "whore",
+    "slut",
+    "bitch",
+    "fuck",
+    "shit",
+    "ass",
+    "dick",
+    "cock",
+    "pussy",
+    // Add variations with numbers/symbols
+    "n1gger",
+    "n1gga",
+    "f4ggot",
+    "fck",
+    "fuk",
+    "fcuk",
+    "nigg3r",
+    "f4g",
+    "retrd",
+    "btch",
+    "shthead",
+  ]
+
+  // Check for exact matches or embedded matches
+  return inappropriateWords.some((word) => {
+    const normalizedWord = word.replace(/[^a-z0-9]/g, "")
+    return lowerText.includes(normalizedWord)
+  })
+}
+
+/**
  * Check if content contains inappropriate language using OpenAI Moderation API
  * @param text The text content to moderate
  * @returns Object with isInappropriate boolean and reason string
@@ -39,6 +87,19 @@ export async function moderateContent(text: string): Promise<{
   reason: string
 }> {
   if (!text || text.trim().length === 0) {
+    return { isInappropriate: false, reason: "" }
+  }
+
+  if (containsInappropriateWords(text)) {
+    console.log("[v0] Content blocked by local filter")
+    return {
+      isInappropriate: true,
+      reason: "Your message contains inappropriate language or hate speech.",
+    }
+  }
+
+  if (!process.env.OPENAI_API_KEY && !process.env.XAI_API_KEY) {
+    console.log("[v0] No API key available, relying on local filter only")
     return { isInappropriate: false, reason: "" }
   }
 
@@ -56,7 +117,7 @@ export async function moderateContent(text: string): Promise<{
 
     if (!response.ok) {
       console.error("[v0] Moderation API error:", response.status)
-      // Fail open - don't block content if API is down
+      // Already checked with local filter, so safe to pass
       return { isInappropriate: false, reason: "" }
     }
 
@@ -93,7 +154,7 @@ export async function moderateContent(text: string): Promise<{
     return { isInappropriate: false, reason: "" }
   } catch (error) {
     console.error("[v0] Moderation API error:", error)
-    // Fail open - don't block content if there's an error
+    // Already checked with local filter, so safe to pass
     return { isInappropriate: false, reason: "" }
   }
 }
@@ -107,6 +168,27 @@ export async function moderateMultipleContents(texts: string[]): Promise<{
   flaggedIndices: number[]
 }> {
   if (texts.length === 0) {
+    return { isInappropriate: false, reason: "", flaggedIndices: [] }
+  }
+
+  const localFlaggedIndices: number[] = []
+  texts.forEach((text, index) => {
+    if (containsInappropriateWords(text)) {
+      localFlaggedIndices.push(index)
+    }
+  })
+
+  if (localFlaggedIndices.length > 0) {
+    console.log("[v0] Content blocked by local filter:", localFlaggedIndices)
+    return {
+      isInappropriate: true,
+      reason: "Some of your content contains inappropriate language or hate speech.",
+      flaggedIndices: localFlaggedIndices,
+    }
+  }
+
+  if (!process.env.OPENAI_API_KEY && !process.env.XAI_API_KEY) {
+    console.log("[v0] No API key available, relying on local filter only")
     return { isInappropriate: false, reason: "", flaggedIndices: [] }
   }
 

@@ -11,9 +11,9 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const cookieStore = await cookies()
     const session = await getSession(cookieStore)
 
-    console.log("Trade request - User:", session?.userId)
+    console.log("Trade request - User:", session?.discordId)
 
-    if (!session?.userId) {
+    if (!session?.discordId) {
       console.log("Trade request - No user found, returning 401")
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       `INSERT INTO trade_interactions (initiator_id, trade_id, message, status, created_at, updated_at)
        VALUES ($1, $2, $3, $4, NOW(), NOW())
        RETURNING *`,
-      [session.userId, params.id, message, "pending"],
+      [session.discordId, params.id, message, "pending"],
     )
 
     console.log("Trade request created successfully")

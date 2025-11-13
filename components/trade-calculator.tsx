@@ -421,6 +421,13 @@ function AdoptMeItemButton({ item, onAddItem, isAdoptMe }: AdoptMeItemButtonProp
   const [quantity, setQuantity] = useState(1)
   const [showConfirm, setShowConfirm] = useState(false)
 
+  const hasVariants =
+    (item.value_fr && Number(item.value_fr) > 0) ||
+    (item.value_f && Number(item.value_f) > 0) ||
+    (item.value_r && Number(item.value_r) > 0) ||
+    (item.value_n && Number(item.value_n) > 0)
+  const isEgg = !hasVariants
+
   const handleVariantSelect = (variant: string, value: number) => {
     setSelectedVariant(variant)
     setSelectedValue(value)
@@ -481,12 +488,14 @@ function AdoptMeItemButton({ item, onAddItem, isAdoptMe }: AdoptMeItemButtonProp
           <p className="text-sm font-medium text-white truncate">{item.name}</p>
           <p className="text-xs text-gray-400 mb-2">{selectedVariant}</p>
 
-          <AdoptMeInlineVariantSelector
-            item={item}
-            onSelect={handleVariantSelect}
-            onQuantityChange={setQuantity}
-            initialQuantity={quantity}
-          />
+          {!isEgg && (
+            <AdoptMeInlineVariantSelector
+              item={item}
+              onSelect={handleVariantSelect}
+              onQuantityChange={setQuantity}
+              initialQuantity={quantity}
+            />
+          )}
         </div>
 
         <div className="flex flex-col items-end gap-2">
@@ -521,10 +530,16 @@ function AdoptMeGridCard({ item, onRemove }: AdoptMeGridCardProps) {
   const [selectedVariant, setSelectedVariant] = useState<string>(item.variantLabel || "FR")
   const [currentValue, setCurrentValue] = useState<number>(item.value)
 
+  const hasVariants =
+    (item.value_fr && Number(item.value_fr) > 0) ||
+    (item.value_f && Number(item.value_f) > 0) ||
+    (item.value_r && Number(item.value_r) > 0) ||
+    (item.value_n && Number(item.value_n) > 0)
+  const isEgg = !hasVariants
+
   const handleVariantSelect = (variant: string, value: number) => {
     setSelectedVariant(variant)
     setCurrentValue(value)
-    // Update the item value in the parent component
     item.value = value
     item.variantLabel = variant
   }
@@ -544,7 +559,9 @@ function AdoptMeGridCard({ item, onRemove }: AdoptMeGridCardProps) {
 
       <p className="truncate text-[9px] md:text-[10px] font-semibold text-white text-center mb-1">{item.name}</p>
 
-      <CompactVariantSelector item={item} onSelect={handleVariantSelect} selectedVariant={selectedVariant} />
+      {!isEgg && (
+        <CompactVariantSelector item={item} onSelect={handleVariantSelect} selectedVariant={selectedVariant} />
+      )}
     </div>
   )
 }

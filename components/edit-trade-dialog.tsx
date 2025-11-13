@@ -65,6 +65,7 @@ export function EditTradeDialog({ trade, open, onOpenChange, onSuccess }: EditTr
       })
 
       if (!response.ok) {
+        const errorData = await response.json()
         throw new Error("Failed to update trade")
       }
 

@@ -2,8 +2,16 @@
 
 import Image from "next/image"
 import { formatDistanceToNow } from "date-fns"
-import { Loader2 } from "lucide-react"
+import { Loader2, Trash2, Pin } from "lucide-react"
 import { cn } from "@/lib/utils"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
 
 type Conversation = {
   id: string
@@ -15,6 +23,7 @@ type Conversation = {
     avatar_url: string | null
   }
   unreadCount: number
+  pinned?: boolean
 }
 
 export function ConversationList({
@@ -22,11 +31,15 @@ export function ConversationList({
   selectedId,
   onSelect,
   loading,
+  onDelete,
+  onPin,
 }: {
   conversations: Conversation[]
   selectedId: string | null
   onSelect: (id: string) => void
   loading: boolean
+  onDelete?: (id: string) => void
+  onPin?: (id: string) => void
 }) {
   if (loading) {
     return (
@@ -49,9 +62,17 @@ export function ConversationList({
     )
   }
 
+  const sortedConversations = [...conversations].sort((a, b) => {
+    if (a.pinned && !b.pinned) return -1
+    if (!a.pinned && b.pinned) return 1
+    const aTime = a.last_message_at ? new Date(a.last_message_at).getTime() : 0
+    const bTime = b.last_message_at ? new Date(b.last_message_at).getTime() : 0
+    return bTime - aTime
+  })
+
   return (
     <div className="flex-1 overflow-y-auto">
-      {conversations.map((conversation) => {
+      {sortedConversations.map((conversation) => {
         const displayName = conversation.otherUser.global_name || conversation.otherUser.username || "Unknown User"
         const avatarUrl = conversation.otherUser.avatar_url || "/placeholder.svg?height=48&width=48"
 
@@ -64,6 +85,11 @@ export function ConversationList({
               selectedId === conversation.id && "bg-accent/70 border-l-4 border-l-primary",
             )}
           >
+            {conversation.pinned && (
+              <div className="absolute top-1 right-1">
+                <Pin className="h-3 w-3 text-primary fill-primary" />
+              </div>
+            )}
             <div className="relative shrink-0">
               <Image
                 src={avatarUrl || "/placeholder.svg"}
@@ -106,6 +132,56 @@ export function ConversationList({
                   : "No new messages"}
               </p>
             </div>
+            {(onDelete || onPin) && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100">
+                    <span className="sr-only">Open menu</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="1" />
+                      <circle cx="12" cy="5" r="1" />
+                      <circle cx="12" cy="19" r="1" />
+                    </svg>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+                  {onPin && (
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onPin(conversation.id)
+                      }}
+                    >
+                      <Pin className="h-4 w-4 mr-2" />
+                      {conversation.pinned ? "Unpin" : "Pin"} Chat
+                    </DropdownMenuItem>
+                  )}
+                  {onPin && onDelete && <DropdownMenuSeparator />}
+                  {onDelete && (
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onDelete(conversation.id)
+                      }}
+                      className="text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete Chat
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </button>
         )
       })}
