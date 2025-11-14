@@ -22,8 +22,6 @@ type DiscordUser = {
   email?: string | null
 }
 
-const USE_SECURE_COOKIES = process.env.FORCE_SECURE_COOKIES === "true"
-
 export async function GET(req: Request) {
   const url = new URL(req.url)
   const code = url.searchParams.get("code")
@@ -32,25 +30,23 @@ export async function GET(req: Request) {
   const cookieStore = await cookies()
   const storedState = cookieStore.get("discord_oauth_state")?.value
 
+  const USE_SECURE_COOKIES = process.env.FORCE_SECURE_COOKIES === "true" || url.protocol === "https:"
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${url.protocol}//${url.host}`
+
+  console.log("[v0] Callback received - code:", !!code, "state:", state, "storedState:", storedState, "match:", state === storedState)
 
   if (error) {
     return Response.redirect(`${baseUrl}/login?error=oauth_denied`, 302)
   }
 
   if (!code || !state || !storedState || state !== storedState) {
+    console.log("[v0] State validation failed - code:", !!code, "state:", !!state, "storedState:", !!storedState, "match:", state === storedState)
     return Response.redirect(`${baseUrl}/login?error=invalid_state`, 302)
   }
 
-  cookieStore.set("discord_oauth_state", "", {
-    httpOnly: true,
-    secure: USE_SECURE_COOKIES,
-    sameSite: "lax",
-    path: "/",
-    maxAge: 0,
-  })
+  cookieStore.delete("discord_oauth_state")
 
-  const origin = `${url.protocol}//${url.host}`
+  const origin = process.env.NEXT_PUBLIC_BASE_URL || `${url.protocol}//${url.host}`
   const redirectUri = process.env.DISCORD_REDIRECT_URI || `${origin}/api/auth/discord/callback`
 
   const clientId = process.env.DISCORD_CLIENT_ID
@@ -143,6 +139,8 @@ export async function GET(req: Request) {
     } catch (error) {
       console.error("Failed to log activity:", error)
     }
+
+    console.log("[v0] Login successful for user:", discordUser.id, "isNewUser:", isNewUser)
 
     const redirectPath = isNewUser ? "/?welcome=true" : "/"
     return Response.redirect(`${baseUrl}${redirectPath}`, 302)

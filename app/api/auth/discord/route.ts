@@ -7,18 +7,18 @@ export async function GET(req: Request) {
   const state = crypto.randomUUID()
 
   const url = new URL(req.url)
-  const isSecure = url.protocol === "https:"
+  const isSecure = process.env.FORCE_SECURE_COOKIES === "true" || url.protocol === "https:"
 
   // Set a short-lived state cookie for CSRF protection
   cookieStore.set("discord_oauth_state", state, {
     httpOnly: true,
-    secure: isSecure, // Only require HTTPS when actually using HTTPS
+    secure: isSecure,
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 10, // 10 minutes
   })
 
-  const origin = `${url.protocol}//${url.host}`
+  const origin = process.env.NEXT_PUBLIC_BASE_URL || `${url.protocol}//${url.host}`
   const redirectUri = process.env.DISCORD_REDIRECT_URI || `${origin}/api/auth/discord/callback`
 
   const clientId = process.env.DISCORD_CLIENT_ID
@@ -36,6 +36,8 @@ export async function GET(req: Request) {
     state,
     prompt: "consent",
   })
+
+  console.log("[v0] Discord OAuth initiated - state:", state, "redirectUri:", redirectUri, "isSecure:", isSecure)
 
   const authorizeUrl = `https://discord.com/api/oauth2/authorize?${params.toString()}`
   return Response.redirect(authorizeUrl, 302)
