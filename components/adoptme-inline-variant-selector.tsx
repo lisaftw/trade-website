@@ -15,6 +15,7 @@ interface InlineVariantSelectorProps {
     value_mf?: number | string | null
     value_mr?: number | string | null
     value_mfr?: number | string | null
+    rap_value?: number | string | null
   }
   onSelect: (variant: string, value: number) => void
   onQuantityChange?: (quantity: number) => void
@@ -104,6 +105,7 @@ export function AdoptMeInlineVariantSelector({
         variantLabel = "N"
       }
     } else {
+      // Normal pet (not Neon or Mega)
       if (hasF && hasR) {
         variantKey = "value_fr"
         variantLabel = "FR"
@@ -114,13 +116,23 @@ export function AdoptMeInlineVariantSelector({
         variantKey = "value_r"
         variantLabel = "R"
       } else {
-        variantKey = "value_fr"
-        variantLabel = "FR"
+        variantKey = "rap_value"
+        variantLabel = "Base"
       }
     }
 
     const value = item[variantKey]
-    const numValue = value != null ? (typeof value === "string" ? Number.parseFloat(value) : value) : 0
+    let numValue = value != null ? (typeof value === "string" ? Number.parseFloat(value) : value) : 0
+    
+    // If the specific variant value is not available, try to use rap_value as fallback
+    if ((!numValue || numValue === 0) && variantKey !== "rap_value" && item.rap_value) {
+      const rapValue = typeof item.rap_value === "string" ? Number.parseFloat(item.rap_value) : item.rap_value
+      if (!isNaN(rapValue) && rapValue > 0) {
+        numValue = rapValue
+        console.log(`[v0] Variant ${variantLabel} not available, using rap_value: ${numValue}`)
+      }
+    }
+    
     const finalValue = !isNaN(numValue) && numValue > 0 ? numValue : 0
 
     onSelect(variantLabel, finalValue)
