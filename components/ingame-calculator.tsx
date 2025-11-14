@@ -112,44 +112,36 @@ export function IngameCalculator() {
 
   const addItem = useCallback(
     (item: GameItem) => {
-      const defaultVariant = game === "Adopt Me" ? "FR" : undefined
-
-      const rawDefaultValue =
-        game === "Adopt Me"
-          ? item.rap_value && item.rap_value > 0
-            ? item.rap_value // Use rap_value first for eggs
-            : item.value_fr || item.value_n || item.value_f || item.value_r || item.value
-          : item.value
-
-      const defaultValue =
-        typeof rawDefaultValue === "string" ? Number.parseFloat(rawDefaultValue) || 0 : rawDefaultValue || 0
-
-      console.log("[v0] Adding item:", item.name, "with value:", defaultValue, "from:", {
-        rap_value: item.rap_value,
-        value_fr: item.value_fr,
-        value_n: item.value_n,
-        value_f: item.value_f,
-        value_r: item.value_r,
-        value: item.value,
-      })
-
-      if (defaultValue === 0) {
-        console.warn("[v0] WARNING: Item", item.name, "has no value set in database")
-      }
-
       const hasVariants =
         (item.value_fr && item.value_fr > 0) ||
         (item.value_f && item.value_f > 0) ||
         (item.value_r && item.value_r > 0) ||
         (item.value_n && item.value_n > 0)
-      const itemType = hasVariants ? "pet" : "egg"
+      
+      const isEgg = !hasVariants
+
+      const rawDefaultValue =
+        game === "Adopt Me"
+          ? isEgg 
+            ? item.rap_value || 0  // Eggs use rap_value
+            : item.value_fr || item.value_n || item.value_f || item.value_r || item.value  // Pets use variant values
+          : item.value
+
+      const defaultValue =
+        typeof rawDefaultValue === "string" ? Number.parseFloat(rawDefaultValue) || 0 : rawDefaultValue || 0
+
+      console.log("[v0] Adding item:", item.name, "isEgg:", isEgg, "value:", defaultValue)
+
+      if (defaultValue === 0) {
+        console.warn("[v0] WARNING: Item", item.name, "has no value set in database")
+      }
 
       const newItem = {
         ...item,
         id: `${item.id}-${Date.now()}`,
-        variant: hasVariants ? defaultVariant : undefined, // No variant for eggs
+        variant: isEgg ? undefined : "FR", // No variant for eggs
         value: defaultValue,
-        itemType, // Track whether it's a pet or egg
+        itemType: isEgg ? "egg" : "pet", // Track item type
       }
       setSelectedItems((prev) => [...prev, newItem])
       setIsSearchOpen(false)

@@ -491,8 +491,8 @@ function AdoptMeItemButton({ item, onAddItem, onClose }: AdoptMeItemButtonProps)
     (item.value_n && Number(item.value_n) > 0)
   const isEgg = !hasVariants
 
-  const [selectedVariant, setSelectedVariant] = useState("FR")
-  const [selectedValue, setSelectedValue] = useState(() => item.value)
+  const [selectedVariant, setSelectedVariant] = useState(() => (isEgg ? undefined : "FR"))
+  const [selectedValue, setSelectedValue] = useState(() => (isEgg ? Number(item.rap_value) || 0 : item.value))
 
   const handleVariantSelect = (variant: string, value: number) => {
     setSelectedVariant(variant)
@@ -503,7 +503,7 @@ function AdoptMeItemButton({ item, onAddItem, onClose }: AdoptMeItemButtonProps)
     onAddItem({
       ...item,
       value: selectedValue,
-      variantLabel: selectedVariant,
+      variantLabel: isEgg ? undefined : selectedVariant,
     })
     onClose()
   }
@@ -534,7 +534,7 @@ function AdoptMeItemButton({ item, onAddItem, onClose }: AdoptMeItemButtonProps)
         <Button
           onClick={handleAdd}
           size="sm"
-          className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold ml-auto"
         >
           Add
         </Button>

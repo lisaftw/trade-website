@@ -7,6 +7,7 @@ import { useState, useEffect } from "react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { TradeInteractionModal } from "@/components/trade-interaction-modal"
 import Image from "next/image"
+import { useRouter } from 'next/navigation'
 
 interface Trade {
   id: string
@@ -41,6 +42,7 @@ interface TradeCardProps {
 
 export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false }: TradeCardProps) {
   const { user } = useUser()
+  const router = useRouter()
   const [isDeleting, setIsDeleting] = useState(false)
   const [showInteractionModal, setShowInteractionModal] = useState(false)
   const [offeringItems, setOfferingItems] = useState<ItemWithImage[]>([])
@@ -67,14 +69,17 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
       const response = await fetch(`/api/trades/${trade.id}`, {
         method: "DELETE",
       })
-      if (response.ok && onDelete) {
-        onDelete(trade.id)
-        window.location.reload()
+      if (response.ok) {
+        if (onDelete) {
+          onDelete(trade.id)
+        }
+        router.refresh()
+      } else {
+        throw new Error("Failed to delete trade")
       }
     } catch (error) {
       console.error("Error deleting trade:", error)
       alert("Failed to delete trade")
-    } finally {
       setIsDeleting(false)
     }
   }
