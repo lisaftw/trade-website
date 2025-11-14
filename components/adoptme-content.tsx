@@ -3,8 +3,15 @@
 import { useState, useEffect } from "react"
 import { ItemCard } from "./item-card"
 import { Input } from "./ui/input"
-import { Search, Loader2 } from "lucide-react"
+import { Search, Loader2 } from 'lucide-react'
 import { Button } from "./ui/button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select"
 
 interface AdoptMeItem {
   id: string
@@ -16,15 +23,19 @@ interface AdoptMeItem {
   pot?: string
   rap_value?: number
   value_fr?: number
+  value_f?: number
+  value_r?: number
+  value_n?: number
+  category?: string
 }
 
+const CATEGORIES = ["All", "Pets", "Eggs"]
 const RARITIES = ["All", "Common", "Uncommon", "Rare", "Ultra-Rare", "Legendary", "Mythic"]
 
 function formatValue(value: any): string {
   if (value === null || value === undefined) return "0"
   const num = typeof value === "string" ? Number.parseFloat(value) : Number(value)
   if (isNaN(num)) return "0"
-  // For whole numbers, use locale formatting; for decimals, show full precision
   return num % 1 === 0 ? num.toLocaleString() : num.toString()
 }
 
@@ -36,11 +47,31 @@ function getSortValue(item: AdoptMeItem): number {
   return item.rap_value || 0
 }
 
+function detectCategory(item: AdoptMeItem): string {
+  if (item.category) return item.category
+  
+  // Check if item has any variant values (F, R, N, FR, etc.)
+  const hasVariants = item.value_f || item.value_r || item.value_n || item.value_fr
+  
+  // Eggs have no variants
+  if (!hasVariants && item.name.toLowerCase().includes('egg')) {
+    return 'Eggs'
+  }
+  
+  // Pets have variants
+  if (hasVariants) {
+    return 'Pets'
+  }
+  
+  return 'Other'
+}
+
 export function AdoptMeContent() {
   const [items, setItems] = useState<AdoptMeItem[]>([])
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("All")
   const [selectedRarity, setSelectedRarity] = useState("All")
   const [hasMore, setHasMore] = useState(false)
   const [totalCount, setTotalCount] = useState(0)
@@ -76,7 +107,7 @@ export function AdoptMeContent() {
     }
   }
 
-  const normalizeSection = (section: string | null | undefined): string => {
+  const normalizeSection = (section: string | null | undefined): string {
     if (!section) return "Common"
 
     const normalized = section.trim().toLowerCase()
@@ -100,6 +131,13 @@ export function AdoptMeContent() {
 
     if (searchQuery) {
       filtered = filtered.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    }
+
+    if (selectedCategory !== "All") {
+      filtered = filtered.filter((item) => {
+        const itemCategory = detectCategory(item)
+        return itemCategory === selectedCategory
+      })
     }
 
     if (selectedRarity !== "All") {
@@ -155,39 +193,79 @@ export function AdoptMeContent() {
 
       <div className="space-y-4">
         <div className="flex flex-wrap justify-center gap-3 pb-2">
-          {RARITIES.map((rarity) => (
+          {CATEGORIES.map((category) => (
             <Button
-              key={rarity}
-              variant={selectedRarity === rarity ? "default" : "secondary"}
+              key={category}
+              variant={selectedCategory === category ? "default" : "outline"}
               size="lg"
-              onClick={() => setSelectedRarity(rarity)}
-              className="shrink-0 rounded-full px-6 text-base"
+              onClick={() => setSelectedCategory(category)}
+              className="shrink-0 rounded-full px-8 text-base font-semibold"
             >
-              {rarity}
+              {category}
             </Button>
           ))}
         </div>
 
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search pets..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
-          />
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+          <div className="w-full sm:w-64">
+            <Select value={selectedRarity} onValueChange={setSelectedRarity}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Filter by Rarity" />
+              </SelectTrigger>
+              <SelectContent>
+                {RARITIES.map((rarity) => (
+                  <SelectItem key={rarity} value={rarity}>
+                    {rarity}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="relative w-full sm:w-80">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search pets..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9"
+            />
+          </div>
         </div>
       </div>
 
       <div className="flex items-center gap-4 text-sm text-muted-foreground">
-        <span>Total: {totalCount} pets</span>
+        <span>Total: {totalCount} items</span>
         <span>•</span>
-        <span>Showing: {filteredCount} pets</span>
+        <span>Showing: {filteredCount} items</span>
+        {selectedCategory !== "All" && (
+          <>
+            <span>•</span>
+            <span>Category: {selectedCategory}</span>
+          </>
+        )}
+        {selectedRarity !== "All" && (
+          <>
+            <span>•</span>
+            <span>Rarity: {selectedRarity}</span>
+          </>
+        )}
       </div>
 
       {filteredCount === 0 ? (
         <div className="py-12 text-center">
-          <p className="text-muted-foreground">No pets found matching your filters.</p>
+          <p className="text-muted-foreground">No items found matching your filters.</p>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setSelectedCategory("All")
+              setSelectedRarity("All")
+              setSearchQuery("")
+            }}
+            className="mt-4"
+          >
+            Clear Filters
+          </Button>
         </div>
       ) : (
         <div className="space-y-12">
@@ -206,7 +284,7 @@ export function AdoptMeContent() {
             </div>
           ))}
 
-          {hasMore && !searchQuery && selectedRarity === "All" && (
+          {hasMore && !searchQuery && selectedRarity === "All" && selectedCategory === "All" && (
             <div className="flex justify-center pt-8">
               <Button onClick={handleLoadMore} disabled={loadingMore} size="lg" className="min-w-[200px]">
                 {loadingMore ? (
