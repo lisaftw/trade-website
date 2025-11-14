@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import Link from "next/link"
-import { ArrowLeft, AlertCircle } from "lucide-react"
+import { ArrowLeft, AlertCircle } from 'lucide-react'
 
 const errorMessages: Record<string, string> = {
   oauth_denied: "You denied the Discord authorization request.",
@@ -12,6 +12,7 @@ const errorMessages: Record<string, string> = {
   user_fetch_failed: "Failed to fetch your Discord profile. Please try again.",
   database_error: "Database error occurred. Please try again later.",
   unexpected_error: "An unexpected error occurred. Please try again or contact support.",
+  cookies_required: "Please accept cookies to sign in with Discord. Cookies are essential for authentication.",
 }
 
 export default function LoginPage({
