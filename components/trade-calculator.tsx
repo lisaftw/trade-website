@@ -244,7 +244,7 @@ function TradeGrid({
             const frValue = typeof item.value_fr === "string" ? Number.parseFloat(item.value_fr) : item.value_fr
             displayValue = !isNaN(frValue) && frValue > 0 ? frValue : item.value || 0
           } else {
-            displayValue = item.rap_value || item.value || 0
+            displayValue = Number(item.rap_value) || 0
           }
 
           return {

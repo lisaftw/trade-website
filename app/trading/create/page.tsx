@@ -3,7 +3,7 @@
 import React from "react"
 import { useState } from "react"
 import { useRouter } from 'next/navigation'
-import { ChevronDown, Plus, X, Search } from 'lucide-react'
+import { ChevronDown, Plus, X, Search, Sparkles } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -240,8 +240,9 @@ export default function CreateTradePage() {
                   <Button
                     onClick={handlePublish}
                     disabled={isSubmitting || !selectedGame || offering.length === 0 || requesting.length === 0}
-                    className="btn-neo w-full py-6 text-lg font-bold"
+                    className="btn-neo w-full py-6 text-lg font-bold bg-gradient-to-r from-primary via-primary/90 to-primary/80 hover:from-primary/90 hover:via-primary hover:to-primary transition-all duration-300 shadow-lg hover:shadow-primary/50 gap-2"
                   >
+                    <Sparkles className="h-5 w-5" />
                     {isSubmitting ? "Publishing..." : "Publish Trade Ad"}
                   </Button>
                 </div>
