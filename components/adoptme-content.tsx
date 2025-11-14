@@ -178,13 +178,42 @@ export function AdoptMeContent() {
       </div>
 
       <div className="space-y-4">
-        <Tabs value={selectedCategory} onValueChange={(value) => setSelectedCategory(value as "all" | "pets" | "eggs")}>
-          <TabsList className="grid w-full max-w-md grid-cols-3">
-            <TabsTrigger value="all">All Items</TabsTrigger>
-            <TabsTrigger value="pets">Pets</TabsTrigger>
-            <TabsTrigger value="eggs">Eggs</TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <div className="relative max-w-md">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="Search pets..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9"
+          />
+        </div>
+
+        <div className="flex flex-wrap gap-3">
+          <Button
+            variant={selectedCategory === "all" ? "default" : "outline"}
+            size="lg"
+            onClick={() => setSelectedCategory("all")}
+            className="shrink-0 rounded-lg px-6"
+          >
+            All Items
+          </Button>
+          <Button
+            variant={selectedCategory === "pets" ? "default" : "outline"}
+            size="lg"
+            onClick={() => setSelectedCategory("pets")}
+            className="shrink-0 rounded-lg px-6"
+          >
+            Pets
+          </Button>
+          <Button
+            variant={selectedCategory === "eggs" ? "default" : "outline"}
+            size="lg"
+            onClick={() => setSelectedCategory("eggs")}
+            className="shrink-0 rounded-lg px-6"
+          >
+            Eggs
+          </Button>
+        </div>
 
         <div className="flex flex-wrap justify-center gap-3 pb-2">
           {RARITIES.map((rarity) => (
@@ -198,16 +227,6 @@ export function AdoptMeContent() {
               {rarity}
             </Button>
           ))}
-        </div>
-
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search pets..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
-          />
         </div>
       </div>
 
