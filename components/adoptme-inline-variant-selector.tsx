@@ -42,8 +42,7 @@ export function AdoptMeInlineVariantSelector({
   onValueChange,
 }: InlineVariantSelectorProps) {
   const [selectedVariants, setSelectedVariants] = useState<Set<Variant>>(() => {
-    // Start with no variants selected to show base value
-    return new Set<Variant>()
+    return new Set<Variant>(["F", "R"])
   })
   const [quantity, setQuantity] = useState(initialQuantity)
 

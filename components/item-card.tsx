@@ -78,11 +78,11 @@ function getDisplayValue(item: ItemCardProps["item"]): number {
     return toNumber(item.rap_value)
   }
   
-  // For pets, use value_fr if available, otherwise rap_value
   if (item.game === "Adopt Me" && item.value_fr !== null && item.value_fr !== undefined) {
     const frValue = toNumber(item.value_fr)
     if (frValue > 0) return frValue
   }
+  
   return toNumber(item.rap_value)
 }
 
