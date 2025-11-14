@@ -47,10 +47,10 @@ interface ExcelRow {
   Demand?: string
   Base?: number
   FR?: number
+  F?: number
   R?: number
-  H?: number
   NFR?: number
-  NP?: number
+  NF?: number
   NR?: number
   N?: number
   MFR?: number
@@ -68,10 +68,10 @@ interface AdoptMePetItem {
   rarity: string
   demand: string
   value_fr: number
+  value_f: number
   value_r: number
-  value_h: number
   value_nfr: number
-  value_np: number
+  value_nf: number
   value_nr: number
   value_n: number
   value_mfr: number
@@ -141,10 +141,10 @@ async function importAdoptMePets() {
         rarity: row.Rarity || "",
         demand: row.Demand || "",
         value_fr: Number(row.FR) || 0,
+        value_f: Number(row.F) || 0,
         value_r: Number(row.R) || 0,
-        value_h: Number(row.H) || 0,
         value_nfr: Number(row.NFR) || 0,
-        value_np: Number(row.NP) || 0,
+        value_nf: Number(row.NF) || 0,
         value_nr: Number(row.NR) || 0,
         value_n: Number(row.N) || 0,
         value_mfr: Number(row.MFR) || 0,

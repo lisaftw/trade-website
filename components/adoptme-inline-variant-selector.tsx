@@ -15,6 +15,7 @@ interface InlineVariantSelectorProps {
     value_mf?: number | string | null
     value_mr?: number | string | null
     value_mfr?: number | string | null
+    rap_value?: number | string | null  // Added rap_value for base pets
   }
   onSelect: (variant: string, value: number) => void
   onQuantityChange?: (quantity: number) => void
@@ -119,8 +120,8 @@ export function AdoptMeInlineVariantSelector({
         variantKey = "value_r"
         variantLabel = "R"
       } else {
-        variantKey = "value_n"
-        variantLabel = "N"
+        variantKey = "rap_value"
+        variantLabel = "Base"
       }
     }
 
@@ -134,10 +135,11 @@ export function AdoptMeInlineVariantSelector({
       rawValue: value, 
       finalValue,
       allValues: {
-        N: item.value_n,
+        Base: item.rap_value,
         F: item.value_f,
         R: item.value_r,
         FR: item.value_fr,
+        N: item.value_n,
         NF: item.value_nf,
         NR: item.value_nr,
         NFR: item.value_nfr,
