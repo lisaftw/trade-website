@@ -12,7 +12,7 @@ export async function GET(req: Request) {
   cookieStore.set("discord_oauth_state", state, {
     httpOnly: true,
     secure: isSecure,
-    sameSite: "none",
+    sameSite: "lax", // Changed from "none" to "lax" for OAuth compatibility
     path: "/",
     maxAge: 60 * 10, // 10 minutes
   })
@@ -36,7 +36,7 @@ export async function GET(req: Request) {
     prompt: "consent",
   })
 
-  console.log("[v0] Discord OAuth initiated - state:", state, "redirectUri:", redirectUri, "isSecure:", isSecure)
+  console.log("[v0] Discord OAuth initiated - state:", state, "redirectUri:", redirectUri, "isSecure:", isSecure, "cookieSet: discord_oauth_state")
 
   const authorizeUrl = `https://discord.com/api/oauth2/authorize?${params.toString()}`
   return Response.redirect(authorizeUrl, 302)
