@@ -382,7 +382,7 @@ function TradeGrid({
 
       <div className="flex items-center justify-between px-0.5 md:px-1">
         <span className="text-xs md:text-sm font-bold tracking-wide text-white">VALUE</span>
-        <span className="text-xs md:text-sm font-bold text-white">{total.toFixed(2)}</span>
+        <span className="text-xs md:text-sm font-bold text-white">{total.toFixed(3)}</span>
       </div>
 
       {isActive && (
@@ -533,7 +533,7 @@ function AdoptMeItemButton({ item, onAddItem, isAdoptMe }: AdoptMeItemButtonProp
   }
 
   return (
-    <div className="rounded-lg border border-gray-700 bg-gray-800 p-3 transition-all hover:border-gray-600">
+    <div className="rounded-lg border border-gray-700 bg-card p-3 transition-all hover:border-gray-600">
       <div className="flex items-start gap-3">
         <Image
           src={item.imageUrl || "/itemplaceholder.png"}
@@ -559,9 +559,7 @@ function AdoptMeItemButton({ item, onAddItem, isAdoptMe }: AdoptMeItemButtonProp
         <div className="flex flex-col items-end gap-2">
           <p className="text-base font-bold text-white whitespace-nowrap">
             {typeof selectedValue === "number" && !isNaN(selectedValue)
-              ? selectedValue % 1 === 0
-                ? selectedValue.toLocaleString()
-                : selectedValue.toString()
+              ? selectedValue.toFixed(3)
               : "0"}
           </p>
           <button

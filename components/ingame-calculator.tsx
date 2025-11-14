@@ -57,7 +57,7 @@ export function IngameCalculator() {
     return sum + itemValue
   }, 0)
 
-  console.log("[v0] Total value calculated:", totalValue, "from", selectedItems.length, "items")
+  console.log("[v0] Total value calculated:", totalValue.toFixed(3), "from", selectedItems.length, "items")
 
   const handleGameSelect = (selectedGame: "MM2" | "SAB" | "Adopt Me") => {
     if (selectedGame === "SAB") {
@@ -367,7 +367,7 @@ export function IngameCalculator() {
                   {/* Item Info */}
                   <div className="mt-1 space-y-0.5 text-center">
                     <p className="truncate text-[9px] font-semibold leading-tight text-white">{item.name}</p>
-                    <p className="text-[8px] text-gray-400">{Number(item.value || 0).toString()}</p>
+                    <p className="text-[8px] text-gray-400">{Number(item.value || 0).toFixed(3)}</p>
 
                     {game === "Adopt Me" && item.itemType === "pet" && (
                       <VariantSelector itemId={item.id} onVariantChange={updateItemVariant} />
@@ -381,7 +381,7 @@ export function IngameCalculator() {
           {/* Total Value Display */}
           <div className="rounded-xl border-2 border-brand/50 bg-brand/10 p-6 text-center">
             <p className="text-sm text-gray-400">Total Value</p>
-            <p className="mt-2 text-4xl font-bold text-brand">{Number(totalValue || 0).toString()}</p>
+            <p className="mt-2 text-4xl font-bold text-brand">{Number(totalValue || 0).toFixed(3)}</p>
             <p className="mt-1 text-sm text-gray-400">{selectedItems.length} items</p>
           </div>
 
@@ -475,7 +475,7 @@ export function IngameCalculator() {
                         <p className="font-medium text-white">{item.name}</p>
                         <p className="text-sm text-gray-400">{item.game}</p>
                       </div>
-                      <p className="text-lg font-bold text-white">{Number(item.value || 0).toString()}</p>
+                      <p className="text-lg font-bold text-white">{Number(item.value || 0).toFixed(3)}</p>
                     </button>
                   ))}
                 </>

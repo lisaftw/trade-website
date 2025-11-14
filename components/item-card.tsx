@@ -37,7 +37,8 @@ function toNumber(value: any): number {
 
 function formatValue(value: any): string {
   const num = toNumber(value)
-  return num % 1 === 0 ? num.toLocaleString() : num.toString()
+  if (num === 0) return "0"
+  return num % 1 === 0 ? num.toLocaleString() : num.toFixed(3)
 }
 
 function getActualImageUrl(imageUrl: string): string {
