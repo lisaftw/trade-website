@@ -5,8 +5,8 @@ export type Trade = {
   id: string
   discord_id: string
   game: string
-  offering: string
-  requesting: string
+  offering: string[]
+  requesting: string[]
   notes: string | null
   status: string
   created_at: string
@@ -161,4 +161,34 @@ export async function updateTrade(
   cache.deletePattern("trades:*")
 
   return result.rows[0] || null
+}
+
+/**
+ * Get count of active trades for a user
+ */
+export async function getActiveTradesCount(discordId: string): Promise<number> {
+  const result = await query<{ count: string }>(
+    `SELECT COUNT(*) as count FROM trades 
+     WHERE discord_id = $1 AND status = 'active'`,
+    [discordId],
+  )
+  return parseInt(result.rows[0]?.count || "0", 10)
+}
+
+/**
+ * Delete expired trades (older than 12 hours)
+ */
+export async function deleteExpiredTrades(): Promise<number> {
+  const result = await query(
+    `DELETE FROM trades 
+     WHERE status = 'active' 
+     AND created_at < NOW() - INTERVAL '12 hours'
+     RETURNING id`,
+    [],
+  )
+
+  // Invalidate trades cache
+  cache.deletePattern("trades:*")
+
+  return result.rowCount || 0
 }

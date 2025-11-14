@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getSession } from "@/lib/auth/session-postgres"
-import { createTrade, getActiveTrades } from "@/lib/db/queries/trades"
+import { createTrade, getActiveTrades, getActiveTradesCount, deleteExpiredTrades } from "@/lib/db/queries/trades"
 import { getProfile } from "@/lib/db/queries/profiles"
 import { moderateContent } from "@/lib/utils/content-moderation"
 
@@ -15,6 +15,15 @@ export async function POST(request: NextRequest) {
     if (!session) {
       console.error("[v0] Trade creation failed: No authenticated user")
       return NextResponse.json({ error: "You must be logged in to create a trade" }, { status: 401 })
+    }
+
+    const activeCount = await getActiveTradesCount(session.discordId)
+    if (activeCount >= 3) {
+      console.error("[v0] Trade creation failed: User has reached maximum active trades")
+      return NextResponse.json(
+        { error: "You can only have 3 active trades at once. Please delete an existing trade before creating a new one." },
+        { status: 429 },
+      )
     }
 
     const body = await request.json()
@@ -63,6 +72,11 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    const deletedCount = await deleteExpiredTrades()
+    if (deletedCount > 0) {
+      console.log(`[v0] Deleted ${deletedCount} expired trades`)
+    }
+
     const { searchParams } = new URL(request.url)
     const game = searchParams.get("game")
 
