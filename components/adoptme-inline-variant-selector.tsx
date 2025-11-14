@@ -114,14 +114,17 @@ export function AdoptMeInlineVariantSelector({
         variantKey = "value_r"
         variantLabel = "R"
       } else {
-        variantKey = "value_fr"
-        variantLabel = "FR"
+        // Default to base variant (N) when nothing is selected
+        variantKey = "value_n"
+        variantLabel = "N"
       }
     }
 
     const value = item[variantKey]
     const numValue = value != null ? (typeof value === "string" ? Number.parseFloat(value) : value) : 0
     const finalValue = !isNaN(numValue) && numValue > 0 ? numValue : 0
+
+    console.log("[v0] Variant selection:", { variantLabel, variantKey, rawValue: value, finalValue })
 
     onSelect(variantLabel, finalValue)
 
