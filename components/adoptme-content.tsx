@@ -107,7 +107,7 @@ export function AdoptMeContent() {
     }
   }
 
-  const normalizeSection = (section: string | null | undefined): string {
+  function normalizeSection(section: string | null | undefined): string {
     if (!section) return "Common"
 
     const normalized = section.trim().toLowerCase()
