@@ -27,7 +27,6 @@ interface TradeItem {
   value_mf?: number | string | null
   value_mr?: number | string | null
   value_mfr?: number | string | null
-  rap_value?: number | string | null
 }
 
 export function TradeCalculator() {
@@ -79,7 +78,6 @@ export function TradeCalculator() {
       value_mr: item.value_mr,
       value_mfr: item.value_mfr,
       variantLabel: item.variantLabel,
-      rap_value: item.rap_value,
     }
     if (column === "yours") {
       setYourItems((prev) => [...prev, newItem])
@@ -286,7 +284,6 @@ function TradeGrid({
             value_mf: item.value_mf,
             value_mr: item.value_mr,
             value_mfr: item.value_mfr,
-            rap_value: item.rap_value,
           }
         })
 
@@ -684,8 +681,8 @@ function CompactVariantSelector({ item, onSelect, selectedVariant }: CompactVari
         variantKey = "value_r"
         variantLabel = "R"
       } else {
-        variantKey = "rap_value"
-        variantLabel = "Base"
+        variantKey = "value_fr"
+        variantLabel = "FR"
       }
     }
 

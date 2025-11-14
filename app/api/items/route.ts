@@ -10,33 +10,21 @@ export async function GET(request: NextRequest) {
     const q = searchParams.get("q")?.toLowerCase() || ""
     const limit = Number.parseInt(searchParams.get("limit") || "1000")
     const offset = Number.parseInt(searchParams.get("offset") || "0")
-    const category = searchParams.get("category") || undefined
 
     const items = q ? await searchItems(q, game) : await getItems(game)
 
-    const categorizedItems = items.map((item: any) => {
-      if (!item.category) {
-        const hasVariants = item.value_f || item.value_r || item.value_n || item.value_fr
-        if (!hasVariants && item.name?.toLowerCase().includes('egg')) {
-          item.category = 'Eggs'
-        } else if (hasVariants) {
-          item.category = 'Pets'
-        } else {
-          item.category = 'Other'
-        }
-      }
-      return item
-    })
-
-    const filtered = category 
-      ? categorizedItems.filter((item: any) => item.category === category)
-      : categorizedItems
-
-    const paginatedItems = filtered.slice(offset, offset + limit)
-    const totalCount = filtered.length
+    const paginatedItems = items.slice(offset, offset + limit)
+    const totalCount = items.length
 
     const transformedItems = paginatedItems.map((item: any) => {
       const imageUrl = item.image_url || "/placeholder.svg?height=200&width=200"
+
+      console.log("[v0] API transforming item:", item.name, {
+        value_f: item.value_f,
+        value_r: item.value_r,
+        value_n: item.value_n,
+        value_m: item.value_m,
+      })
 
       return {
         id: item.id,
@@ -56,18 +44,18 @@ export async function GET(request: NextRequest) {
         rarity: item.rarity,
         demand: item.demand,
         pot: item.pot,
-        category: item.category,
         value_f: item.value_f ?? null,
         value_r: item.value_r ?? null,
         value_n: item.value_n ?? null,
         value_fr: item.value_fr ?? null,
-        value_nf: item.value_nf ?? null,
-        value_nr: item.value_nr ?? null,
+        value_h: item.value_h ?? null,
         value_nfr: item.value_nfr ?? null,
-        value_m: item.value_m ?? null,
+        value_np: item.value_np ?? null,
+        value_nr: item.value_nr ?? null,
+        value_mfr: item.value_mfr ?? null,
         value_mf: item.value_mf ?? null,
         value_mr: item.value_mr ?? null,
-        value_mfr: item.value_mfr ?? null,
+        value_m: item.value_m ?? null,
       }
     })
 

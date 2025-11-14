@@ -40,6 +40,9 @@ const VARIANT_CONFIG = {
   M: { label: "M", color: "bg-purple-500" },
 }
 
+const CATEGORIES = ["All", "Pets", "Eggs"] as const
+type Category = typeof CATEGORIES[number]
+
 export function IngameCalculator() {
   const [selectedItems, setSelectedItems] = useState<GameItem[]>([])
   const [searchQuery, setSearchQuery] = useState("")
@@ -48,6 +51,8 @@ export function IngameCalculator() {
   const [allItems, setAllItems] = useState<GameItem[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+
+  const [selectedCategory, setSelectedCategory] = useState<Category>("All")
 
   const totalValue = selectedItems.reduce((sum, item) => {
     const itemValue = Number(item.value) || 0
@@ -220,9 +225,31 @@ export function IngameCalculator() {
     )
   }, [])
 
-  const displayedItems = searchQuery.trim()
-    ? allItems.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    : allItems
+  const categorizeItem = (item: GameItem): "Pet" | "Egg" => {
+    const hasVariants =
+      (item.value_fr && Number(item.value_fr) > 0) ||
+      (item.value_f && Number(item.value_f) > 0) ||
+      (item.value_r && Number(item.value_r) > 0) ||
+      (item.value_n && Number(item.value_n) > 0)
+    return hasVariants ? "Pet" : "Egg"
+  }
+
+  const displayedItems = allItems
+    .filter((item) => {
+      // Search filter
+      if (searchQuery.trim() && !item.name.toLowerCase().includes(searchQuery.toLowerCase())) {
+        return false
+      }
+      
+      // Category filter
+      if (selectedCategory !== "All") {
+        const itemCategory = categorizeItem(item)
+        if (selectedCategory === "Pets" && itemCategory !== "Pet") return false
+        if (selectedCategory === "Eggs" && itemCategory !== "Egg") return false
+      }
+      
+      return true
+    })
 
   const visibleGames = ["Adopt Me"] as const
 
@@ -388,12 +415,32 @@ export function IngameCalculator() {
                 onClick={() => {
                   setIsSearchOpen(false)
                   setSearchQuery("")
+                  setSelectedCategory("All")
                 }}
                 className="rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
+
+            {game === "Adopt Me" && (
+              <div className="mb-4 flex gap-2">
+                {CATEGORIES.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={cn(
+                      "flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all",
+                      selectedCategory === category
+                        ? "bg-primary text-primary-foreground shadow-lg"
+                        : "bg-gray-800 text-gray-400 hover:bg-gray-750 hover:text-white"
+                    )}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            )}
 
             <div className="relative mb-4">
               <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
@@ -414,12 +461,15 @@ export function IngameCalculator() {
                 </div>
               ) : displayedItems.length === 0 ? (
                 <div className="py-12 text-center text-gray-400">
-                  {searchQuery ? `No items found matching "${searchQuery}"` : `No items available for ${game}`}
+                  {searchQuery || selectedCategory !== "All"
+                    ? `No ${selectedCategory === "All" ? "" : selectedCategory.toLowerCase()} found`
+                    : `No items available for ${game}`}
                 </div>
               ) : (
                 <>
                   <div className="mb-2 text-center text-sm text-gray-400">
                     Showing {displayedItems.length} {displayedItems.length === 1 ? "item" : "items"}
+                    {selectedCategory !== "All" && ` in ${selectedCategory}`}
                   </div>
                   {displayedItems.map((item) => (
                     <button
