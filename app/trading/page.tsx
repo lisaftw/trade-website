@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Plus, Search, MessageSquare, Home } from "lucide-react"
+import { Plus, Search, MessageSquare, Home } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import TradeCard from "@/components/trade-card"
@@ -13,7 +13,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { PageBackground } from "@/components/page-background"
 import { RobloxDecos } from "@/components/roblox-decos"
 import { createClient } from "@/lib/supabase/client"
-import { useRouter } from "next/navigation"
+import { useRouter } from 'next/navigation'
 
 export const dynamic = "force-dynamic"
 
@@ -37,26 +37,33 @@ export default function TradingPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchTrades = async () => {
-      try {
-        setError(null)
-        const response = await fetch("/api/trades")
-        if (!response.ok) {
-          throw new Error(`Failed to fetch trades: ${response.status}`)
-        }
-        const data = await response.json()
-        setTrades(Array.isArray(data) ? data : [])
-      } catch (error) {
-        console.error("Error fetching trades:", error)
-        setError("Failed to load trades")
-        setTrades([])
-      } finally {
-        setLoading(false)
+  const fetchTrades = async () => {
+    try {
+      setError(null)
+      const response = await fetch("/api/trades")
+      if (!response.ok) {
+        throw new Error(`Failed to fetch trades: ${response.status}`)
       }
+      const data = await response.json()
+      setTrades(Array.isArray(data) ? data : [])
+    } catch (error) {
+      console.error("Error fetching trades:", error)
+      setError("Failed to load trades")
+      setTrades([])
+    } finally {
+      setLoading(false)
     }
+  }
 
+  useEffect(() => {
     fetchTrades()
+
+    const intervalId = setInterval(() => {
+      fetchTrades()
+    }, 60000)
+
+    // Cleanup interval on unmount
+    return () => clearInterval(intervalId)
   }, [])
 
   async function startConversation(traderId: string) {

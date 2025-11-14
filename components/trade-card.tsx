@@ -1,6 +1,6 @@
 "use client"
 
-import { MessageCircle, ArrowRightLeft, MoreVertical, Trash2, Edit2 } from "lucide-react"
+import { MessageCircle, ArrowRightLeft, MoreVertical, Trash2, Edit2 } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { useUser } from "@/lib/hooks/use-user"
 import { useState, useEffect } from "react"
@@ -69,6 +69,7 @@ export default function TradeCard({ trade, onDelete, onEdit, isOwnTrade = false 
       })
       if (response.ok && onDelete) {
         onDelete(trade.id)
+        window.location.reload()
       }
     } catch (error) {
       console.error("Error deleting trade:", error)
