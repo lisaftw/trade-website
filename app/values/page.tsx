@@ -3,7 +3,6 @@ import { SiteFooter } from "@/components/site-footer"
 import { PageBackground } from "@/components/page-background"
 import { ScrollParallax } from "@/components/scroll-parallax"
 import { ValuesContent } from "@/components/values-content"
-import { AuthGate } from "@/components/auth-gate"
 import { BackButton } from "@/components/back-button"
 import { ItemsProvider } from "@/lib/contexts/items-context"
 import { ItemsLoadingOverlay } from "@/components/items-loading-overlay"
@@ -30,9 +29,7 @@ export default function ValuesPage() {
             </p>
           </div>
 
-          <AuthGate feature="live trading values">
-            <ValuesContent />
-          </AuthGate>
+          <ValuesContent />
 
           <SiteFooter />
         </div>
