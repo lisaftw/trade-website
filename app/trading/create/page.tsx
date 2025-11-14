@@ -20,6 +20,8 @@ import { cn } from "@/lib/utils"
 import { AdoptMeInlineVariantSelector } from "@/components/adoptme-inline-variant-selector"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { formatValue } from "@/lib/utils/format-value"
+import { ItemsProvider } from "@/lib/contexts/items-context"
+import { ItemsLoadingOverlay } from "@/components/items-loading-overlay"
 
 const GAMES = ["MM2", "SAB", "Adopt Me"]
 const VISIBLE_GAMES = ["Adopt Me"]
@@ -100,161 +102,164 @@ export default function CreateTradePage() {
   }
 
   return (
-    <AuthGate feature="create trades">
-      <main className="relative min-h-dvh bg-background">
-        <PageBackground />
-        <div className="relative z-[2] mx-auto w-full max-w-7xl px-4 py-8 md:py-12">
-          <SiteHeader />
-          <div className="relative">
-            <RobloxDecos />
-            <div className="relative z-[1]">
-              <CalculatorSkin>
-                <div className="space-y-6">
-                  {/* Header */}
-                  <div className="text-center">
-                    <h1 className="text-3xl font-bold tracking-wide md:text-4xl">Create Trade Ad</h1>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      Set up your trade offer and find the perfect match
-                    </p>
+    <ItemsProvider>
+      <AuthGate feature="create trades">
+        <main className="relative min-h-dvh bg-background">
+          <PageBackground />
+          <div className="relative z-[2] mx-auto w-full max-w-7xl px-4 py-8 md:py-12">
+            <SiteHeader />
+            <div className="relative">
+              <RobloxDecos />
+              <div className="relative z-[1]">
+                <CalculatorSkin>
+                  <div className="space-y-6">
+                    {/* Header */}
+                    <div className="text-center">
+                      <h1 className="text-3xl font-bold tracking-wide md:text-4xl">Create Trade Ad</h1>
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        Set up your trade offer and find the perfect match
+                      </p>
+                    </div>
+
+                    <Card className="card-neo p-6 border-2 border-primary/30">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-primary">
+                          1
+                        </div>
+                        <label className="text-base font-bold">Select Game</label>
+                      </div>
+                      <div className="relative z-50">
+                        <button
+                          onClick={() => setGameDropdownOpen(!gameDropdownOpen)}
+                          className="btn-neo w-full justify-between px-4 py-3 text-base font-semibold"
+                        >
+                          <span className={selectedGame ? "text-foreground" : "text-muted-foreground"}>
+                            {selectedGame || "Choose a game..."}
+                          </span>
+                          <ChevronDown
+                            className={`h-5 w-5 transition-transform ${gameDropdownOpen ? "rotate-180" : ""}`}
+                          />
+                        </button>
+                        {gameDropdownOpen && (
+                          <div className="absolute top-full left-0 right-0 mt-2 z-50 space-y-2 rounded-lg border border-border bg-card/95 p-2 backdrop-blur-lg shadow-xl">
+                            {VISIBLE_GAMES.map((game) => (
+                              <button
+                                key={game}
+                                onClick={() => {
+                                  setSelectedGame(game)
+                                  setGameDropdownOpen(false)
+                                }}
+                                className={cn(
+                                  "w-full rounded-lg px-4 py-3 text-left font-semibold transition-all",
+                                  selectedGame === game
+                                    ? "bg-primary/20 text-primary border-2 border-primary/50"
+                                    : "bg-foreground/5 text-foreground hover:bg-foreground/10 border border-transparent",
+                                )}
+                              >
+                                {game}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </Card>
+
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-primary font-bold">
+                          2
+                        </div>
+                        <h2 className="text-xl font-bold">Set Up Your Trade</h2>
+                      </div>
+                      <div className="grid gap-6 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2 rounded-lg bg-green-500/10 border border-green-500/30 px-4 py-2">
+                            <div className="h-2 w-2 rounded-full bg-green-500" />
+                            <h3 className="font-bold text-green-400">What I'm Offering</h3>
+                          </div>
+                          <TradeColumn
+                            title="I Have"
+                            items={offering}
+                            onRemove={(id) => setOffering(offering.filter((item) => item.id !== id))}
+                            onAddItem={(item) => setOffering([...offering, { ...item, id: `${item.id}-${Date.now()}` }])}
+                            selectedGame={selectedGame}
+                            columnType="offering"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2 rounded-lg bg-blue-500/10 border border-blue-500/30 px-4 py-2">
+                            <div className="h-2 w-2 rounded-full bg-blue-500" />
+                            <h3 className="font-bold text-blue-400">What I'm Requesting</h3>
+                          </div>
+                          <TradeColumn
+                            title="I Want"
+                            items={requesting}
+                            onRemove={(id) => setRequesting(requesting.filter((item) => item.id !== id))}
+                            onAddItem={(item) =>
+                              setRequesting([...requesting, { ...item, id: `${item.id}-${Date.now()}` }])
+                            }
+                            selectedGame={selectedGame}
+                            columnType="requesting"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Trade Summary */}
+                    <Card className="card-neo p-6">
+                      <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+                        <div className="text-center md:text-left">
+                          <p className="text-sm text-muted-foreground">Trade Summary</p>
+                          <p className="mt-1 text-lg font-semibold">
+                            {offering.length} items for {requesting.length} items
+                          </p>
+                        </div>
+                        <div className="flex gap-8">
+                          <div className="text-center">
+                            <p className="text-xs text-muted-foreground">YOUR OFFER</p>
+                            <p className="mt-1 text-xl font-bold text-green-400">{formatValue(offeringTotal)}</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-xs text-muted-foreground">YOU WANT</p>
+                            <p className="mt-1 text-xl font-bold text-blue-400">{formatValue(requestingTotal)}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+
+                    {/* Notes */}
+                    <Card className="card-neo p-6">
+                      <label className="block text-sm font-semibold mb-3">
+                        Trade Notes <span className="text-muted-foreground font-normal">({notes.length}/100)</span>
+                      </label>
+                      <Textarea
+                        placeholder="Add any additional details about your trade..."
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value.slice(0, 100))}
+                        className="min-h-24 resize-none"
+                      />
+                    </Card>
+
+                    {/* Publish Button */}
+                    <Button
+                      onClick={handlePublish}
+                      disabled={isSubmitting || !selectedGame || offering.length === 0 || requesting.length === 0}
+                      className="btn-neo w-full py-6 text-lg font-bold bg-gradient-to-r from-primary via-primary/90 to-primary/80 hover:from-primary/90 hover:via-primary hover:to-primary transition-all duration-300 shadow-lg hover:shadow-primary/50 gap-2"
+                    >
+                      <Sparkles className="h-5 w-5" />
+                      {isSubmitting ? "Publishing..." : "Publish Trade Ad"}
+                    </Button>
                   </div>
-
-                  <Card className="card-neo p-6 border-2 border-primary/30">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-primary">
-                        1
-                      </div>
-                      <label className="text-base font-bold">Select Game</label>
-                    </div>
-                    <div className="relative z-50">
-                      <button
-                        onClick={() => setGameDropdownOpen(!gameDropdownOpen)}
-                        className="btn-neo w-full justify-between px-4 py-3 text-base font-semibold"
-                      >
-                        <span className={selectedGame ? "text-foreground" : "text-muted-foreground"}>
-                          {selectedGame || "Choose a game..."}
-                        </span>
-                        <ChevronDown
-                          className={`h-5 w-5 transition-transform ${gameDropdownOpen ? "rotate-180" : ""}`}
-                        />
-                      </button>
-                      {gameDropdownOpen && (
-                        <div className="absolute top-full left-0 right-0 mt-2 z-50 space-y-2 rounded-lg border border-border bg-card/95 p-2 backdrop-blur-lg shadow-xl">
-                          {VISIBLE_GAMES.map((game) => (
-                            <button
-                              key={game}
-                              onClick={() => {
-                                setSelectedGame(game)
-                                setGameDropdownOpen(false)
-                              }}
-                              className={cn(
-                                "w-full rounded-lg px-4 py-3 text-left font-semibold transition-all",
-                                selectedGame === game
-                                  ? "bg-primary/20 text-primary border-2 border-primary/50"
-                                  : "bg-foreground/5 text-foreground hover:bg-foreground/10 border border-transparent",
-                              )}
-                            >
-                              {game}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </Card>
-
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-primary font-bold">
-                        2
-                      </div>
-                      <h2 className="text-xl font-bold">Set Up Your Trade</h2>
-                    </div>
-                    <div className="grid gap-6 md:grid-cols-2">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2 rounded-lg bg-green-500/10 border border-green-500/30 px-4 py-2">
-                          <div className="h-2 w-2 rounded-full bg-green-500" />
-                          <h3 className="font-bold text-green-400">What I'm Offering</h3>
-                        </div>
-                        <TradeColumn
-                          title="I Have"
-                          items={offering}
-                          onRemove={(id) => setOffering(offering.filter((item) => item.id !== id))}
-                          onAddItem={(item) => setOffering([...offering, { ...item, id: `${item.id}-${Date.now()}` }])}
-                          selectedGame={selectedGame}
-                          columnType="offering"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2 rounded-lg bg-blue-500/10 border border-blue-500/30 px-4 py-2">
-                          <div className="h-2 w-2 rounded-full bg-blue-500" />
-                          <h3 className="font-bold text-blue-400">What I'm Requesting</h3>
-                        </div>
-                        <TradeColumn
-                          title="I Want"
-                          items={requesting}
-                          onRemove={(id) => setRequesting(requesting.filter((item) => item.id !== id))}
-                          onAddItem={(item) =>
-                            setRequesting([...requesting, { ...item, id: `${item.id}-${Date.now()}` }])
-                          }
-                          selectedGame={selectedGame}
-                          columnType="requesting"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Trade Summary */}
-                  <Card className="card-neo p-6">
-                    <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-                      <div className="text-center md:text-left">
-                        <p className="text-sm text-muted-foreground">Trade Summary</p>
-                        <p className="mt-1 text-lg font-semibold">
-                          {offering.length} items for {requesting.length} items
-                        </p>
-                      </div>
-                      <div className="flex gap-8">
-                        <div className="text-center">
-                          <p className="text-xs text-muted-foreground">YOUR OFFER</p>
-                          <p className="mt-1 text-xl font-bold text-green-400">{formatValue(offeringTotal)}</p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-xs text-muted-foreground">YOU WANT</p>
-                          <p className="mt-1 text-xl font-bold text-blue-400">{formatValue(requestingTotal)}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-
-                  {/* Notes */}
-                  <Card className="card-neo p-6">
-                    <label className="block text-sm font-semibold mb-3">
-                      Trade Notes <span className="text-muted-foreground font-normal">({notes.length}/100)</span>
-                    </label>
-                    <Textarea
-                      placeholder="Add any additional details about your trade..."
-                      value={notes}
-                      onChange={(e) => setNotes(e.target.value.slice(0, 100))}
-                      className="min-h-24 resize-none"
-                    />
-                  </Card>
-
-                  {/* Publish Button */}
-                  <Button
-                    onClick={handlePublish}
-                    disabled={isSubmitting || !selectedGame || offering.length === 0 || requesting.length === 0}
-                    className="btn-neo w-full py-6 text-lg font-bold bg-gradient-to-r from-primary via-primary/90 to-primary/80 hover:from-primary/90 hover:via-primary hover:to-primary transition-all duration-300 shadow-lg hover:shadow-primary/50 gap-2"
-                  >
-                    <Sparkles className="h-5 w-5" />
-                    {isSubmitting ? "Publishing..." : "Publish Trade Ad"}
-                  </Button>
-                </div>
-              </CalculatorSkin>
+                </CalculatorSkin>
+              </div>
             </div>
+            <SiteFooter />
           </div>
-          <SiteFooter />
-        </div>
-      </main>
-    </AuthGate>
+        </main>
+      </AuthGate>
+      <ItemsLoadingOverlay />
+    </ItemsProvider>
   )
 }
 
