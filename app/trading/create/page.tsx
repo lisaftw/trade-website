@@ -19,6 +19,7 @@ import { useDebounce } from "@/lib/hooks/use-debounce"
 import { cn } from "@/lib/utils"
 import { AdoptMeInlineVariantSelector } from "@/components/adoptme-inline-variant-selector"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { formatValue } from "@/lib/utils/format-value"
 
 const GAMES = ["MM2", "SAB", "Adopt Me"]
 const VISIBLE_GAMES = ["Adopt Me"]
@@ -214,11 +215,11 @@ export default function CreateTradePage() {
                       <div className="flex gap-8">
                         <div className="text-center">
                           <p className="text-xs text-muted-foreground">YOUR OFFER</p>
-                          <p className="mt-1 text-xl font-bold text-green-400">{offeringTotal.toLocaleString()}</p>
+                          <p className="mt-1 text-xl font-bold text-green-400">{formatValue(offeringTotal)}</p>
                         </div>
                         <div className="text-center">
                           <p className="text-xs text-muted-foreground">YOU WANT</p>
-                          <p className="mt-1 text-xl font-bold text-blue-400">{requestingTotal.toLocaleString()}</p>
+                          <p className="mt-1 text-xl font-bold text-blue-400">{formatValue(requestingTotal)}</p>
                         </div>
                       </div>
                     </div>
@@ -302,6 +303,7 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
             if (hasVariants) {
               displayValue = Number(item.value_fr) || Number(item.value) || 0
             } else {
+              // This is an egg - explicitly use rap_value
               displayValue = Number(item.rap_value) || 0
             }
 
@@ -461,7 +463,7 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
                       <p className="text-sm font-medium">{item.name}</p>
                       <p className="text-xs text-muted-foreground">{item.game}</p>
                     </div>
-                    <p className="text-sm font-semibold">{item.value.toFixed(3)}</p>
+                    <p className="text-sm font-semibold">{formatValue(item.value)}</p>
                   </button>
                 ),
               )
@@ -499,7 +501,7 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-sm font-semibold">{item.value.toFixed(3)}</p>
+                <p className="text-sm font-semibold">{formatValue(item.value)}</p>
                 <Button
                   size="sm"
                   variant="ghost"
@@ -518,7 +520,7 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
         <div className="mt-4 border-t border-border pt-3">
           <div className="flex justify-between text-sm font-semibold">
             <span>Total Value:</span>
-            <span>{itemTotal.toFixed(3)}</span>
+            <span>{formatValue(itemTotal)}</span>
           </div>
         </div>
       )}
@@ -573,7 +575,7 @@ function AdoptMeItemButton({ item, onAddItem, onClose }: AdoptMeItemButtonProps)
         </div>
         <div className="text-right">
           <p className="text-sm font-semibold whitespace-nowrap">
-            {typeof selectedValue === "number" && !isNaN(selectedValue) ? selectedValue.toFixed(3) : "0"}
+            {formatValue(selectedValue)}
           </p>
         </div>
       </div>

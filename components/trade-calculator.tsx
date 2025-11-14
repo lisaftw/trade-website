@@ -9,6 +9,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { AdoptMeInlineVariantSelector } from "./adoptme-inline-variant-selector"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { formatValue } from "@/lib/utils/format-value"
 
 interface TradeItem {
   id: string
@@ -28,6 +29,7 @@ interface TradeItem {
   value_mf?: number | string | null
   value_mr?: number | string | null
   value_mfr?: number | string | null
+  rap_value?: number | string | null
 }
 
 export function TradeCalculator() {
@@ -79,6 +81,7 @@ export function TradeCalculator() {
       value_mr: item.value_mr,
       value_mfr: item.value_mfr,
       variantLabel: item.variantLabel,
+      rap_value: item.rap_value,
     }
     if (column === "yours") {
       setYourItems((prev) => [...prev, newItem])
@@ -286,6 +289,7 @@ function TradeGrid({
             value_mf: item.value_mf,
             value_mr: item.value_mr,
             value_mfr: item.value_mfr,
+            rap_value: item.rap_value,
           }
         })
 
@@ -382,7 +386,7 @@ function TradeGrid({
 
       <div className="flex items-center justify-between px-0.5 md:px-1">
         <span className="text-xs md:text-sm font-bold tracking-wide text-white">VALUE</span>
-        <span className="text-xs md:text-sm font-bold text-white">{total.toFixed(3)}</span>
+        <span className="text-xs md:text-sm font-bold text-white">{formatValue(total)}</span>
       </div>
 
       {isActive && (
@@ -558,9 +562,7 @@ function AdoptMeItemButton({ item, onAddItem, isAdoptMe }: AdoptMeItemButtonProp
 
         <div className="flex flex-col items-end gap-2">
           <p className="text-base font-bold text-white whitespace-nowrap">
-            {typeof selectedValue === "number" && !isNaN(selectedValue)
-              ? selectedValue.toFixed(3)
-              : "0"}
+            {formatValue(selectedValue)}
           </p>
           <button
             onClick={handleAdd}

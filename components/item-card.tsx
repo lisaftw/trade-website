@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/ui/button"
 import { LogIn } from 'lucide-react'
 import { AdoptMeInlineVariantSelector } from "./adoptme-inline-variant-selector"
+import { formatValue } from "@/lib/utils/format-value"
 
 interface ItemCardProps {
   item: {
@@ -33,12 +34,6 @@ function toNumber(value: any): number {
   if (value === null || value === undefined) return 0
   const num = Number(value)
   return isNaN(num) ? 0 : num
-}
-
-function formatValue(value: any): string {
-  const num = toNumber(value)
-  if (num === 0) return "0"
-  return num % 1 === 0 ? num.toLocaleString() : num.toFixed(3)
 }
 
 function getActualImageUrl(imageUrl: string): string {
