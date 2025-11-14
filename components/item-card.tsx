@@ -26,21 +26,12 @@ interface ItemCardProps {
     demand?: string
     pot?: string
     value_fr?: number | null | undefined
-    value_f?: number | null | undefined
-    value_r?: number | null | undefined
   }
   hideAddButton?: boolean
 }
 
 function toNumber(value: any): number {
-  if (value === null || value === undefined || value === '') return 0
-  
-  // Handle if it's already a number
-  if (typeof value === 'number') {
-    return isNaN(value) ? 0 : value
-  }
-  
-  // Convert string to number
+  if (value === null || value === undefined) return 0
   const num = Number(value)
   return isNaN(num) ? 0 : num
 }
@@ -78,31 +69,20 @@ function getTimeAgo(timestamp: string): string {
 }
 
 function isEgg(item: ItemCardProps["item"]): boolean {
-  // Check if item has any variant values
-  const hasVariants = 
-    (item.value_fr !== null && item.value_fr !== undefined && item.value_fr > 0) ||
-    (item.value_f !== null && item.value_f !== undefined && (item.value_f as number) > 0) ||
-    (item.value_r !== null && item.value_r !== undefined && (item.value_r as number) > 0)
-  
-  // If no variants, it's likely an egg
-  return !hasVariants
+  return item.section?.toLowerCase() === "egg" || item.name.toLowerCase().includes("egg")
 }
 
 function getDisplayValue(item: ItemCardProps["item"]): number {
-  // For eggs, always use rap_value explicitly with proper conversion
+  // For eggs, always use rap_value
   if (isEgg(item)) {
-    const rapValue = toNumber(item.rap_value)
-    console.log("[v0] ItemCard Egg:", item.name, "rap_value:", item.rap_value, "type:", typeof item.rap_value, "converted:", rapValue)
-    return rapValue
+    return toNumber(item.rap_value)
   }
   
-  // For pets with FR variant, try value_fr first
   if (item.game === "Adopt Me" && item.value_fr !== null && item.value_fr !== undefined) {
     const frValue = toNumber(item.value_fr)
     if (frValue > 0) return frValue
   }
   
-  // Fallback to rap_value
   return toNumber(item.rap_value)
 }
 

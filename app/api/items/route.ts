@@ -20,17 +20,13 @@ export async function GET(request: NextRequest) {
     const transformedItems = paginatedItems.map((item: any) => {
       const imageUrl = item.image_url || "/placeholder.svg?height=200&width=200"
 
-      const isEgg = !item.value_f && !item.value_r && !item.value_fr && !item.value_n
-      if (isEgg && item.game === 'adoptme') {
-        console.log(`[v0] API Egg: ${item.name}, rap_value from DB:`, item.rap_value, typeof item.rap_value)
-      }
 
       return {
         id: item.id,
         game: item.game,
         name: item.name,
         image_url: imageUrl,
-        rap_value: item.rap_value ?? null,
+        rap_value: item.rap_value || 0,
         neon_value: item.neon_value || 0,
         mega_value: item.mega_value || 0,
         fly_bonus: item.fly_bonus || 50,
