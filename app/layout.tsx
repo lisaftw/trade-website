@@ -5,6 +5,8 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { CookieConsentBanner } from "@/components/cookie-consent-banner"
+import { ItemsProvider } from "@/lib/contexts/items-context"
+import { ItemsLoadingOverlay } from "@/components/items-loading-overlay"
 
 const geistSans = Inter({
   variable: "--font-geist-sans",
@@ -46,9 +48,12 @@ export default function RootLayout({
           }}
         />
         <ThemeProvider attribute="class" forcedTheme="dark" disableTransitionOnChange>
-          {children}
-          <Toaster />
-          <CookieConsentBanner />
+          <ItemsProvider>
+            {children}
+            <Toaster />
+            <CookieConsentBanner />
+            <ItemsLoadingOverlay />
+          </ItemsProvider>
         </ThemeProvider>
       </body>
     </html>

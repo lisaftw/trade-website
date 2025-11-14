@@ -566,7 +566,7 @@ function AdoptMeItemButton({ item, onAddItem, isAdoptMe }: AdoptMeItemButtonProp
             onClick={handleAdd}
             className={cn(
               "px-4 py-2 rounded-lg font-bold text-sm transition-all",
-              showConfirm ? "bg-green-500 text-white" : "bg-blue-500 hover:bg-blue-600 text-white",
+              showConfirm ? "bg-green-500 text-white" : "bg-gray-700 hover:bg-gray-600 text-white border border-gray-600",
             )}
           >
             {showConfirm ? <Check className="h-4 w-4" /> : "Add"}

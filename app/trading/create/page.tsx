@@ -583,7 +583,7 @@ function AdoptMeItemButton({ item, onAddItem, onClose }: AdoptMeItemButtonProps)
         <Button
           onClick={handleAdd}
           size="sm"
-          className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold ml-auto"
+          className="bg-gray-700 hover:bg-gray-600 text-white font-bold ml-auto border border-gray-600"
         >
           Add
         </Button>

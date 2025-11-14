@@ -1,11 +1,12 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { ItemCard } from "./item-card"
 import { Input } from "./ui/input"
 import { Search, Loader2 } from 'lucide-react'
 import { Button } from "./ui/button"
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs"
+import { useItems, type Item } from "@/lib/contexts/items-context"
 
 interface AdoptMeItem {
   id: string
@@ -51,67 +52,16 @@ function isEgg(item: AdoptMeItem): boolean {
 }
 
 export function AdoptMeContent() {
-  const [items, setItems] = useState<AdoptMeItem[]>([])
-  const [loading, setLoading] = useState(true)
-  const [loadingMore, setLoadingMore] = useState(false)
+  const { getItemsByGame, isLoading } = useItems()
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedRarity, setSelectedRarity] = useState("All")
   const [selectedCategory, setSelectedCategory] = useState<"all" | "pets" | "eggs">("all")
-  const [hasMore, setHasMore] = useState(false)
-  const [totalCount, setTotalCount] = useState(0)
+  const [displayLimit, setDisplayLimit] = useState(50)
 
-  useEffect(() => {
-    fetchAdoptMeItems()
-  }, [])
-
-  const fetchAdoptMeItems = async (loadMore = false) => {
-    try {
-      if (loadMore) {
-        setLoadingMore(true)
-      } else {
-        setLoading(true)
-      }
-
-      const offset = loadMore ? items.length : 0
-      const limit = 50
-
-      const response = await fetch(`/api/items?game=Adopt Me&limit=${limit}&offset=${offset}`)
-      const data = await response.json()
-
-      if (data.items && data.items.length > 0) {
-        setItems((prev) => (loadMore ? [...prev, ...data.items] : data.items))
-        setHasMore(data.pagination?.hasMore || false)
-        setTotalCount(data.pagination?.total || data.items.length)
-      }
-    } catch (error) {
-      console.error("Error fetching Adopt Me pets:", error)
-    } finally {
-      setLoading(false)
-      setLoadingMore(false)
-    }
-  }
-
-  const normalizeSection = (section: string | null | undefined): string => {
-    if (!section) return "Common"
-
-    const normalized = section.trim().toLowerCase()
-
-    const sectionMap: Record<string, string> = {
-      common: "Common",
-      uncommon: "Uncommon",
-      rare: "Rare",
-      "ultra-rare": "Ultra-Rare",
-      "ultra rare": "Ultra-Rare",
-      ultrarare: "Ultra-Rare",
-      legendary: "Legendary",
-      mythic: "Mythic",
-    }
-
-    return sectionMap[normalized] || section.charAt(0).toUpperCase() + section.slice(1).toLowerCase()
-  }
+  const allItems = useMemo(() => getItemsByGame("Adopt Me"), [getItemsByGame])
 
   const getGroupedAndSortedItems = () => {
-    let filtered = [...items]
+    let filtered = [...allItems]
 
     if (searchQuery) {
       filtered = filtered.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -150,14 +100,29 @@ export function AdoptMeContent() {
     return grouped
   }
 
-  const handleLoadMore = () => {
-    fetchAdoptMeItems(true)
+  const normalizeSection = (section: string | null | undefined): string => {
+    if (!section) return "Common"
+
+    const normalized = section.trim().toLowerCase()
+
+    const sectionMap: Record<string, string> = {
+      common: "Common",
+      uncommon: "Uncommon",
+      rare: "Rare",
+      "ultra-rare": "Ultra-Rare",
+      "ultra rare": "Ultra-Rare",
+      ultrarare: "Ultra-Rare",
+      legendary: "Legendary",
+      mythic: "Mythic",
+    }
+
+    return sectionMap[normalized] || section.charAt(0).toUpperCase() + section.slice(1).toLowerCase()
   }
 
   const groupedItems = getGroupedAndSortedItems()
   const filteredCount = Object.values(groupedItems).reduce((sum, group) => sum + group.length, 0)
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
@@ -231,7 +196,7 @@ export function AdoptMeContent() {
       </div>
 
       <div className="flex items-center gap-4 text-sm text-muted-foreground">
-        <span>Total: {totalCount} pets</span>
+        <span>Total: {allItems.length} pets</span>
         <span>•</span>
         <span>Showing: {filteredCount} pets</span>
       </div>
@@ -250,24 +215,17 @@ export function AdoptMeContent() {
               </div>
 
               <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,200px))]">
-                {groupedItems[rarity].map((item) => (
+                {groupedItems[rarity].slice(0, displayLimit).map((item) => (
                   <ItemCard key={item.id} item={item} />
                 ))}
               </div>
             </div>
           ))}
 
-          {hasMore && !searchQuery && selectedRarity === "All" && selectedCategory === "all" && (
+          {filteredCount > displayLimit && (
             <div className="flex justify-center pt-8">
-              <Button onClick={handleLoadMore} disabled={loadingMore} size="lg" className="min-w-[200px]">
-                {loadingMore ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Loading...
-                  </>
-                ) : (
-                  `Load More (${totalCount - items.length} remaining)`
-                )}
+              <Button onClick={() => setDisplayLimit(displayLimit + 50)} size="lg" className="min-w-[200px]">
+                Load More ({filteredCount - displayLimit} remaining)
               </Button>
             </div>
           )}
