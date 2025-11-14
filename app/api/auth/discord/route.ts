@@ -7,13 +7,12 @@ export async function GET(req: Request) {
   const state = crypto.randomUUID()
 
   const url = new URL(req.url)
-  const isSecure = process.env.FORCE_SECURE_COOKIES === "true" || url.protocol === "https:"
+  const isSecure = true
 
-  // Set a short-lived state cookie for CSRF protection
   cookieStore.set("discord_oauth_state", state, {
     httpOnly: true,
     secure: isSecure,
-    sameSite: "lax",
+    sameSite: "none",
     path: "/",
     maxAge: 60 * 10, // 10 minutes
   })

@@ -30,7 +30,7 @@ export async function GET(req: Request) {
   const cookieStore = await cookies()
   const storedState = cookieStore.get("discord_oauth_state")?.value
 
-  const USE_SECURE_COOKIES = process.env.FORCE_SECURE_COOKIES === "true" || url.protocol === "https:"
+  const USE_SECURE_COOKIES = true
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${url.protocol}//${url.host}`
 
   console.log("[v0] Callback received - code:", !!code, "state:", state, "storedState:", storedState, "match:", state === storedState)
