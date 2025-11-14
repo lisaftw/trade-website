@@ -33,7 +33,11 @@ interface ItemCardProps {
 function toNumber(value: any): number {
   if (value === null || value === undefined) return 0
   const num = Number(value)
-  return isNaN(num) ? 0 : num
+  if (isNaN(num)) {
+    console.log("[v0] toNumber conversion failed for value:", value)
+    return 0
+  }
+  return num
 }
 
 function getActualImageUrl(imageUrl: string): string {
@@ -73,16 +77,19 @@ function isEgg(item: ItemCardProps["item"]): boolean {
 }
 
 function getDisplayValue(item: ItemCardProps["item"]): number {
-  // For eggs, always use rap_value
   if (isEgg(item)) {
-    return toNumber(item.rap_value)
+    const rapValue = toNumber(item.rap_value)
+    console.log("[v0] Egg detected:", item.name, "rap_value:", item.rap_value, "converted:", rapValue)
+    return rapValue
   }
   
+  // For pets with variants, try value_fr first
   if (item.game === "Adopt Me" && item.value_fr !== null && item.value_fr !== undefined) {
     const frValue = toNumber(item.value_fr)
     if (frValue > 0) return frValue
   }
   
+  // Fallback to rap_value
   return toNumber(item.rap_value)
 }
 

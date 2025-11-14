@@ -48,7 +48,9 @@ function isEgg(item: AdoptMeItem): boolean {
     (item.value_r !== null && item.value_r !== undefined && item.value_r > 0) ||
     (item.value_n !== null && item.value_n !== undefined && item.value_n > 0)
   
-  return !hasVariants
+  const result = !hasVariants
+  console.log("[v0] isEgg check for", item.name, "hasVariants:", hasVariants, "isEgg:", result, "rap_value:", item.rap_value)
+  return result
 }
 
 export function AdoptMeContent() {
