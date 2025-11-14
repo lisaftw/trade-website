@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from 'next/navigation'
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 interface GameItem {
   id: string
@@ -40,9 +41,6 @@ const VARIANT_CONFIG = {
   M: { label: "M", color: "bg-purple-500" },
 }
 
-const CATEGORIES = ["All", "Pets", "Eggs"] as const
-type Category = typeof CATEGORIES[number]
-
 export function IngameCalculator() {
   const [selectedItems, setSelectedItems] = useState<GameItem[]>([])
   const [searchQuery, setSearchQuery] = useState("")
@@ -50,9 +48,8 @@ export function IngameCalculator() {
   const [game, setGame] = useState<"MM2" | "SAB" | "Adopt Me" | null>(null)
   const [allItems, setAllItems] = useState<GameItem[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedCategory, setSelectedCategory] = useState<"all" | "pets" | "eggs">("all")
   const router = useRouter()
-
-  const [selectedCategory, setSelectedCategory] = useState<Category>("All")
 
   const totalValue = selectedItems.reduce((sum, item) => {
     const itemValue = Number(item.value) || 0
@@ -225,31 +222,30 @@ export function IngameCalculator() {
     )
   }, [])
 
-  const categorizeItem = (item: GameItem): "Pet" | "Egg" => {
-    const hasVariants =
-      (item.value_fr && Number(item.value_fr) > 0) ||
-      (item.value_f && Number(item.value_f) > 0) ||
-      (item.value_r && Number(item.value_r) > 0) ||
-      (item.value_n && Number(item.value_n) > 0)
-    return hasVariants ? "Pet" : "Egg"
-  }
-
-  const displayedItems = allItems
-    .filter((item) => {
-      // Search filter
-      if (searchQuery.trim() && !item.name.toLowerCase().includes(searchQuery.toLowerCase())) {
-        return false
-      }
+  const filterItemsByCategory = (items: GameItem[]) => {
+    if (game !== "Adopt Me" || selectedCategory === "all") return items
+    
+    return items.filter((item) => {
+      const hasVariants =
+        (item.value_fr && item.value_fr > 0) ||
+        (item.value_f && item.value_f > 0) ||
+        (item.value_r && item.value_r > 0) ||
+        (item.value_n && item.value_n > 0)
       
-      // Category filter
-      if (selectedCategory !== "All") {
-        const itemCategory = categorizeItem(item)
-        if (selectedCategory === "Pets" && itemCategory !== "Pet") return false
-        if (selectedCategory === "Eggs" && itemCategory !== "Egg") return false
-      }
+      const isEgg = !hasVariants
+      
+      if (selectedCategory === "eggs") return isEgg
+      if (selectedCategory === "pets") return !isEgg
       
       return true
     })
+  }
+
+  const displayedItems = filterItemsByCategory(
+    searchQuery.trim()
+      ? allItems.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
+      : allItems
+  )
 
   const visibleGames = ["Adopt Me"] as const
 
@@ -415,7 +411,7 @@ export function IngameCalculator() {
                 onClick={() => {
                   setIsSearchOpen(false)
                   setSearchQuery("")
-                  setSelectedCategory("All")
+                  setSelectedCategory("all")
                 }}
                 className="rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
               >
@@ -424,22 +420,13 @@ export function IngameCalculator() {
             </div>
 
             {game === "Adopt Me" && (
-              <div className="mb-4 flex gap-2">
-                {CATEGORIES.map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => setSelectedCategory(category)}
-                    className={cn(
-                      "flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all",
-                      selectedCategory === category
-                        ? "bg-primary text-primary-foreground shadow-lg"
-                        : "bg-gray-800 text-gray-400 hover:bg-gray-750 hover:text-white"
-                    )}
-                  >
-                    {category}
-                  </button>
-                ))}
-              </div>
+              <Tabs value={selectedCategory} onValueChange={(value) => setSelectedCategory(value as "all" | "pets" | "eggs")} className="mb-4">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="all">All Items</TabsTrigger>
+                  <TabsTrigger value="pets">Pets</TabsTrigger>
+                  <TabsTrigger value="eggs">Eggs</TabsTrigger>
+                </TabsList>
+              </Tabs>
             )}
 
             <div className="relative mb-4">
@@ -461,15 +448,15 @@ export function IngameCalculator() {
                 </div>
               ) : displayedItems.length === 0 ? (
                 <div className="py-12 text-center text-gray-400">
-                  {searchQuery || selectedCategory !== "All"
-                    ? `No ${selectedCategory === "All" ? "" : selectedCategory.toLowerCase()} found`
-                    : `No items available for ${game}`}
+                  {searchQuery 
+                    ? `No ${selectedCategory === "all" ? "items" : selectedCategory} found matching "${searchQuery}"` 
+                    : `No ${selectedCategory === "all" ? "items" : selectedCategory} available for ${game}`
+                  }
                 </div>
               ) : (
                 <>
                   <div className="mb-2 text-center text-sm text-gray-400">
                     Showing {displayedItems.length} {displayedItems.length === 1 ? "item" : "items"}
-                    {selectedCategory !== "All" && ` in ${selectedCategory}`}
                   </div>
                   {displayedItems.map((item) => (
                     <button

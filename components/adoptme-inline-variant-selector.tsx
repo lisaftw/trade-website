@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 
 interface InlineVariantSelectorProps {
   item: {
@@ -40,13 +40,8 @@ export function AdoptMeInlineVariantSelector({
   showQuantity = true,
   onValueChange,
 }: InlineVariantSelectorProps) {
-  const [selectedVariants, setSelectedVariants] = useState<Set<Variant>>(new Set())
+  const [selectedVariants, setSelectedVariants] = useState<Set<Variant>>(new Set(["F", "R"]))
   const [quantity, setQuantity] = useState(initialQuantity)
-
-  useEffect(() => {
-    updateSelection(selectedVariants)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const toggleVariant = (variant: Variant) => {
     const newVariants = new Set(selectedVariants)
@@ -119,30 +114,14 @@ export function AdoptMeInlineVariantSelector({
         variantKey = "value_r"
         variantLabel = "R"
       } else {
-        variantKey = "value_n"
-        variantLabel = "N"
+        variantKey = "value_fr"
+        variantLabel = "FR"
       }
     }
 
     const value = item[variantKey]
     const numValue = value != null ? (typeof value === "string" ? Number.parseFloat(value) : value) : 0
     const finalValue = !isNaN(numValue) && numValue > 0 ? numValue : 0
-
-    console.log("[v0] Variant selection:", { 
-      variantLabel, 
-      variantKey, 
-      rawValue: value, 
-      finalValue,
-      allValues: {
-        N: item.value_n,
-        F: item.value_f,
-        R: item.value_r,
-        FR: item.value_fr,
-        NF: item.value_nf,
-        NR: item.value_nr,
-        NFR: item.value_nfr,
-      }
-    })
 
     onSelect(variantLabel, finalValue)
 

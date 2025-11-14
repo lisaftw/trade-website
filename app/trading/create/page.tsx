@@ -18,12 +18,10 @@ import Image from "next/image"
 import { useDebounce } from "@/lib/hooks/use-debounce"
 import { cn } from "@/lib/utils"
 import { AdoptMeInlineVariantSelector } from "@/components/adoptme-inline-variant-selector"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const GAMES = ["MM2", "SAB", "Adopt Me"]
 const VISIBLE_GAMES = ["Adopt Me"]
-
-const CATEGORIES = ["All", "Pets", "Eggs"] as const
-type Category = typeof CATEGORIES[number]
 
 interface TradeItem {
   id: string
@@ -273,23 +271,8 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
   const [searchResults, setSearchResults] = useState<TradeItem[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [showSearch, setShowSearch] = useState(false)
-  const [selectedCategory, setSelectedCategory] = useState<Category>("All")
+  const [selectedCategory, setSelectedCategory] = useState<"all" | "pets" | "eggs">("all")
   const debouncedSearch = useDebounce(searchQuery, 300)
-
-  const categorizeItem = (item: TradeItem): "Pet" | "Egg" => {
-    const hasVariants =
-      (item.value_fr && Number(item.value_fr) > 0) ||
-      (item.value_f && Number(item.value_f) > 0) ||
-      (item.value_r && Number(item.value_r) > 0) ||
-      (item.value_n && Number(item.value_n) > 0)
-    return hasVariants ? "Pet" : "Egg"
-  }
-
-  const filteredResults = searchResults.filter((item) => {
-    if (selectedCategory === "All") return true
-    const itemCategory = categorizeItem(item)
-    return selectedCategory === "Pets" ? itemCategory === "Pet" : itemCategory === "Egg"
-  })
 
   React.useEffect(() => {
     if (!showSearch) {
@@ -354,6 +337,27 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
     fetchItems()
   }, [debouncedSearch, showSearch, selectedGame])
 
+  const filterItemsByCategory = (items: TradeItem[]) => {
+    if (selectedGame !== "Adopt Me" || selectedCategory === "all") return items
+
+    return items.filter((item) => {
+      const hasVariants =
+        (item.value_fr && Number(item.value_fr) > 0) ||
+        (item.value_f && Number(item.value_f) > 0) ||
+        (item.value_r && Number(item.value_r) > 0) ||
+        (item.value_n && Number(item.value_n) > 0)
+
+      const isEgg = !hasVariants
+
+      if (selectedCategory === "eggs") return isEgg
+      if (selectedCategory === "pets") return !isEgg
+
+      return true
+    })
+  }
+
+  const displayedItems = filterItemsByCategory(searchResults)
+
   const itemTotal = items.reduce((sum, item) => {
     const value = typeof item.value === "number" ? item.value : Number.parseFloat(String(item.value)) || 0
     return sum + value
@@ -388,88 +392,79 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
                 autoFocus
               />
             </div>
-            <Button size="sm" variant="ghost" onClick={() => {
-              setShowSearch(false)
-              setSelectedCategory("All")
-            }}>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => {
+                setShowSearch(false)
+                setSearchQuery("")
+                setSelectedCategory("all")
+              }}
+            >
               <X className="h-4 w-4" />
             </Button>
           </div>
 
-          {/* Category filter tabs */}
           {selectedGame === "Adopt Me" && (
-            <div className="flex gap-2">
-              {CATEGORIES.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={cn(
-                    "flex-1 rounded-lg px-3 py-2 text-xs font-semibold transition-all",
-                    selectedCategory === category
-                      ? "bg-primary text-primary-foreground shadow-md"
-                      : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
-                  )}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
+            <Tabs
+              value={selectedCategory}
+              onValueChange={(value) => setSelectedCategory(value as "all" | "pets" | "eggs")}
+            >
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="all">All Items</TabsTrigger>
+                <TabsTrigger value="pets">Pets</TabsTrigger>
+                <TabsTrigger value="eggs">Eggs</TabsTrigger>
+              </TabsList>
+            </Tabs>
           )}
 
           <div className="max-h-64 space-y-2 overflow-y-auto">
             {isSearching ? (
               <div className="py-8 text-center text-sm text-muted-foreground">Searching...</div>
-            ) : filteredResults.length === 0 ? (
+            ) : displayedItems.length === 0 ? (
               <div className="py-8 text-center text-sm text-muted-foreground">
-                {debouncedSearch || selectedCategory !== "All"
-                  ? `No ${selectedCategory === "All" ? "" : selectedCategory.toLowerCase()} found`
-                  : "No items available"}
+                {debouncedSearch
+                  ? `No ${selectedCategory === "all" ? "items" : selectedCategory} found`
+                  : `No ${selectedCategory === "all" ? "items" : selectedCategory} available`}
               </div>
             ) : (
-              <>
-                <div className="text-center text-xs text-muted-foreground mb-2">
-                  {filteredResults.length} {filteredResults.length === 1 ? "item" : "items"}
-                  {selectedCategory !== "All" && ` in ${selectedCategory}`}
-                </div>
-                {filteredResults.map((item) =>
-                  selectedGame === "Adopt Me" ? (
-                    <AdoptMeItemButton
-                      key={item.id}
-                      item={item}
-                      onAddItem={onAddItem}
-                      onClose={() => {
-                        setSearchQuery("")
-                        setShowSearch(false)
-                        setSelectedCategory("All")
-                      }}
+              displayedItems.map((item) =>
+                selectedGame === "Adopt Me" ? (
+                  <AdoptMeItemButton
+                    key={item.id}
+                    item={item}
+                    onAddItem={onAddItem}
+                    onClose={() => {
+                      setSearchQuery("")
+                      setShowSearch(false)
+                      setSelectedCategory("all")
+                    }}
+                  />
+                ) : (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      onAddItem(item)
+                      setSearchQuery("")
+                      setShowSearch(false)
+                    }}
+                    className="flex w-full items-center gap-3 rounded-lg border border-border bg-card p-2 text-left transition-transform hover:scale-[1.01] hover:bg-accent"
+                  >
+                    <Image
+                      src={item.imageUrl || "/itemplaceholder.png"}
+                      alt={item.name}
+                      width={40}
+                      height={40}
+                      className="rounded"
                     />
-                  ) : (
-                    <button
-                      key={item.id}
-                      onClick={() => {
-                        onAddItem(item)
-                        setSearchQuery("")
-                        setShowSearch(false)
-                        setSelectedCategory("All")
-                      }}
-                      className="flex w-full items-center gap-3 rounded-lg border border-border bg-card p-2 text-left transition-transform hover:scale-[1.01] hover:bg-accent"
-                    >
-                      <Image
-                        src={item.imageUrl || "/itemplaceholder.png"}
-                        alt={item.name}
-                        width={40}
-                        height={40}
-                        className="rounded"
-                      />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">{item.name}</p>
-                        <p className="text-xs text-muted-foreground">{item.game}</p>
-                      </div>
-                      <p className="text-sm font-semibold">{item.value.toString()}</p>
-                    </button>
-                  ),
-                )}
-              </>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">{item.name}</p>
+                      <p className="text-xs text-muted-foreground">{item.game}</p>
+                    </div>
+                    <p className="text-sm font-semibold">{item.value.toString()}</p>
+                  </button>
+                ),
+              )
             )}
           </div>
         </div>

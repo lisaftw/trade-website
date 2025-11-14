@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 import Image from "next/image"
 import Link from "next/link"
 import { AdoptMeInlineVariantSelector } from "./adoptme-inline-variant-selector"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 interface TradeItem {
   id: string
@@ -226,6 +227,7 @@ function TradeGrid({
   const [allItems, setAllItems] = useState<TradeItem[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<"all" | "pets" | "eggs">("all")
 
   useEffect(() => {
     if (!isActive) {
@@ -300,9 +302,30 @@ function TradeGrid({
     fetchAllItems()
   }, [isActive, selectedGame])
 
-  const displayedItems = searchQuery.trim()
+  const filterItemsByCategory = (items: TradeItem[]) => {
+    if (selectedGame !== "Adopt Me" || selectedCategory === "all") return items
+
+    return items.filter((item) => {
+      const hasVariants =
+        (item.value_fr && Number(item.value_fr) > 0) ||
+        (item.value_f && Number(item.value_f) > 0) ||
+        (item.value_r && Number(item.value_r) > 0) ||
+        (item.value_n && Number(item.value_n) > 0)
+
+      const isEgg = !hasVariants
+
+      if (selectedCategory === "eggs") return isEgg
+      if (selectedCategory === "pets") return !isEgg
+
+      return true
+    })
+  }
+
+  const searchFiltered = searchQuery.trim()
     ? allItems.filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
     : allItems
+
+  const displayedItems = filterItemsByCategory(searchFiltered)
 
   const slots = Array.from({ length: 9 }, (_, i) => items[i] || null)
 
@@ -368,12 +391,30 @@ function TradeGrid({
             <div className="mb-2 md:mb-3 flex items-center justify-between">
               <h3 className="text-base md:text-lg font-bold text-white">Add Item to {title}</h3>
               <button
-                onClick={onClose}
+                onClick={() => {
+                  onClose()
+                  setSelectedCategory("all")
+                }}
                 className="rounded-full p-1 md:p-1.5 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
               >
                 <X className="h-3.5 md:h-4 w-3.5 md:w-4" />
               </button>
             </div>
+
+            {selectedGame === "Adopt Me" && (
+              <div className="mb-2 md:mb-3">
+                <Tabs
+                  value={selectedCategory}
+                  onValueChange={(value) => setSelectedCategory(value as "all" | "pets" | "eggs")}
+                >
+                  <TabsList className="grid w-full grid-cols-3">
+                    <TabsTrigger value="all">All Items</TabsTrigger>
+                    <TabsTrigger value="pets">Pets</TabsTrigger>
+                    <TabsTrigger value="eggs">Eggs</TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </div>
+            )}
 
             <div className="relative mb-2 md:mb-3">
               <Search className="absolute left-2 md:left-2.5 top-1/2 h-3.5 md:h-4 w-3.5 md:w-4 -translate-y-1/2 text-gray-400" />
@@ -396,11 +437,11 @@ function TradeGrid({
                 <div className="py-8 md:py-10 text-center text-xs md:text-sm text-red-400">{error}</div>
               ) : displayedItems.length === 0 && searchQuery ? (
                 <div className="py-8 md:py-10 text-center text-xs md:text-sm text-gray-400">
-                  No items found matching "{searchQuery}"
+                  No {selectedCategory === "all" ? "items" : selectedCategory} found matching "{searchQuery}"
                 </div>
               ) : displayedItems.length === 0 ? (
                 <div className="py-8 md:py-10 text-center text-xs md:text-sm text-gray-400">
-                  No items available for {selectedGame}
+                  No {selectedCategory === "all" ? "items" : selectedCategory} available for {selectedGame}
                 </div>
               ) : (
                 <>

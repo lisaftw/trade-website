@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react"
 import { ItemCard } from "./item-card"
 import { Input } from "./ui/input"
-import { Search, Loader2 } from "lucide-react"
+import { Search, Loader2 } from 'lucide-react'
 import { Button } from "./ui/button"
+import { Tabs, TabsList, TabsTrigger } from "./ui/tabs"
 
 interface AdoptMeItem {
   id: string
@@ -16,6 +17,9 @@ interface AdoptMeItem {
   pot?: string
   rap_value?: number
   value_fr?: number
+  value_f?: number
+  value_r?: number
+  value_n?: number
 }
 
 const RARITIES = ["All", "Common", "Uncommon", "Rare", "Ultra-Rare", "Legendary", "Mythic"]
@@ -36,12 +40,23 @@ function getSortValue(item: AdoptMeItem): number {
   return item.rap_value || 0
 }
 
+function isEgg(item: AdoptMeItem): boolean {
+  const hasVariants =
+    (item.value_fr !== null && item.value_fr !== undefined && item.value_fr > 0) ||
+    (item.value_f !== null && item.value_f !== undefined && item.value_f > 0) ||
+    (item.value_r !== null && item.value_r !== undefined && item.value_r > 0) ||
+    (item.value_n !== null && item.value_n !== undefined && item.value_n > 0)
+  
+  return !hasVariants
+}
+
 export function AdoptMeContent() {
   const [items, setItems] = useState<AdoptMeItem[]>([])
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedRarity, setSelectedRarity] = useState("All")
+  const [selectedCategory, setSelectedCategory] = useState<"all" | "pets" | "eggs">("all")
   const [hasMore, setHasMore] = useState(false)
   const [totalCount, setTotalCount] = useState(0)
 
@@ -109,6 +124,15 @@ export function AdoptMeContent() {
       })
     }
 
+    if (selectedCategory !== "all") {
+      filtered = filtered.filter((item) => {
+        const itemIsEgg = isEgg(item)
+        if (selectedCategory === "eggs") return itemIsEgg
+        if (selectedCategory === "pets") return !itemIsEgg
+        return true
+      })
+    }
+
     const grouped: Record<string, AdoptMeItem[]> = {}
 
     filtered.forEach((item) => {
@@ -154,6 +178,14 @@ export function AdoptMeContent() {
       </div>
 
       <div className="space-y-4">
+        <Tabs value={selectedCategory} onValueChange={(value) => setSelectedCategory(value as "all" | "pets" | "eggs")}>
+          <TabsList className="grid w-full max-w-md grid-cols-3">
+            <TabsTrigger value="all">All Items</TabsTrigger>
+            <TabsTrigger value="pets">Pets</TabsTrigger>
+            <TabsTrigger value="eggs">Eggs</TabsTrigger>
+          </TabsList>
+        </Tabs>
+
         <div className="flex flex-wrap justify-center gap-3 pb-2">
           {RARITIES.map((rarity) => (
             <Button
@@ -206,7 +238,7 @@ export function AdoptMeContent() {
             </div>
           ))}
 
-          {hasMore && !searchQuery && selectedRarity === "All" && (
+          {hasMore && !searchQuery && selectedRarity === "All" && selectedCategory === "all" && (
             <div className="flex justify-center pt-8">
               <Button onClick={handleLoadMore} disabled={loadingMore} size="lg" className="min-w-[200px]">
                 {loadingMore ? (
