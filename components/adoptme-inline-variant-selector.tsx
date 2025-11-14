@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 interface InlineVariantSelectorProps {
   item: {
@@ -41,8 +41,15 @@ export function AdoptMeInlineVariantSelector({
   showQuantity = true,
   onValueChange,
 }: InlineVariantSelectorProps) {
-  const [selectedVariants, setSelectedVariants] = useState<Set<Variant>>(new Set(["F", "R"]))
+  const [selectedVariants, setSelectedVariants] = useState<Set<Variant>>(() => {
+    // Start with no variants selected to show base value
+    return new Set<Variant>()
+  })
   const [quantity, setQuantity] = useState(initialQuantity)
+
+  useEffect(() => {
+    updateSelection(selectedVariants)
+  }, [])
 
   const toggleVariant = (variant: Variant) => {
     const newVariants = new Set(selectedVariants)
@@ -117,19 +124,42 @@ export function AdoptMeInlineVariantSelector({
         variantLabel = "R"
       } else {
         variantKey = "rap_value"
-        variantLabel = "Base"
+        variantLabel = "Normal"
       }
     }
 
     const value = item[variantKey]
     let numValue = value != null ? (typeof value === "string" ? Number.parseFloat(value) : value) : 0
     
-    // If the specific variant value is not available, try to use rap_value as fallback
-    if ((!numValue || numValue === 0) && variantKey !== "rap_value" && item.rap_value) {
-      const rapValue = typeof item.rap_value === "string" ? Number.parseFloat(item.rap_value) : item.rap_value
-      if (!isNaN(rapValue) && rapValue > 0) {
-        numValue = rapValue
-        console.log(`[v0] Variant ${variantLabel} not available, using rap_value: ${numValue}`)
+    if ((!numValue || numValue === 0) && variantKey !== "rap_value") {
+      // Try alternative variant combinations as fallback
+      const fallbackKeys: Array<keyof typeof item> = []
+      
+      // Build fallback hierarchy based on selected variants
+      if (hasM || hasN) {
+        // For neon/mega variants, try base neon/mega first
+        if (hasN) fallbackKeys.push("value_n")
+        if (hasM) fallbackKeys.push("value_m")
+      }
+      
+      // Try FR as it's the most common variant value
+      if (hasF || hasR) {
+        fallbackKeys.push("value_fr")
+      }
+      
+      // Finally try rap_value
+      fallbackKeys.push("rap_value")
+      
+      // Find first available fallback value
+      for (const fallbackKey of fallbackKeys) {
+        const fallbackValue = item[fallbackKey]
+        if (fallbackValue != null) {
+          const fallbackNum = typeof fallbackValue === "string" ? Number.parseFloat(fallbackValue) : fallbackValue
+          if (!isNaN(fallbackNum) && fallbackNum > 0) {
+            numValue = fallbackNum
+            break
+          }
+        }
       }
     }
     
