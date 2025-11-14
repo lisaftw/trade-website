@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 export const revalidate = 3600
 
 import { type NextRequest, NextResponse } from "next/server"
@@ -19,12 +20,6 @@ export async function GET(request: NextRequest) {
     const transformedItems = paginatedItems.map((item: any) => {
       const imageUrl = item.image_url || "/placeholder.svg?height=200&width=200"
 
-      console.log("[v0] API transforming item:", item.name, {
-        value_f: item.value_f,
-        value_r: item.value_r,
-        value_n: item.value_n,
-        value_m: item.value_m,
-      })
 
       return {
         id: item.id,

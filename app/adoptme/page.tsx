@@ -4,6 +4,7 @@ import { PageBackground } from "@/components/page-background"
 import { ScrollParallax } from "@/components/scroll-parallax"
 import { AdoptMeContent } from "@/components/adoptme-content"
 import { BackButton } from "@/components/back-button"
+import { ItemsProvider } from "@/lib/contexts/items-context"
 
 export const metadata = {
   title: "Adopt Me Values - Real-Time Pet Trading Values",
@@ -26,7 +27,9 @@ export default function AdoptMePage() {
         </div>
 
         <div className="mt-8">
-          <AdoptMeContent />
+          <ItemsProvider>
+            <AdoptMeContent />
+          </ItemsProvider>
         </div>
         <SiteFooter />
       </div>
