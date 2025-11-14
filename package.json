@@ -119,5 +119,8 @@
     "tailwindcss": "^4.1.9",
     "tsx": "^4.19.2",
     "typescript": "^5"
-  }
+  },
+  "trustedDependencies": [
+    "pg-native"
+  ]
 }

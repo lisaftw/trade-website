@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter, Roboto_Mono } from "next/font/google"
+import { Inter, Roboto_Mono } from 'next/font/google'
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
@@ -19,6 +19,13 @@ export const metadata: Metadata = {
   title: "Trade - Gaming Item Trading Platform",
   description: "Trade items across MM2, SAB, Adopt Me and more",
   generator: "v0.app",
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' }
+    ],
+    apple: '/apple-touch-icon.png',
+  },
 }
 
 export default function RootLayout({
