@@ -47,6 +47,18 @@ export function TradeCalculator() {
     }
   }, [])
 
+  const updateItemValue = useCallback((id: string, column: "yours" | "theirs", newValue: number, newVariant: string) => {
+    if (column === "yours") {
+      setYourItems((prev) => prev.map(item => 
+        item.id === id ? { ...item, value: newValue, variantLabel: newVariant } : item
+      ))
+    } else {
+      setTheirItems((prev) => prev.map(item => 
+        item.id === id ? { ...item, value: newValue, variantLabel: newVariant } : item
+      ))
+    }
+  }, [])
+
   const handleItemClick = useCallback((item: any, column: "yours" | "theirs") => {
     const newItem: TradeItem = {
       id: `${item.id}-${Date.now()}`,
@@ -158,6 +170,7 @@ export function TradeCalculator() {
               onSearchChange={setSearchQuery}
               onAddItem={(item) => handleItemClick(item, "yours")}
               selectedGame={game}
+              onUpdateItemValue={(id, value, variant) => updateItemValue(id, "yours", value, variant)}
             />
 
             <TradeGrid
@@ -172,6 +185,7 @@ export function TradeCalculator() {
               onSearchChange={setSearchQuery}
               onAddItem={(item) => handleItemClick(item, "theirs")}
               selectedGame={game}
+              onUpdateItemValue={(id, value, variant) => updateItemValue(id, "theirs", value, variant)}
             />
           </div>
         </div>
@@ -192,6 +206,7 @@ interface TradeGridProps {
   onSearchChange: (query: string) => void
   onAddItem: (item: TradeItem) => void
   selectedGame: "MM2" | "SAB" | "Adopt Me"
+  onUpdateItemValue: (id: string, value: number, variant: string) => void
 }
 
 function TradeGrid({
@@ -206,6 +221,7 @@ function TradeGrid({
   onSearchChange,
   onAddItem,
   selectedGame,
+  onUpdateItemValue,
 }: TradeGridProps) {
   const [allItems, setAllItems] = useState<TradeItem[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -314,7 +330,7 @@ function TradeGrid({
               </button>
             ) : item ? (
               selectedGame === "Adopt Me" ? (
-                <AdoptMeGridCard item={item} onRemove={() => onRemove(item.id)} />
+                <AdoptMeGridCard item={item} onRemove={() => onRemove(item.id)} onUpdateValue={onUpdateItemValue} />
               ) : (
                 <div className="group relative h-full w-full p-0.5 md:p-1">
                   <div className="relative w-full h-full">
@@ -525,9 +541,10 @@ function AdoptMeItemButton({ item, onAddItem, isAdoptMe }: AdoptMeItemButtonProp
 interface AdoptMeGridCardProps {
   item: TradeItem
   onRemove: () => void
+  onUpdateValue: (id: string, value: number, variant: string) => void
 }
 
-function AdoptMeGridCard({ item, onRemove }: AdoptMeGridCardProps) {
+function AdoptMeGridCard({ item, onRemove, onUpdateValue }: AdoptMeGridCardProps) {
   const [selectedVariant, setSelectedVariant] = useState<string>(item.variantLabel || "FR")
   const [currentValue, setCurrentValue] = useState<number>(item.value)
 
@@ -541,8 +558,7 @@ function AdoptMeGridCard({ item, onRemove }: AdoptMeGridCardProps) {
   const handleVariantSelect = (variant: string, value: number) => {
     setSelectedVariant(variant)
     setCurrentValue(value)
-    item.value = value
-    item.variantLabel = variant
+    onUpdateValue(item.id, value, variant)
   }
 
   return (
