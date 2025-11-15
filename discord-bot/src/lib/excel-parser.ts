@@ -27,6 +27,36 @@ export interface ParseResult {
   warnings: string[]
 }
 
+const COLUMN_MAPPINGS: Record<string, string> = {
+  // Name variations
+  'petname': 'name',
+  'pet_name': 'name',
+  'pet name': 'name',
+  'item': 'name',
+  'itemname': 'name',
+  'item_name': 'name',
+  
+  // RAP value variations
+  'base': 'rap_value',
+  'rap': 'rap_value',
+  'base_value': 'rap_value',
+  'basevalue': 'rap_value',
+  
+  // Value variations
+  'fr': 'value_fr',
+  'f': 'value_f',
+  'r': 'value_r',
+  'n': 'value_n',
+  'nfr': 'value_nfr',
+  'nf': 'value_nf',
+  'nr': 'value_nr',
+  'mfr': 'value_mfr',
+  'mf': 'value_mf',
+  'mr': 'value_mr',
+  'm': 'value_m',
+  'h': 'value_h',
+}
+
 const VALID_COLUMNS = [
   'name',
   'rap_value',
@@ -72,21 +102,31 @@ export function parseExcelBuffer(buffer: Buffer): ParseResult {
       return { items, errors, warnings }
     }
 
-    // Validate headers
-    const headers = Object.keys(data[0]).map((h) => h.toLowerCase().trim())
-    if (!headers.includes('name')) {
-      errors.push('Required column "name" not found in Excel file')
+    const headers = Object.keys(data[0])
+    const normalizedHeaders: Record<string, string> = {}
+    
+    for (const header of headers) {
+      const cleaned = header.toLowerCase().trim()
+      const mapped = COLUMN_MAPPINGS[cleaned] || cleaned
+      normalizedHeaders[header] = mapped
+    }
+
+    // Check if name column exists (after mapping)
+    const hasNameColumn = Object.values(normalizedHeaders).includes('name')
+    if (!hasNameColumn) {
+      errors.push('Required column "name" or "PetName" not found in Excel file')
       return { items, errors, warnings }
     }
 
     // Check for invalid columns
-    const invalidColumns = headers.filter((h) => !VALID_COLUMNS.includes(h))
+    const mappedHeaders = Object.values(normalizedHeaders)
+    const invalidColumns = mappedHeaders.filter((h) => !VALID_COLUMNS.includes(h))
     if (invalidColumns.length > 0) {
       warnings.push(`Unknown columns will be ignored: ${invalidColumns.join(', ')}`)
     }
 
     // Check if at least one value column exists
-    const valueColumns = headers.filter((h) => h.startsWith('value_') || h === 'rap_value')
+    const valueColumns = mappedHeaders.filter((h) => h.startsWith('value_') || h === 'rap_value')
     if (valueColumns.length === 0) {
       warnings.push('No value columns found. Only metadata will be updated.')
     }
@@ -96,10 +136,10 @@ export function parseExcelBuffer(buffer: Buffer): ParseResult {
       const row = data[i]
       const rowNum = i + 2 // Excel row number (1-indexed + header)
 
-      // Normalize keys to lowercase
       const normalizedRow: any = {}
       for (const key in row) {
-        normalizedRow[key.toLowerCase().trim()] = row[key]
+        const mappedKey = normalizedHeaders[key]
+        normalizedRow[mappedKey] = row[key]
       }
 
       const name = normalizedRow.name
