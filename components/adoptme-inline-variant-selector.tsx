@@ -131,26 +131,52 @@ export function AdoptMeInlineVariantSelector({
     let numValue = value != null ? (typeof value === "string" ? Number.parseFloat(value) : value) : 0
     
     if ((!numValue || numValue === 0) && variantKey !== "rap_value") {
-      // Try alternative variant combinations as fallback
+      // Define smarter fallback hierarchy based on the requested variant
       const fallbackKeys: Array<keyof typeof item> = []
       
-      // Build fallback hierarchy based on selected variants
-      if (hasM || hasN) {
-        // For neon/mega variants, try base neon/mega first
-        if (hasN) fallbackKeys.push("value_n")
-        if (hasM) fallbackKeys.push("value_m")
+      if (hasM && hasF && hasR) {
+        // MFR fallbacks
+        fallbackKeys.push("value_mfr", "value_m", "value_fr", "rap_value")
+      } else if (hasM && hasF) {
+        // MF fallbacks  
+        fallbackKeys.push("value_mf", "value_mfr", "value_m", "value_f", "rap_value")
+      } else if (hasM && hasR) {
+        // MR fallbacks
+        fallbackKeys.push("value_mr", "value_mfr", "value_m", "value_r", "rap_value")
+      } else if (hasM) {
+        // M fallbacks
+        fallbackKeys.push("value_m", "value_mfr", "rap_value")
+      } else if (hasN && hasF && hasR) {
+        // NFR fallbacks
+        fallbackKeys.push("value_nfr", "value_n", "value_fr", "rap_value")
+      } else if (hasN && hasF) {
+        // NF fallbacks - try other neon+fly combos before plain neon
+        fallbackKeys.push("value_nf", "value_nfr", "value_f", "value_n", "rap_value")
+      } else if (hasN && hasR) {
+        // NR fallbacks - try other neon+ride combos before plain neon
+        fallbackKeys.push("value_nr", "value_nfr", "value_r", "value_n", "rap_value")
+      } else if (hasN) {
+        // N fallbacks
+        fallbackKeys.push("value_n", "value_nfr", "rap_value")
+      } else if (hasF && hasR) {
+        // FR fallbacks
+        fallbackKeys.push("value_fr", "value_f", "value_r", "rap_value")
+      } else if (hasF) {
+        // F fallbacks
+        fallbackKeys.push("value_f", "value_fr", "rap_value")
+      } else if (hasR) {
+        // R fallbacks
+        fallbackKeys.push("value_r", "value_fr", "rap_value")
+      } else {
+        // Base fallbacks
+        fallbackKeys.push("rap_value")
       }
       
-      // Try FR as it's the most common variant value
-      if (hasF || hasR) {
-        fallbackKeys.push("value_fr")
-      }
-      
-      // Finally try rap_value
-      fallbackKeys.push("rap_value")
+      // Remove the primary key if it's already in fallbacks
+      const filteredFallbacks = fallbackKeys.filter(key => key !== variantKey)
       
       // Find first available fallback value
-      for (const fallbackKey of fallbackKeys) {
+      for (const fallbackKey of filteredFallbacks) {
         const fallbackValue = item[fallbackKey]
         if (fallbackValue != null) {
           const fallbackNum = typeof fallbackValue === "string" ? Number.parseFloat(fallbackValue) : fallbackValue

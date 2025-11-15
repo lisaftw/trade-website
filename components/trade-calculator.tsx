@@ -748,7 +748,53 @@ function CompactVariantSelector({ item, onSelect, selectedVariant }: CompactVari
     }
 
     const value = item[variantKey]
-    const numValue = value != null ? (typeof value === "string" ? Number.parseFloat(value) : value) : 0
+    let numValue = value != null ? (typeof value === "string" ? Number.parseFloat(value) : value) : 0
+    
+    if ((!numValue || numValue === 0) && variantKey !== "rap_value") {
+      const fallbackKeys: Array<keyof TradeItem> = []
+      
+      if (hasM && hasF && hasR) {
+        fallbackKeys.push("value_mfr", "value_m", "value_fr", "rap_value")
+      } else if (hasM && hasF) {
+        fallbackKeys.push("value_mf", "value_mfr", "value_m", "value_f", "rap_value")
+      } else if (hasM && hasR) {
+        fallbackKeys.push("value_mr", "value_mfr", "value_m", "value_r", "rap_value")
+      } else if (hasM) {
+        fallbackKeys.push("value_m", "value_mfr", "rap_value")
+      } else if (hasN && hasF && hasR) {
+        fallbackKeys.push("value_nfr", "value_n", "value_fr", "rap_value")
+      } else if (hasN && hasF) {
+        // NF fallbacks - prioritize neon+fly combinations
+        fallbackKeys.push("value_nf", "value_nfr", "value_f", "value_n", "rap_value")
+      } else if (hasN && hasR) {
+        // NR fallbacks - prioritize neon+ride combinations
+        fallbackKeys.push("value_nr", "value_nfr", "value_r", "value_n", "rap_value")
+      } else if (hasN) {
+        fallbackKeys.push("value_n", "value_nfr", "rap_value")
+      } else if (hasF && hasR) {
+        fallbackKeys.push("value_fr", "value_f", "value_r", "rap_value")
+      } else if (hasF) {
+        fallbackKeys.push("value_f", "value_fr", "rap_value")
+      } else if (hasR) {
+        fallbackKeys.push("value_r", "value_fr", "rap_value")
+      } else {
+        fallbackKeys.push("rap_value")
+      }
+      
+      const filteredFallbacks = fallbackKeys.filter(key => key !== variantKey)
+      
+      for (const fallbackKey of filteredFallbacks) {
+        const fallbackValue = item[fallbackKey]
+        if (fallbackValue != null) {
+          const fallbackNum = typeof fallbackValue === "string" ? Number.parseFloat(fallbackValue) : fallbackValue
+          if (!isNaN(fallbackNum) && fallbackNum > 0) {
+            numValue = fallbackNum
+            break
+          }
+        }
+      }
+    }
+    
     const finalValue = !isNaN(numValue) && numValue > 0 ? numValue : 0
 
     onSelect(variantLabel, finalValue)

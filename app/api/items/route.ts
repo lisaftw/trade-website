@@ -20,7 +20,6 @@ export async function GET(request: NextRequest) {
     const transformedItems = paginatedItems.map((item: any) => {
       const imageUrl = item.image_url || "/placeholder.svg?height=200&width=200"
 
-
       return {
         id: item.id,
         game: item.game,
@@ -45,6 +44,7 @@ export async function GET(request: NextRequest) {
         value_fr: item.value_fr ?? null,
         value_h: item.value_h ?? null,
         value_nfr: item.value_nfr ?? null,
+        value_nf: item.value_nf ?? null,
         value_np: item.value_np ?? null,
         value_nr: item.value_nr ?? null,
         value_mfr: item.value_mfr ?? null,
