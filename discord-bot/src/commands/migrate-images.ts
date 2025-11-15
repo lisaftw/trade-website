@@ -1,22 +1,20 @@
 import { SlashCommandBuilder, type ChatInputCommandInteraction } from "discord.js"
-import { MongoClient } from "mongodb"
 import fs from "fs"
 import path from "path"
 import https from "https"
 import { fileURLToPath } from "url"
 import type { BotCommand } from "../lib/types.js"
+import { supabase } from "../lib/database.js"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-
-const mongoClient = new MongoClient(process.env.MONGODB_URI!)
 
 async function downloadImageFromDiscord(url: string, itemName: string): Promise<string> {
   return new Promise((resolve, reject) => {
     // Clean the URL
     const cleanUrl = url.trim().replace(/&$/, "")
 
-    console.log(`[v0] Downloading via Discord API: ${cleanUrl}`)
+    console.log(`Downloading via Discord API: ${cleanUrl}`)
 
     https
       .get(cleanUrl, (response) => {
@@ -76,7 +74,7 @@ async function downloadImageFromDiscord(url: string, itemName: string): Promise<
         fs.writeFileSync(filepath, buffer)
 
         const localPath = `/images/items/${filename}`
-        console.log(`[v0] Saved to: ${localPath}`)
+        console.log(`Saved to: ${localPath}`)
         resolve(localPath)
       })
     }
@@ -93,16 +91,14 @@ export const migrateImagesCommand: BotCommand = {
     await interaction.deferReply({ ephemeral: true })
 
     try {
-      await mongoClient.connect()
-      const db = mongoClient.db("trading-db")
-      const itemsCollection = db.collection("items")
+      const { data: items, error } = await supabase
+        .from("items")
+        .select("*")
+        .or('image_url.ilike.%discord%,image_url.ilike.%http%')
 
-      // Fetch all items with external URLs
-      const items = await itemsCollection
-        .find({
-          $or: [{ imageUrl: { $regex: "discord" } }, { imageUrl: { $regex: "http" } }],
-        })
-        .toArray()
+      if (error) {
+        throw error
+      }
 
       if (!items || items.length === 0) {
         await interaction.editReply("No items with external URLs found!")
@@ -116,25 +112,27 @@ export const migrateImagesCommand: BotCommand = {
 
       for (const item of items) {
         try {
-          console.log(`[v0] Processing: ${item.name}`)
+          console.log(`Processing: ${item.name}`)
 
           // Skip if already local
-          if (item.imageUrl.startsWith("/images/")) {
-            console.log(`[v0] Already local, skipping`)
+          if (item.image_url.startsWith("/images/")) {
+            console.log(`Already local, skipping`)
             continue
           }
 
           // Download image
-          const localPath = await downloadImageFromDiscord(item.imageUrl, item.name)
+          const localPath = await downloadImageFromDiscord(item.image_url, item.name)
 
-          // Update database
-          await itemsCollection.updateOne({ _id: item._id }, { $set: { imageUrl: localPath } })
+          await supabase
+            .from("items")
+            .update({ image_url: localPath })
+            .eq("id", item.id)
 
           successCount++
-          console.log(`[v0] ✅ Migrated: ${item.name}`)
+          console.log(`✅ Migrated: ${item.name}`)
         } catch (error) {
           failCount++
-          console.error(`[v0] ❌ Failed to migrate ${item.name}:`, error)
+          console.error(`❌ Failed to migrate ${item.name}:`, error)
         }
       }
 
@@ -142,8 +140,6 @@ export const migrateImagesCommand: BotCommand = {
     } catch (error) {
       console.error("Error in migrate-images command:", error)
       await interaction.editReply("An error occurred during migration!")
-    } finally {
-      await mongoClient.close()
     }
   },
 }
