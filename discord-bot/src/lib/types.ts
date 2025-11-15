@@ -1,6 +1,7 @@
 import type {
   SlashCommandBuilder,
   SlashCommandOptionsOnlyBuilder,
+  SlashCommandSubcommandsOnlyBuilder,
   ChatInputCommandInteraction,
   StringSelectMenuInteraction,
   ModalSubmitInteraction,
@@ -53,7 +54,7 @@ export const GAME_CHOICES = [
 ] as const
 
 export interface BotCommand {
-  data: SlashCommandBuilder | SlashCommandOptionsOnlyBuilder
+  data: SlashCommandBuilder | SlashCommandOptionsOnlyBuilder | SlashCommandSubcommandsOnlyBuilder
   execute: (interaction: ChatInputCommandInteraction) => Promise<void>
   handleSelectMenu?: (interaction: StringSelectMenuInteraction) => Promise<void>
   handleModal?: (interaction: ModalSubmitInteraction) => Promise<void>

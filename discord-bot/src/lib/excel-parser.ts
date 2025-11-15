@@ -136,7 +136,7 @@ export function parseExcelBuffer(buffer: Buffer): ParseResult {
             errors.push(`Row ${rowNum}: Invalid ${field} value "${normalizedRow[field]}" (must be a positive number)`)
             continue
           }
-          item[field as keyof ExcelItemUpdate] = value as any
+          item[field as keyof ExcelItemUpdate] = value
         }
       }
 
@@ -144,7 +144,7 @@ export function parseExcelBuffer(buffer: Buffer): ParseResult {
       const stringFields = ['demand', 'rarity', 'section', 'category']
       for (const field of stringFields) {
         if (normalizedRow[field] !== null && normalizedRow[field] !== undefined && normalizedRow[field] !== '') {
-          item[field as keyof ExcelItemUpdate] = String(normalizedRow[field]).trim() as any
+          item[field as keyof ExcelItemUpdate] = String(normalizedRow[field]).trim()
         }
       }
 
