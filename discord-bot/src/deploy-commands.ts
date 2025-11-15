@@ -6,6 +6,7 @@ import { removeItemCommand } from "./commands/removeitem.js"
 import { bulkAddItemCommand } from "./commands/bulkadditem.js"
 import { migrateImagesCommand } from "./commands/migrate-images.js"
 import { analyticsCommand } from "./commands/analytics.js"
+import { excelUpdateCommand } from "./commands/excel-update.js"
 
 dotenv.config()
 
@@ -16,9 +17,10 @@ const commands = [
   bulkAddItemCommand.data.toJSON(),
   migrateImagesCommand.data.toJSON(),
   analyticsCommand.data.toJSON(),
+  excelUpdateCommand.data.toJSON(),
 ]
 
-const rest = new REST().setToken(process.env.DISCORD_BOT_TOKEN!)
+const rest = new REST().setToken(process.env.DISCORD_TOKEN!)
 ;(async () => {
   try {
     console.log(`🔄 Started refreshing ${commands.length} application (/) commands.`)

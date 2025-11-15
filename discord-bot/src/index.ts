@@ -11,6 +11,7 @@ import { removeItemCommand } from "./commands/removeitem.js"
 import { bulkAddItemCommand } from "./commands/bulkadditem.js"
 import { migrateImagesCommand } from "./commands/migrate-images.js"
 import { analyticsCommand } from "./commands/analytics.js"
+import { excelUpdateCommand } from "./commands/excel-update.js"
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
@@ -23,6 +24,7 @@ commands.set(removeItemCommand.data.name, removeItemCommand)
 commands.set(bulkAddItemCommand.data.name, bulkAddItemCommand)
 commands.set(migrateImagesCommand.data.name, migrateImagesCommand)
 commands.set(analyticsCommand.data.name, analyticsCommand)
+commands.set(excelUpdateCommand.data.name, excelUpdateCommand)
 
 client.once(Events.ClientReady, async (readyClient) => {
   console.log(`✅ Discord bot ready! Logged in as ${readyClient.user.tag}`)
@@ -108,10 +110,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 })
 
-const token = process.env.DISCORD_BOT_TOKEN
+const token = process.env.DISCORD_TOKEN
 
 if (!token) {
-  console.error("❌ DISCORD_BOT_TOKEN is not set in environment variables!")
+  console.error("❌ DISCORD_TOKEN is not set in environment variables!")
   console.error("Please create a .env file with your bot token")
   process.exit(1)
 }
