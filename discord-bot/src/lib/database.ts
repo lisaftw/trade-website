@@ -1,4 +1,5 @@
 import postgres from "postgres"
+import { createClient } from "@supabase/supabase-js"
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -19,6 +20,16 @@ export const sql = postgres(databaseUrl, {
   connect_timeout: 10,
 })
 
+const supabaseUrl = process.env.SUPABASE_URL
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+if (!supabaseUrl || !supabaseKey) {
+  console.error("❌ SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY environment variable is not set")
+  throw new Error("Supabase environment variables are not set")
+}
+
+export const supabase = createClient(supabaseUrl, supabaseKey)
+
 // Helper function to test connection
 export async function testConnection() {
   try {
@@ -30,5 +41,3 @@ export async function testConnection() {
     return false
   }
 }
-
-// Additional updates can be added here if needed
