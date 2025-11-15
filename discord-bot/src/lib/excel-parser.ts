@@ -105,10 +105,13 @@ export function parseExcelBuffer(buffer: Buffer): ParseResult {
     const headers = Object.keys(data[0])
     const normalizedHeaders: Record<string, string> = {}
     
+    console.log('[v0] Original headers:', headers)
+    
     for (const header of headers) {
       const cleaned = header.toLowerCase().trim()
       const mapped = COLUMN_MAPPINGS[cleaned] || cleaned
       normalizedHeaders[header] = mapped
+      console.log(`[v0] Mapping "${header}" -> "${cleaned}" -> "${mapped}"`)
     }
 
     // Check if name column exists (after mapping)
@@ -188,6 +191,9 @@ export function parseExcelBuffer(buffer: Buffer): ParseResult {
         if (isNaN(value) || value < 0) {
           errors.push(`Row ${rowNum}: Invalid ${field} value "${rawValue}" (must be a positive number or N/A)`)
           continue
+        }
+        if (field === 'value_nf' || field === 'value_n') {
+          console.log(`[v0] Row ${rowNum} "${name}": Setting ${field} = ${value}`)
         }
         ;(item as Record<string, any>)[field] = value
       }
