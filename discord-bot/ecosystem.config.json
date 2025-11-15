@@ -1,0 +1,16 @@
+{
+  "apps": [{
+    "name": "trade-bot",
+    "script": "./dist/index.js",
+    "cwd": "./discord-bot",
+    "instances": 1,
+    "exec_mode": "fork",
+    "watch": false,
+    "env": {
+      "NODE_ENV": "production"
+    },
+    "error_file": "./logs/err.log",
+    "out_file": "./logs/out.log",
+    "log_date_format": "YYYY-MM-DD HH:mm:ss Z"
+  }]
+}

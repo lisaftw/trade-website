@@ -5,6 +5,7 @@ import { editItemCommand } from "./commands/edititem.js"
 import { removeItemCommand } from "./commands/removeitem.js"
 import { bulkAddItemCommand } from "./commands/bulkadditem.js"
 import { migrateImagesCommand } from "./commands/migrate-images.js"
+import { analyticsCommand } from "./commands/analytics.js"
 
 dotenv.config()
 
@@ -14,6 +15,7 @@ const commands = [
   removeItemCommand.data.toJSON(),
   bulkAddItemCommand.data.toJSON(),
   migrateImagesCommand.data.toJSON(),
+  analyticsCommand.data.toJSON(),
 ]
 
 const rest = new REST().setToken(process.env.DISCORD_BOT_TOKEN!)

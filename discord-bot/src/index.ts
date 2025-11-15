@@ -10,6 +10,7 @@ import { editItemCommand } from "./commands/edititem.js"
 import { removeItemCommand } from "./commands/removeitem.js"
 import { bulkAddItemCommand } from "./commands/bulkadditem.js"
 import { migrateImagesCommand } from "./commands/migrate-images.js"
+import { analyticsCommand } from "./commands/analytics.js"
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
@@ -21,6 +22,7 @@ commands.set(editItemCommand.data.name, editItemCommand)
 commands.set(removeItemCommand.data.name, removeItemCommand)
 commands.set(bulkAddItemCommand.data.name, bulkAddItemCommand)
 commands.set(migrateImagesCommand.data.name, migrateImagesCommand)
+commands.set(analyticsCommand.data.name, analyticsCommand)
 
 client.once(Events.ClientReady, async (readyClient) => {
   console.log(`✅ Discord bot ready! Logged in as ${readyClient.user.tag}`)
