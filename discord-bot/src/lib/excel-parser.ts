@@ -112,7 +112,6 @@ export function parseExcelBuffer(buffer: Buffer): ParseResult {
         name: name.trim(),
       }
 
-      // Parse numeric values
       const numericFields = [
         'rap_value',
         'value_fr',
@@ -136,7 +135,7 @@ export function parseExcelBuffer(buffer: Buffer): ParseResult {
             errors.push(`Row ${rowNum}: Invalid ${field} value "${normalizedRow[field]}" (must be a positive number)`)
             continue
           }
-          item[field as keyof ExcelItemUpdate] = value
+          ;(item as Record<string, any>)[field] = value
         }
       }
 
@@ -144,7 +143,7 @@ export function parseExcelBuffer(buffer: Buffer): ParseResult {
       const stringFields = ['demand', 'rarity', 'section', 'category']
       for (const field of stringFields) {
         if (normalizedRow[field] !== null && normalizedRow[field] !== undefined && normalizedRow[field] !== '') {
-          item[field as keyof ExcelItemUpdate] = String(normalizedRow[field]).trim()
+          ;(item as Record<string, any>)[field] = String(normalizedRow[field]).trim()
         }
       }
 
