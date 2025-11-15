@@ -22,10 +22,10 @@ export const metadata: Metadata = {
   generator: "v0.app",
   icons: {
     icon: [
-      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/logo-white.png', type: 'image/png' },
       { url: '/favicon.ico', sizes: 'any' }
     ],
-    apple: '/apple-touch-icon.png',
+    apple: '/logo-white.png',
   },
 }
 

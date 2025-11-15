@@ -1,8 +1,8 @@
 export function SiteFooter() {
   return (
     <footer className="mt-12 border-t border-border/60 pt-6">
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div className="text-center sm:text-left">
           <p className="text-[11px] text-muted-foreground">Trade</p>
           <p className="mt-1 text-[10px] text-muted-foreground">All rights reserved © 2025 — Trade</p>
         </div>

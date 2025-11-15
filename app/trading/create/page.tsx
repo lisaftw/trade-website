@@ -106,29 +106,29 @@ export default function CreateTradePage() {
                   <div className="space-y-6">
                     {/* Header */}
                     <div className="text-center">
-                      <h1 className="text-3xl font-bold tracking-wide md:text-4xl">Create Trade Ad</h1>
-                      <p className="mt-2 text-sm text-muted-foreground">
+                      <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-wide">Create Trade Ad</h1>
+                      <p className="mt-1 md:mt-2 text-xs md:text-sm text-muted-foreground">
                         Set up your trade offer and find the perfect match
                       </p>
                     </div>
 
-                    <Card className="card-neo p-6 border-2 border-primary/30">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-primary">
+                    <Card className="card-neo p-4 md:p-6 border-2 border-primary/30">
+                      <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
+                        <div className="flex h-7 w-7 md:h-8 md:w-8 items-center justify-center rounded-full bg-primary/20 text-primary text-sm md:text-base">
                           1
                         </div>
-                        <label className="text-base font-bold">Select Game</label>
+                        <label className="text-sm md:text-base font-bold">Select Game</label>
                       </div>
                       <div className="relative z-50">
                         <button
                           onClick={() => setGameDropdownOpen(!gameDropdownOpen)}
-                          className="btn-neo w-full justify-between px-4 py-3 text-base font-semibold"
+                          className="btn-neo w-full justify-between px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base font-semibold"
                         >
                           <span className={selectedGame ? "text-foreground" : "text-muted-foreground"}>
                             {selectedGame || "Choose a game..."}
                           </span>
                           <ChevronDown
-                            className={`h-5 w-5 transition-transform ${gameDropdownOpen ? "rotate-180" : ""}`}
+                            className={`h-4 w-4 md:h-5 md:w-5 transition-transform ${gameDropdownOpen ? "rotate-180" : ""}`}
                           />
                         </button>
                         {gameDropdownOpen && (
@@ -155,18 +155,18 @@ export default function CreateTradePage() {
                       </div>
                     </Card>
 
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-primary font-bold">
+                    <div className="space-y-3 md:space-y-4">
+                      <div className="flex items-center gap-2 md:gap-3">
+                        <div className="flex h-7 w-7 md:h-8 md:w-8 items-center justify-center rounded-full bg-primary/20 text-primary font-bold text-sm md:text-base">
                           2
                         </div>
-                        <h2 className="text-xl font-bold">Set Up Your Trade</h2>
+                        <h2 className="text-lg md:text-xl font-bold">Set Up Your Trade</h2>
                       </div>
-                      <div className="grid gap-6 md:grid-cols-2">
+                      <div className="grid gap-4 md:gap-6 md:grid-cols-2">
                         <div className="space-y-2">
-                          <div className="flex items-center gap-2 rounded-lg bg-green-500/10 border border-green-500/30 px-4 py-2">
-                            <div className="h-2 w-2 rounded-full bg-green-500" />
-                            <h3 className="font-bold text-green-400">What I'm Offering</h3>
+                          <div className="flex items-center gap-2 rounded-lg bg-green-500/10 border border-green-500/30 px-3 md:px-4 py-1.5 md:py-2">
+                            <div className="h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-green-500" />
+                            <h3 className="text-sm md:text-base font-bold text-green-400">What I'm Offering</h3>
                           </div>
                           <TradeColumn
                             title="I Have"
@@ -179,9 +179,9 @@ export default function CreateTradePage() {
                         </div>
 
                         <div className="space-y-2">
-                          <div className="flex items-center gap-2 rounded-lg bg-blue-500/10 border border-blue-500/30 px-4 py-2">
-                            <div className="h-2 w-2 rounded-full bg-blue-500" />
-                            <h3 className="font-bold text-blue-400">What I'm Requesting</h3>
+                          <div className="flex items-center gap-2 rounded-lg bg-blue-500/10 border border-blue-500/30 px-3 md:px-4 py-1.5 md:py-2">
+                            <div className="h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-blue-500" />
+                            <h3 className="text-sm md:text-base font-bold text-blue-400">What I'm Requesting</h3>
                           </div>
                           <TradeColumn
                             title="I Want"
@@ -198,37 +198,37 @@ export default function CreateTradePage() {
                     </div>
 
                     {/* Trade Summary */}
-                    <Card className="card-neo p-6">
-                      <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+                    <Card className="card-neo p-4 md:p-6">
+                      <div className="flex flex-col items-center justify-between gap-3 md:gap-4 md:flex-row">
                         <div className="text-center md:text-left">
-                          <p className="text-sm text-muted-foreground">Trade Summary</p>
-                          <p className="mt-1 text-lg font-semibold">
+                          <p className="text-xs md:text-sm text-muted-foreground">Trade Summary</p>
+                          <p className="mt-1 text-base md:text-lg font-semibold">
                             {offering.length} items for {requesting.length} items
                           </p>
                         </div>
-                        <div className="flex gap-8">
+                        <div className="flex gap-6 md:gap-8">
                           <div className="text-center">
-                            <p className="text-xs text-muted-foreground">YOUR OFFER</p>
-                            <p className="mt-1 text-xl font-bold text-green-400">{formatValue(offeringTotal)}</p>
+                            <p className="text-[10px] md:text-xs text-muted-foreground">YOUR OFFER</p>
+                            <p className="mt-1 text-lg md:text-xl font-bold text-green-400">{formatValue(offeringTotal)}</p>
                           </div>
                           <div className="text-center">
-                            <p className="text-xs text-muted-foreground">YOU WANT</p>
-                            <p className="mt-1 text-xl font-bold text-blue-400">{formatValue(requestingTotal)}</p>
+                            <p className="text-[10px] md:text-xs text-muted-foreground">YOU WANT</p>
+                            <p className="mt-1 text-lg md:text-xl font-bold text-blue-400">{formatValue(requestingTotal)}</p>
                           </div>
                         </div>
                       </div>
                     </Card>
 
                     {/* Notes */}
-                    <Card className="card-neo p-6">
-                      <label className="block text-sm font-semibold mb-3">
+                    <Card className="card-neo p-4 md:p-6">
+                      <label className="block text-xs md:text-sm font-semibold mb-2 md:mb-3">
                         Trade Notes <span className="text-muted-foreground font-normal">({notes.length}/100)</span>
                       </label>
                       <Textarea
                         placeholder="Add any additional details about your trade..."
                         value={notes}
                         onChange={(e) => setNotes(e.target.value.slice(0, 100))}
-                        className="min-h-24 resize-none"
+                        className="min-h-20 md:min-h-24 resize-none text-sm md:text-base"
                       />
                     </Card>
 
@@ -236,9 +236,9 @@ export default function CreateTradePage() {
                     <Button
                       onClick={handlePublish}
                       disabled={isSubmitting || !selectedGame || offering.length === 0 || requesting.length === 0}
-                      className="btn-neo w-full py-6 text-lg font-bold bg-gradient-to-r from-primary via-primary/90 to-primary/80 hover:from-primary/90 hover:via-primary hover:to-primary transition-all duration-300 shadow-lg hover:shadow-primary/50 gap-2"
+                      className="btn-neo w-full py-4 md:py-6 text-base md:text-lg font-bold bg-gradient-to-r from-primary via-primary/90 to-primary/80 hover:from-primary/90 hover:via-primary hover:to-primary transition-all duration-300 shadow-lg hover:shadow-primary/50 gap-2"
                     >
-                      <Sparkles className="h-5 w-5" />
+                      <Sparkles className="h-4 w-4 md:h-5 md:w-5" />
                       {isSubmitting ? "Publishing..." : "Publish Trade Ad"}
                     </Button>
                   </div>
@@ -356,26 +356,27 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
   }, 0)
 
   return (
-    <Card className="card-neo p-4">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-semibold">{title}</h2>
+    <Card className="card-neo p-3 md:p-4">
+      <div className="mb-3 md:mb-4 flex items-center justify-between">
+        <h2 className="text-base md:text-lg font-semibold">{title}</h2>
         <Button
           size="sm"
           onClick={() => setShowSearch(!showSearch)}
-          className="btn-neo h-8 gap-1 rounded-full"
+          className="btn-neo h-7 md:h-8 gap-1 rounded-full text-xs md:text-sm px-2 md:px-3"
           disabled={!selectedGame}
         >
-          <Plus className="h-4 w-4" />
-          Add Item
+          <Plus className="h-3 w-3 md:h-4 md:w-4" />
+          <span className="hidden sm:inline">Add Item</span>
+          <span className="sm:hidden">Add</span>
         </Button>
       </div>
 
       {/* Item Search Modal */}
       {showSearch && (
-        <div className="mb-4 space-y-3 rounded-lg border border-border bg-secondary/20 p-3 backdrop-blur-glass">
+        <div className="mb-3 md:mb-4 space-y-2 md:space-y-3 rounded-lg border border-border bg-secondary/20 p-2 md:p-3 backdrop-blur-glass">
           <div className="flex items-center gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Search className="absolute left-2 md:left-3 top-1/2 h-3.5 w-3.5 md:h-4 md:w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search items..."
                 value={searchQuery}
@@ -383,7 +384,7 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
                   setSearchQuery(e.target.value)
                   setDisplayLimit(100)
                 }}
-                className="pl-9"
+                className="pl-8 md:pl-9 text-sm md:text-base h-8 md:h-10"
                 autoFocus
               />
             </div>
@@ -396,8 +397,9 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
                 setSelectedCategory("all")
                 setDisplayLimit(100)
               }}
+              className="h-8 w-8 p-0"
             >
-              <X className="h-4 w-4" />
+              <X className="h-3.5 w-3.5 md:h-4 md:w-4" />
             </Button>
           </div>
 
@@ -406,26 +408,26 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
               value={selectedCategory}
               onValueChange={(value) => setSelectedCategory(value as "all" | "pets" | "eggs")}
             >
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="all">All Items</TabsTrigger>
-                <TabsTrigger value="pets">Pets</TabsTrigger>
-                <TabsTrigger value="eggs">Eggs</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-3 h-8 md:h-10">
+                <TabsTrigger value="all" className="text-xs md:text-sm">All Items</TabsTrigger>
+                <TabsTrigger value="pets" className="text-xs md:text-sm">Pets</TabsTrigger>
+                <TabsTrigger value="eggs" className="text-xs md:text-sm">Eggs</TabsTrigger>
               </TabsList>
             </Tabs>
           )}
 
-          <div className="max-h-64 space-y-2 overflow-y-auto">
+          <div className="max-h-56 md:max-h-64 space-y-1.5 md:space-y-2 overflow-y-auto">
             {isSearching ? (
-              <div className="py-8 text-center text-sm text-muted-foreground">Searching...</div>
+              <div className="py-6 md:py-8 text-center text-xs md:text-sm text-muted-foreground">Searching...</div>
             ) : displayedItems.length === 0 ? (
-              <div className="py-8 text-center text-sm text-muted-foreground">
+              <div className="py-6 md:py-8 text-center text-xs md:text-sm text-muted-foreground">
                 {debouncedSearch
                   ? `No ${selectedCategory === "all" ? "items" : selectedCategory} found`
                   : `No ${selectedCategory === "all" ? "items" : selectedCategory} available`}
               </div>
             ) : (
               <>
-                <div className="text-center text-xs text-muted-foreground mb-2">
+                <div className="text-center text-[10px] md:text-xs text-muted-foreground mb-1 md:mb-2">
                   Showing {Math.min(displayLimit, displayedItems.length)} of {displayedItems.length} items
                 </div>
                 {displayedItems.slice(0, displayLimit).map((item) =>
@@ -450,31 +452,31 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
                         setShowSearch(false)
                         setDisplayLimit(100)
                       }}
-                      className="flex w-full items-center gap-3 rounded-lg border border-border bg-card p-2 text-left transition-transform hover:scale-[1.01] hover:bg-accent"
+                      className="flex w-full items-center gap-2 md:gap-3 rounded-lg border border-border bg-card p-1.5 md:p-2 text-left transition-transform hover:scale-[1.01] hover:bg-accent"
                     >
                       <Image
                         src={item.imageUrl || "/itemplaceholder.png"}
                         alt={item.name}
-                        width={40}
-                        height={40}
-                        className="rounded"
+                        width={36}
+                        height={36}
+                        className="rounded w-9 h-9 md:w-10 md:h-10"
                       />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">{item.name}</p>
-                        <p className="text-xs text-muted-foreground">{item.game}</p>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs md:text-sm font-medium truncate">{item.name}</p>
+                        <p className="text-[10px] md:text-xs text-muted-foreground">{item.game}</p>
                       </div>
-                      <p className="text-sm font-semibold">{formatValue(item.value)}</p>
+                      <p className="text-xs md:text-sm font-semibold whitespace-nowrap">{formatValue(item.value)}</p>
                     </button>
                   ),
                 )}
                 
                 {displayLimit < displayedItems.length && (
-                  <div className="flex justify-center pt-3">
+                  <div className="flex justify-center pt-2 md:pt-3">
                     <Button
                       onClick={() => setDisplayLimit(prev => prev + 100)}
                       variant="outline"
                       size="sm"
-                      className="w-full"
+                      className="w-full text-xs md:text-sm"
                     >
                       Load More ({displayedItems.length - displayLimit} remaining)
                     </Button>
@@ -487,9 +489,9 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
       )}
 
       {/* Items List */}
-      <div className="space-y-2">
+      <div className="space-y-1.5 md:space-y-2">
         {items.length === 0 ? (
-          <div className="py-12 text-center text-sm text-muted-foreground">
+          <div className="py-8 md:py-12 text-center text-xs md:text-sm text-muted-foreground">
             No items added yet
             <br />
             Click "Add Item" to get started
@@ -498,31 +500,31 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
           items.map((item) => (
             <div
               key={item.id}
-              className="flex items-center gap-3 rounded-lg border border-border bg-card p-3 transition-colors hover:bg-accent/50"
+              className="flex items-center gap-2 md:gap-3 rounded-lg border border-border bg-card p-2 md:p-3 transition-colors hover:bg-accent/50"
             >
               <Image
                 src={item.imageUrl || "/itemplaceholder.png"}
                 alt={item.name}
-                width={48}
-                height={48}
-                className="rounded flex-shrink-0"
+                width={40}
+                height={40}
+                className="rounded flex-shrink-0 w-10 h-10 md:w-12 md:h-12"
               />
-              <div className="flex-1">
-                <p className="text-sm font-medium">{item.name}</p>
-                <p className="text-xs text-muted-foreground">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs md:text-sm font-medium truncate">{item.name}</p>
+                <p className="text-[10px] md:text-xs text-muted-foreground">
                   {item.game}
                   {item.variantLabel && ` - ${item.variantLabel}`}
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-sm font-semibold">{formatValue(item.value)}</p>
+                <p className="text-xs md:text-sm font-semibold">{formatValue(item.value)}</p>
                 <Button
                   size="sm"
                   variant="ghost"
                   onClick={() => onRemove(item.id)}
-                  className="mt-1 h-6 w-6 p-0 text-destructive hover:bg-destructive/10"
+                  className="mt-0.5 md:mt-1 h-5 w-5 md:h-6 md:w-6 p-0 text-destructive hover:bg-destructive/10"
                 >
-                  <X className="h-3 w-3" />
+                  <X className="h-2.5 w-2.5 md:h-3 md:w-3" />
                 </Button>
               </div>
             </div>
@@ -531,8 +533,8 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
       </div>
 
       {items.length > 0 && (
-        <div className="mt-4 border-t border-border pt-3">
-          <div className="flex justify-between text-sm font-semibold">
+        <div className="mt-3 md:mt-4 border-t border-border pt-2 md:pt-3">
+          <div className="flex justify-between text-xs md:text-sm font-semibold">
             <span>Total Value:</span>
             <span>{formatValue(itemTotal)}</span>
           </div>
@@ -574,21 +576,21 @@ function AdoptMeItemButton({ item, onAddItem, onClose }: AdoptMeItemButtonProps)
   }
 
   return (
-    <div className="rounded-lg border border-border bg-card p-3 space-y-2">
-      <div className="flex items-start gap-3">
+    <div className="rounded-lg border border-border bg-card p-2 md:p-3 space-y-1.5 md:space-y-2">
+      <div className="flex items-start gap-2 md:gap-3">
         <Image
           src={item.imageUrl || "/itemplaceholder.png"}
           alt={item.name}
-          width={48}
-          height={48}
-          className="rounded flex-shrink-0"
+          width={40}
+          height={40}
+          className="rounded flex-shrink-0 w-10 h-10 md:w-12 md:h-12"
         />
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium truncate">{item.name}</p>
-          <p className="text-xs text-muted-foreground">{isEgg ? "Egg" : selectedVariant}</p>
+          <p className="text-xs md:text-sm font-medium truncate">{item.name}</p>
+          <p className="text-[10px] md:text-xs text-muted-foreground">{isEgg ? "Egg" : selectedVariant}</p>
         </div>
         <div className="text-right">
-          <p className="text-sm font-semibold whitespace-nowrap">
+          <p className="text-xs md:text-sm font-semibold whitespace-nowrap">
             {formatValue(selectedValue)}
           </p>
         </div>
@@ -599,7 +601,7 @@ function AdoptMeItemButton({ item, onAddItem, onClose }: AdoptMeItemButtonProps)
         <Button
           onClick={handleAdd}
           size="sm"
-          className="bg-gray-700 hover:bg-gray-600 text-white font-bold ml-auto border border-gray-600"
+          className="bg-gray-700 hover:bg-gray-600 text-white font-bold ml-auto border border-gray-600 h-7 md:h-8 text-xs md:text-sm px-3 md:px-4"
         >
           Add
         </Button>

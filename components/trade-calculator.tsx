@@ -133,7 +133,8 @@ export function TradeCalculator() {
         <div className="mb-2 md:mb-3 text-center">
           <div className="inline-flex items-center rounded-full border border-gray-700 bg-gray-900/80 px-2 md:px-3 py-1 md:py-1.5 text-[10px] md:text-xs text-white">
             <span className="mr-1 md:mr-1.5 inline-block h-1 md:h-1.5 w-1 md:w-1.5 rounded-full bg-green-500" />
-            Selected game: <span className="ml-1 font-medium">{game}</span>
+            <span className="hidden sm:inline">Selected game: </span>
+            <span className="ml-1 font-medium">{game}</span>
             <button
               onClick={() => {
                 setYourItems([])
@@ -152,11 +153,11 @@ export function TradeCalculator() {
         <div className="relative rounded-xl md:rounded-2xl border border-gray-700/50 md:border-2 bg-gradient-to-b from-gray-900/40 to-black/60 p-3 md:p-4 lg:p-6 backdrop-blur-sm">
           <div className="mb-3 md:mb-4 flex items-center justify-center">
             <Image
-              src="/trader-logo.png"
+              src="/logo-white.png"
               alt="TRADER"
-              width={200}
-              height={60}
-              className="h-auto w-32 md:w-40"
+              width={160}
+              height={48}
+              className="h-auto w-28 md:w-36 lg:w-40"
               priority
             />
           </div>

@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { UserMenu } from "@/components/user-menu"
-import { Calculator, Menu, MessageSquare, Users } from "lucide-react"
+import { Calculator, Menu, MessageSquare, Users } from 'lucide-react'
 import Image from "next/image"
 import { useState } from "react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -15,11 +15,11 @@ export function SiteHeader() {
     <header className="mb-8 md:mb-12 flex items-center justify-between">
       <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
         <Image
-          src="/home/mascot.png"
+          src="/logo-white.png"
           alt="Trade"
           width={32}
           height={32}
-          className="h-7 w-7 md:h-8 md:w-8 drop-shadow-sm"
+          className="h-8 w-8 md:h-10 md:w-10 drop-shadow-sm"
           priority={false}
         />
         <span className="sr-only">TRADE Home</span>
