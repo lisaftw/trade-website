@@ -206,8 +206,8 @@ export function AdoptMeContent() {
           <p className="text-muted-foreground">No pets found matching your filters.</p>
         </div>
       ) : (
-        <div className="space-y-12">
-          {RARITIES.filter((rarity) => rarity !== "All" && groupedItems[rarity]?.length > 0).map((rarity) => (
+        <div className="relative space-y-12">
+          {RARITIES.filter((rarity) => rarity !== 'All' && groupedItems[rarity]?.length > 0).map((rarity) => (
             <div key={rarity} className="space-y-6">
               <div className="flex items-center gap-4">
                 <h2 className="text-2xl font-bold">{rarity}</h2>
@@ -223,7 +223,7 @@ export function AdoptMeContent() {
           ))}
 
           {filteredCount > displayLimit && (
-            <div className="flex justify-center pt-8">
+            <div className="relative flex justify-center pt-8 pb-4">
               <Button onClick={() => setDisplayLimit(displayLimit + 100)} size="lg" className="min-w-[200px]">
                 Load More ({filteredCount - displayLimit} remaining)
               </Button>

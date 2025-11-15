@@ -480,7 +480,7 @@ export function IngameCalculator() {
                   ))}
                   
                   {displayLimit < displayedItems.length && (
-                    <div className="flex justify-center pt-3 md:pt-4">
+                    <div className="relative flex justify-center pt-3 md:pt-4 pb-2">
                       <Button
                         onClick={() => setDisplayLimit(prev => prev + 100)}
                         variant="outline"

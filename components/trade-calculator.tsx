@@ -447,17 +447,17 @@ function TradeGrid({
                 <div className="py-8 md:py-10 text-center text-xs md:text-sm text-red-400">{error}</div>
               ) : displayedItems.length === 0 && searchQuery ? (
                 <div className="py-8 md:py-10 text-center text-xs md:text-sm text-gray-400">
-                  No {selectedCategory === "all" ? "items" : selectedCategory} found matching "{searchQuery}"
+                  No {selectedCategory === 'all' ? 'items' : selectedCategory} found matching "{searchQuery}"
                 </div>
               ) : displayedItems.length === 0 ? (
                 <div className="py-8 md:py-10 text-center text-xs md:text-sm text-gray-400">
-                  No {selectedCategory === "all" ? "items" : selectedCategory} available for {selectedGame}
+                  No {selectedCategory === 'all' ? 'items' : selectedCategory} available for {selectedGame}
                 </div>
               ) : (
                 <>
                   <div className="mb-1 md:mb-1.5 text-center text-[10px] md:text-xs text-gray-400">
-                    Showing {Math.min(displayLimit, displayedItems.length)} of {displayedItems.length}{" "}
-                    {displayedItems.length === 1 ? "item" : "items"}
+                    Showing {Math.min(displayLimit, displayedItems.length)} of {displayedItems.length}{' '}
+                    {displayedItems.length === 1 ? 'item' : 'items'}
                     {searchQuery && ` matching "${searchQuery}"`}
                   </div>
                   {displayedItems.slice(0, displayLimit).map((item) => (
@@ -465,12 +465,12 @@ function TradeGrid({
                       key={item.id}
                       item={item}
                       onAddItem={onAddItem}
-                      isAdoptMe={selectedGame === "Adopt Me"}
+                      isAdoptMe={selectedGame === 'Adopt Me'}
                     />
                   ))}
                   
                   {displayLimit < displayedItems.length && (
-                    <div className="flex justify-center pt-3">
+                    <div className="relative flex justify-center pt-3 pb-2">
                       <Button
                         onClick={() => setDisplayLimit(prev => prev + 100)}
                         variant="outline"
