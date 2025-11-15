@@ -168,15 +168,28 @@ export function parseExcelBuffer(buffer: Buffer): ParseResult {
         'value_h',
       ]
 
-      for (const field of numericFields) {
-        if (normalizedRow[field] !== null && normalizedRow[field] !== undefined && normalizedRow[field] !== '') {
-          const value = Number(normalizedRow[field])
-          if (isNaN(value) || value < 0) {
-            errors.push(`Row ${rowNum}: Invalid ${field} value "${normalizedRow[field]}" (must be a positive number)`)
-            continue
-          }
-          ;(item as Record<string, any>)[field] = value
+      const isEmptyValue = (val: any): boolean => {
+        if (val === null || val === undefined || val === '') return true
+        if (typeof val === 'string') {
+          const trimmed = val.trim().toUpperCase()
+          return trimmed === 'N/A' || trimmed === 'NA' || trimmed === '-' || trimmed === 'NULL'
         }
+        return false
+      }
+
+      for (const field of numericFields) {
+        const rawValue = normalizedRow[field]
+        
+        if (isEmptyValue(rawValue)) {
+          continue
+        }
+
+        const value = Number(rawValue)
+        if (isNaN(value) || value < 0) {
+          errors.push(`Row ${rowNum}: Invalid ${field} value "${rawValue}" (must be a positive number or N/A)`)
+          continue
+        }
+        ;(item as Record<string, any>)[field] = value
       }
 
       // Parse string fields
