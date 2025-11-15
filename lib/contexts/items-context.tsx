@@ -52,11 +52,9 @@ export function ItemsProvider({ children }: { children: React.ReactNode }) {
 
   const fetchAllItems = useCallback(async () => {
     try {
-      console.log("[v0] Preloading all items...")
       setIsLoading(true)
       setError(null)
 
-      // Fetch items without game filter to get all at once
       const response = await fetch("/api/items?limit=10000")
       
       if (!response.ok) {
@@ -64,19 +62,16 @@ export function ItemsProvider({ children }: { children: React.ReactNode }) {
       }
 
       const data = await response.json()
-      console.log("[v0] Successfully preloaded", data.items?.length || 0, "items")
       
       setItems(data.items || [])
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to load items"
-      console.error("[v0] Error preloading items:", err)
       setError(errorMessage)
     } finally {
       setIsLoading(false)
     }
   }, [])
 
-  // Preload items on mount
   useEffect(() => {
     fetchAllItems()
   }, [fetchAllItems])
@@ -97,7 +92,7 @@ export function ItemsProvider({ children }: { children: React.ReactNode }) {
         filtered = filtered.filter((item) => item.game === game)
       }
 
-      return filtered.slice(0, 50) // Limit search results
+      return filtered.slice(0, 50)
     },
     [items]
   )

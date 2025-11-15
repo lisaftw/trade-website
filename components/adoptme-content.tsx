@@ -48,9 +48,7 @@ function isEgg(item: AdoptMeItem): boolean {
     (item.value_r !== null && item.value_r !== undefined && item.value_r > 0) ||
     (item.value_n !== null && item.value_n !== undefined && item.value_n > 0)
   
-  const result = !hasVariants
-  console.log("[v0] isEgg check for", item.name, "hasVariants:", hasVariants, "isEgg:", result, "rap_value:", item.rap_value)
-  return result
+  return !hasVariants
 }
 
 export function AdoptMeContent() {
@@ -58,7 +56,7 @@ export function AdoptMeContent() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedRarity, setSelectedRarity] = useState("All")
   const [selectedCategory, setSelectedCategory] = useState<"all" | "pets" | "eggs">("all")
-  const [displayLimit, setDisplayLimit] = useState(50)
+  const [displayLimit, setDisplayLimit] = useState(100)
 
   const allItems = useMemo(() => getItemsByGame("Adopt Me"), [getItemsByGame])
 
@@ -226,7 +224,7 @@ export function AdoptMeContent() {
 
           {filteredCount > displayLimit && (
             <div className="flex justify-center pt-8">
-              <Button onClick={() => setDisplayLimit(displayLimit + 50)} size="lg" className="min-w-[200px]">
+              <Button onClick={() => setDisplayLimit(displayLimit + 100)} size="lg" className="min-w-[200px]">
                 Load More ({filteredCount - displayLimit} remaining)
               </Button>
             </div>

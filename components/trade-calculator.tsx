@@ -231,10 +231,12 @@ function TradeGrid({
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<"all" | "pets" | "eggs">("all")
+  const [displayLimit, setDisplayLimit] = useState(100)
 
   useEffect(() => {
     if (!isActive) {
       onSearchChange("")
+      setDisplayLimit(100)
       return
     }
 
@@ -295,7 +297,6 @@ function TradeGrid({
 
         setAllItems(transformedItems)
       } catch (err) {
-        console.error("[v0] Failed to fetch items:", err)
         setError("Failed to load items. Please try again.")
         setAllItems([])
       } finally {
@@ -398,6 +399,7 @@ function TradeGrid({
                 onClick={() => {
                   onClose()
                   setSelectedCategory("all")
+                  setDisplayLimit(100)
                 }}
                 className="rounded-full p-1 md:p-1.5 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
               >
@@ -425,7 +427,10 @@ function TradeGrid({
               <Input
                 placeholder="Search items..."
                 value={searchQuery}
-                onChange={(e) => onSearchChange(e.target.value)}
+                onChange={(e) => {
+                  onSearchChange(e.target.value)
+                  setDisplayLimit(100)
+                }}
                 className="border-gray-700 bg-gray-800 pl-8 md:pl-9 text-xs md:text-sm text-white placeholder:text-gray-500"
                 autoFocus
               />
@@ -450,10 +455,11 @@ function TradeGrid({
               ) : (
                 <>
                   <div className="mb-1 md:mb-1.5 text-center text-[10px] md:text-xs text-gray-400">
-                    Showing {displayedItems.length} {displayedItems.length === 1 ? "item" : "items"}
+                    Showing {Math.min(displayLimit, displayedItems.length)} of {displayedItems.length}{" "}
+                    {displayedItems.length === 1 ? "item" : "items"}
                     {searchQuery && ` matching "${searchQuery}"`}
                   </div>
-                  {displayedItems.map((item) => (
+                  {displayedItems.slice(0, displayLimit).map((item) => (
                     <AdoptMeItemButton
                       key={item.id}
                       item={item}
@@ -461,6 +467,19 @@ function TradeGrid({
                       isAdoptMe={selectedGame === "Adopt Me"}
                     />
                   ))}
+                  
+                  {displayLimit < displayedItems.length && (
+                    <div className="flex justify-center pt-3">
+                      <Button
+                        onClick={() => setDisplayLimit(prev => prev + 100)}
+                        variant="outline"
+                        size="sm"
+                        className="w-full"
+                      >
+                        Load More ({displayedItems.length - displayLimit} remaining)
+                      </Button>
+                    </div>
+                  )}
                 </>
               )}
             </div>

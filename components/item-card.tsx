@@ -26,6 +26,9 @@ interface ItemCardProps {
     demand?: string
     pot?: string
     value_fr?: number | null | undefined
+    value_f?: number | null | undefined
+    value_r?: number | null | undefined
+    value_n?: number | null | undefined
   }
   hideAddButton?: boolean
 }
@@ -34,7 +37,6 @@ function toNumber(value: any): number {
   if (value === null || value === undefined) return 0
   const num = Number(value)
   if (isNaN(num)) {
-    console.log("[v0] toNumber conversion failed for value:", value)
     return 0
   }
   return num
@@ -73,13 +75,18 @@ function getTimeAgo(timestamp: string): string {
 }
 
 function isEgg(item: ItemCardProps["item"]): boolean {
-  return item.section?.toLowerCase() === "egg" || item.name.toLowerCase().includes("egg")
+  const hasVariants =
+    (item.value_fr !== null && item.value_fr !== undefined && item.value_fr > 0) ||
+    (item.value_f !== null && item.value_f !== undefined && item.value_f > 0) ||
+    (item.value_r !== null && item.value_r !== undefined && item.value_r > 0) ||
+    (item.value_n !== null && item.value_n !== undefined && item.value_n > 0)
+  
+  return !hasVariants
 }
 
 function getDisplayValue(item: ItemCardProps["item"]): number {
   if (isEgg(item)) {
     const rapValue = toNumber(item.rap_value)
-    console.log("[v0] Egg detected:", item.name, "rap_value:", item.rap_value, "converted:", rapValue)
     return rapValue
   }
   

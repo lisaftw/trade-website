@@ -50,15 +50,13 @@ export function IngameCalculator() {
   const [allItems, setAllItems] = useState<GameItem[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<"all" | "pets" | "eggs">("all")
+  const [displayLimit, setDisplayLimit] = useState(100)
   const router = useRouter()
 
   const totalValue = selectedItems.reduce((sum, item) => {
     const itemValue = Number(item.value) || 0
-    console.log("[v0] Adding item to total:", item.name, "value:", itemValue, "current sum:", sum)
     return sum + itemValue
   }, 0)
-
-  console.log("[v0] Total value calculated:", totalValue.toFixed(3), "from", selectedItems.length, "items")
 
   const handleGameSelect = (selectedGame: "MM2" | "SAB" | "Adopt Me") => {
     if (selectedGame === "SAB") {
@@ -97,10 +95,9 @@ export function IngameCalculator() {
           rap_value: item.rap_value ?? 0,
         }))
 
-        console.log("[v0] Transformed items sample:", transformedItems.slice(0, 3))
         setAllItems(transformedItems)
       } catch (error) {
-        console.error("[v0] Failed to fetch items:", error)
+        console.error("Failed to fetch items:", error)
       } finally {
         setIsLoading(false)
       }
@@ -126,29 +123,24 @@ export function IngameCalculator() {
       const rawDefaultValue =
         game === "Adopt Me"
           ? isEgg 
-            ? item.rap_value || 0  // Eggs use rap_value
-            : item.value_fr || item.value_n || item.value_f || item.value_r || item.value  // Pets use variant values
+            ? item.rap_value || 0
+            : item.value_fr || item.value_n || item.value_f || item.value_r || item.value
           : item.value
 
       const defaultValue =
         typeof rawDefaultValue === "string" ? Number.parseFloat(rawDefaultValue) || 0 : rawDefaultValue || 0
 
-      console.log("[v0] Adding item:", item.name, "isEgg:", isEgg, "value:", defaultValue)
-
-      if (defaultValue === 0) {
-        console.warn("[v0] WARNING: Item", item.name, "has no value set in database")
-      }
-
       const newItem = {
         ...item,
         id: `${item.id}-${Date.now()}`,
-        variant: isEgg ? undefined : "FR", // No variant for eggs
+        variant: isEgg ? undefined : "FR",
         value: defaultValue,
-        itemType: isEgg ? "egg" : "pet", // Track item type
+        itemType: isEgg ? "egg" : "pet",
       }
       setSelectedItems((prev) => [...prev, newItem])
       setIsSearchOpen(false)
       setSearchQuery("")
+      setDisplayLimit(100)
     },
     [game],
   )
@@ -321,9 +313,7 @@ export function IngameCalculator() {
             <p className="text-sm text-gray-400">Add items to calculate total value</p>
           </div>
 
-          {/* Items Grid - Updated grid for smaller items with better spacing */}
           <div className="mb-6 grid grid-cols-4 gap-3 md:grid-cols-5 lg:grid-cols-6">
-            {/* Add Item Button */}
             <div
               className={cn(
                 "relative aspect-square rounded-xl border-2 transition-all",
@@ -339,7 +329,6 @@ export function IngameCalculator() {
               </button>
             </div>
 
-            {/* Selected Items - Smaller cards with variant selector */}
             {selectedItems.map((item) => (
               <div
                 key={item.id}
@@ -349,7 +338,6 @@ export function IngameCalculator() {
                 )}
               >
                 <div className="relative flex h-full w-full flex-col p-1.5">
-                  {/* Item Image */}
                   <div className="relative flex-1">
                     <Image
                       src={item.imageUrl || "/itemplaceholder.png"}
@@ -365,7 +353,6 @@ export function IngameCalculator() {
                     </button>
                   </div>
 
-                  {/* Item Info */}
                   <div className="mt-1 space-y-0.5 text-center">
                     <p className="truncate text-[9px] font-semibold leading-tight text-white">{item.name}</p>
                     <p className="text-[8px] text-gray-400">{formatValue(item.value)}</p>
@@ -379,7 +366,6 @@ export function IngameCalculator() {
             ))}
           </div>
 
-          {/* Total Value Display */}
           <div className="rounded-xl border-2 border-brand/50 bg-brand/10 p-6 text-center">
             <p className="text-sm text-gray-400">Total Value</p>
             <p className="mt-2 text-4xl font-bold text-brand">{formatValue(totalValue)}</p>
@@ -402,7 +388,6 @@ export function IngameCalculator() {
         </div>
       </div>
 
-      {/* Search Modal */}
       {isSearchOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
           <div className="w-full max-w-2xl rounded-2xl border-2 border-gray-700 bg-gray-900 p-6 shadow-2xl">
@@ -413,6 +398,7 @@ export function IngameCalculator() {
                   setIsSearchOpen(false)
                   setSearchQuery("")
                   setSelectedCategory("all")
+                  setDisplayLimit(100)
                 }}
                 className="rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
               >
@@ -435,7 +421,10 @@ export function IngameCalculator() {
               <Input
                 placeholder="Search items..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value)
+                  setDisplayLimit(100)
+                }}
                 className="border-gray-700 bg-gray-800 pl-10 text-white placeholder:text-gray-500"
                 autoFocus
               />
@@ -457,9 +446,9 @@ export function IngameCalculator() {
               ) : (
                 <>
                   <div className="mb-2 text-center text-sm text-gray-400">
-                    Showing {displayedItems.length} {displayedItems.length === 1 ? "item" : "items"}
+                    Showing {Math.min(displayLimit, displayedItems.length)} of {displayedItems.length} {displayedItems.length === 1 ? "item" : "items"}
                   </div>
-                  {displayedItems.map((item) => (
+                  {displayedItems.slice(0, displayLimit).map((item) => (
                     <button
                       key={item.id}
                       onClick={() => addItem(item)}
@@ -479,6 +468,18 @@ export function IngameCalculator() {
                       <p className="text-lg font-bold text-white">{formatValue(item.value)}</p>
                     </button>
                   ))}
+                  
+                  {displayLimit < displayedItems.length && (
+                    <div className="flex justify-center pt-4">
+                      <Button
+                        onClick={() => setDisplayLimit(prev => prev + 100)}
+                        variant="outline"
+                        className="w-full"
+                      >
+                        Load More ({displayedItems.length - displayLimit} remaining)
+                      </Button>
+                    </div>
+                  )}
                 </>
               )}
             </div>

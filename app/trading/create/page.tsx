@@ -22,6 +22,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { formatValue } from "@/lib/utils/format-value"
 import { ItemsProvider } from "@/lib/contexts/items-context"
 import { ItemsLoadingOverlay } from "@/components/items-loading-overlay"
+import { useItems } from "@/lib/contexts/items-context"
 
 const GAMES = ["MM2", "SAB", "Adopt Me"]
 const VISIBLE_GAMES = ["Adopt Me"]
@@ -67,13 +68,6 @@ export default function CreateTradePage() {
 
     setIsSubmitting(true)
     try {
-      console.log("[v0] Publishing trade:", {
-        game: selectedGame,
-        offering: offering.map((item) => item.name),
-        requesting: requesting.map((item) => item.name),
-        notes: notes.slice(0, 100),
-      })
-
       const response = await fetch("/api/trades", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -86,15 +80,12 @@ export default function CreateTradePage() {
       })
 
       if (response.ok) {
-        console.log("[v0] Trade published successfully")
         router.push("/trading")
       } else {
         const errorData = await response.json()
-        console.error("[v0] Failed to publish trade:", errorData)
         alert(errorData.error || "Failed to publish trade")
       }
     } catch (error) {
-      console.error("[v0] Error publishing trade:", error)
       alert("Error publishing trade. Please check your connection and try again.")
     } finally {
       setIsSubmitting(false)
@@ -278,7 +269,9 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
   const [isSearching, setIsSearching] = useState(false)
   const [showSearch, setShowSearch] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<"all" | "pets" | "eggs">("all")
+  const [displayLimit, setDisplayLimit] = useState(100)
   const debouncedSearch = useDebounce(searchQuery, 300)
+  const { searchItems, getItemsByGame } = useItems()
 
   React.useEffect(() => {
     if (!showSearch) {
@@ -286,63 +279,55 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
       return
     }
 
-    const fetchItems = async () => {
-      setIsSearching(true)
-      try {
-        const params = new URLSearchParams({ game: selectedGame })
-        if (debouncedSearch) {
-          params.append("q", debouncedSearch)
-        }
-        const response = await fetch(`/api/items?${params.toString()}`)
-        const data = await response.json()
-        setSearchResults(
-          (data.items || []).map((item: any) => {
-            let displayValue = 0
+    setIsSearching(true)
+    try {
+      let results = debouncedSearch 
+        ? searchItems(debouncedSearch, selectedGame)
+        : getItemsByGame(selectedGame)
+      
+      setSearchResults(
+        results.map((item: any) => {
+          let displayValue = 0
 
-            const hasVariants =
-              (item.value_fr && Number(item.value_fr) > 0) ||
-              (item.value_f && Number(item.value_f) > 0) ||
-              (item.value_r && Number(item.value_r) > 0) ||
-              (item.value_n && Number(item.value_n) > 0)
+          const hasVariants =
+            (item.value_fr && Number(item.value_fr) > 0) ||
+            (item.value_f && Number(item.value_f) > 0) ||
+            (item.value_r && Number(item.value_r) > 0) ||
+            (item.value_n && Number(item.value_n) > 0)
 
-            if (hasVariants) {
-              displayValue = Number(item.value_fr) || Number(item.value) || 0
-            } else {
-              // This is an egg - explicitly use rap_value
-              displayValue = Number(item.rap_value) || 0
-            }
+          if (hasVariants) {
+            displayValue = Number(item.value_fr) || Number(item.value) || 0
+          } else {
+            displayValue = Number(item.rap_value) || 0
+          }
 
-            return {
-              id: item._id || item.id || item.name,
-              name: item.name,
-              value: displayValue,
-              game: item.game,
-              imageUrl: item.imageUrl || item.image_url,
-              value_f: item.value_f,
-              value_r: item.value_r,
-              value_n: item.value_n,
-              value_fr: item.value_fr,
-              value_nf: item.value_nf,
-              value_nr: item.value_nr,
-              value_nfr: item.value_nfr,
-              value_m: item.value_m,
-              value_mf: item.value_mf,
-              value_mr: item.value_mr,
-              value_mfr: item.value_mfr,
-              rap_value: item.rap_value,
-            }
-          }),
-        )
-      } catch (error) {
-        console.error("[v0] Failed to fetch items:", error)
-        setSearchResults([])
-      } finally {
-        setIsSearching(false)
-      }
+          return {
+            id: item._id || item.id || item.name,
+            name: item.name,
+            value: displayValue,
+            game: item.game,
+            imageUrl: item.imageUrl || item.image_url,
+            value_f: item.value_f,
+            value_r: item.value_r,
+            value_n: item.value_n,
+            value_fr: item.value_fr,
+            value_nf: item.value_nf,
+            value_nr: item.value_nr,
+            value_nfr: item.value_nfr,
+            value_m: item.value_m,
+            value_mf: item.value_mf,
+            value_mr: item.value_mr,
+            value_mfr: item.value_mfr,
+            rap_value: item.rap_value,
+          }
+        }),
+      )
+    } catch (error) {
+      setSearchResults([])
+    } finally {
+      setIsSearching(false)
     }
-
-    fetchItems()
-  }, [debouncedSearch, showSearch, selectedGame])
+  }, [debouncedSearch, showSearch, selectedGame, searchItems, getItemsByGame])
 
   const filterItemsByCategory = (items: TradeItem[]) => {
     if (selectedGame !== "Adopt Me" || selectedCategory === "all") return items
@@ -394,7 +379,10 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
               <Input
                 placeholder="Search items..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value)
+                  setDisplayLimit(100)
+                }}
                 className="pl-9"
                 autoFocus
               />
@@ -406,6 +394,7 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
                 setShowSearch(false)
                 setSearchQuery("")
                 setSelectedCategory("all")
+                setDisplayLimit(100)
               }}
             >
               <X className="h-4 w-4" />
@@ -435,43 +424,63 @@ function TradeColumn({ title, items, onRemove, onAddItem, selectedGame, columnTy
                   : `No ${selectedCategory === "all" ? "items" : selectedCategory} available`}
               </div>
             ) : (
-              displayedItems.map((item) =>
-                selectedGame === "Adopt Me" ? (
-                  <AdoptMeItemButton
-                    key={item.id}
-                    item={item}
-                    onAddItem={onAddItem}
-                    onClose={() => {
-                      setSearchQuery("")
-                      setShowSearch(false)
-                      setSelectedCategory("all")
-                    }}
-                  />
-                ) : (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      onAddItem(item)
-                      setSearchQuery("")
-                      setShowSearch(false)
-                    }}
-                    className="flex w-full items-center gap-3 rounded-lg border border-border bg-card p-2 text-left transition-transform hover:scale-[1.01] hover:bg-accent"
-                  >
-                    <Image
-                      src={item.imageUrl || "/itemplaceholder.png"}
-                      alt={item.name}
-                      width={40}
-                      height={40}
-                      className="rounded"
+              <>
+                <div className="text-center text-xs text-muted-foreground mb-2">
+                  Showing {Math.min(displayLimit, displayedItems.length)} of {displayedItems.length} items
+                </div>
+                {displayedItems.slice(0, displayLimit).map((item) =>
+                  selectedGame === "Adopt Me" ? (
+                    <AdoptMeItemButton
+                      key={item.id}
+                      item={item}
+                      onAddItem={onAddItem}
+                      onClose={() => {
+                        setSearchQuery("")
+                        setShowSearch(false)
+                        setSelectedCategory("all")
+                        setDisplayLimit(100)
+                      }}
                     />
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">{item.name}</p>
-                      <p className="text-xs text-muted-foreground">{item.game}</p>
-                    </div>
-                    <p className="text-sm font-semibold">{formatValue(item.value)}</p>
-                  </button>
-                ),
-              )
+                  ) : (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        onAddItem(item)
+                        setSearchQuery("")
+                        setShowSearch(false)
+                        setDisplayLimit(100)
+                      }}
+                      className="flex w-full items-center gap-3 rounded-lg border border-border bg-card p-2 text-left transition-transform hover:scale-[1.01] hover:bg-accent"
+                    >
+                      <Image
+                        src={item.imageUrl || "/itemplaceholder.png"}
+                        alt={item.name}
+                        width={40}
+                        height={40}
+                        className="rounded"
+                      />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{item.name}</p>
+                        <p className="text-xs text-muted-foreground">{item.game}</p>
+                      </div>
+                      <p className="text-sm font-semibold">{formatValue(item.value)}</p>
+                    </button>
+                  ),
+                )}
+                
+                {displayLimit < displayedItems.length && (
+                  <div className="flex justify-center pt-3">
+                    <Button
+                      onClick={() => setDisplayLimit(prev => prev + 100)}
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                    >
+                      Load More ({displayedItems.length - displayLimit} remaining)
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
