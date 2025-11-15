@@ -6,7 +6,7 @@ import {
   TextInputStyle,
   ActionRowBuilder,
 } from "discord.js"
-import { getItemsCollection } from "../lib/mongodb.js"
+import { sql } from "../lib/database.js"
 import { GAME_CHOICES, type BotCommand, type GameType } from "../lib/types.js"
 
 export const bulkAddItemCommand: BotCommand = {
@@ -29,7 +29,7 @@ export const bulkAddItemCommand: BotCommand = {
     // Build placeholder based on game
     let placeholder = ""
     if (game === "Adopt Me") {
-      placeholder = "Name | section | value | url | demand | pot"
+      placeholder = "Name | section | value | url | demand | rarity"
     } else {
       placeholder = "Name | section | value | url | rarity | demand"
     }
@@ -55,25 +55,17 @@ export const bulkAddItemCommand: BotCommand = {
     const itemsText = interaction.fields.getFieldValue("items")
 
     try {
-      const collection = await getItemsCollection()
       const lines = itemsText.split("\n").filter((line: string) => line.trim() !== "")
 
       const itemsToAdd: any[] = []
       const errors: string[] = []
 
-      console.log(`[v0] Bulk adding ${lines.length} items to ${game}`)
-
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim()
         const parts = line.split("|").map((p: string) => p.trim())
 
-        // Validate based on game
-        let requiredFields = 0
-        if (game === "MM2" || game === "SAB" || game === "GAG") {
-          requiredFields = 6 // name, section, value, image_url, rarity, demand
-        } else if (game === "Adopt Me") {
-          requiredFields = 6 // name, section, value, image_url, demand, pot
-        }
+        // Validate fields
+        const requiredFields = 6 // name, section, value, image_url, field1, field2
 
         if (parts.length < requiredFields) {
           errors.push(`Line ${i + 1}: Not enough fields (expected ${requiredFields}, got ${parts.length})`)
@@ -106,39 +98,32 @@ export const bulkAddItemCommand: BotCommand = {
           continue
         }
 
-        // Build item object - EXACT SAME SCHEMA as additem command
         const item: any = {
           name: name.trim(),
-          section: section.trim(),
-          value,
+          section: section.trim() || null,
+          rap_value: value,
           image_url: image_url.trim(),
           game,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        }
-
-        // Add game-specific fields
-        if (game === "MM2" || game === "SAB" || game === "GAG") {
-          item.rarity = field1.trim()
-          item.demand = field2.trim()
-        } else if (game === "Adopt Me") {
-          item.demand = field1.trim()
-          item.pot = field2.trim()
+          rarity: field1.trim() || null,
+          demand: field2.trim() || null,
         }
 
         itemsToAdd.push(item)
       }
 
-      // Insert all valid items
       let successCount = 0
       if (itemsToAdd.length > 0) {
-        console.log(`[v0] Inserting ${itemsToAdd.length} valid items to MongoDB`)
-        console.log(`[v0] Sample item:`, JSON.stringify(itemsToAdd[0], null, 2))
-
-        const result = await collection.insertMany(itemsToAdd)
-        successCount = result.insertedCount
-
-        console.log(`[v0] Successfully inserted ${successCount} items`)
+        for (const item of itemsToAdd) {
+          try {
+            await sql`
+              INSERT INTO items (name, section, rap_value, image_url, game, rarity, demand)
+              VALUES (${item.name}, ${item.section}, ${item.rap_value}, ${item.image_url}, ${item.game}, ${item.rarity}, ${item.demand})
+            `
+            successCount++
+          } catch (error: any) {
+            errors.push(`Failed to insert "${item.name}": ${error.message}`)
+          }
+        }
       }
 
       // Build response
@@ -157,7 +142,7 @@ export const bulkAddItemCommand: BotCommand = {
 
       await interaction.editReply(response)
     } catch (error) {
-      console.error("[v0] Error bulk adding items:", error)
+      console.error("Error bulk adding items:", error)
       await interaction.editReply("❌ Failed to add items. Please check your format and try again.")
     }
   },
